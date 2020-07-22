@@ -9,7 +9,8 @@ interface Scopes {
     val auth: ScopeHolder
 }
 
-expect object MyKrosstalk : Krosstalk<KotlinxSerializers>, Scopes
+expect object MyKrosstalk : Krosstalk, Scopes
 
 expect suspend fun doThing(data: Data): List<String>
 expect suspend fun doAuthThing(num: Int): Data
+expect suspend fun Int.doExt(other: Int): Double

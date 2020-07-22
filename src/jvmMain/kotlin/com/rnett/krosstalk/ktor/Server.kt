@@ -35,9 +35,9 @@ fun buildRoutes(route: Route, left: MutableList<KtorServerScope>, final: Route.(
     }
 }
 
-actual object KtorServer : ServerHandler<KtorServerScope> {
+object KtorServer : ServerHandler<KtorServerScope> {
     @OptIn(KtorExperimentalAPI::class)
-    fun <K> define(app: Application, krosstalk: K) where K : Krosstalk<*>, K : KrosstalkServer<KtorServerScope> {
+    fun <K> define(app: Application, krosstalk: K) where K : Krosstalk, K : KrosstalkServer<KtorServerScope> {
         app.apply {
             krosstalk.methods.values
                     .flatMap { krosstalk.requiredServerScopes(it) }
@@ -72,7 +72,7 @@ actual object KtorServer : ServerHandler<KtorServerScope> {
     }
 }
 
-actual interface KtorServerScope : ServerScope {
+interface KtorServerScope : ServerScope {
     fun Application.configureApplication() {}
     fun Route.buildEndpoint(block: Route.() -> Unit) {}
     fun PipelineContext<Unit, ApplicationCall>.handleRequest() {}
@@ -80,12 +80,12 @@ actual interface KtorServerScope : ServerScope {
 
 data class User(val username: String): Principal
 
-actual class KtorServerAuth actual constructor(actual val accounts: Map<String, String>) : KtorServerScope {
+class KtorServerAuth(val accounts: Map<String, String>) : KtorServerScope {
     override fun Application.configureApplication() {
-        install(Authentication){
+        install(Authentication) {
             basic("krosstalk") {
                 validate {
-                    if(it.name in accounts && accounts[it.name] == it.password)
+                    if (it.name in accounts && accounts[it.name] == it.password)
                         User(it.name)
                     else
                         null

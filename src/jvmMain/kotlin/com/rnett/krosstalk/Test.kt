@@ -15,8 +15,7 @@ import io.ktor.routing.routing
 import io.ktor.server.engine.embeddedServer
 import io.ktor.server.jetty.Jetty
 import kotlinx.html.*
-import kotlinx.serialization.builtins.list
-import kotlinx.serialization.builtins.serializer
+import kotlin.reflect.typeOf
 
 fun HTML.index() {
     head {
@@ -64,14 +63,18 @@ actual suspend fun doThing(data: Data): List<String> {
     return List(data.num) { data.str }
 }
 
-actual object MyKrosstalk : Krosstalk<KotlinxSerializers>(), KrosstalkServer<KtorServerScope>, Scopes {
+actual suspend fun Int.doExt(other: Int): Double = (this + other).toDouble()
+
+@OptIn(ExperimentalStdlibApi::class)
+actual object MyKrosstalk : Krosstalk(), KrosstalkServer<KtorServerScope>, Scopes {
     override val serialization = KotlinxSerializationHandler
     override val server = KtorServer
     override val auth by scope(KtorServerAuth(mapOf("username" to "password")))
 
     //TODO registering methods should be handled by compiler plugin
     init {
-        addMethod("doThing", ::doThing, KotlinxSerializers(mapOf("data" to Data.serializer()), String.serializer().list))
-        addMethod("doAuthThing", ::doAuthThing, KotlinxSerializers(mapOf("num" to Int.serializer()), Data.serializer()), "auth")
+        addMethod("doThing", ::doThing, MethodTypes(mapOf("data" to typeOf<Data>()), typeOf<List<String>>()))
+        addMethod("doAuthThing", ::doAuthThing, MethodTypes(mapOf("num" to typeOf<Int>()), typeOf<Data>()), "auth")
+        addMethod("doExt", Int::doExt, MethodTypes(mapOf("other" to typeOf<Int>()), resultType = typeOf<Double>(), extensionReceiverType = typeOf<Int>()))
     }
 }

@@ -2,15 +2,17 @@ package com.rnett.krosstalk.ktor
 
 import com.rnett.krosstalk.ClientHandler
 import com.rnett.krosstalk.ClientScope
-import io.ktor.client.*
-import io.ktor.client.engine.*
-import io.ktor.client.engine.js.*
-import io.ktor.client.features.auth.*
-import io.ktor.client.features.auth.providers.*
-import io.ktor.client.request.*
+import io.ktor.client.HttpClient
+import io.ktor.client.HttpClientConfig
+import io.ktor.client.engine.HttpClientEngineConfig
+import io.ktor.client.engine.js.Js
+import io.ktor.client.features.auth.Auth
+import io.ktor.client.features.auth.providers.basic
+import io.ktor.client.request.HttpRequestBuilder
+import io.ktor.client.request.post
 
 
-actual object KtorClient : ClientHandler<KtorClientScope> {
+object KtorClient : ClientHandler<KtorClientScope> {
     override suspend fun sendKrosstalkRequest(methodName: String, body: ByteArray, scopes: List<KtorClientScope>): ByteArray {
         return HttpClient(Js) {
             scopes.forEach {
@@ -26,14 +28,14 @@ actual object KtorClient : ClientHandler<KtorClientScope> {
 }
 
 
-actual interface KtorClientScope : ClientScope {
-    fun HttpClientConfig<HttpClientEngineConfig>.configureClient(){}
-    fun HttpRequestBuilder.configureRequest(){}
+interface KtorClientScope : ClientScope {
+    fun HttpClientConfig<HttpClientEngineConfig>.configureClient() {}
+    fun HttpRequestBuilder.configureRequest() {}
 }
 
-actual data class KtorClientAuth(actual val username: String, actual val password: String) : KtorClientScope {
+data class KtorClientAuth(val username: String, val password: String) : KtorClientScope {
     override fun HttpClientConfig<HttpClientEngineConfig>.configureClient() {
-        install(Auth){
+        install(Auth) {
             basic {
                 sendWithoutRequest = true
                 username = this@KtorClientAuth.username
