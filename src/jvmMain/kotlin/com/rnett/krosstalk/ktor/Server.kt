@@ -1,23 +1,33 @@
 package com.rnett.krosstalk.ktor
 
-import com.rnett.krosstalk.Krosstalk
-import com.rnett.krosstalk.ServerHandler
-import com.rnett.krosstalk.ServerScope
-import io.ktor.application.*
-import io.ktor.auth.*
-import io.ktor.http.*
-import io.ktor.request.*
-import io.ktor.response.*
-import io.ktor.routing.*
-import io.ktor.util.*
-import io.ktor.util.pipeline.*
+import com.rnett.krosstalk.*
+import io.ktor.application.Application
+import io.ktor.application.ApplicationCall
+import io.ktor.application.call
+import io.ktor.application.install
+import io.ktor.auth.Authentication
+import io.ktor.auth.Principal
+import io.ktor.auth.authenticate
+import io.ktor.auth.basic
+import io.ktor.request.receiveChannel
+import io.ktor.response.respondBytes
+import io.ktor.routing.Route
+import io.ktor.routing.post
+import io.ktor.routing.route
+import io.ktor.routing.routing
+import io.ktor.util.KtorExperimentalAPI
+import io.ktor.util.pipeline.PipelineContext
+import io.ktor.util.toByteArray
 
+/**
+ * Left should be reversed.  The last scope is applied first (as repeated last-removed are much faster than first-removed).
+ */
 @OptIn(ExperimentalStdlibApi::class)
 fun buildRoutes(route: Route, left: MutableList<KtorServerScope>, final: Route.() -> Unit){
     if(left.isEmpty())
         route.final()
     else {
-        left.removeFirst().apply {
+        left.removeLast().apply {
             route.buildEndpoint {
                 buildRoutes(this, left, final)
             }
@@ -27,24 +37,23 @@ fun buildRoutes(route: Route, left: MutableList<KtorServerScope>, final: Route.(
 
 actual object KtorServer : ServerHandler<KtorServerScope> {
     @OptIn(KtorExperimentalAPI::class)
-    fun define(app: Application, krosstalk: Krosstalk<*, *, KtorServerScope>) {
+    fun <K> define(app: Application, krosstalk: K) where K : Krosstalk<*>, K : KrosstalkServer<KtorServerScope> {
         app.apply {
             krosstalk.methods.values
-                .flatMap { it.requiredScopes }
-                .map { it.server as KtorServerScope }
-                .distinct()
-                .forEach {
-                    it.apply {
-                        configureApplication()
+                    .flatMap { krosstalk.requiredServerScopes(it) }
+                    .distinct()
+                    .forEach {
+                        it.apply {
+                            configureApplication()
+                        }
                     }
-                }
         }
         app.routing {
 
             route(krosstalk.endpointName) {
 
                 krosstalk.methods.forEach { (name, method) ->
-                    buildRoutes(this, method.requiredScopes.map { it.server as KtorServerScope }.toMutableList()){
+                    buildRoutes(this, krosstalk.requiredServerScopes(method).toMutableList().asReversed()) {
                         post(name) {
                             val body = call.receiveChannel().toByteArray()
                             val response = krosstalk.handle(body)

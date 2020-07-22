@@ -1,45 +1,106 @@
 package com.rnett.krosstalk
 
+import kotlin.contracts.InvocationKind
+import kotlin.contracts.contract
+import kotlin.properties.ReadOnlyProperty
 import kotlin.reflect.KCallable
+import kotlin.reflect.KProperty
 
 data class MethodDefinition<T>(
-    val method: KCallable<T>,
-    val requiredScopes: List<ScopeOf<*, *>>,
-    val paramSerializers: Map<String, Serializer<*>>,
-    val resultSerializer: Serializer<T>
+        val method: KCallable<T>,
+        val requiredScopes: List<String>,
+        val paramSerializers: Map<String, Serializer<*>>,
+        val resultSerializer: Serializer<T>
 )
 
 data class MethodSerializers<T>(
-    val paramSerializers: Map<String, Serializer<*>>,
-    val resultSerializer: Serializer<T>
+        val paramSerializers: Map<String, Serializer<*>>,
+        val resultSerializer: Serializer<T>
 )
-class Scope<out C1: C, out S1: ServerScope, C: ClientScope> internal constructor(val server: S1, val krosstalk: Krosstalk<*, C, *>)
-typealias ScopeOf<C, S> = Scope<C, S, C>
 
-class ClientScopeHolder<C1: C, C: ClientScope> internal constructor(val krosstalk: Krosstalk<*, C, *>){
-    operator fun <S1: ServerScope> plus(server: S1) = Scope<C1, S1, C>(server, krosstalk)
+sealed class ScopeHolder
+class ServerScopeHolder<S : ServerScope>(val server: S) : ScopeHolder()
+
+@OptIn(ExperimentalStdlibApi::class)
+class ClientScopeHolder<C : ClientScope> internal constructor(val krosstalk: Krosstalk<*>) : ScopeHolder() {
+
+    inline fun <T> open(scope: C, block: () -> T): T {
+        contract {
+            callsInPlace(block, InvocationKind.EXACTLY_ONCE)
+        }
+        krosstalk.activeScopes.add(scope)
+        val result = block()
+        krosstalk.activeScopes.removeLast()
+        return result
+    }
+
+//    inline fun open(scope: C, block: () -> Unit){
+//        contract {
+//            callsInPlace(block, InvocationKind.EXACTLY_ONCE)
+//        }
+//        krosstalk.activeScopes.add(scope)
+//        block()
+//        krosstalk.activeScopes.removeLast()
+//    }
+
+    inline operator fun <T> invoke(scope: C, block: () -> T): T = open(scope, block)
+//    inline operator fun <T> invoke(scope: C, block: () -> T): T = open(scope, block)
 }
 
-abstract class KrosstalkBase<D, C: ClientScope, S: ServerScope> internal constructor(){
+class ScopeAdder<S : ScopeHolder>(val scope: S) {
+    operator fun provideDelegate(thisRef: Krosstalk<*>, prop: KProperty<*>): ReadOnlyProperty<Krosstalk<*>, S> {
+        thisRef.scopes[prop.name] = scope
+        return object : ReadOnlyProperty<Krosstalk<*>, S> {
+            override inline operator fun getValue(thisRef: Krosstalk<*>, prop: KProperty<*>) = scope
+        }
+    }
+}
+
+/*
+    TODO re-architect to not lock in client-server, use interface style scope defs, not need common for everything, etc.  Different client/server & serialization for each module, same function registration
+ */
+abstract class Krosstalk<D> internal constructor() {
     abstract val serialization: SerializationHandler<D>
-    abstract val client: ClientHandler<C>
-    abstract val server: ServerHandler<S>
     open val endpointName: String = "krosstalk"
 
+    @PublishedApi
     internal val methods = mutableMapOf<String, MethodDefinition<*>>()
-    fun addMethod(key: String, method: KCallable<*>, extraData: D, vararg requiredScopes: ScopeOf<C, S>){
-        if(key in methods)
+
+    fun addMethod(key: String, method: KCallable<*>, extraData: D, vararg requiredScopes: String) {
+        if (key in methods)
             error("Already registered method with name $key")
 
 
         val serializers = serialization.getSerializers(method, extraData)
         methods[key] = MethodDefinition(method, requiredScopes.toList(), serializers.paramSerializers, serializers.resultSerializer)
     }
+
+    @PublishedApi
+    internal val activeScopes = mutableListOf<ClientScope>()
+
+    //TODO scope registering should be handled by compiler plugin
+    @PublishedApi
+    internal val scopes = mutableMapOf<String, ScopeHolder>()
 }
 
-expect abstract class Krosstalk<D, C: ClientScope, S: ServerScope>() : KrosstalkBase<D, C, S>{
-    fun <C1: C, S1: S> scope(server: S1): Scope<C1, S1, C> // = Scope<C1, S1, C, S>(server, this)
-    fun <C1: C> clientScope(): ClientScopeHolder<C1, C> // = ClientScopeHolder<C1, C, S>(this)
+interface KrosstalkClient<C : ClientScope> {
+    val client: ClientHandler<C>
+    fun <C1 : C> scope() = ScopeAdder(ClientScopeHolder<C1>(this as? Krosstalk<*>
+            ?: error("Can't implement KrosstalkClient without also extending Krosstalk")))
 }
 
-fun <C: ClientScope, S: ServerScope> Krosstalk<Unit, C, S>.addMethod(key: String, method: KCallable<*>, vararg requiredScopes: ScopeOf<C, S>) = addMethod(key, method, Unit, *requiredScopes)
+interface KrosstalkServer<S : ServerScope> {
+    val server: ServerHandler<S>
+    fun <S1 : S> scope(server: S1) = ScopeAdder(ServerScopeHolder(server))
+}
+
+fun <C : ClientScope, S : ServerScope> Krosstalk<Unit>.addMethod(key: String, method: KCallable<*>, vararg requiredScopes: String) = addMethod(key, method, Unit, *requiredScopes)
+
+fun <K, S : ServerScope> K.requiredServerScopes(method: MethodDefinition<*>) where K : Krosstalk<*>, K : KrosstalkServer<S> =
+        method.requiredScopes
+                .map {
+                    scopes.getOrElse(it) { error("Unknown scope $it") } as? ServerScopeHolder<*>
+                            ?: error("$it wasn't a server scope")
+                }
+                .map { it.server }
+                .map { it as? S ?: error("$it was not of correct scope type") }

@@ -1,20 +1,22 @@
 package com.rnett.krosstalk
 
 import com.rnett.krosstalk.ktor.KtorServer
-import io.ktor.application.*
-import io.ktor.features.*
-import io.ktor.html.*
-import io.ktor.http.*
-import io.ktor.http.content.*
-import io.ktor.routing.*
-import io.ktor.server.engine.*
-import io.ktor.server.jetty.*
+import com.rnett.krosstalk.ktor.KtorServerAuth
+import com.rnett.krosstalk.ktor.KtorServerScope
+import io.ktor.application.call
+import io.ktor.application.install
+import io.ktor.features.CORS
+import io.ktor.html.respondHtml
+import io.ktor.http.HttpStatusCode
+import io.ktor.http.content.resource
+import io.ktor.http.content.static
+import io.ktor.routing.get
+import io.ktor.routing.routing
+import io.ktor.server.engine.embeddedServer
+import io.ktor.server.jetty.Jetty
 import kotlinx.html.*
-import javax.management.Query.div
-
-actual suspend fun doThing(data: Data): List<String> {
-    return List(data.num) { data.str }
-}
+import kotlinx.serialization.builtins.list
+import kotlinx.serialization.builtins.serializer
 
 fun HTML.index() {
     head {
@@ -56,4 +58,20 @@ fun main() {
 
 actual suspend fun doAuthThing(num: Int): Data {
     return Data(num, (num * 10).toString())
+}
+
+actual suspend fun doThing(data: Data): List<String> {
+    return List(data.num) { data.str }
+}
+
+actual object MyKrosstalk : Krosstalk<KotlinxSerializers>(), KrosstalkServer<KtorServerScope>, Scopes {
+    override val serialization = KotlinxSerializationHandler
+    override val server = KtorServer
+    override val auth by scope(KtorServerAuth(mapOf("username" to "password")))
+
+    //TODO registering methods should be handled by compiler plugin
+    init {
+        addMethod("doThing", ::doThing, KotlinxSerializers(mapOf("data" to Data.serializer()), String.serializer().list))
+        addMethod("doAuthThing", ::doAuthThing, KotlinxSerializers(mapOf("num" to Int.serializer()), Data.serializer()), "auth")
+    }
 }
