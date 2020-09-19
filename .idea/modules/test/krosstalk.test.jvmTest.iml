@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<module version="4">
+  <component name="FacetManager">
+    <facet type="kotlin-language" name="Kotlin">
+      <configuration version="3" platform="JVM 13" allPlatforms="JVM [13]" useProjectSettings="false" isTestModule="true" externalProjectId=":test">
+        <dependsOnModuleNames>:test:commonTest</dependsOnModuleNames>
+        <sourceSets>
+          <sourceSet>krosstalk.test.commonTest</sourceSet>
+          <sourceSet>krosstalk.test.jvmMain</sourceSet>
+          <sourceSet>krosstalk.test.commonMain</sourceSet>
+        </sourceSets>
+        <newMppModelJpsModuleKind>COMPILATION_AND_SOURCE_SET_HOLDER</newMppModelJpsModuleKind>
+        <externalSystemTestTasks>
+          <externalSystemTestTask>jvmTest|:test:jvmTest|jvm</externalSystemTestTask>
+        </externalSystemTestTasks>
+        <compilerSettings>
+          <option name="additionalArguments" value="-Xallow-no-source-files -Xuse-ir -Xopt-in=kotlin.contracts.ExperimentalContracts,kotlin.RequiresOptIn,kotlin.time.ExperimentalTime -XXLanguage:+InlineClasses -XXLanguage:+NewInference" />
+        </compilerSettings>
+        <compilerArguments>
+          <option name="destination" value="$MODULE_DIR$/../../../test/build/classes/kotlin/jvm/test" />
+          <option name="classpath" value="$USER_HOME$/.gradle/caches/modules-2/files-2.1/io.ktor/ktor-server-jetty/1.4.0/a8a21302402a213fd7a1a24da2de3197978cdfd/ktor-server-jetty-jvm-1.4.0.jar;C:/Users/jimne/.gradle/caches/modules-2/files-2.1/io.ktor/ktor-server-servlet/1.4.0/498ba8802a8c41b6cba124b85c8550f22ef3c369/ktor-server-servlet-jvm-1.4.0.jar;C:/Users/jimne/.gradle/caches/modules-2/files-2.1/io.ktor/ktor-server-host-common/1.4.0/d8b7950d1f5bcc467395f21fc660055eb92f454e/ktor-server-host-common-jvm-1.4.0.jar;C:/Users/jimne/.gradle/caches/modules-2/files-2.1/io.ktor/ktor-html-builder/1.4.0/f18e3215638861e2d8d77ad88847a77495e217de/ktor-html-builder-jvm-1.4.0.jar;C:/Users/jimne/.gradle/caches/modules-2/files-2.1/io.ktor/ktor-server-core/1.4.0/aa201f8d7b5be554d636a471fc255ec028119186/ktor-server-core-jvm-1.4.0.jar;C:/Users/jimne/.gradle/caches/modules-2/files-2.1/org.jetbrains.kotlinx/kotlinx-coroutines-jdk8/1.3.8-native-mt-1.4.0-rc/2e1ff51177e343de1e43a29d7f14e7db7dfdb0db/kotlinx-coroutines-jdk8-1.3.8-native-mt-1.4.0-rc.jar;C:/Users/jimne/.gradle/caches/modules-2/files-2.1/io.ktor/ktor-http-cio-jvm/1.4.0/eae1260d34412dacbee44a68d837be292b16980e/ktor-http-cio-jvm-1.4.0.jar;C:/Users/jimne/.gradle/caches/modules-2/files-2.1/io.ktor/ktor-http-jvm/1.4.0/2ab9c97f2effe1f04e0fb65d1fc5d68f12f1c073/ktor-http-jvm-1.4.0.jar;C:/Users/jimne/.gradle/caches/modules-2/files-2.1/io.ktor/ktor-network-jvm/1.4.0/798d44cb6cfe50ff8c4314887e8b75ef7598e285/ktor-network-jvm-1.4.0.jar;C:/Users/jimne/.gradle/caches/modules-2/files-2.1/io.ktor/ktor-utils-jvm/1.4.0/e8a52622881d9e7a9a12735f1274dc29f1d10a5f/ktor-utils-jvm-1.4.0.jar;C:/Users/jimne/.gradle/caches/modules-2/files-2.1/io.ktor/ktor-io-jvm/1.4.0/cb717f815ee8247ad038fd9259b2be9ddecbf70c/ktor-io-jvm-1.4.0.jar;C:/Users/jimne/.gradle/caches/modules-2/files-2.1/org.jetbrains.kotlinx/kotlinx-coroutines-core-jvm/1.3.9/4be434f5e86c1998a273e7f19a7286440894f0b0/kotlinx-coroutines-core-jvm-1.3.9.jar;C:/Users/jimne/.gradle/caches/modules-2/files-2.1/org.jetbrains.kotlinx/kotlinx-serialization-cbor-jvm/1.0.0-RC/82485da67ec6f4e97f5e795686146bace4a4a4eb/kotlinx-serialization-cbor-jvm-1.0.0-RC.jar;C:/Users/jimne/.gradle/caches/modules-2/files-2.1/org.jetbrains.kotlinx/kotlinx-serialization-core-jvm/1.0.0-RC/b757455a4105aa2048703075be26e2eee4d04632/kotlinx-serialization-core-jvm-1.0.0-RC.jar;C:/Users/jimne/Google Drive/My Stuff/krosstalk/krosstalk-ktor-server/build/libs/krosstalk-ktor-server-1.0-SNAPSHOT.jar;C:/Users/jimne/Google Drive/My Stuff/krosstalk/krosstalk/build/libs/krosstalk-jvm-1.0-SNAPSHOT.jar;C:/Users/jimne/.gradle/caches/modules-2/files-2.1/org.jetbrains.kotlin/kotlin-stdlib-jdk8/1.4.10/998caa30623f73223194a8b657abd2baec4880ea/kotlin-stdlib-jdk8-1.4.10.jar;C:/Users/jimne/.gradle/caches/modules-2/files-2.1/org.jetbrains.kotlin/kotlin-stdlib-jdk7/1.4.10/30e46450b0bb3dbf43898d2f461be4a942784780/kotlin-stdlib-jdk7-1.4.10.jar;C:/Users/jimne/.gradle/caches/modules-2/files-2.1/org.jetbrains.kotlin/kotlin-reflect/1.4.0/aa2101a19d8688e368ae6e35e8967550ced73884/kotlin-reflect-1.4.0.jar;C:/Users/jimne/.gradle/caches/modules-2/files-2.1/org.jetbrains.kotlin/kotlin-stdlib/1.4.10/ea29e063d2bbe695be13e9d044dcfb0c7add398e/kotlin-stdlib-1.4.10.jar;C:/Users/jimne/.gradle/caches/modules-2/files-2.1/org.jetbrains.kotlin/kotlin-stdlib-common/1.4.10/6229be3465805c99db1142ad75e6c6ddeac0b04c/kotlin-stdlib-common-1.4.10.jar;C:/Users/jimne/.gradle/caches/modules-2/files-2.1/ch.qos.logback/logback-classic/1.2.3/7c4f3c474fb2c041d8028740440937705ebb473a/logback-classic-1.2.3.jar;C:/Users/jimne/.gradle/caches/modules-2/files-2.1/org.slf4j/slf4j-api/1.7.30/b5a4b6d16ab13e34a88fae84c35cd5d68cac922c/slf4j-api-1.7.30.jar;C:/Users/jimne/.gradle/caches/modules-2/files-2.1/org.eclipse.jetty/jetty-alpn-openjdk8-server/9.4.31.v20200723/d3b2acbfadcb824c056a25466d6e50517a3c54ea/jetty-alpn-openjdk8-server-9.4.31.v20200723.jar;C:/Users/jimne/.gradle/caches/modules-2/files-2.1/org.eclipse.jetty/jetty-alpn-java-server/9.4.31.v20200723/6394423ff0c739cd171c71a798ccf70922c58465/jetty-alpn-java-server-9.4.31.v20200723.jar;C:/Users/jimne/.gradle/caches/modules-2/files-2.1/org.eclipse.jetty/jetty-alpn-server/9.4.31.v20200723/cabbe5cc0928d4b07ff7d154edd4d161748bd367/jetty-alpn-server-9.4.31.v20200723.jar;C:/Users/jimne/.gradle/caches/modules-2/files-2.1/org.eclipse.jetty.http2/http2-server/9.4.31.v20200723/85c8161a5eadb975b188eec0415796b9bb461ae2/http2-server-9.4.31.v20200723.jar;C:/Users/jimne/.gradle/caches/modules-2/files-2.1/org.eclipse.jetty/jetty-server/9.4.31.v20200723/b9043b4a0c17ee543aba97e80ea3a34cd8cdb600/jetty-server-9.4.31.v20200723.jar;C:/Users/jimne/.gradle/caches/modules-2/files-2.1/org.eclipse.jetty/jetty-servlets/9.4.31.v20200723/739284ad61376a42ca1e3c340b1c80d8a4967c6f/jetty-servlets-9.4.31.v20200723.jar;C:/Users/jimne/.gradle/caches/modules-2/files-2.1/org.jetbrains.kotlinx/kotlinx-html-jvm/0.7.2/c7a77c9027384b982941d48ee61f80cce12a03eb/kotlinx-html-jvm-0.7.2.jar;C:/Users/jimne/.gradle/caches/modules-2/files-2.1/ch.qos.logback/logback-core/1.2.3/864344400c3d4d92dfeb0a305dc87d953677c03c/logback-core-1.2.3.jar;C:/Users/jimne/.gradle/caches/modules-2/files-2.1/org.jetbrains/annotations/13.0/919f0dfe192fb4e063e7dacadee7f8bb9a2672a9/annotations-13.0.jar;C:/Users/jimne/.gradle/caches/modules-2/files-2.1/javax.servlet/javax.servlet-api/3.1.0/3cd63d075497751784b2fa84be59432f4905bf7c/javax.servlet-api-3.1.0.jar;C:/Users/jimne/.gradle/caches/modules-2/files-2.1/org.eclipse.jetty.http2/http2-common/9.4.31.v20200723/dd6fc64e41103afca8f9c1c1465ec24541e5681c/http2-common-9.4.31.v20200723.jar;C:/Users/jimne/.gradle/caches/modules-2/files-2.1/org.eclipse.jetty.http2/http2-hpack/9.4.31.v20200723/836f1a761bf5942494b3c41c9470ea1cd39c8420/http2-hpack-9.4.31.v20200723.jar;C:/Users/jimne/.gradle/caches/modules-2/files-2.1/org.eclipse.jetty/jetty-http/9.4.31.v20200723/6862f0e6fc7e9f8828416a7cae1477b233d92f8/jetty-http-9.4.31.v20200723.jar;C:/Users/jimne/.gradle/caches/modules-2/files-2.1/org.eclipse.jetty/jetty-io/9.4.31.v20200723/328e4562e0f30e01efea63efe4fc24b2b860d852/jetty-io-9.4.31.v20200723.jar;C:/Users/jimne/.gradle/caches/modules-2/files-2.1/org.eclipse.jetty/jetty-continuation/9.4.31.v20200723/768ee9930f80ed544deb29f74841ac8d525fb368/jetty-continuation-9.4.31.v20200723.jar;C:/Users/jimne/.gradle/caches/modules-2/files-2.1/org.eclipse.jetty/jetty-util/9.4.31.v20200723/b9c346da72d8715bdfb0373a123374ec6ac9e544/jetty-util-9.4.31.v20200723.jar;C:/Users/jimne/.gradle/caches/modules-2/files-2.1/com.typesafe/config/1.3.1/2cf7a6cc79732e3bdf1647d7404279900ca63eb0/config-1.3.1.jar;C:/Users/jimne/.gradle/caches/modules-2/files-2.1/org.jetbrains.kotlin/kotlin-test-junit5/1.4.10/6fbbcad75fe46e82673b276617f280371da3ff38/kotlin-test-junit5-1.4.10.jar;C:/Users/jimne/.gradle/caches/modules-2/files-2.1/org.jetbrains.kotlin/kotlin-test/1.4.10/c57ab8d7f12f4ffcd45c63f837228861c9f2cd9a/kotlin-test-1.4.10.jar;C:/Users/jimne/.gradle/caches/modules-2/files-2.1/org.jetbrains.kotlin/kotlin-test-common/1.4.10/505c602601309cd1694a369aacb6df4dcf5c9a4/kotlin-test-common-1.4.10.jar;C:/Users/jimne/.gradle/caches/modules-2/files-2.1/org.jetbrains.kotlin/kotlin-test-annotations-common/1.4.10/668f215c80a2a9f579c6c5c56a174c3b4299fb5c/kotlin-test-annotations-common-1.4.10.jar;C:/Users/jimne/.gradle/caches/modules-2/files-2.1/org.junit.jupiter/junit-jupiter-api/5.0.0/f7fe1b74bef74d640493781abecafba191472ad/junit-jupiter-api-5.0.0.jar;C:/Users/jimne/.gradle/caches/modules-2/files-2.1/org.junit.platform/junit-platform-commons/1.0.0/d2e03d9b21020746d48fe45834ff7d71fbcbd7b2/junit-platform-commons-1.0.0.jar;C:/Users/jimne/.gradle/caches/modules-2/files-2.1/org.apiguardian/apiguardian-api/1.0.0/3ef5276905e36f4d8055fe3cb0bdcc7503ffc85d/apiguardian-api-1.0.0.jar;C:/Users/jimne/.gradle/caches/modules-2/files-2.1/org.opentest4j/opentest4j/1.0.0/6f09c598e9ff64bf0ce2fa7e7de49a99ba83c0b4/opentest4j-1.0.0.jar" />
+          <option name="noStdlib" value="true" />
+          <option name="noReflect" value="true" />
+          <option name="moduleName" value="test" />
+          <option name="jvmTarget" value="13" />
+          <option name="friendPaths">
+            <array>
+              <option value="$MODULE_DIR$/../../../test/build/classes/kotlin/jvm/main" />
+              <option value="$MODULE_DIR$/../../../test/build/classes/java/main" />
+              <option value="$MODULE_DIR$/../../../test/build/libs/test-jvm-1.0-SNAPSHOT.jar" />
+            </array>
+          </option>
+          <option name="languageVersion" value="1.4" />
+          <option name="apiVersion" value="1.4" />
+          <option name="pluginOptions">
+            <array />
+          </option>
+          <option name="pluginClasspaths">
+            <array>
+              <option value="$USER_HOME$/.gradle/caches/modules-2/files-2.1/org.jetbrains.intellij.deps/trove4j/1.0.20181211/216c2e14b070f334479d800987affe4054cd563f/trove4j-1.0.20181211.jar" />
+              <option value="$USER_HOME$/.gradle/caches/modules-2/files-2.1/org.jetbrains.kotlin/kotlin-compiler-embeddable/1.4.10/38c4b99d5d5362debdd9302a866730379aa2328a/kotlin-compiler-embeddable-1.4.10.jar" />
+              <option value="$USER_HOME$/.gradle/caches/modules-2/files-2.1/org.jetbrains.kotlin/kotlin-daemon-embeddable/1.4.10/dbd67f42bed28043d17d7c860b06110a00a45970/kotlin-daemon-embeddable-1.4.10.jar" />
+              <option value="$USER_HOME$/.gradle/caches/modules-2/files-2.1/org.jetbrains.kotlin/kotlin-gradle-plugin-api/1.4.10/c06dc95764119b3188034c644805de9b76148806/kotlin-gradle-plugin-api-1.4.10.jar" />
+              <option value="$USER_HOME$/.gradle/caches/modules-2/files-2.1/org.jetbrains.kotlin/kotlin-reflect/1.4.10/e2b3c6695eee6085e606d96d685396dce23a3a06/kotlin-reflect-1.4.10.jar" />
+              <option value="$USER_HOME$/.gradle/caches/modules-2/files-2.1/org.jetbrains.kotlin/kotlin-script-runtime/1.4.10/7c19d9c2001e016cd7664cebe9eea66fc04a7f4f/kotlin-script-runtime-1.4.10.jar" />
+              <option value="$USER_HOME$/.gradle/caches/modules-2/files-2.1/org.jetbrains.kotlin/kotlin-scripting-common/1.4.10/befe5a2bcae1e5b86691e0a0dfb0b3ef039b00a9/kotlin-scripting-common-1.4.10.jar" />
+              <option value="$USER_HOME$/.gradle/caches/modules-2/files-2.1/org.jetbrains.kotlin/kotlin-scripting-jvm/1.4.10/89b312aa7b7944586c1e64e5ec52130d03019db0/kotlin-scripting-jvm-1.4.10.jar" />
+              <option value="$USER_HOME$/.gradle/caches/modules-2/files-2.1/org.jetbrains.kotlin/kotlin-stdlib-common/1.4.10/6229be3465805c99db1142ad75e6c6ddeac0b04c/kotlin-stdlib-common-1.4.10.jar" />
+              <option value="$USER_HOME$/.gradle/caches/modules-2/files-2.1/org.jetbrains.kotlin/kotlin-stdlib-jdk7/1.4.10/30e46450b0bb3dbf43898d2f461be4a942784780/kotlin-stdlib-jdk7-1.4.10.jar" />
+              <option value="$USER_HOME$/.gradle/caches/modules-2/files-2.1/org.jetbrains.kotlin/kotlin-stdlib-jdk8/1.4.10/998caa30623f73223194a8b657abd2baec4880ea/kotlin-stdlib-jdk8-1.4.10.jar" />
+              <option value="$USER_HOME$/.gradle/caches/modules-2/files-2.1/org.jetbrains.kotlin/kotlin-stdlib/1.4.10/ea29e063d2bbe695be13e9d044dcfb0c7add398e/kotlin-stdlib-1.4.10.jar" />
+              <option value="$USER_HOME$/.gradle/caches/modules-2/files-2.1/org.jetbrains.kotlinx/kotlinx-coroutines-core/1.3.7/8e2eb78158638b33793d204ffef0b65c4a578e1c/kotlinx-coroutines-core-1.3.7.jar" />
+              <option value="$USER_HOME$/.gradle/caches/modules-2/files-2.1/org.jetbrains/annotations/13.0/919f0dfe192fb4e063e7dacadee7f8bb9a2672a9/annotations-13.0.jar" />
+              <option value="$MAVEN_REPOSITORY$/com/rnett/krosstalk/krosstalk-compiler-plugin/1.0-SNAPSHOT/krosstalk-compiler-plugin-1.0-SNAPSHOT.jar" />
+              <option value="$KOTLIN_BUNDLED$/lib/kotlinx-serialization-compiler-plugin.jar" />
+            </array>
+          </option>
+          <option name="multiPlatform" value="true" />
+          <option name="errors">
+            <ArgumentParseErrors />
+          </option>
+        </compilerArguments>
+      </configuration>
+    </facet>
+  </component>
+</module>

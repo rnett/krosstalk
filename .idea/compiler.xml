@@ -1,6 +1,22 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="CompilerConfiguration">
-    <bytecodeTargetLevel target="14" />
+    <annotationProcessing>
+      <profile default="true" name="Default" enabled="true" />
+    </annotationProcessing>
+    <bytecodeTargetLevel target="14">
+      <module name="krosstalk.commonMain" target="13" />
+      <module name="krosstalk.commonTest" target="13" />
+      <module name="krosstalk.jvmMain" target="13" />
+      <module name="krosstalk.jvmTest" target="13" />
+      <module name="krosstalk.krosstalk-annotations.commonMain" target="13" />
+      <module name="krosstalk.krosstalk-annotations.commonTest" target="13" />
+      <module name="krosstalk.krosstalk-annotations.jvmMain" target="13" />
+      <module name="krosstalk.krosstalk-annotations.jvmTest" target="13" />
+      <module name="krosstalk.krosstalk-ktor-server.commonMain" target="13" />
+      <module name="krosstalk.krosstalk-ktor-server.commonTest" target="13" />
+      <module name="krosstalk.krosstalk-ktor-server.jvmMain" target="13" />
+      <module name="krosstalk.krosstalk-ktor-server.jvmTest" target="13" />
+    </bytecodeTargetLevel>
   </component>
 </project>
