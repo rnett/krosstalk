@@ -15,7 +15,7 @@ expect object MyKrosstalk : Krosstalk, Scopes
 @KrosstalkMethod(MyKrosstalk::class)
 expect suspend fun doThing(data: Data): List<String>
 
-@KrosstalkMethod(MyKrosstalk::class, "auth", "test")
+@KrosstalkMethod(MyKrosstalk::class, "auth")
 expect suspend fun doAuthThing(num: Int): Data
 
 @KrosstalkMethod(MyKrosstalk::class)

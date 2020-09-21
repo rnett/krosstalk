@@ -74,16 +74,15 @@ abstract class Krosstalk {
     val methods: Map<String, MethodDefinition<*>> = _methods
 
     //TODO make internal
-//    @PublishedApi
-    fun <T> addMethod(
-        key: String/*, method: KCallable<*>*/,
-        types: MethodTypes,
-        vararg requiredScopes: String,
-        call: suspend (Map<String, *>) -> T
+    @PublishedApi
+    internal fun <T> addMethod(
+            key: String/*, method: KCallable<*>*/,
+            types: MethodTypes,
+            vararg requiredScopes: String,
+            call: suspend (Map<String, *>) -> T
     ) {
         if (key in methods)
             error("Already registered method with name $key")
-
 
         val serializers = serialization.getAndCheckSerializers(types)
         _methods[key] = MethodDefinition(/*method, */requiredScopes.toList(), serializers, call)

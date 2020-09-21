@@ -28,21 +28,21 @@ kotlin {
         }
         withJava()
     }
-    js(BOTH) {
+    js(IR) {
 //        produceExecutable()
 
         browser { }
 
 
-        configure(compilations) {
-            kotlinOptions {
-                noStdlib = true
-                sourceMapEmbedSources = "always"
-                metaInfo = true
-                sourceMap = true
-                moduleKind = "commonjs"
-            }
-        }
+//        configure(compilations) {
+//            kotlinOptions {
+//                noStdlib = true
+//                sourceMapEmbedSources = "always"
+//                metaInfo = true
+//                sourceMap = true
+//                moduleKind = "commonjs"
+//            }
+//        }
     }
 
     configure(listOf(targets["metadata"], jvm(), js())) {

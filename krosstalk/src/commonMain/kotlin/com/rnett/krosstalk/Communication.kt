@@ -53,6 +53,7 @@ data class KrosstalkCall(val function: String,
     }
 }
 
+fun krosstaklCall(): Nothing = error("Should have been replaced with a krosstalk call during compilation")
 
 suspend inline fun <T, K, reified C : ClientScope> K.call(methodName: String,
                                                           parameters: Map<String, *>,

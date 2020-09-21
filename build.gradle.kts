@@ -1,8 +1,8 @@
 plugins {
-    kotlin("multiplatform") version "1.4.10" apply false
-    kotlin("jvm") version "1.4.10" apply false
-    id("org.jetbrains.kotlin.plugin.serialization") version "1.4.10" apply false
-    kotlin("kapt") version "1.4.10" apply false
+    kotlin("multiplatform") version "1.4.0" apply false
+    kotlin("jvm") version "1.4.0" apply false
+    id("org.jetbrains.kotlin.plugin.serialization") version "1.4.0" apply false
+    kotlin("kapt") version "1.4.0" apply false
     id("com.github.johnrengelman.shadow") version "5.2.0" apply false
 }
 

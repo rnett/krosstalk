@@ -13,17 +13,17 @@ data class MethodSerializers(
         val resultSerializer: Serializer<*>
 )
 
-data class MethodTypes(
+class MethodTypes(
         val paramTypes: Map<String, KType>,
         val resultType: KType,
         val instanceReceiverType: KType? = null,
         val extensionReceiverType: KType? = null
 ) {
     inline fun toSerializers(getSerializer: (KType) -> Serializer<*>) = MethodSerializers(
-        paramTypes.mapValues { getSerializer(it.value) },
-        instanceReceiverType?.let(getSerializer),
-        extensionReceiverType?.let(getSerializer),
-        getSerializer(resultType)
+            paramTypes.mapValues { getSerializer(it.value) },
+            instanceReceiverType?.let(getSerializer),
+            extensionReceiverType?.let(getSerializer),
+            getSerializer(resultType)
     )
 
     fun checkSerializers(serializers: MethodSerializers) {

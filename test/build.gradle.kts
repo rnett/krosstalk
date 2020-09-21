@@ -42,15 +42,15 @@ kotlin {
         }
 
 
-        configure(compilations) {
-            kotlinOptions {
-//                noStdlib = true
-                sourceMapEmbedSources = "always"
-                metaInfo = true
-                sourceMap = true
-//                moduleKind = "commonjs"
-            }
-        }
+//        configure(compilations) {
+//            kotlinOptions {
+////                noStdlib = true
+//                sourceMapEmbedSources = "always"
+//                metaInfo = true
+//                sourceMap = true
+////                moduleKind = "commonjs"
+//            }
+//        }
     }
     sourceSets {
         val commonMain by getting {
@@ -70,7 +70,7 @@ kotlin {
         }
         val jvmMain by getting {
             dependencies {
-                implementation("io.ktor:ktor-server-jetty:$ktor_version")
+                implementation("io.ktor:ktor-server-netty:$ktor_version")
                 implementation("io.ktor:ktor-html-builder:$ktor_version")
 
                 implementation(project(":krosstalk-ktor-server"))
@@ -111,7 +111,7 @@ application {
     mainClassName = "com.rnett.krosstalk.TestKt"
 }
 tasks.getByName<KotlinWebpack>("jsBrowserProductionWebpack") {
-    outputFileName = "krosstalk.js"
+    outputFileName = "test.js"
 }
 tasks.getByName<Jar>("jvmJar") {
     dependsOn(tasks.getByName("jsBrowserProductionWebpack"))

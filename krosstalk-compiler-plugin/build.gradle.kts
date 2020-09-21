@@ -9,7 +9,7 @@ group = "com.rnett.krosstalk"
 version = "1.0-SNAPSHOT"
 
 dependencies {
-    implementation("org.jetbrains.kotlin:kotlin-compiler-embeddable:1.4.10")
+    compileOnly("org.jetbrains.kotlin:kotlin-compiler-embeddable:1.4.0")
 //    implementation("io.arrow-kt:compiler-plugin:1.4-M1-SNAPSHOT")
 
     compileOnly("com.google.auto.service:auto-service-annotations:1.0-rc6")

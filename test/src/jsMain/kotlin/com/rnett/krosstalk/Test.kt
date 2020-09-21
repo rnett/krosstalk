@@ -5,62 +5,43 @@ import com.rnett.krosstalk.ktor.client.KtorClientAuth
 import com.rnett.krosstalk.ktor.client.KtorClientScope
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
-import kotlin.reflect.typeOf
 
-@OptIn(ExperimentalStdlibApi::class)
-actual suspend fun doThing(data: Data): List<String> {
-    return MyKrosstalk.call("doThing", mapOf("data" to data))
-}
+actual suspend fun doThing(data: Data): List<String> = krosstaklCall()
 
-actual suspend fun doAuthThing(num: Int): Data {
-    return MyKrosstalk.call("doAuthThing", mapOf("num" to num))
-}
+actual suspend fun doAuthThing(num: Int): Data = krosstaklCall()
 
-actual suspend fun Int.doExt(other: Int): Double {
-    return MyKrosstalk.call("doExt", mapOf("other" to other), extensionReceiver = Optional.Some(this))
-}
+actual suspend fun Int.doExt(other: Int): Double = krosstaklCall()
 
 
 //TODO test instance receiver (should work)
 fun main() {
     GlobalScope.launch {
+        console.log("Testing doThing")
         println(doThing(Data(3, "test")))
+        console.log("Testing doAuthThing, expecting error")
         try {
             println(doAuthThing(2))
         } catch (e: Exception) {
-            console.log(e)
+            console.log("Expected error:", e)
         }
+        console.log("Testing doAuthThing")
         MyKrosstalk.auth(KtorClientAuth("username", "password")) {
             println(doAuthThing(3))
         }
+        console.log("Testing doAuthThing, expecting error")
         try {
             println(doAuthThing(4))
         } catch (e: Exception) {
-            console.log(e)
+            console.log("Expected error:", e)
         }
 
+        console.log("Testing doExt")
         println(4.doExt(5))
     }
 }
 
-@OptIn(ExperimentalStdlibApi::class)
 actual object MyKrosstalk : Krosstalk(), KrosstalkClient<KtorClientScope>, Scopes {
     override val serialization = KotlinxSerializationHandler
     override val client = KtorClient
     override val auth by scope<KtorClientAuth>()
-
-    //TODO registering methods should be handled by compiler plugin
-    init {
-        addMethod("doThing", ::doThing, MethodTypes(mapOf("data" to typeOf<Data>()), typeOf<List<String>>())) {}
-        addMethod("doAuthThing", ::doAuthThing, MethodTypes(mapOf("num" to typeOf<Int>()), typeOf<Data>()), "auth") {}
-        addMethod(
-            "doExt",
-            Int::doExt,
-            MethodTypes(
-                mapOf("other" to typeOf<Int>()),
-                resultType = typeOf<Double>(),
-                extensionReceiverType = typeOf<Int>()
-            )
-        ) {}
-    }
 }

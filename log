@@ -1,7 +1,711 @@
-Class: CLASS OBJECT name:MyKrosstalk modality:FINAL visibility:public superTypes:[com.rnett.krosstalk.Krosstalk; com.rnett.krosstalk.KrosstalkServer<com.rnett.krosstalk.ktor.server.KtorServerScope>; com.rnett.krosstalk.Scopes]
+Class: CLASS CLASS name:Data modality:FINAL visibility:public [data] superTypes:[kotlin.Any]
   annotations:
-    OptIn(markerClass = [CLASS_REFERENCE 'CLASS IR_EXTERNAL_DECLARATION_STUB ANNOTATION_CLASS name:ExperimentalStdlibApi modality:FINAL visibility:public superTypes:[kotlin.Annotation]' type=kotlin.reflect.KClass<kotlin.ExperimentalStdlibApi>])
-    KrosstalkHost
+    Serializable(with = <null>)
+  $this: VALUE_PARAMETER INSTANCE_RECEIVER name:<this> type:com.rnett.krosstalk.Data
+  CONSTRUCTOR visibility:public <> (num:kotlin.Int, str:kotlin.String) returnType:com.rnett.krosstalk.Data [primary]
+    VALUE_PARAMETER name:num index:0 type:kotlin.Int
+    VALUE_PARAMETER name:str index:1 type:kotlin.String
+    BLOCK_BODY
+      DELEGATING_CONSTRUCTOR_CALL 'public constructor <init> () [primary] declared in kotlin.Any'
+      INSTANCE_INITIALIZER_CALL classDescriptor='CLASS CLASS name:Data modality:FINAL visibility:public [data] superTypes:[kotlin.Any]'
+  PROPERTY name:num visibility:public modality:FINAL [val]
+    FIELD PROPERTY_BACKING_FIELD name:num type:kotlin.Int visibility:private [final]
+      EXPRESSION_BODY
+        GET_VAR 'num: kotlin.Int declared in com.rnett.krosstalk.Data.<init>' type=kotlin.Int origin=INITIALIZE_PROPERTY_FROM_PARAMETER
+    FUN DEFAULT_PROPERTY_ACCESSOR name:<get-num> visibility:public modality:FINAL <> ($this:com.rnett.krosstalk.Data) returnType:kotlin.Int
+      correspondingProperty: PROPERTY name:num visibility:public modality:FINAL [val]
+      $this: VALUE_PARAMETER name:<this> type:com.rnett.krosstalk.Data
+      BLOCK_BODY
+        RETURN type=kotlin.Nothing from='public final fun <get-num> (): kotlin.Int declared in com.rnett.krosstalk.Data'
+          GET_FIELD 'FIELD PROPERTY_BACKING_FIELD name:num type:kotlin.Int visibility:private [final]' type=kotlin.Int origin=null
+            receiver: GET_VAR '<this>: com.rnett.krosstalk.Data declared in com.rnett.krosstalk.Data.<get-num>' type=com.rnett.krosstalk.Data origin=null
+  PROPERTY name:str visibility:public modality:FINAL [val]
+    FIELD PROPERTY_BACKING_FIELD name:str type:kotlin.String visibility:private [final]
+      EXPRESSION_BODY
+        GET_VAR 'str: kotlin.String declared in com.rnett.krosstalk.Data.<init>' type=kotlin.String origin=INITIALIZE_PROPERTY_FROM_PARAMETER
+    FUN DEFAULT_PROPERTY_ACCESSOR name:<get-str> visibility:public modality:FINAL <> ($this:com.rnett.krosstalk.Data) returnType:kotlin.String
+      correspondingProperty: PROPERTY name:str visibility:public modality:FINAL [val]
+      $this: VALUE_PARAMETER name:<this> type:com.rnett.krosstalk.Data
+      BLOCK_BODY
+        RETURN type=kotlin.Nothing from='public final fun <get-str> (): kotlin.String declared in com.rnett.krosstalk.Data'
+          GET_FIELD 'FIELD PROPERTY_BACKING_FIELD name:str type:kotlin.String visibility:private [final]' type=kotlin.String origin=null
+            receiver: GET_VAR '<this>: com.rnett.krosstalk.Data declared in com.rnett.krosstalk.Data.<get-str>' type=com.rnett.krosstalk.Data origin=null
+  CLASS OBJECT name:Companion modality:FINAL visibility:public [companion] superTypes:[kotlin.Any]
+    $this: VALUE_PARAMETER INSTANCE_RECEIVER name:<this> type:com.rnett.krosstalk.Data.Companion
+    CONSTRUCTOR visibility:private <> () returnType:com.rnett.krosstalk.Data.Companion [primary]
+      BLOCK_BODY
+        DELEGATING_CONSTRUCTOR_CALL 'public constructor <init> () [primary] declared in kotlin.Any'
+        INSTANCE_INITIALIZER_CALL classDescriptor='CLASS OBJECT name:Companion modality:FINAL visibility:public [companion] superTypes:[kotlin.Any]'
+    FUN FAKE_OVERRIDE name:equals visibility:public modality:OPEN <> ($this:kotlin.Any, other:kotlin.Any?) returnType:kotlin.Boolean [fake_override,operator]
+      overridden:
+        public open fun equals (other: kotlin.Any?): kotlin.Boolean [operator] declared in kotlin.Any
+      $this: VALUE_PARAMETER name:<this> type:kotlin.Any
+      VALUE_PARAMETER name:other index:0 type:kotlin.Any?
+    FUN FAKE_OVERRIDE name:hashCode visibility:public modality:OPEN <> ($this:kotlin.Any) returnType:kotlin.Int [fake_override]
+      overridden:
+        public open fun hashCode (): kotlin.Int declared in kotlin.Any
+      $this: VALUE_PARAMETER name:<this> type:kotlin.Any
+    FUN FAKE_OVERRIDE name:toString visibility:public modality:OPEN <> ($this:kotlin.Any) returnType:kotlin.String [fake_override]
+      overridden:
+        public open fun toString (): kotlin.String declared in kotlin.Any
+      $this: VALUE_PARAMETER name:<this> type:kotlin.Any
+    FUN name:serializer visibility:public modality:FINAL <> ($this:com.rnett.krosstalk.Data.Companion) returnType:kotlinx.serialization.KSerializer<com.rnett.krosstalk.Data>
+      $this: VALUE_PARAMETER name:<this> type:com.rnett.krosstalk.Data.Companion
+      BLOCK_BODY
+        RETURN type=kotlin.Nothing from='public final fun serializer (): kotlinx.serialization.KSerializer<com.rnett.krosstalk.Data> declared in com.rnett.krosstalk.Data.Companion'
+          GET_OBJECT 'CLASS OBJECT name:$serializer modality:FINAL visibility:public superTypes:[kotlinx.serialization.internal.GeneratedSerializer<com.rnett.krosstalk.Data>]' type=com.rnett.krosstalk.Data.$serializer
+  CLASS OBJECT name:$serializer modality:FINAL visibility:public superTypes:[kotlinx.serialization.internal.GeneratedSerializer<com.rnett.krosstalk.Data>]
+    annotations:
+      Deprecated(message = 'This synthesized declaration should not be used directly', replaceWith = ReplaceWith(expression = '', imports = []), level = GET_ENUM 'ENUM_ENTRY IR_EXTERNAL_DECLARATION_STUB name:HIDDEN' type=kotlin.DeprecationLevel)
+    $this: VALUE_PARAMETER INSTANCE_RECEIVER name:<this> type:com.rnett.krosstalk.Data.$serializer
+    CONSTRUCTOR visibility:private <> () returnType:com.rnett.krosstalk.Data.$serializer [primary]
+      BLOCK_BODY
+        DELEGATING_CONSTRUCTOR_CALL 'public constructor <init> () [primary] declared in kotlin.Any'
+        INSTANCE_INITIALIZER_CALL classDescriptor='CLASS OBJECT name:$serializer modality:FINAL visibility:public superTypes:[kotlinx.serialization.internal.GeneratedSerializer<com.rnett.krosstalk.Data>]'
+    FUN FAKE_OVERRIDE name:patch visibility:public modality:OPEN <> ($this:kotlinx.serialization.KSerializer<com.rnett.krosstalk.Data>, decoder:kotlinx.serialization.encoding.Decoder, old:com.rnett.krosstalk.Data) returnType:com.rnett.krosstalk.Data [fake_override]
+      annotations:
+        Deprecated(message = 'Patch function is deprecated for removal since this functionality is no longer supported by serializer.Some formats may provide implementation-specific patching in their Decoders.', replaceWith = <null>, level = GET_ENUM 'ENUM_ENTRY IR_EXTERNAL_DECLARATION_STUB name:ERROR' type=kotlin.DeprecationLevel)
+      overridden:
+        public open fun patch (decoder: kotlinx.serialization.encoding.Decoder, old: T of kotlinx.serialization.internal.GeneratedSerializer): T of kotlinx.serialization.internal.GeneratedSerializer [fake_override] declared in kotlinx.serialization.internal.GeneratedSerializer
+      $this: VALUE_PARAMETER name:<this> type:kotlinx.serialization.KSerializer<com.rnett.krosstalk.Data>
+      VALUE_PARAMETER name:decoder index:0 type:kotlinx.serialization.encoding.Decoder
+      VALUE_PARAMETER name:old index:1 type:com.rnett.krosstalk.Data
+    FUN FAKE_OVERRIDE name:equals visibility:public modality:OPEN <> ($this:kotlin.Any, other:kotlin.Any?) returnType:kotlin.Boolean [fake_override,operator]
+      overridden:
+        public open fun equals (other: kotlin.Any?): kotlin.Boolean [fake_override,operator] declared in kotlinx.serialization.internal.GeneratedSerializer
+      $this: VALUE_PARAMETER name:<this> type:kotlin.Any
+      VALUE_PARAMETER name:other index:0 type:kotlin.Any?
+    FUN FAKE_OVERRIDE name:hashCode visibility:public modality:OPEN <> ($this:kotlin.Any) returnType:kotlin.Int [fake_override]
+      overridden:
+        public open fun hashCode (): kotlin.Int [fake_override] declared in kotlinx.serialization.internal.GeneratedSerializer
+      $this: VALUE_PARAMETER name:<this> type:kotlin.Any
+    FUN FAKE_OVERRIDE name:toString visibility:public modality:OPEN <> ($this:kotlin.Any) returnType:kotlin.String [fake_override]
+      overridden:
+        public open fun toString (): kotlin.String [fake_override] declared in kotlinx.serialization.internal.GeneratedSerializer
+      $this: VALUE_PARAMETER name:<this> type:kotlin.Any
+    FUN FAKE_OVERRIDE name:typeParametersSerializers visibility:public modality:OPEN <> ($this:kotlinx.serialization.internal.GeneratedSerializer<com.rnett.krosstalk.Data>) returnType:kotlin.Array<kotlinx.serialization.KSerializer<*>> [fake_override]
+      overridden:
+        public open fun typeParametersSerializers (): kotlin.Array<kotlinx.serialization.KSerializer<*>> declared in kotlinx.serialization.internal.GeneratedSerializer
+      $this: VALUE_PARAMETER name:<this> type:kotlinx.serialization.internal.GeneratedSerializer<com.rnett.krosstalk.Data>
+    PROPERTY name:descriptor visibility:public modality:OPEN [val]
+      FIELD SERIALIZER name:descriptor type:kotlinx.serialization.descriptors.SerialDescriptor visibility:public [final]
+      FUN name:<get-descriptor> visibility:public modality:OPEN <> ($this:com.rnett.krosstalk.Data.$serializer) returnType:kotlinx.serialization.descriptors.SerialDescriptor
+        correspondingProperty: PROPERTY name:descriptor visibility:public modality:OPEN [val]
+        overridden:
+          public abstract fun <get-descriptor> (): kotlinx.serialization.descriptors.SerialDescriptor [fake_override] declared in kotlinx.serialization.internal.GeneratedSerializer
+        $this: VALUE_PARAMETER name:<this> type:com.rnett.krosstalk.Data.$serializer
+        BLOCK_BODY
+          RETURN type=kotlin.Nothing from='public open fun <get-descriptor> (): kotlinx.serialization.descriptors.SerialDescriptor declared in com.rnett.krosstalk.Data.$serializer'
+            GET_FIELD 'FIELD SERIALIZER name:descriptor type:kotlinx.serialization.descriptors.SerialDescriptor visibility:public [final]' type=kotlinx.serialization.descriptors.SerialDescriptor origin=null
+              receiver: GET_VAR '<this>: com.rnett.krosstalk.Data.$serializer declared in com.rnett.krosstalk.Data.$serializer.<get-descriptor>' type=com.rnett.krosstalk.Data.$serializer origin=null
+    FUN name:childSerializers visibility:public modality:OPEN <> ($this:com.rnett.krosstalk.Data.$serializer) returnType:kotlin.Array<kotlinx.serialization.KSerializer<*>>
+      overridden:
+        public abstract fun childSerializers (): kotlin.Array<kotlinx.serialization.KSerializer<*>> declared in kotlinx.serialization.internal.GeneratedSerializer
+      $this: VALUE_PARAMETER name:<this> type:com.rnett.krosstalk.Data.$serializer
+      BLOCK_BODY
+        RETURN type=kotlin.Nothing from='public open fun childSerializers (): kotlin.Array<kotlinx.serialization.KSerializer<*>> declared in com.rnett.krosstalk.Data.$serializer'
+          CALL 'public final fun arrayOf <T> (vararg elements: T of kotlin.arrayOf): kotlin.Array<T of kotlin.arrayOf> [inline] declared in kotlin' type=kotlin.Array<kotlinx.serialization.KSerializer<*>> origin=null
+            <T>: kotlinx.serialization.KSerializer<*>
+            elements: VARARG type=kotlin.Array<kotlinx.serialization.KSerializer<*>> varargElementType=kotlinx.serialization.KSerializer<*>
+              GET_OBJECT 'UNBOUND IrClassPublicSymbolImpl' type=<unbound IrClassPublicSymbolImpl>
+              GET_OBJECT 'UNBOUND IrClassPublicSymbolImpl' type=<unbound IrClassPublicSymbolImpl>
+    FUN name:deserialize visibility:public modality:OPEN <> ($this:com.rnett.krosstalk.Data.$serializer, decoder:kotlinx.serialization.encoding.Decoder) returnType:com.rnett.krosstalk.Data
+      overridden:
+        public abstract fun deserialize (decoder: kotlinx.serialization.encoding.Decoder): T of kotlinx.serialization.internal.GeneratedSerializer [fake_override] declared in kotlinx.serialization.internal.GeneratedSerializer
+      $this: VALUE_PARAMETER name:<this> type:com.rnett.krosstalk.Data.$serializer
+      VALUE_PARAMETER name:decoder index:0 type:kotlinx.serialization.encoding.Decoder
+      BLOCK_BODY
+        VAR IR_TEMPORARY_VARIABLE name:tmp_0 type:kotlinx.serialization.descriptors.SerialDescriptor [val]
+          CALL 'public open fun <get-descriptor> (): kotlinx.serialization.descriptors.SerialDescriptor declared in com.rnett.krosstalk.Data.$serializer' type=kotlinx.serialization.descriptors.SerialDescriptor origin=GET_PROPERTY
+            $this: GET_VAR '<this>: com.rnett.krosstalk.Data.$serializer declared in com.rnett.krosstalk.Data.$serializer.deserialize' type=com.rnett.krosstalk.Data.$serializer origin=null
+        VAR IR_TEMPORARY_VARIABLE name:tmp_1 type:kotlin.Boolean [var]
+          CONST Boolean type=kotlin.Boolean value=true
+        VAR IR_TEMPORARY_VARIABLE name:tmp_2 type:kotlin.Int [var]
+          CONST Int type=kotlin.Int value=0
+        VAR IR_TEMPORARY_VARIABLE name:tmp_3 type:kotlin.Int [var]
+          CONST Int type=kotlin.Int value=0
+        VAR IR_TEMPORARY_VARIABLE name:tmp_4 type:kotlin.Int [var]
+          CONST Int type=kotlin.Int value=0
+        VAR IR_TEMPORARY_VARIABLE name:tmp_5 type:kotlin.Any? [var]
+          CONST Null type=kotlin.Any? value=null
+        VAR IR_TEMPORARY_VARIABLE name:tmp_6 type:kotlinx.serialization.encoding.CompositeDecoder [val]
+          CALL 'public open fun beginStructure (descriptor: kotlinx.serialization.descriptors.SerialDescriptor): kotlinx.serialization.encoding.CompositeDecoder declared in kotlinx.serialization.encoding.Decoder' type=kotlinx.serialization.encoding.CompositeDecoder origin=null
+            $this: GET_VAR 'decoder: kotlinx.serialization.encoding.Decoder declared in com.rnett.krosstalk.Data.$serializer.deserialize' type=kotlinx.serialization.encoding.Decoder origin=null
+            descriptor: GET_VAR 'val tmp_0: kotlinx.serialization.descriptors.SerialDescriptor [val] declared in com.rnett.krosstalk.Data.$serializer.deserialize' type=kotlinx.serialization.descriptors.SerialDescriptor origin=null
+        WHEN type=kotlin.Unit origin=null
+          BRANCH
+            if: CALL 'public open fun decodeSequentially (): kotlin.Boolean declared in kotlinx.serialization.encoding.CompositeDecoder' type=kotlin.Boolean origin=null
+              $this: GET_VAR 'val tmp_6: kotlinx.serialization.encoding.CompositeDecoder [val] declared in com.rnett.krosstalk.Data.$serializer.deserialize' type=kotlinx.serialization.encoding.CompositeDecoder origin=null
+            then: BLOCK type=kotlin.Unit origin=null
+              BLOCK type=kotlin.Unit origin=null
+                SET_VAR 'var tmp_4: kotlin.Int [var] declared in com.rnett.krosstalk.Data.$serializer.deserialize' type=kotlin.Unit origin=EQ
+                  CALL 'public abstract fun decodeIntElement (descriptor: kotlinx.serialization.descriptors.SerialDescriptor, index: kotlin.Int): kotlin.Int declared in kotlinx.serialization.encoding.CompositeDecoder' type=kotlin.Int origin=null
+                    $this: GET_VAR 'val tmp_6: kotlinx.serialization.encoding.CompositeDecoder [val] declared in com.rnett.krosstalk.Data.$serializer.deserialize' type=kotlinx.serialization.encoding.CompositeDecoder origin=null
+                    descriptor: GET_VAR 'val tmp_0: kotlinx.serialization.descriptors.SerialDescriptor [val] declared in com.rnett.krosstalk.Data.$serializer.deserialize' type=kotlinx.serialization.descriptors.SerialDescriptor origin=null
+                    index: CONST Int type=kotlin.Int value=0
+                SET_VAR 'var tmp_3: kotlin.Int [var] declared in com.rnett.krosstalk.Data.$serializer.deserialize' type=kotlin.Unit origin=EQ
+                  CALL 'public final fun or (other: kotlin.Int): kotlin.Int declared in kotlin.Int' type=kotlin.Int origin=null
+                    $this: GET_VAR 'var tmp_3: kotlin.Int [var] declared in com.rnett.krosstalk.Data.$serializer.deserialize' type=kotlin.Int origin=null
+                    other: CONST Int type=kotlin.Int value=1
+              BLOCK type=kotlin.Unit origin=null
+                SET_VAR 'var tmp_5: kotlin.Any? [var] declared in com.rnett.krosstalk.Data.$serializer.deserialize' type=kotlin.Unit origin=EQ
+                  CALL 'public abstract fun decodeStringElement (descriptor: kotlinx.serialization.descriptors.SerialDescriptor, index: kotlin.Int): kotlin.String declared in kotlinx.serialization.encoding.CompositeDecoder' type=kotlin.String origin=null
+                    $this: GET_VAR 'val tmp_6: kotlinx.serialization.encoding.CompositeDecoder [val] declared in com.rnett.krosstalk.Data.$serializer.deserialize' type=kotlinx.serialization.encoding.CompositeDecoder origin=null
+                    descriptor: GET_VAR 'val tmp_0: kotlinx.serialization.descriptors.SerialDescriptor [val] declared in com.rnett.krosstalk.Data.$serializer.deserialize' type=kotlinx.serialization.descriptors.SerialDescriptor origin=null
+                    index: CONST Int type=kotlin.Int value=1
+                SET_VAR 'var tmp_3: kotlin.Int [var] declared in com.rnett.krosstalk.Data.$serializer.deserialize' type=kotlin.Unit origin=EQ
+                  CALL 'public final fun or (other: kotlin.Int): kotlin.Int declared in kotlin.Int' type=kotlin.Int origin=null
+                    $this: GET_VAR 'var tmp_3: kotlin.Int [var] declared in com.rnett.krosstalk.Data.$serializer.deserialize' type=kotlin.Int origin=null
+                    other: CONST Int type=kotlin.Int value=2
+          BRANCH
+            if: CONST Boolean type=kotlin.Boolean value=true
+            then: WHILE label=null origin=null
+              condition: GET_VAR 'var tmp_1: kotlin.Boolean [var] declared in com.rnett.krosstalk.Data.$serializer.deserialize' type=kotlin.Boolean origin=null
+              body: BLOCK type=kotlin.Unit origin=null
+                SET_VAR 'var tmp_2: kotlin.Int [var] declared in com.rnett.krosstalk.Data.$serializer.deserialize' type=kotlin.Unit origin=EQ
+                  CALL 'public abstract fun decodeElementIndex (descriptor: kotlinx.serialization.descriptors.SerialDescriptor): kotlin.Int declared in kotlinx.serialization.encoding.CompositeDecoder' type=kotlin.Int origin=null
+                    $this: GET_VAR 'val tmp_6: kotlinx.serialization.encoding.CompositeDecoder [val] declared in com.rnett.krosstalk.Data.$serializer.deserialize' type=kotlinx.serialization.encoding.CompositeDecoder origin=null
+                    descriptor: GET_VAR 'val tmp_0: kotlinx.serialization.descriptors.SerialDescriptor [val] declared in com.rnett.krosstalk.Data.$serializer.deserialize' type=kotlinx.serialization.descriptors.SerialDescriptor origin=null
+                WHEN type=kotlin.Unit origin=null
+                  BRANCH
+                    if: CALL 'public final fun EQEQ (arg0: kotlin.Any?, arg1: kotlin.Any?): kotlin.Boolean declared in kotlin.internal.ir' type=kotlin.Boolean origin=EQEQ
+                      arg0: GET_VAR 'var tmp_2: kotlin.Int [var] declared in com.rnett.krosstalk.Data.$serializer.deserialize' type=kotlin.Int origin=null
+                      arg1: CONST Int type=kotlin.Int value=-1
+                    then: SET_VAR 'var tmp_1: kotlin.Boolean [var] declared in com.rnett.krosstalk.Data.$serializer.deserialize' type=kotlin.Unit origin=EQ
+                      CONST Boolean type=kotlin.Boolean value=false
+                  BRANCH
+                    if: CALL 'public final fun EQEQ (arg0: kotlin.Any?, arg1: kotlin.Any?): kotlin.Boolean declared in kotlin.internal.ir' type=kotlin.Boolean origin=EQEQ
+                      arg0: GET_VAR 'var tmp_2: kotlin.Int [var] declared in com.rnett.krosstalk.Data.$serializer.deserialize' type=kotlin.Int origin=null
+                      arg1: CONST Int type=kotlin.Int value=0
+                    then: BLOCK type=kotlin.Unit origin=null
+                      SET_VAR 'var tmp_4: kotlin.Int [var] declared in com.rnett.krosstalk.Data.$serializer.deserialize' type=kotlin.Unit origin=EQ
+                        CALL 'public abstract fun decodeIntElement (descriptor: kotlinx.serialization.descriptors.SerialDescriptor, index: kotlin.Int): kotlin.Int declared in kotlinx.serialization.encoding.CompositeDecoder' type=kotlin.Int origin=null
+                          $this: GET_VAR 'val tmp_6: kotlinx.serialization.encoding.CompositeDecoder [val] declared in com.rnett.krosstalk.Data.$serializer.deserialize' type=kotlinx.serialization.encoding.CompositeDecoder origin=null
+                          descriptor: GET_VAR 'val tmp_0: kotlinx.serialization.descriptors.SerialDescriptor [val] declared in com.rnett.krosstalk.Data.$serializer.deserialize' type=kotlinx.serialization.descriptors.SerialDescriptor origin=null
+                          index: CONST Int type=kotlin.Int value=0
+                      SET_VAR 'var tmp_3: kotlin.Int [var] declared in com.rnett.krosstalk.Data.$serializer.deserialize' type=kotlin.Unit origin=EQ
+                        CALL 'public final fun or (other: kotlin.Int): kotlin.Int declared in kotlin.Int' type=kotlin.Int origin=null
+                          $this: GET_VAR 'var tmp_3: kotlin.Int [var] declared in com.rnett.krosstalk.Data.$serializer.deserialize' type=kotlin.Int origin=null
+                          other: CONST Int type=kotlin.Int value=1
+                  BRANCH
+                    if: CALL 'public final fun EQEQ (arg0: kotlin.Any?, arg1: kotlin.Any?): kotlin.Boolean declared in kotlin.internal.ir' type=kotlin.Boolean origin=EQEQ
+                      arg0: GET_VAR 'var tmp_2: kotlin.Int [var] declared in com.rnett.krosstalk.Data.$serializer.deserialize' type=kotlin.Int origin=null
+                      arg1: CONST Int type=kotlin.Int value=1
+                    then: BLOCK type=kotlin.Unit origin=null
+                      SET_VAR 'var tmp_5: kotlin.Any? [var] declared in com.rnett.krosstalk.Data.$serializer.deserialize' type=kotlin.Unit origin=EQ
+                        CALL 'public abstract fun decodeStringElement (descriptor: kotlinx.serialization.descriptors.SerialDescriptor, index: kotlin.Int): kotlin.String declared in kotlinx.serialization.encoding.CompositeDecoder' type=kotlin.String origin=null
+                          $this: GET_VAR 'val tmp_6: kotlinx.serialization.encoding.CompositeDecoder [val] declared in com.rnett.krosstalk.Data.$serializer.deserialize' type=kotlinx.serialization.encoding.CompositeDecoder origin=null
+                          descriptor: GET_VAR 'val tmp_0: kotlinx.serialization.descriptors.SerialDescriptor [val] declared in com.rnett.krosstalk.Data.$serializer.deserialize' type=kotlinx.serialization.descriptors.SerialDescriptor origin=null
+                          index: CONST Int type=kotlin.Int value=1
+                      SET_VAR 'var tmp_3: kotlin.Int [var] declared in com.rnett.krosstalk.Data.$serializer.deserialize' type=kotlin.Unit origin=EQ
+                        CALL 'public final fun or (other: kotlin.Int): kotlin.Int declared in kotlin.Int' type=kotlin.Int origin=null
+                          $this: GET_VAR 'var tmp_3: kotlin.Int [var] declared in com.rnett.krosstalk.Data.$serializer.deserialize' type=kotlin.Int origin=null
+                          other: CONST Int type=kotlin.Int value=2
+                  BRANCH
+                    if: CONST Boolean type=kotlin.Boolean value=true
+                    then: THROW type=kotlin.Nothing
+                      CONSTRUCTOR_CALL 'public constructor <init> (index: kotlin.Int) [primary] declared in kotlinx.serialization.UnknownFieldException' type=kotlinx.serialization.UnknownFieldException origin=null
+                        index: GET_VAR 'var tmp_2: kotlin.Int [var] declared in com.rnett.krosstalk.Data.$serializer.deserialize' type=kotlin.Int origin=null
+        CALL 'public abstract fun endStructure (descriptor: kotlinx.serialization.descriptors.SerialDescriptor): kotlin.Unit declared in kotlinx.serialization.encoding.CompositeDecoder' type=kotlin.Unit origin=null
+          $this: GET_VAR 'val tmp_6: kotlinx.serialization.encoding.CompositeDecoder [val] declared in com.rnett.krosstalk.Data.$serializer.deserialize' type=kotlinx.serialization.encoding.CompositeDecoder origin=null
+          descriptor: GET_VAR 'val tmp_0: kotlinx.serialization.descriptors.SerialDescriptor [val] declared in com.rnett.krosstalk.Data.$serializer.deserialize' type=kotlinx.serialization.descriptors.SerialDescriptor origin=null
+        RETURN type=kotlin.Nothing from='public open fun deserialize (decoder: kotlinx.serialization.encoding.Decoder): com.rnett.krosstalk.Data declared in com.rnett.krosstalk.Data.$serializer'
+          CONSTRUCTOR_CALL 'public constructor <init> (seen1: kotlin.Int, num: kotlin.Int, str: kotlin.String?, serializationConstructorMarker: kotlinx.serialization.internal.SerializationConstructorMarker?) declared in com.rnett.krosstalk.Data' type=com.rnett.krosstalk.Data origin=null
+            seen1: GET_VAR 'var tmp_3: kotlin.Int [var] declared in com.rnett.krosstalk.Data.$serializer.deserialize' type=kotlin.Int origin=null
+            num: GET_VAR 'var tmp_4: kotlin.Int [var] declared in com.rnett.krosstalk.Data.$serializer.deserialize' type=kotlin.Int origin=null
+            str: GET_VAR 'var tmp_5: kotlin.Any? [var] declared in com.rnett.krosstalk.Data.$serializer.deserialize' type=kotlin.Any? origin=null
+            serializationConstructorMarker: CONST Null type=kotlin.Nothing? value=null
+    FUN name:serialize visibility:public modality:OPEN <> ($this:com.rnett.krosstalk.Data.$serializer, encoder:kotlinx.serialization.encoding.Encoder, value:com.rnett.krosstalk.Data) returnType:kotlin.Unit
+      overridden:
+        public abstract fun serialize (encoder: kotlinx.serialization.encoding.Encoder, value: T of kotlinx.serialization.internal.GeneratedSerializer): kotlin.Unit [fake_override] declared in kotlinx.serialization.internal.GeneratedSerializer
+      $this: VALUE_PARAMETER name:<this> type:com.rnett.krosstalk.Data.$serializer
+      VALUE_PARAMETER name:encoder index:0 type:kotlinx.serialization.encoding.Encoder
+      VALUE_PARAMETER name:value index:1 type:com.rnett.krosstalk.Data
+      BLOCK_BODY
+        VAR IR_TEMPORARY_VARIABLE name:tmp_7 type:kotlinx.serialization.descriptors.SerialDescriptor [val]
+          CALL 'public open fun <get-descriptor> (): kotlinx.serialization.descriptors.SerialDescriptor declared in com.rnett.krosstalk.Data.$serializer' type=kotlinx.serialization.descriptors.SerialDescriptor origin=GET_PROPERTY
+            $this: GET_VAR '<this>: com.rnett.krosstalk.Data.$serializer declared in com.rnett.krosstalk.Data.$serializer.serialize' type=com.rnett.krosstalk.Data.$serializer origin=null
+        VAR IR_TEMPORARY_VARIABLE name:tmp_8 type:kotlinx.serialization.encoding.CompositeEncoder [val]
+          CALL 'public open fun beginStructure (descriptor: kotlinx.serialization.descriptors.SerialDescriptor): kotlinx.serialization.encoding.CompositeEncoder declared in kotlinx.serialization.encoding.Encoder' type=kotlinx.serialization.encoding.CompositeEncoder origin=null
+            $this: GET_VAR 'encoder: kotlinx.serialization.encoding.Encoder declared in com.rnett.krosstalk.Data.$serializer.serialize' type=kotlinx.serialization.encoding.Encoder origin=null
+            descriptor: GET_VAR 'val tmp_7: kotlinx.serialization.descriptors.SerialDescriptor [val] declared in com.rnett.krosstalk.Data.$serializer.serialize' type=kotlinx.serialization.descriptors.SerialDescriptor origin=null
+        CALL 'public abstract fun encodeIntElement (descriptor: kotlinx.serialization.descriptors.SerialDescriptor, index: kotlin.Int, value: kotlin.Int): kotlin.Unit declared in kotlinx.serialization.encoding.CompositeEncoder' type=kotlin.Unit origin=null
+          $this: GET_VAR 'val tmp_8: kotlinx.serialization.encoding.CompositeEncoder [val] declared in com.rnett.krosstalk.Data.$serializer.serialize' type=kotlinx.serialization.encoding.CompositeEncoder origin=null
+          descriptor: GET_VAR 'val tmp_7: kotlinx.serialization.descriptors.SerialDescriptor [val] declared in com.rnett.krosstalk.Data.$serializer.serialize' type=kotlinx.serialization.descriptors.SerialDescriptor origin=null
+          index: CONST Int type=kotlin.Int value=0
+          value: CALL 'public final fun <get-num> (): kotlin.Int declared in com.rnett.krosstalk.Data' type=kotlin.Int origin=GET_PROPERTY
+            $this: GET_VAR 'value: com.rnett.krosstalk.Data declared in com.rnett.krosstalk.Data.$serializer.serialize' type=com.rnett.krosstalk.Data origin=null
+        CALL 'public abstract fun encodeStringElement (descriptor: kotlinx.serialization.descriptors.SerialDescriptor, index: kotlin.Int, value: kotlin.String): kotlin.Unit declared in kotlinx.serialization.encoding.CompositeEncoder' type=kotlin.Unit origin=null
+          $this: GET_VAR 'val tmp_8: kotlinx.serialization.encoding.CompositeEncoder [val] declared in com.rnett.krosstalk.Data.$serializer.serialize' type=kotlinx.serialization.encoding.CompositeEncoder origin=null
+          descriptor: GET_VAR 'val tmp_7: kotlinx.serialization.descriptors.SerialDescriptor [val] declared in com.rnett.krosstalk.Data.$serializer.serialize' type=kotlinx.serialization.descriptors.SerialDescriptor origin=null
+          index: CONST Int type=kotlin.Int value=1
+          value: CALL 'public final fun <get-str> (): kotlin.String declared in com.rnett.krosstalk.Data' type=kotlin.String origin=GET_PROPERTY
+            $this: GET_VAR 'value: com.rnett.krosstalk.Data declared in com.rnett.krosstalk.Data.$serializer.serialize' type=com.rnett.krosstalk.Data origin=null
+        CALL 'public abstract fun endStructure (descriptor: kotlinx.serialization.descriptors.SerialDescriptor): kotlin.Unit declared in kotlinx.serialization.encoding.CompositeEncoder' type=kotlin.Unit origin=null
+          $this: GET_VAR 'val tmp_8: kotlinx.serialization.encoding.CompositeEncoder [val] declared in com.rnett.krosstalk.Data.$serializer.serialize' type=kotlinx.serialization.encoding.CompositeEncoder origin=null
+          descriptor: GET_VAR 'val tmp_7: kotlinx.serialization.descriptors.SerialDescriptor [val] declared in com.rnett.krosstalk.Data.$serializer.serialize' type=kotlinx.serialization.descriptors.SerialDescriptor origin=null
+    ANONYMOUS_INITIALIZER isStatic=false
+      BLOCK_BODY
+        VAR IR_TEMPORARY_VARIABLE name:tmp_9 type:kotlinx.serialization.internal.PluginGeneratedSerialDescriptor [val]
+          CONSTRUCTOR_CALL 'public constructor <init> (serialName: kotlin.String, generatedSerializer: kotlinx.serialization.internal.GeneratedSerializer<*>?, elementsCount: kotlin.Int) [primary] declared in kotlinx.serialization.internal.PluginGeneratedSerialDescriptor' type=kotlinx.serialization.internal.PluginGeneratedSerialDescriptor origin=null
+            serialName: CONST String type=kotlin.String value="com.rnett.krosstalk.Data"
+            generatedSerializer: GET_VAR '<this>: com.rnett.krosstalk.Data.$serializer declared in com.rnett.krosstalk.Data.$serializer' type=com.rnett.krosstalk.Data.$serializer origin=null
+            elementsCount: CONST Int type=kotlin.Int value=2
+        CALL 'public final fun addElement (name: kotlin.String, isOptional: kotlin.Boolean): kotlin.Unit declared in kotlinx.serialization.internal.PluginGeneratedSerialDescriptor' type=kotlin.Unit origin=null
+          $this: GET_VAR 'val tmp_9: kotlinx.serialization.internal.PluginGeneratedSerialDescriptor [val] declared in com.rnett.krosstalk.Data.$serializer' type=kotlinx.serialization.internal.PluginGeneratedSerialDescriptor origin=null
+          name: CONST String type=kotlin.String value="num"
+          isOptional: CONST Boolean type=kotlin.Boolean value=false
+        CALL 'public final fun addElement (name: kotlin.String, isOptional: kotlin.Boolean): kotlin.Unit declared in kotlinx.serialization.internal.PluginGeneratedSerialDescriptor' type=kotlin.Unit origin=null
+          $this: GET_VAR 'val tmp_9: kotlinx.serialization.internal.PluginGeneratedSerialDescriptor [val] declared in com.rnett.krosstalk.Data.$serializer' type=kotlinx.serialization.internal.PluginGeneratedSerialDescriptor origin=null
+          name: CONST String type=kotlin.String value="str"
+          isOptional: CONST Boolean type=kotlin.Boolean value=false
+        SET_FIELD 'FIELD SERIALIZER name:descriptor type:kotlinx.serialization.descriptors.SerialDescriptor visibility:public [final]' type=kotlin.Unit origin=null
+          receiver: GET_VAR '<this>: com.rnett.krosstalk.Data.$serializer declared in com.rnett.krosstalk.Data.$serializer' type=com.rnett.krosstalk.Data.$serializer origin=null
+          value: GET_VAR 'val tmp_9: kotlinx.serialization.internal.PluginGeneratedSerialDescriptor [val] declared in com.rnett.krosstalk.Data.$serializer' type=kotlinx.serialization.internal.PluginGeneratedSerialDescriptor origin=null
+  FUN GENERATED_DATA_CLASS_MEMBER name:component1 visibility:public modality:FINAL <> ($this:com.rnett.krosstalk.Data) returnType:kotlin.Int [operator]
+    $this: VALUE_PARAMETER name:<this> type:com.rnett.krosstalk.Data
+    BLOCK_BODY
+      RETURN type=kotlin.Nothing from='public final fun component1 (): kotlin.Int [operator] declared in com.rnett.krosstalk.Data'
+        GET_FIELD 'FIELD PROPERTY_BACKING_FIELD name:num type:kotlin.Int visibility:private [final]' type=kotlin.Int origin=null
+          receiver: GET_VAR '<this>: com.rnett.krosstalk.Data declared in com.rnett.krosstalk.Data.component1' type=com.rnett.krosstalk.Data origin=null
+  FUN GENERATED_DATA_CLASS_MEMBER name:component2 visibility:public modality:FINAL <> ($this:com.rnett.krosstalk.Data) returnType:kotlin.String [operator]
+    $this: VALUE_PARAMETER name:<this> type:com.rnett.krosstalk.Data
+    BLOCK_BODY
+      RETURN type=kotlin.Nothing from='public final fun component2 (): kotlin.String [operator] declared in com.rnett.krosstalk.Data'
+        GET_FIELD 'FIELD PROPERTY_BACKING_FIELD name:str type:kotlin.String visibility:private [final]' type=kotlin.String origin=null
+          receiver: GET_VAR '<this>: com.rnett.krosstalk.Data declared in com.rnett.krosstalk.Data.component2' type=com.rnett.krosstalk.Data origin=null
+  FUN GENERATED_DATA_CLASS_MEMBER name:copy visibility:public modality:FINAL <> ($this:com.rnett.krosstalk.Data, num:kotlin.Int, str:kotlin.String) returnType:com.rnett.krosstalk.Data
+    $this: VALUE_PARAMETER name:<this> type:com.rnett.krosstalk.Data
+    VALUE_PARAMETER name:num index:0 type:kotlin.Int
+      EXPRESSION_BODY
+        GET_FIELD 'FIELD PROPERTY_BACKING_FIELD name:num type:kotlin.Int visibility:private [final]' type=kotlin.Int origin=null
+          receiver: GET_VAR '<this>: com.rnett.krosstalk.Data declared in com.rnett.krosstalk.Data.copy' type=com.rnett.krosstalk.Data origin=null
+    VALUE_PARAMETER name:str index:1 type:kotlin.String
+      EXPRESSION_BODY
+        GET_FIELD 'FIELD PROPERTY_BACKING_FIELD name:str type:kotlin.String visibility:private [final]' type=kotlin.String origin=null
+          receiver: GET_VAR '<this>: com.rnett.krosstalk.Data declared in com.rnett.krosstalk.Data.copy' type=com.rnett.krosstalk.Data origin=null
+    BLOCK_BODY
+      RETURN type=kotlin.Nothing from='public final fun copy (num: kotlin.Int, str: kotlin.String): com.rnett.krosstalk.Data declared in com.rnett.krosstalk.Data'
+        CONSTRUCTOR_CALL 'public constructor <init> (num: kotlin.Int, str: kotlin.String) [primary] declared in com.rnett.krosstalk.Data' type=com.rnett.krosstalk.Data origin=null
+          num: GET_VAR 'num: kotlin.Int declared in com.rnett.krosstalk.Data.copy' type=kotlin.Int origin=null
+          str: GET_VAR 'str: kotlin.String declared in com.rnett.krosstalk.Data.copy' type=kotlin.String origin=null
+  FUN GENERATED_DATA_CLASS_MEMBER name:toString visibility:public modality:OPEN <> ($this:com.rnett.krosstalk.Data) returnType:kotlin.String
+    overridden:
+      public open fun toString (): kotlin.String declared in kotlin.Any
+    $this: VALUE_PARAMETER name:<this> type:com.rnett.krosstalk.Data
+    BLOCK_BODY
+      RETURN type=kotlin.Nothing from='public open fun toString (): kotlin.String declared in com.rnett.krosstalk.Data'
+        STRING_CONCATENATION type=kotlin.String
+          CONST String type=kotlin.String value="Data("
+          CONST String type=kotlin.String value="num="
+          GET_FIELD 'FIELD PROPERTY_BACKING_FIELD name:num type:kotlin.Int visibility:private [final]' type=kotlin.Int origin=null
+            receiver: GET_VAR '<this>: com.rnett.krosstalk.Data declared in com.rnett.krosstalk.Data.toString' type=com.rnett.krosstalk.Data origin=null
+          CONST String type=kotlin.String value=", "
+          CONST String type=kotlin.String value="str="
+          GET_FIELD 'FIELD PROPERTY_BACKING_FIELD name:str type:kotlin.String visibility:private [final]' type=kotlin.String origin=null
+            receiver: GET_VAR '<this>: com.rnett.krosstalk.Data declared in com.rnett.krosstalk.Data.toString' type=com.rnett.krosstalk.Data origin=null
+          CONST String type=kotlin.String value=")"
+  FUN GENERATED_DATA_CLASS_MEMBER name:hashCode visibility:public modality:OPEN <> ($this:com.rnett.krosstalk.Data) returnType:kotlin.Int
+    overridden:
+      public open fun hashCode (): kotlin.Int declared in kotlin.Any
+    $this: VALUE_PARAMETER name:<this> type:com.rnett.krosstalk.Data
+    BLOCK_BODY
+      RETURN type=kotlin.Nothing from='public open fun hashCode (): kotlin.Int declared in com.rnett.krosstalk.Data'
+        CALL 'public final fun plus (other: kotlin.Int): kotlin.Int [operator] declared in kotlin.Int' type=kotlin.Int origin=null
+          $this: CALL 'public final fun times (other: kotlin.Int): kotlin.Int [operator] declared in kotlin.Int' type=kotlin.Int origin=null
+            $this: CALL 'public open fun hashCode (): kotlin.Int [fake_override] declared in kotlin.Int' type=kotlin.Int origin=null
+              $this: GET_FIELD 'FIELD PROPERTY_BACKING_FIELD name:num type:kotlin.Int visibility:private [final]' type=kotlin.Int origin=null
+                receiver: GET_VAR '<this>: com.rnett.krosstalk.Data declared in com.rnett.krosstalk.Data.hashCode' type=com.rnett.krosstalk.Data origin=null
+            other: CONST Int type=kotlin.Int value=31
+          other: CALL 'public open fun hashCode (): kotlin.Int [fake_override] declared in kotlin.String' type=kotlin.Int origin=null
+            $this: GET_FIELD 'FIELD PROPERTY_BACKING_FIELD name:str type:kotlin.String visibility:private [final]' type=kotlin.String origin=null
+              receiver: GET_VAR '<this>: com.rnett.krosstalk.Data declared in com.rnett.krosstalk.Data.hashCode' type=com.rnett.krosstalk.Data origin=null
+  FUN GENERATED_DATA_CLASS_MEMBER name:equals visibility:public modality:OPEN <> ($this:com.rnett.krosstalk.Data, other:kotlin.Any?) returnType:kotlin.Boolean [operator]
+    overridden:
+      public open fun equals (other: kotlin.Any?): kotlin.Boolean [operator] declared in kotlin.Any
+    $this: VALUE_PARAMETER name:<this> type:com.rnett.krosstalk.Data
+    VALUE_PARAMETER name:other index:0 type:kotlin.Any?
+    BLOCK_BODY
+      WHEN type=kotlin.Unit origin=null
+        BRANCH
+          if: CALL 'public final fun EQEQEQ (arg0: kotlin.Any?, arg1: kotlin.Any?): kotlin.Boolean declared in kotlin.internal.ir' type=kotlin.Boolean origin=EQEQEQ
+            arg0: GET_VAR '<this>: com.rnett.krosstalk.Data declared in com.rnett.krosstalk.Data.equals' type=com.rnett.krosstalk.Data origin=null
+            arg1: GET_VAR 'other: kotlin.Any? declared in com.rnett.krosstalk.Data.equals' type=kotlin.Any? origin=null
+          then: RETURN type=kotlin.Nothing from='public open fun equals (other: kotlin.Any?): kotlin.Boolean [operator] declared in com.rnett.krosstalk.Data'
+            CONST Boolean type=kotlin.Boolean value=true
+      WHEN type=kotlin.Unit origin=null
+        BRANCH
+          if: TYPE_OP type=kotlin.Boolean origin=NOT_INSTANCEOF typeOperand=com.rnett.krosstalk.Data
+            GET_VAR 'other: kotlin.Any? declared in com.rnett.krosstalk.Data.equals' type=kotlin.Any? origin=null
+          then: RETURN type=kotlin.Nothing from='public open fun equals (other: kotlin.Any?): kotlin.Boolean [operator] declared in com.rnett.krosstalk.Data'
+            CONST Boolean type=kotlin.Boolean value=false
+      VAR IR_TEMPORARY_VARIABLE name:tmp_10 type:com.rnett.krosstalk.Data [val]
+        TYPE_OP type=com.rnett.krosstalk.Data origin=CAST typeOperand=com.rnett.krosstalk.Data
+          GET_VAR 'other: kotlin.Any? declared in com.rnett.krosstalk.Data.equals' type=kotlin.Any? origin=null
+      WHEN type=kotlin.Unit origin=null
+        BRANCH
+          if: CALL 'public final fun not (): kotlin.Boolean [operator] declared in kotlin.Boolean' type=kotlin.Boolean origin=EXCLEQ
+            $this: CALL 'public final fun EQEQ (arg0: kotlin.Any?, arg1: kotlin.Any?): kotlin.Boolean declared in kotlin.internal.ir' type=kotlin.Boolean origin=EXCLEQ
+              arg0: GET_FIELD 'FIELD PROPERTY_BACKING_FIELD name:num type:kotlin.Int visibility:private [final]' type=kotlin.Int origin=null
+                receiver: GET_VAR '<this>: com.rnett.krosstalk.Data declared in com.rnett.krosstalk.Data.equals' type=com.rnett.krosstalk.Data origin=null
+              arg1: GET_FIELD 'FIELD PROPERTY_BACKING_FIELD name:num type:kotlin.Int visibility:private [final]' type=kotlin.Int origin=null
+                receiver: GET_VAR 'val tmp_10: com.rnett.krosstalk.Data [val] declared in com.rnett.krosstalk.Data.equals' type=com.rnett.krosstalk.Data origin=null
+          then: RETURN type=kotlin.Nothing from='public open fun equals (other: kotlin.Any?): kotlin.Boolean [operator] declared in com.rnett.krosstalk.Data'
+            CONST Boolean type=kotlin.Boolean value=false
+      WHEN type=kotlin.Unit origin=null
+        BRANCH
+          if: CALL 'public final fun not (): kotlin.Boolean [operator] declared in kotlin.Boolean' type=kotlin.Boolean origin=EXCLEQ
+            $this: CALL 'public final fun EQEQ (arg0: kotlin.Any?, arg1: kotlin.Any?): kotlin.Boolean declared in kotlin.internal.ir' type=kotlin.Boolean origin=EXCLEQ
+              arg0: GET_FIELD 'FIELD PROPERTY_BACKING_FIELD name:str type:kotlin.String visibility:private [final]' type=kotlin.String origin=null
+                receiver: GET_VAR '<this>: com.rnett.krosstalk.Data declared in com.rnett.krosstalk.Data.equals' type=com.rnett.krosstalk.Data origin=null
+              arg1: GET_FIELD 'FIELD PROPERTY_BACKING_FIELD name:str type:kotlin.String visibility:private [final]' type=kotlin.String origin=null
+                receiver: GET_VAR 'val tmp_10: com.rnett.krosstalk.Data [val] declared in com.rnett.krosstalk.Data.equals' type=com.rnett.krosstalk.Data origin=null
+          then: RETURN type=kotlin.Nothing from='public open fun equals (other: kotlin.Any?): kotlin.Boolean [operator] declared in com.rnett.krosstalk.Data'
+            CONST Boolean type=kotlin.Boolean value=false
+      RETURN type=kotlin.Nothing from='public open fun equals (other: kotlin.Any?): kotlin.Boolean [operator] declared in com.rnett.krosstalk.Data'
+        CONST Boolean type=kotlin.Boolean value=true
+  CONSTRUCTOR visibility:public <> (seen1:kotlin.Int, num:kotlin.Int, str:kotlin.String?, serializationConstructorMarker:kotlinx.serialization.internal.SerializationConstructorMarker?) returnType:com.rnett.krosstalk.Data
+    annotations:
+      Deprecated(message = 'This synthesized declaration should not be used directly', replaceWith = ReplaceWith(expression = '', imports = []), level = GET_ENUM 'ENUM_ENTRY IR_EXTERNAL_DECLARATION_STUB name:HIDDEN' type=kotlin.DeprecationLevel)
+    VALUE_PARAMETER name:seen1 index:0 type:kotlin.Int
+    VALUE_PARAMETER name:num index:1 type:kotlin.Int
+    VALUE_PARAMETER name:str index:2 type:kotlin.String?
+    VALUE_PARAMETER name:serializationConstructorMarker index:3 type:kotlinx.serialization.internal.SerializationConstructorMarker?
+    BLOCK_BODY
+      DELEGATING_CONSTRUCTOR_CALL 'public constructor <init> () [primary] declared in kotlin.Any'
+      WHEN type=kotlin.Unit origin=null
+        BRANCH
+          if: CALL 'public final fun EQEQ (arg0: kotlin.Any?, arg1: kotlin.Any?): kotlin.Boolean declared in kotlin.internal.ir' type=kotlin.Boolean origin=EQEQ
+            arg0: CONST Int type=kotlin.Int value=0
+            arg1: CALL 'public final fun and (other: kotlin.Int): kotlin.Int declared in kotlin.Int' type=kotlin.Int origin=null
+              $this: GET_VAR 'seen1: kotlin.Int declared in com.rnett.krosstalk.Data.<init>' type=kotlin.Int origin=null
+              other: CONST Int type=kotlin.Int value=1
+          then: THROW type=kotlin.Nothing
+            CONSTRUCTOR_CALL 'public constructor <init> (fieldName: kotlin.String) [primary] declared in kotlinx.serialization.MissingFieldException' type=kotlinx.serialization.MissingFieldException origin=null
+              fieldName: CONST String type=kotlin.String value="num"
+        BRANCH
+          if: CONST Boolean type=kotlin.Boolean value=true
+          then: SET_FIELD 'FIELD PROPERTY_BACKING_FIELD name:num type:kotlin.Int visibility:private [final]' type=kotlin.Unit origin=null
+            receiver: GET_VAR '<this>: com.rnett.krosstalk.Data declared in com.rnett.krosstalk.Data' type=com.rnett.krosstalk.Data origin=null
+            value: GET_VAR 'num: kotlin.Int declared in com.rnett.krosstalk.Data.<init>' type=kotlin.Int origin=null
+      WHEN type=kotlin.Unit origin=null
+        BRANCH
+          if: CALL 'public final fun EQEQ (arg0: kotlin.Any?, arg1: kotlin.Any?): kotlin.Boolean declared in kotlin.internal.ir' type=kotlin.Boolean origin=EQEQ
+            arg0: CONST Int type=kotlin.Int value=0
+            arg1: CALL 'public final fun and (other: kotlin.Int): kotlin.Int declared in kotlin.Int' type=kotlin.Int origin=null
+              $this: GET_VAR 'seen1: kotlin.Int declared in com.rnett.krosstalk.Data.<init>' type=kotlin.Int origin=null
+              other: CONST Int type=kotlin.Int value=2
+          then: THROW type=kotlin.Nothing
+            CONSTRUCTOR_CALL 'public constructor <init> (fieldName: kotlin.String) [primary] declared in kotlinx.serialization.MissingFieldException' type=kotlinx.serialization.MissingFieldException origin=null
+              fieldName: CONST String type=kotlin.String value="str"
+        BRANCH
+          if: CONST Boolean type=kotlin.Boolean value=true
+          then: SET_FIELD 'FIELD PROPERTY_BACKING_FIELD name:str type:kotlin.String visibility:private [final]' type=kotlin.Unit origin=null
+            receiver: GET_VAR '<this>: com.rnett.krosstalk.Data declared in com.rnett.krosstalk.Data' type=com.rnett.krosstalk.Data origin=null
+            value: GET_VAR 'str: kotlin.String? declared in com.rnett.krosstalk.Data.<init>' type=kotlin.String? origin=null
+
+Class: CLASS OBJECT name:Companion modality:FINAL visibility:public [companion] superTypes:[kotlin.Any]
+  $this: VALUE_PARAMETER INSTANCE_RECEIVER name:<this> type:com.rnett.krosstalk.Data.Companion
+  CONSTRUCTOR visibility:private <> () returnType:com.rnett.krosstalk.Data.Companion [primary]
+    BLOCK_BODY
+      DELEGATING_CONSTRUCTOR_CALL 'public constructor <init> () [primary] declared in kotlin.Any'
+      INSTANCE_INITIALIZER_CALL classDescriptor='CLASS OBJECT name:Companion modality:FINAL visibility:public [companion] superTypes:[kotlin.Any]'
+  FUN FAKE_OVERRIDE name:equals visibility:public modality:OPEN <> ($this:kotlin.Any, other:kotlin.Any?) returnType:kotlin.Boolean [fake_override,operator]
+    overridden:
+      public open fun equals (other: kotlin.Any?): kotlin.Boolean [operator] declared in kotlin.Any
+    $this: VALUE_PARAMETER name:<this> type:kotlin.Any
+    VALUE_PARAMETER name:other index:0 type:kotlin.Any?
+  FUN FAKE_OVERRIDE name:hashCode visibility:public modality:OPEN <> ($this:kotlin.Any) returnType:kotlin.Int [fake_override]
+    overridden:
+      public open fun hashCode (): kotlin.Int declared in kotlin.Any
+    $this: VALUE_PARAMETER name:<this> type:kotlin.Any
+  FUN FAKE_OVERRIDE name:toString visibility:public modality:OPEN <> ($this:kotlin.Any) returnType:kotlin.String [fake_override]
+    overridden:
+      public open fun toString (): kotlin.String declared in kotlin.Any
+    $this: VALUE_PARAMETER name:<this> type:kotlin.Any
+  FUN name:serializer visibility:public modality:FINAL <> ($this:com.rnett.krosstalk.Data.Companion) returnType:kotlinx.serialization.KSerializer<com.rnett.krosstalk.Data>
+    $this: VALUE_PARAMETER name:<this> type:com.rnett.krosstalk.Data.Companion
+    BLOCK_BODY
+      RETURN type=kotlin.Nothing from='public final fun serializer (): kotlinx.serialization.KSerializer<com.rnett.krosstalk.Data> declared in com.rnett.krosstalk.Data.Companion'
+        GET_OBJECT 'CLASS OBJECT name:$serializer modality:FINAL visibility:public superTypes:[kotlinx.serialization.internal.GeneratedSerializer<com.rnett.krosstalk.Data>]' type=com.rnett.krosstalk.Data.$serializer
+
+Class: CLASS OBJECT name:$serializer modality:FINAL visibility:public superTypes:[kotlinx.serialization.internal.GeneratedSerializer<com.rnett.krosstalk.Data>]
+  annotations:
+    Deprecated(message = 'This synthesized declaration should not be used directly', replaceWith = ReplaceWith(expression = '', imports = []), level = GET_ENUM 'ENUM_ENTRY IR_EXTERNAL_DECLARATION_STUB name:HIDDEN' type=kotlin.DeprecationLevel)
+  $this: VALUE_PARAMETER INSTANCE_RECEIVER name:<this> type:com.rnett.krosstalk.Data.$serializer
+  CONSTRUCTOR visibility:private <> () returnType:com.rnett.krosstalk.Data.$serializer [primary]
+    BLOCK_BODY
+      DELEGATING_CONSTRUCTOR_CALL 'public constructor <init> () [primary] declared in kotlin.Any'
+      INSTANCE_INITIALIZER_CALL classDescriptor='CLASS OBJECT name:$serializer modality:FINAL visibility:public superTypes:[kotlinx.serialization.internal.GeneratedSerializer<com.rnett.krosstalk.Data>]'
+  FUN FAKE_OVERRIDE name:patch visibility:public modality:OPEN <> ($this:kotlinx.serialization.KSerializer<com.rnett.krosstalk.Data>, decoder:kotlinx.serialization.encoding.Decoder, old:com.rnett.krosstalk.Data) returnType:com.rnett.krosstalk.Data [fake_override]
+    annotations:
+      Deprecated(message = 'Patch function is deprecated for removal since this functionality is no longer supported by serializer.Some formats may provide implementation-specific patching in their Decoders.', replaceWith = <null>, level = GET_ENUM 'ENUM_ENTRY IR_EXTERNAL_DECLARATION_STUB name:ERROR' type=kotlin.DeprecationLevel)
+    overridden:
+      public open fun patch (decoder: kotlinx.serialization.encoding.Decoder, old: T of kotlinx.serialization.internal.GeneratedSerializer): T of kotlinx.serialization.internal.GeneratedSerializer [fake_override] declared in kotlinx.serialization.internal.GeneratedSerializer
+    $this: VALUE_PARAMETER name:<this> type:kotlinx.serialization.KSerializer<com.rnett.krosstalk.Data>
+    VALUE_PARAMETER name:decoder index:0 type:kotlinx.serialization.encoding.Decoder
+    VALUE_PARAMETER name:old index:1 type:com.rnett.krosstalk.Data
+  FUN FAKE_OVERRIDE name:equals visibility:public modality:OPEN <> ($this:kotlin.Any, other:kotlin.Any?) returnType:kotlin.Boolean [fake_override,operator]
+    overridden:
+      public open fun equals (other: kotlin.Any?): kotlin.Boolean [fake_override,operator] declared in kotlinx.serialization.internal.GeneratedSerializer
+    $this: VALUE_PARAMETER name:<this> type:kotlin.Any
+    VALUE_PARAMETER name:other index:0 type:kotlin.Any?
+  FUN FAKE_OVERRIDE name:hashCode visibility:public modality:OPEN <> ($this:kotlin.Any) returnType:kotlin.Int [fake_override]
+    overridden:
+      public open fun hashCode (): kotlin.Int [fake_override] declared in kotlinx.serialization.internal.GeneratedSerializer
+    $this: VALUE_PARAMETER name:<this> type:kotlin.Any
+  FUN FAKE_OVERRIDE name:toString visibility:public modality:OPEN <> ($this:kotlin.Any) returnType:kotlin.String [fake_override]
+    overridden:
+      public open fun toString (): kotlin.String [fake_override] declared in kotlinx.serialization.internal.GeneratedSerializer
+    $this: VALUE_PARAMETER name:<this> type:kotlin.Any
+  FUN FAKE_OVERRIDE name:typeParametersSerializers visibility:public modality:OPEN <> ($this:kotlinx.serialization.internal.GeneratedSerializer<com.rnett.krosstalk.Data>) returnType:kotlin.Array<kotlinx.serialization.KSerializer<*>> [fake_override]
+    overridden:
+      public open fun typeParametersSerializers (): kotlin.Array<kotlinx.serialization.KSerializer<*>> declared in kotlinx.serialization.internal.GeneratedSerializer
+    $this: VALUE_PARAMETER name:<this> type:kotlinx.serialization.internal.GeneratedSerializer<com.rnett.krosstalk.Data>
+  PROPERTY name:descriptor visibility:public modality:OPEN [val]
+    FIELD SERIALIZER name:descriptor type:kotlinx.serialization.descriptors.SerialDescriptor visibility:public [final]
+    FUN name:<get-descriptor> visibility:public modality:OPEN <> ($this:com.rnett.krosstalk.Data.$serializer) returnType:kotlinx.serialization.descriptors.SerialDescriptor
+      correspondingProperty: PROPERTY name:descriptor visibility:public modality:OPEN [val]
+      overridden:
+        public abstract fun <get-descriptor> (): kotlinx.serialization.descriptors.SerialDescriptor [fake_override] declared in kotlinx.serialization.internal.GeneratedSerializer
+      $this: VALUE_PARAMETER name:<this> type:com.rnett.krosstalk.Data.$serializer
+      BLOCK_BODY
+        RETURN type=kotlin.Nothing from='public open fun <get-descriptor> (): kotlinx.serialization.descriptors.SerialDescriptor declared in com.rnett.krosstalk.Data.$serializer'
+          GET_FIELD 'FIELD SERIALIZER name:descriptor type:kotlinx.serialization.descriptors.SerialDescriptor visibility:public [final]' type=kotlinx.serialization.descriptors.SerialDescriptor origin=null
+            receiver: GET_VAR '<this>: com.rnett.krosstalk.Data.$serializer declared in com.rnett.krosstalk.Data.$serializer.<get-descriptor>' type=com.rnett.krosstalk.Data.$serializer origin=null
+  FUN name:childSerializers visibility:public modality:OPEN <> ($this:com.rnett.krosstalk.Data.$serializer) returnType:kotlin.Array<kotlinx.serialization.KSerializer<*>>
+    overridden:
+      public abstract fun childSerializers (): kotlin.Array<kotlinx.serialization.KSerializer<*>> declared in kotlinx.serialization.internal.GeneratedSerializer
+    $this: VALUE_PARAMETER name:<this> type:com.rnett.krosstalk.Data.$serializer
+    BLOCK_BODY
+      RETURN type=kotlin.Nothing from='public open fun childSerializers (): kotlin.Array<kotlinx.serialization.KSerializer<*>> declared in com.rnett.krosstalk.Data.$serializer'
+        CALL 'public final fun arrayOf <T> (vararg elements: T of kotlin.arrayOf): kotlin.Array<T of kotlin.arrayOf> [inline] declared in kotlin' type=kotlin.Array<kotlinx.serialization.KSerializer<*>> origin=null
+          <T>: kotlinx.serialization.KSerializer<*>
+          elements: VARARG type=kotlin.Array<kotlinx.serialization.KSerializer<*>> varargElementType=kotlinx.serialization.KSerializer<*>
+            GET_OBJECT 'UNBOUND IrClassPublicSymbolImpl' type=<unbound IrClassPublicSymbolImpl>
+            GET_OBJECT 'UNBOUND IrClassPublicSymbolImpl' type=<unbound IrClassPublicSymbolImpl>
+  FUN name:deserialize visibility:public modality:OPEN <> ($this:com.rnett.krosstalk.Data.$serializer, decoder:kotlinx.serialization.encoding.Decoder) returnType:com.rnett.krosstalk.Data
+    overridden:
+      public abstract fun deserialize (decoder: kotlinx.serialization.encoding.Decoder): T of kotlinx.serialization.internal.GeneratedSerializer [fake_override] declared in kotlinx.serialization.internal.GeneratedSerializer
+    $this: VALUE_PARAMETER name:<this> type:com.rnett.krosstalk.Data.$serializer
+    VALUE_PARAMETER name:decoder index:0 type:kotlinx.serialization.encoding.Decoder
+    BLOCK_BODY
+      VAR IR_TEMPORARY_VARIABLE name:tmp_0 type:kotlinx.serialization.descriptors.SerialDescriptor [val]
+        CALL 'public open fun <get-descriptor> (): kotlinx.serialization.descriptors.SerialDescriptor declared in com.rnett.krosstalk.Data.$serializer' type=kotlinx.serialization.descriptors.SerialDescriptor origin=GET_PROPERTY
+          $this: GET_VAR '<this>: com.rnett.krosstalk.Data.$serializer declared in com.rnett.krosstalk.Data.$serializer.deserialize' type=com.rnett.krosstalk.Data.$serializer origin=null
+      VAR IR_TEMPORARY_VARIABLE name:tmp_1 type:kotlin.Boolean [var]
+        CONST Boolean type=kotlin.Boolean value=true
+      VAR IR_TEMPORARY_VARIABLE name:tmp_2 type:kotlin.Int [var]
+        CONST Int type=kotlin.Int value=0
+      VAR IR_TEMPORARY_VARIABLE name:tmp_3 type:kotlin.Int [var]
+        CONST Int type=kotlin.Int value=0
+      VAR IR_TEMPORARY_VARIABLE name:tmp_4 type:kotlin.Int [var]
+        CONST Int type=kotlin.Int value=0
+      VAR IR_TEMPORARY_VARIABLE name:tmp_5 type:kotlin.Any? [var]
+        CONST Null type=kotlin.Any? value=null
+      VAR IR_TEMPORARY_VARIABLE name:tmp_6 type:kotlinx.serialization.encoding.CompositeDecoder [val]
+        CALL 'public open fun beginStructure (descriptor: kotlinx.serialization.descriptors.SerialDescriptor): kotlinx.serialization.encoding.CompositeDecoder declared in kotlinx.serialization.encoding.Decoder' type=kotlinx.serialization.encoding.CompositeDecoder origin=null
+          $this: GET_VAR 'decoder: kotlinx.serialization.encoding.Decoder declared in com.rnett.krosstalk.Data.$serializer.deserialize' type=kotlinx.serialization.encoding.Decoder origin=null
+          descriptor: GET_VAR 'val tmp_0: kotlinx.serialization.descriptors.SerialDescriptor [val] declared in com.rnett.krosstalk.Data.$serializer.deserialize' type=kotlinx.serialization.descriptors.SerialDescriptor origin=null
+      WHEN type=kotlin.Unit origin=null
+        BRANCH
+          if: CALL 'public open fun decodeSequentially (): kotlin.Boolean declared in kotlinx.serialization.encoding.CompositeDecoder' type=kotlin.Boolean origin=null
+            $this: GET_VAR 'val tmp_6: kotlinx.serialization.encoding.CompositeDecoder [val] declared in com.rnett.krosstalk.Data.$serializer.deserialize' type=kotlinx.serialization.encoding.CompositeDecoder origin=null
+          then: BLOCK type=kotlin.Unit origin=null
+            BLOCK type=kotlin.Unit origin=null
+              SET_VAR 'var tmp_4: kotlin.Int [var] declared in com.rnett.krosstalk.Data.$serializer.deserialize' type=kotlin.Unit origin=EQ
+                CALL 'public abstract fun decodeIntElement (descriptor: kotlinx.serialization.descriptors.SerialDescriptor, index: kotlin.Int): kotlin.Int declared in kotlinx.serialization.encoding.CompositeDecoder' type=kotlin.Int origin=null
+                  $this: GET_VAR 'val tmp_6: kotlinx.serialization.encoding.CompositeDecoder [val] declared in com.rnett.krosstalk.Data.$serializer.deserialize' type=kotlinx.serialization.encoding.CompositeDecoder origin=null
+                  descriptor: GET_VAR 'val tmp_0: kotlinx.serialization.descriptors.SerialDescriptor [val] declared in com.rnett.krosstalk.Data.$serializer.deserialize' type=kotlinx.serialization.descriptors.SerialDescriptor origin=null
+                  index: CONST Int type=kotlin.Int value=0
+              SET_VAR 'var tmp_3: kotlin.Int [var] declared in com.rnett.krosstalk.Data.$serializer.deserialize' type=kotlin.Unit origin=EQ
+                CALL 'public final fun or (other: kotlin.Int): kotlin.Int declared in kotlin.Int' type=kotlin.Int origin=null
+                  $this: GET_VAR 'var tmp_3: kotlin.Int [var] declared in com.rnett.krosstalk.Data.$serializer.deserialize' type=kotlin.Int origin=null
+                  other: CONST Int type=kotlin.Int value=1
+            BLOCK type=kotlin.Unit origin=null
+              SET_VAR 'var tmp_5: kotlin.Any? [var] declared in com.rnett.krosstalk.Data.$serializer.deserialize' type=kotlin.Unit origin=EQ
+                CALL 'public abstract fun decodeStringElement (descriptor: kotlinx.serialization.descriptors.SerialDescriptor, index: kotlin.Int): kotlin.String declared in kotlinx.serialization.encoding.CompositeDecoder' type=kotlin.String origin=null
+                  $this: GET_VAR 'val tmp_6: kotlinx.serialization.encoding.CompositeDecoder [val] declared in com.rnett.krosstalk.Data.$serializer.deserialize' type=kotlinx.serialization.encoding.CompositeDecoder origin=null
+                  descriptor: GET_VAR 'val tmp_0: kotlinx.serialization.descriptors.SerialDescriptor [val] declared in com.rnett.krosstalk.Data.$serializer.deserialize' type=kotlinx.serialization.descriptors.SerialDescriptor origin=null
+                  index: CONST Int type=kotlin.Int value=1
+              SET_VAR 'var tmp_3: kotlin.Int [var] declared in com.rnett.krosstalk.Data.$serializer.deserialize' type=kotlin.Unit origin=EQ
+                CALL 'public final fun or (other: kotlin.Int): kotlin.Int declared in kotlin.Int' type=kotlin.Int origin=null
+                  $this: GET_VAR 'var tmp_3: kotlin.Int [var] declared in com.rnett.krosstalk.Data.$serializer.deserialize' type=kotlin.Int origin=null
+                  other: CONST Int type=kotlin.Int value=2
+        BRANCH
+          if: CONST Boolean type=kotlin.Boolean value=true
+          then: WHILE label=null origin=null
+            condition: GET_VAR 'var tmp_1: kotlin.Boolean [var] declared in com.rnett.krosstalk.Data.$serializer.deserialize' type=kotlin.Boolean origin=null
+            body: BLOCK type=kotlin.Unit origin=null
+              SET_VAR 'var tmp_2: kotlin.Int [var] declared in com.rnett.krosstalk.Data.$serializer.deserialize' type=kotlin.Unit origin=EQ
+                CALL 'public abstract fun decodeElementIndex (descriptor: kotlinx.serialization.descriptors.SerialDescriptor): kotlin.Int declared in kotlinx.serialization.encoding.CompositeDecoder' type=kotlin.Int origin=null
+                  $this: GET_VAR 'val tmp_6: kotlinx.serialization.encoding.CompositeDecoder [val] declared in com.rnett.krosstalk.Data.$serializer.deserialize' type=kotlinx.serialization.encoding.CompositeDecoder origin=null
+                  descriptor: GET_VAR 'val tmp_0: kotlinx.serialization.descriptors.SerialDescriptor [val] declared in com.rnett.krosstalk.Data.$serializer.deserialize' type=kotlinx.serialization.descriptors.SerialDescriptor origin=null
+              WHEN type=kotlin.Unit origin=null
+                BRANCH
+                  if: CALL 'public final fun EQEQ (arg0: kotlin.Any?, arg1: kotlin.Any?): kotlin.Boolean declared in kotlin.internal.ir' type=kotlin.Boolean origin=EQEQ
+                    arg0: GET_VAR 'var tmp_2: kotlin.Int [var] declared in com.rnett.krosstalk.Data.$serializer.deserialize' type=kotlin.Int origin=null
+                    arg1: CONST Int type=kotlin.Int value=-1
+                  then: SET_VAR 'var tmp_1: kotlin.Boolean [var] declared in com.rnett.krosstalk.Data.$serializer.deserialize' type=kotlin.Unit origin=EQ
+                    CONST Boolean type=kotlin.Boolean value=false
+                BRANCH
+                  if: CALL 'public final fun EQEQ (arg0: kotlin.Any?, arg1: kotlin.Any?): kotlin.Boolean declared in kotlin.internal.ir' type=kotlin.Boolean origin=EQEQ
+                    arg0: GET_VAR 'var tmp_2: kotlin.Int [var] declared in com.rnett.krosstalk.Data.$serializer.deserialize' type=kotlin.Int origin=null
+                    arg1: CONST Int type=kotlin.Int value=0
+                  then: BLOCK type=kotlin.Unit origin=null
+                    SET_VAR 'var tmp_4: kotlin.Int [var] declared in com.rnett.krosstalk.Data.$serializer.deserialize' type=kotlin.Unit origin=EQ
+                      CALL 'public abstract fun decodeIntElement (descriptor: kotlinx.serialization.descriptors.SerialDescriptor, index: kotlin.Int): kotlin.Int declared in kotlinx.serialization.encoding.CompositeDecoder' type=kotlin.Int origin=null
+                        $this: GET_VAR 'val tmp_6: kotlinx.serialization.encoding.CompositeDecoder [val] declared in com.rnett.krosstalk.Data.$serializer.deserialize' type=kotlinx.serialization.encoding.CompositeDecoder origin=null
+                        descriptor: GET_VAR 'val tmp_0: kotlinx.serialization.descriptors.SerialDescriptor [val] declared in com.rnett.krosstalk.Data.$serializer.deserialize' type=kotlinx.serialization.descriptors.SerialDescriptor origin=null
+                        index: CONST Int type=kotlin.Int value=0
+                    SET_VAR 'var tmp_3: kotlin.Int [var] declared in com.rnett.krosstalk.Data.$serializer.deserialize' type=kotlin.Unit origin=EQ
+                      CALL 'public final fun or (other: kotlin.Int): kotlin.Int declared in kotlin.Int' type=kotlin.Int origin=null
+                        $this: GET_VAR 'var tmp_3: kotlin.Int [var] declared in com.rnett.krosstalk.Data.$serializer.deserialize' type=kotlin.Int origin=null
+                        other: CONST Int type=kotlin.Int value=1
+                BRANCH
+                  if: CALL 'public final fun EQEQ (arg0: kotlin.Any?, arg1: kotlin.Any?): kotlin.Boolean declared in kotlin.internal.ir' type=kotlin.Boolean origin=EQEQ
+                    arg0: GET_VAR 'var tmp_2: kotlin.Int [var] declared in com.rnett.krosstalk.Data.$serializer.deserialize' type=kotlin.Int origin=null
+                    arg1: CONST Int type=kotlin.Int value=1
+                  then: BLOCK type=kotlin.Unit origin=null
+                    SET_VAR 'var tmp_5: kotlin.Any? [var] declared in com.rnett.krosstalk.Data.$serializer.deserialize' type=kotlin.Unit origin=EQ
+                      CALL 'public abstract fun decodeStringElement (descriptor: kotlinx.serialization.descriptors.SerialDescriptor, index: kotlin.Int): kotlin.String declared in kotlinx.serialization.encoding.CompositeDecoder' type=kotlin.String origin=null
+                        $this: GET_VAR 'val tmp_6: kotlinx.serialization.encoding.CompositeDecoder [val] declared in com.rnett.krosstalk.Data.$serializer.deserialize' type=kotlinx.serialization.encoding.CompositeDecoder origin=null
+                        descriptor: GET_VAR 'val tmp_0: kotlinx.serialization.descriptors.SerialDescriptor [val] declared in com.rnett.krosstalk.Data.$serializer.deserialize' type=kotlinx.serialization.descriptors.SerialDescriptor origin=null
+                        index: CONST Int type=kotlin.Int value=1
+                    SET_VAR 'var tmp_3: kotlin.Int [var] declared in com.rnett.krosstalk.Data.$serializer.deserialize' type=kotlin.Unit origin=EQ
+                      CALL 'public final fun or (other: kotlin.Int): kotlin.Int declared in kotlin.Int' type=kotlin.Int origin=null
+                        $this: GET_VAR 'var tmp_3: kotlin.Int [var] declared in com.rnett.krosstalk.Data.$serializer.deserialize' type=kotlin.Int origin=null
+                        other: CONST Int type=kotlin.Int value=2
+                BRANCH
+                  if: CONST Boolean type=kotlin.Boolean value=true
+                  then: THROW type=kotlin.Nothing
+                    CONSTRUCTOR_CALL 'public constructor <init> (index: kotlin.Int) [primary] declared in kotlinx.serialization.UnknownFieldException' type=kotlinx.serialization.UnknownFieldException origin=null
+                      index: GET_VAR 'var tmp_2: kotlin.Int [var] declared in com.rnett.krosstalk.Data.$serializer.deserialize' type=kotlin.Int origin=null
+      CALL 'public abstract fun endStructure (descriptor: kotlinx.serialization.descriptors.SerialDescriptor): kotlin.Unit declared in kotlinx.serialization.encoding.CompositeDecoder' type=kotlin.Unit origin=null
+        $this: GET_VAR 'val tmp_6: kotlinx.serialization.encoding.CompositeDecoder [val] declared in com.rnett.krosstalk.Data.$serializer.deserialize' type=kotlinx.serialization.encoding.CompositeDecoder origin=null
+        descriptor: GET_VAR 'val tmp_0: kotlinx.serialization.descriptors.SerialDescriptor [val] declared in com.rnett.krosstalk.Data.$serializer.deserialize' type=kotlinx.serialization.descriptors.SerialDescriptor origin=null
+      RETURN type=kotlin.Nothing from='public open fun deserialize (decoder: kotlinx.serialization.encoding.Decoder): com.rnett.krosstalk.Data declared in com.rnett.krosstalk.Data.$serializer'
+        CONSTRUCTOR_CALL 'public constructor <init> (seen1: kotlin.Int, num: kotlin.Int, str: kotlin.String?, serializationConstructorMarker: kotlinx.serialization.internal.SerializationConstructorMarker?) declared in com.rnett.krosstalk.Data' type=com.rnett.krosstalk.Data origin=null
+          seen1: GET_VAR 'var tmp_3: kotlin.Int [var] declared in com.rnett.krosstalk.Data.$serializer.deserialize' type=kotlin.Int origin=null
+          num: GET_VAR 'var tmp_4: kotlin.Int [var] declared in com.rnett.krosstalk.Data.$serializer.deserialize' type=kotlin.Int origin=null
+          str: GET_VAR 'var tmp_5: kotlin.Any? [var] declared in com.rnett.krosstalk.Data.$serializer.deserialize' type=kotlin.Any? origin=null
+          serializationConstructorMarker: CONST Null type=kotlin.Nothing? value=null
+  FUN name:serialize visibility:public modality:OPEN <> ($this:com.rnett.krosstalk.Data.$serializer, encoder:kotlinx.serialization.encoding.Encoder, value:com.rnett.krosstalk.Data) returnType:kotlin.Unit
+    overridden:
+      public abstract fun serialize (encoder: kotlinx.serialization.encoding.Encoder, value: T of kotlinx.serialization.internal.GeneratedSerializer): kotlin.Unit [fake_override] declared in kotlinx.serialization.internal.GeneratedSerializer
+    $this: VALUE_PARAMETER name:<this> type:com.rnett.krosstalk.Data.$serializer
+    VALUE_PARAMETER name:encoder index:0 type:kotlinx.serialization.encoding.Encoder
+    VALUE_PARAMETER name:value index:1 type:com.rnett.krosstalk.Data
+    BLOCK_BODY
+      VAR IR_TEMPORARY_VARIABLE name:tmp_7 type:kotlinx.serialization.descriptors.SerialDescriptor [val]
+        CALL 'public open fun <get-descriptor> (): kotlinx.serialization.descriptors.SerialDescriptor declared in com.rnett.krosstalk.Data.$serializer' type=kotlinx.serialization.descriptors.SerialDescriptor origin=GET_PROPERTY
+          $this: GET_VAR '<this>: com.rnett.krosstalk.Data.$serializer declared in com.rnett.krosstalk.Data.$serializer.serialize' type=com.rnett.krosstalk.Data.$serializer origin=null
+      VAR IR_TEMPORARY_VARIABLE name:tmp_8 type:kotlinx.serialization.encoding.CompositeEncoder [val]
+        CALL 'public open fun beginStructure (descriptor: kotlinx.serialization.descriptors.SerialDescriptor): kotlinx.serialization.encoding.CompositeEncoder declared in kotlinx.serialization.encoding.Encoder' type=kotlinx.serialization.encoding.CompositeEncoder origin=null
+          $this: GET_VAR 'encoder: kotlinx.serialization.encoding.Encoder declared in com.rnett.krosstalk.Data.$serializer.serialize' type=kotlinx.serialization.encoding.Encoder origin=null
+          descriptor: GET_VAR 'val tmp_7: kotlinx.serialization.descriptors.SerialDescriptor [val] declared in com.rnett.krosstalk.Data.$serializer.serialize' type=kotlinx.serialization.descriptors.SerialDescriptor origin=null
+      CALL 'public abstract fun encodeIntElement (descriptor: kotlinx.serialization.descriptors.SerialDescriptor, index: kotlin.Int, value: kotlin.Int): kotlin.Unit declared in kotlinx.serialization.encoding.CompositeEncoder' type=kotlin.Unit origin=null
+        $this: GET_VAR 'val tmp_8: kotlinx.serialization.encoding.CompositeEncoder [val] declared in com.rnett.krosstalk.Data.$serializer.serialize' type=kotlinx.serialization.encoding.CompositeEncoder origin=null
+        descriptor: GET_VAR 'val tmp_7: kotlinx.serialization.descriptors.SerialDescriptor [val] declared in com.rnett.krosstalk.Data.$serializer.serialize' type=kotlinx.serialization.descriptors.SerialDescriptor origin=null
+        index: CONST Int type=kotlin.Int value=0
+        value: CALL 'public final fun <get-num> (): kotlin.Int declared in com.rnett.krosstalk.Data' type=kotlin.Int origin=GET_PROPERTY
+          $this: GET_VAR 'value: com.rnett.krosstalk.Data declared in com.rnett.krosstalk.Data.$serializer.serialize' type=com.rnett.krosstalk.Data origin=null
+      CALL 'public abstract fun encodeStringElement (descriptor: kotlinx.serialization.descriptors.SerialDescriptor, index: kotlin.Int, value: kotlin.String): kotlin.Unit declared in kotlinx.serialization.encoding.CompositeEncoder' type=kotlin.Unit origin=null
+        $this: GET_VAR 'val tmp_8: kotlinx.serialization.encoding.CompositeEncoder [val] declared in com.rnett.krosstalk.Data.$serializer.serialize' type=kotlinx.serialization.encoding.CompositeEncoder origin=null
+        descriptor: GET_VAR 'val tmp_7: kotlinx.serialization.descriptors.SerialDescriptor [val] declared in com.rnett.krosstalk.Data.$serializer.serialize' type=kotlinx.serialization.descriptors.SerialDescriptor origin=null
+        index: CONST Int type=kotlin.Int value=1
+        value: CALL 'public final fun <get-str> (): kotlin.String declared in com.rnett.krosstalk.Data' type=kotlin.String origin=GET_PROPERTY
+          $this: GET_VAR 'value: com.rnett.krosstalk.Data declared in com.rnett.krosstalk.Data.$serializer.serialize' type=com.rnett.krosstalk.Data origin=null
+      CALL 'public abstract fun endStructure (descriptor: kotlinx.serialization.descriptors.SerialDescriptor): kotlin.Unit declared in kotlinx.serialization.encoding.CompositeEncoder' type=kotlin.Unit origin=null
+        $this: GET_VAR 'val tmp_8: kotlinx.serialization.encoding.CompositeEncoder [val] declared in com.rnett.krosstalk.Data.$serializer.serialize' type=kotlinx.serialization.encoding.CompositeEncoder origin=null
+        descriptor: GET_VAR 'val tmp_7: kotlinx.serialization.descriptors.SerialDescriptor [val] declared in com.rnett.krosstalk.Data.$serializer.serialize' type=kotlinx.serialization.descriptors.SerialDescriptor origin=null
+  ANONYMOUS_INITIALIZER isStatic=false
+    BLOCK_BODY
+      VAR IR_TEMPORARY_VARIABLE name:tmp_9 type:kotlinx.serialization.internal.PluginGeneratedSerialDescriptor [val]
+        CONSTRUCTOR_CALL 'public constructor <init> (serialName: kotlin.String, generatedSerializer: kotlinx.serialization.internal.GeneratedSerializer<*>?, elementsCount: kotlin.Int) [primary] declared in kotlinx.serialization.internal.PluginGeneratedSerialDescriptor' type=kotlinx.serialization.internal.PluginGeneratedSerialDescriptor origin=null
+          serialName: CONST String type=kotlin.String value="com.rnett.krosstalk.Data"
+          generatedSerializer: GET_VAR '<this>: com.rnett.krosstalk.Data.$serializer declared in com.rnett.krosstalk.Data.$serializer' type=com.rnett.krosstalk.Data.$serializer origin=null
+          elementsCount: CONST Int type=kotlin.Int value=2
+      CALL 'public final fun addElement (name: kotlin.String, isOptional: kotlin.Boolean): kotlin.Unit declared in kotlinx.serialization.internal.PluginGeneratedSerialDescriptor' type=kotlin.Unit origin=null
+        $this: GET_VAR 'val tmp_9: kotlinx.serialization.internal.PluginGeneratedSerialDescriptor [val] declared in com.rnett.krosstalk.Data.$serializer' type=kotlinx.serialization.internal.PluginGeneratedSerialDescriptor origin=null
+        name: CONST String type=kotlin.String value="num"
+        isOptional: CONST Boolean type=kotlin.Boolean value=false
+      CALL 'public final fun addElement (name: kotlin.String, isOptional: kotlin.Boolean): kotlin.Unit declared in kotlinx.serialization.internal.PluginGeneratedSerialDescriptor' type=kotlin.Unit origin=null
+        $this: GET_VAR 'val tmp_9: kotlinx.serialization.internal.PluginGeneratedSerialDescriptor [val] declared in com.rnett.krosstalk.Data.$serializer' type=kotlinx.serialization.internal.PluginGeneratedSerialDescriptor origin=null
+        name: CONST String type=kotlin.String value="str"
+        isOptional: CONST Boolean type=kotlin.Boolean value=false
+      SET_FIELD 'FIELD SERIALIZER name:descriptor type:kotlinx.serialization.descriptors.SerialDescriptor visibility:public [final]' type=kotlin.Unit origin=null
+        receiver: GET_VAR '<this>: com.rnett.krosstalk.Data.$serializer declared in com.rnett.krosstalk.Data.$serializer' type=com.rnett.krosstalk.Data.$serializer origin=null
+        value: GET_VAR 'val tmp_9: kotlinx.serialization.internal.PluginGeneratedSerialDescriptor [val] declared in com.rnett.krosstalk.Data.$serializer' type=kotlinx.serialization.internal.PluginGeneratedSerialDescriptor origin=null
+
+Class: CLASS INTERFACE name:Scopes modality:ABSTRACT visibility:public superTypes:[kotlin.Any]
+  $this: VALUE_PARAMETER INSTANCE_RECEIVER name:<this> type:com.rnett.krosstalk.Scopes
+  PROPERTY name:auth visibility:public modality:ABSTRACT [val]
+    FUN DEFAULT_PROPERTY_ACCESSOR name:<get-auth> visibility:public modality:ABSTRACT <> ($this:com.rnett.krosstalk.Scopes) returnType:com.rnett.krosstalk.ScopeHolder
+      correspondingProperty: PROPERTY name:auth visibility:public modality:ABSTRACT [val]
+      $this: VALUE_PARAMETER name:<this> type:com.rnett.krosstalk.Scopes
+  FUN FAKE_OVERRIDE name:equals visibility:public modality:OPEN <> ($this:kotlin.Any, other:kotlin.Any?) returnType:kotlin.Boolean [fake_override,operator]
+    overridden:
+      public open fun equals (other: kotlin.Any?): kotlin.Boolean [operator] declared in kotlin.Any
+    $this: VALUE_PARAMETER name:<this> type:kotlin.Any
+    VALUE_PARAMETER name:other index:0 type:kotlin.Any?
+  FUN FAKE_OVERRIDE name:hashCode visibility:public modality:OPEN <> ($this:kotlin.Any) returnType:kotlin.Int [fake_override]
+    overridden:
+      public open fun hashCode (): kotlin.Int declared in kotlin.Any
+    $this: VALUE_PARAMETER name:<this> type:kotlin.Any
+  FUN FAKE_OVERRIDE name:toString visibility:public modality:OPEN <> ($this:kotlin.Any) returnType:kotlin.String [fake_override]
+    overridden:
+      public open fun toString (): kotlin.String declared in kotlin.Any
+    $this: VALUE_PARAMETER name:<this> type:kotlin.Any
+
+Class: CLASS OBJECT name:MyKrosstalk modality:FINAL visibility:public [expect] superTypes:[com.rnett.krosstalk.Krosstalk; com.rnett.krosstalk.Scopes]
+  $this: VALUE_PARAMETER INSTANCE_RECEIVER name:<this> type:com.rnett.krosstalk.MyKrosstalk
+  FUN FAKE_OVERRIDE name:closeAllScopes visibility:public modality:FINAL <> ($this:com.rnett.krosstalk.Krosstalk) returnType:kotlin.Unit [fake_override]
+    overridden:
+      public final fun closeAllScopes (): kotlin.Unit declared in com.rnett.krosstalk.Krosstalk
+    $this: VALUE_PARAMETER name:<this> type:com.rnett.krosstalk.Krosstalk
+  PROPERTY FAKE_OVERRIDE name:auth visibility:public modality:FINAL [fake_override,val]
+    FUN FAKE_OVERRIDE name:<get-auth> visibility:public modality:FINAL <> ($this:com.rnett.krosstalk.Scopes) returnType:com.rnett.krosstalk.ScopeHolder [fake_override]
+      correspondingProperty: PROPERTY FAKE_OVERRIDE name:auth visibility:public modality:FINAL [fake_override,val]
+      overridden:
+        public abstract fun <get-auth> (): com.rnett.krosstalk.ScopeHolder declared in com.rnett.krosstalk.Scopes
+      $this: VALUE_PARAMETER name:<this> type:com.rnett.krosstalk.Scopes
+  PROPERTY FAKE_OVERRIDE name:methods visibility:public modality:FINAL [fake_override,val]
+    FUN FAKE_OVERRIDE name:<get-methods> visibility:public modality:FINAL <> ($this:com.rnett.krosstalk.Krosstalk) returnType:kotlin.collections.Map<kotlin.String, com.rnett.krosstalk.MethodDefinition<*>> [fake_override]
+      correspondingProperty: PROPERTY FAKE_OVERRIDE name:methods visibility:public modality:FINAL [fake_override,val]
+      overridden:
+        public final fun <get-methods> (): kotlin.collections.Map<kotlin.String, com.rnett.krosstalk.MethodDefinition<*>> declared in com.rnett.krosstalk.Krosstalk
+      $this: VALUE_PARAMETER name:<this> type:com.rnett.krosstalk.Krosstalk
+  PROPERTY FAKE_OVERRIDE name:serialization visibility:public modality:FINAL [fake_override,val]
+    FUN FAKE_OVERRIDE name:<get-serialization> visibility:public modality:FINAL <> ($this:com.rnett.krosstalk.Krosstalk) returnType:com.rnett.krosstalk.SerializationHandler [fake_override]
+      correspondingProperty: PROPERTY FAKE_OVERRIDE name:serialization visibility:public modality:FINAL [fake_override,val]
+      overridden:
+        public abstract fun <get-serialization> (): com.rnett.krosstalk.SerializationHandler declared in com.rnett.krosstalk.Krosstalk
+      $this: VALUE_PARAMETER name:<this> type:com.rnett.krosstalk.Krosstalk
+  PROPERTY FAKE_OVERRIDE name:endpointName visibility:public modality:OPEN [fake_override,val]
+    FUN FAKE_OVERRIDE name:<get-endpointName> visibility:public modality:OPEN <> ($this:com.rnett.krosstalk.Krosstalk) returnType:kotlin.String [fake_override]
+      correspondingProperty: PROPERTY FAKE_OVERRIDE name:endpointName visibility:public modality:OPEN [fake_override,val]
+      overridden:
+        public open fun <get-endpointName> (): kotlin.String declared in com.rnett.krosstalk.Krosstalk
+      $this: VALUE_PARAMETER name:<this> type:com.rnett.krosstalk.Krosstalk
+  FUN FAKE_OVERRIDE name:equals visibility:public modality:OPEN <> ($this:kotlin.Any, other:kotlin.Any?) returnType:kotlin.Boolean [fake_override,operator]
+    overridden:
+      public open fun equals (other: kotlin.Any?): kotlin.Boolean [fake_override,operator] declared in com.rnett.krosstalk.Krosstalk
+      public open fun equals (other: kotlin.Any?): kotlin.Boolean [fake_override,operator] declared in com.rnett.krosstalk.Scopes
+    $this: VALUE_PARAMETER name:<this> type:kotlin.Any
+    VALUE_PARAMETER name:other index:0 type:kotlin.Any?
+  FUN FAKE_OVERRIDE name:hashCode visibility:public modality:OPEN <> ($this:kotlin.Any) returnType:kotlin.Int [fake_override]
+    overridden:
+      public open fun hashCode (): kotlin.Int [fake_override] declared in com.rnett.krosstalk.Krosstalk
+      public open fun hashCode (): kotlin.Int [fake_override] declared in com.rnett.krosstalk.Scopes
+    $this: VALUE_PARAMETER name:<this> type:kotlin.Any
+  FUN FAKE_OVERRIDE name:toString visibility:public modality:OPEN <> ($this:kotlin.Any) returnType:kotlin.String [fake_override]
+    overridden:
+      public open fun toString (): kotlin.String [fake_override] declared in com.rnett.krosstalk.Krosstalk
+      public open fun toString (): kotlin.String [fake_override] declared in com.rnett.krosstalk.Scopes
+    $this: VALUE_PARAMETER name:<this> type:kotlin.Any
+
+Class: CLASS OBJECT name:MyKrosstalk modality:FINAL visibility:public superTypes:[com.rnett.krosstalk.Krosstalk; com.rnett.krosstalk.KrosstalkServer<com.rnett.krosstalk.ktor.server.KtorServerScope>; com.rnett.krosstalk.Scopes]
   $this: VALUE_PARAMETER INSTANCE_RECEIVER name:<this> type:com.rnett.krosstalk.MyKrosstalk
   CONSTRUCTOR visibility:private <> () returnType:com.rnett.krosstalk.MyKrosstalk [primary]
     BLOCK_BODY
@@ -63,94 +767,6 @@ Class: CLASS OBJECT name:MyKrosstalk modality:FINAL visibility:public superTypes
               receiver: GET_VAR '<this>: com.rnett.krosstalk.MyKrosstalk declared in com.rnett.krosstalk.MyKrosstalk.<get-auth>' type=com.rnett.krosstalk.MyKrosstalk origin=null
             thisRef: GET_VAR '<this>: com.rnett.krosstalk.MyKrosstalk declared in com.rnett.krosstalk.MyKrosstalk.<get-auth>' type=com.rnett.krosstalk.MyKrosstalk origin=null
             property: PROPERTY_REFERENCE 'public open auth: com.rnett.krosstalk.ServerScopeHolder<com.rnett.krosstalk.ktor.server.KtorServerAuth> [delegated,val]' field=null getter='public open fun <get-auth> (): com.rnett.krosstalk.ServerScopeHolder<com.rnett.krosstalk.ktor.server.KtorServerAuth> declared in com.rnett.krosstalk.MyKrosstalk' setter=null type=kotlin.reflect.KProperty1<com.rnett.krosstalk.MyKrosstalk, com.rnett.krosstalk.ServerScopeHolder<com.rnett.krosstalk.ktor.server.KtorServerAuth>> origin=PROPERTY_REFERENCE_FOR_DELEGATE
-  ANONYMOUS_INITIALIZER isStatic=false
-    annotations:
-      OptIn(markerClass = [CLASS_REFERENCE 'CLASS IR_EXTERNAL_DECLARATION_STUB ANNOTATION_CLASS name:ExperimentalStdlibApi modality:FINAL visibility:public superTypes:[kotlin.Annotation]' type=kotlin.reflect.KClass<kotlin.ExperimentalStdlibApi>])
-      KrosstalkHost
-    BLOCK_BODY
-      CALL 'public final fun addMethod <T> (key: kotlin.String, method: kotlin.reflect.KCallable<*>, types: com.rnett.krosstalk.MethodTypes, vararg requiredScopes: kotlin.String, call: kotlin.coroutines.SuspendFunction1<kotlin.collections.Map<kotlin.String, *>, T of com.rnett.krosstalk.MyKrosstalk.addMethod>): kotlin.Unit [fake_override] declared in com.rnett.krosstalk.MyKrosstalk' type=kotlin.Unit origin=null
-        <T>: kotlin.Unit
-        $this: GET_VAR '<this>: com.rnett.krosstalk.MyKrosstalk declared in com.rnett.krosstalk.MyKrosstalk' type=com.rnett.krosstalk.MyKrosstalk origin=null
-        key: CONST String type=kotlin.String value="doThing"
-        method: FUNCTION_REFERENCE 'public final fun doThing (data: com.rnett.krosstalk.Data): kotlin.collections.List<kotlin.String> [suspend] declared in com.rnett.krosstalk' type=kotlin.reflect.KSuspendFunction1<com.rnett.krosstalk.Data, kotlin.collections.List<kotlin.String>> origin=null reflectionTarget=<same>
-        types: CONSTRUCTOR_CALL 'public constructor <init> (paramTypes: kotlin.collections.Map<kotlin.String, kotlin.reflect.KType>, resultType: kotlin.reflect.KType, instanceReceiverType: kotlin.reflect.KType?, extensionReceiverType: kotlin.reflect.KType?) [primary] declared in com.rnett.krosstalk.MethodTypes' type=com.rnett.krosstalk.MethodTypes origin=null
-          paramTypes: CALL 'public final fun mapOf <K, V> (pair: kotlin.Pair<K of kotlin.collections.MapsKt.mapOf, V of kotlin.collections.MapsKt.mapOf>): kotlin.collections.Map<K of kotlin.collections.MapsKt.mapOf, V of kotlin.collections.MapsKt.mapOf> declared in kotlin.collections.MapsKt' type=kotlin.collections.Map<kotlin.String, kotlin.reflect.KType> origin=null
-            <K>: kotlin.String
-            <V>: kotlin.reflect.KType
-            pair: CALL 'public final fun to <A, B> (that: B of kotlin.TuplesKt.to): kotlin.Pair<A of kotlin.TuplesKt.to, B of kotlin.TuplesKt.to> declared in kotlin.TuplesKt' type=kotlin.Pair<kotlin.String, kotlin.reflect.KType> origin=null
-              <A>: kotlin.String
-              <B>: kotlin.reflect.KType
-              $receiver: CONST String type=kotlin.String value="data"
-              that: CALL 'public final fun typeOf <T> (): kotlin.reflect.KType [inline] declared in kotlin.reflect.TypeOfKt' type=kotlin.reflect.KType origin=null
-                <T>: com.rnett.krosstalk.Data
-          resultType: CALL 'public final fun typeOf <T> (): kotlin.reflect.KType [inline] declared in kotlin.reflect.TypeOfKt' type=kotlin.reflect.KType origin=null
-            <T>: kotlin.collections.List<kotlin.String>
-        call: FUN_EXPR type=kotlin.coroutines.SuspendFunction1<kotlin.collections.Map<kotlin.String, *>, kotlin.Unit> origin=LAMBDA
-          FUN LOCAL_FUNCTION_FOR_LAMBDA name:<anonymous> visibility:local modality:FINAL <> (it:kotlin.collections.Map<kotlin.String, *>) returnType:kotlin.Unit [suspend]
-            VALUE_PARAMETER name:it index:0 type:kotlin.collections.Map<kotlin.String, *>
-            BLOCK_BODY
-              RETURN type=kotlin.Nothing from='local final fun <anonymous> (it: kotlin.collections.Map<kotlin.String, *>): kotlin.Unit [suspend] declared in com.rnett.krosstalk.MyKrosstalk'
-                GET_OBJECT 'CLASS IR_EXTERNAL_DECLARATION_STUB OBJECT name:Unit modality:FINAL visibility:public superTypes:[kotlin.Any]' type=kotlin.Unit
-      CALL 'public final fun addMethod <T> (key: kotlin.String, method: kotlin.reflect.KCallable<*>, types: com.rnett.krosstalk.MethodTypes, vararg requiredScopes: kotlin.String, call: kotlin.coroutines.SuspendFunction1<kotlin.collections.Map<kotlin.String, *>, T of com.rnett.krosstalk.MyKrosstalk.addMethod>): kotlin.Unit [fake_override] declared in com.rnett.krosstalk.MyKrosstalk' type=kotlin.Unit origin=null
-        <T>: kotlin.Unit
-        $this: GET_VAR '<this>: com.rnett.krosstalk.MyKrosstalk declared in com.rnett.krosstalk.MyKrosstalk' type=com.rnett.krosstalk.MyKrosstalk origin=null
-        key: CONST String type=kotlin.String value="doAuthThing"
-        method: FUNCTION_REFERENCE 'public final fun doAuthThing (num: kotlin.Int): com.rnett.krosstalk.Data [suspend] declared in com.rnett.krosstalk' type=kotlin.reflect.KSuspendFunction1<kotlin.Int, com.rnett.krosstalk.Data> origin=null reflectionTarget=<same>
-        types: CONSTRUCTOR_CALL 'public constructor <init> (paramTypes: kotlin.collections.Map<kotlin.String, kotlin.reflect.KType>, resultType: kotlin.reflect.KType, instanceReceiverType: kotlin.reflect.KType?, extensionReceiverType: kotlin.reflect.KType?) [primary] declared in com.rnett.krosstalk.MethodTypes' type=com.rnett.krosstalk.MethodTypes origin=null
-          paramTypes: CALL 'public final fun mapOf <K, V> (pair: kotlin.Pair<K of kotlin.collections.MapsKt.mapOf, V of kotlin.collections.MapsKt.mapOf>): kotlin.collections.Map<K of kotlin.collections.MapsKt.mapOf, V of kotlin.collections.MapsKt.mapOf> declared in kotlin.collections.MapsKt' type=kotlin.collections.Map<kotlin.String, kotlin.reflect.KType> origin=null
-            <K>: kotlin.String
-            <V>: kotlin.reflect.KType
-            pair: CALL 'public final fun to <A, B> (that: B of kotlin.TuplesKt.to): kotlin.Pair<A of kotlin.TuplesKt.to, B of kotlin.TuplesKt.to> declared in kotlin.TuplesKt' type=kotlin.Pair<kotlin.String, kotlin.reflect.KType> origin=null
-              <A>: kotlin.String
-              <B>: kotlin.reflect.KType
-              $receiver: CONST String type=kotlin.String value="num"
-              that: CALL 'public final fun typeOf <T> (): kotlin.reflect.KType [inline] declared in kotlin.reflect.TypeOfKt' type=kotlin.reflect.KType origin=null
-                <T>: kotlin.Int
-          resultType: CALL 'public final fun typeOf <T> (): kotlin.reflect.KType [inline] declared in kotlin.reflect.TypeOfKt' type=kotlin.reflect.KType origin=null
-            <T>: com.rnett.krosstalk.Data
-        requiredScopes: VARARG type=kotlin.Array<out kotlin.String> varargElementType=kotlin.String
-          CONST String type=kotlin.String value="auth"
-        call: FUN_EXPR type=kotlin.coroutines.SuspendFunction1<kotlin.collections.Map<kotlin.String, *>, kotlin.Unit> origin=LAMBDA
-          FUN LOCAL_FUNCTION_FOR_LAMBDA name:<anonymous> visibility:local modality:FINAL <> (it:kotlin.collections.Map<kotlin.String, *>) returnType:kotlin.Unit [suspend]
-            VALUE_PARAMETER name:it index:0 type:kotlin.collections.Map<kotlin.String, *>
-            BLOCK_BODY
-              RETURN type=kotlin.Nothing from='local final fun <anonymous> (it: kotlin.collections.Map<kotlin.String, *>): kotlin.Unit [suspend] declared in com.rnett.krosstalk.MyKrosstalk'
-                GET_OBJECT 'CLASS IR_EXTERNAL_DECLARATION_STUB OBJECT name:Unit modality:FINAL visibility:public superTypes:[kotlin.Any]' type=kotlin.Unit
-      CALL 'public final fun addMethod <T> (key: kotlin.String, method: kotlin.reflect.KCallable<*>, types: com.rnett.krosstalk.MethodTypes, vararg requiredScopes: kotlin.String, call: kotlin.coroutines.SuspendFunction1<kotlin.collections.Map<kotlin.String, *>, T of com.rnett.krosstalk.MyKrosstalk.addMethod>): kotlin.Unit [fake_override] declared in com.rnett.krosstalk.MyKrosstalk' type=kotlin.Unit origin=null
-        <T>: kotlin.Unit
-        $this: GET_VAR '<this>: com.rnett.krosstalk.MyKrosstalk declared in com.rnett.krosstalk.MyKrosstalk' type=com.rnett.krosstalk.MyKrosstalk origin=null
-        key: CONST String type=kotlin.String value="doExt"
-        method: FUNCTION_REFERENCE 'public final fun doExt (other: kotlin.Int): kotlin.Double [suspend] declared in com.rnett.krosstalk' type=kotlin.reflect.KSuspendFunction2<kotlin.Int, kotlin.Int, kotlin.Double> origin=null reflectionTarget=<same>
-        types: CONSTRUCTOR_CALL 'public constructor <init> (paramTypes: kotlin.collections.Map<kotlin.String, kotlin.reflect.KType>, resultType: kotlin.reflect.KType, instanceReceiverType: kotlin.reflect.KType?, extensionReceiverType: kotlin.reflect.KType?) [primary] declared in com.rnett.krosstalk.MethodTypes' type=com.rnett.krosstalk.MethodTypes origin=null
-          paramTypes: CALL 'public final fun mapOf <K, V> (pair: kotlin.Pair<K of kotlin.collections.MapsKt.mapOf, V of kotlin.collections.MapsKt.mapOf>): kotlin.collections.Map<K of kotlin.collections.MapsKt.mapOf, V of kotlin.collections.MapsKt.mapOf> declared in kotlin.collections.MapsKt' type=kotlin.collections.Map<kotlin.String, kotlin.reflect.KType> origin=null
-            <K>: kotlin.String
-            <V>: kotlin.reflect.KType
-            pair: CALL 'public final fun to <A, B> (that: B of kotlin.TuplesKt.to): kotlin.Pair<A of kotlin.TuplesKt.to, B of kotlin.TuplesKt.to> declared in kotlin.TuplesKt' type=kotlin.Pair<kotlin.String, kotlin.reflect.KType> origin=null
-              <A>: kotlin.String
-              <B>: kotlin.reflect.KType
-              $receiver: CONST String type=kotlin.String value="other"
-              that: CALL 'public final fun typeOf <T> (): kotlin.reflect.KType [inline] declared in kotlin.reflect.TypeOfKt' type=kotlin.reflect.KType origin=null
-                <T>: kotlin.Int
-          resultType: CALL 'public final fun typeOf <T> (): kotlin.reflect.KType [inline] declared in kotlin.reflect.TypeOfKt' type=kotlin.reflect.KType origin=null
-            <T>: kotlin.Double
-          extensionReceiverType: CALL 'public final fun typeOf <T> (): kotlin.reflect.KType [inline] declared in kotlin.reflect.TypeOfKt' type=kotlin.reflect.KType origin=null
-            <T>: kotlin.Int
-        call: FUN_EXPR type=kotlin.coroutines.SuspendFunction1<kotlin.collections.Map<kotlin.String, *>, kotlin.Unit> origin=LAMBDA
-          FUN LOCAL_FUNCTION_FOR_LAMBDA name:<anonymous> visibility:local modality:FINAL <> (it:kotlin.collections.Map<kotlin.String, *>) returnType:kotlin.Unit [suspend]
-            VALUE_PARAMETER name:it index:0 type:kotlin.collections.Map<kotlin.String, *>
-            BLOCK_BODY
-              RETURN type=kotlin.Nothing from='local final fun <anonymous> (it: kotlin.collections.Map<kotlin.String, *>): kotlin.Unit [suspend] declared in com.rnett.krosstalk.MyKrosstalk'
-                GET_OBJECT 'CLASS IR_EXTERNAL_DECLARATION_STUB OBJECT name:Unit modality:FINAL visibility:public superTypes:[kotlin.Any]' type=kotlin.Unit
-  FUN FAKE_OVERRIDE name:addMethod visibility:public modality:FINAL <T> ($this:com.rnett.krosstalk.Krosstalk, key:kotlin.String, method:kotlin.reflect.KCallable<*>, types:com.rnett.krosstalk.MethodTypes, requiredScopes:kotlin.Array<out kotlin.String>, call:kotlin.coroutines.SuspendFunction1<kotlin.collections.Map<kotlin.String, *>, T of com.rnett.krosstalk.MyKrosstalk.addMethod>) returnType:kotlin.Unit [fake_override]
-    overridden:
-      public final fun addMethod <T> (key: kotlin.String, method: kotlin.reflect.KCallable<*>, types: com.rnett.krosstalk.MethodTypes, vararg requiredScopes: kotlin.String, call: kotlin.coroutines.SuspendFunction1<kotlin.collections.Map<kotlin.String, *>, T of com.rnett.krosstalk.Krosstalk.addMethod>): kotlin.Unit declared in com.rnett.krosstalk.Krosstalk
-    TYPE_PARAMETER name:T index:0 variance: superTypes:[kotlin.Any?]
-    $this: VALUE_PARAMETER name:<this> type:com.rnett.krosstalk.Krosstalk
-    VALUE_PARAMETER name:key index:0 type:kotlin.String
-    VALUE_PARAMETER name:method index:1 type:kotlin.reflect.KCallable<*>
-    VALUE_PARAMETER name:types index:2 type:com.rnett.krosstalk.MethodTypes
-    VALUE_PARAMETER name:requiredScopes index:3 type:kotlin.Array<out kotlin.String> varargElementType:kotlin.String [vararg]
-    VALUE_PARAMETER name:call index:4 type:kotlin.coroutines.SuspendFunction1<kotlin.collections.Map<kotlin.String, *>, T of com.rnett.krosstalk.MyKrosstalk.addMethod>
   FUN FAKE_OVERRIDE name:closeAllScopes visibility:public modality:FINAL <> ($this:com.rnett.krosstalk.Krosstalk) returnType:kotlin.Unit [fake_override]
     overridden:
       public final fun closeAllScopes (): kotlin.Unit declared in com.rnett.krosstalk.Krosstalk
@@ -192,4 +808,134 @@ Class: CLASS OBJECT name:MyKrosstalk modality:FINAL visibility:public superTypes
       public open fun toString (): kotlin.String [fake_override] declared in com.rnett.krosstalk.KrosstalkServer
       public open fun toString (): kotlin.String [fake_override] declared in com.rnett.krosstalk.Scopes
     $this: VALUE_PARAMETER name:<this> type:kotlin.Any
+  ANONYMOUS_INITIALIZER isStatic=false
+    BLOCK_BODY
+      CALL 'internal final fun addMethod <T> (key: kotlin.String, types: com.rnett.krosstalk.MethodTypes, vararg requiredScopes: kotlin.String, call: kotlin.coroutines.SuspendFunction1<kotlin.collections.Map<kotlin.String, *>, T of com.rnett.krosstalk.Krosstalk.addMethod>): kotlin.Unit declared in com.rnett.krosstalk.Krosstalk' type=kotlin.Unit origin=null
+        <T>: com.rnett.krosstalk.Data
+        $this: GET_VAR '<this>: com.rnett.krosstalk.MyKrosstalk declared in com.rnett.krosstalk.MyKrosstalk' type=com.rnett.krosstalk.MyKrosstalk origin=null
+        key: CONST String type=kotlin.String value="doAuthThing"
+        types: CONSTRUCTOR_CALL 'public constructor <init> (paramTypes: kotlin.collections.Map<kotlin.String, kotlin.reflect.KType>, resultType: kotlin.reflect.KType, instanceReceiverType: kotlin.reflect.KType?, extensionReceiverType: kotlin.reflect.KType?) [primary] declared in com.rnett.krosstalk.MethodTypes' type=com.rnett.krosstalk.MethodTypes origin=null
+          paramTypes: CALL 'public final fun mapOf <K, V> (vararg pairs: kotlin.Pair<K of kotlin.collections.MapsKt.mapOf, V of kotlin.collections.MapsKt.mapOf>): kotlin.collections.Map<K of kotlin.collections.MapsKt.mapOf, V of kotlin.collections.MapsKt.mapOf> declared in kotlin.collections.MapsKt' type=kotlin.collections.Map<kotlin.String, kotlin.reflect.KType> origin=null
+            <K>: kotlin.String
+            <V>: kotlin.reflect.KType
+            pairs: VARARG type=kotlin.Array<kotlin.Pair<kotlin.String, kotlin.reflect.KType>> varargElementType=kotlin.Pair<kotlin.String, kotlin.reflect.KType>
+              CALL 'public final fun to <A, B> (that: B of kotlin.TuplesKt.to): kotlin.Pair<A of kotlin.TuplesKt.to, B of kotlin.TuplesKt.to> declared in kotlin.TuplesKt' type=kotlin.Pair<kotlin.String, kotlin.reflect.KType> origin=null
+                <A>: kotlin.String
+                <B>: kotlin.reflect.KType
+                $receiver: CONST String type=kotlin.String value="num"
+                that: CALL 'public final fun typeOf <T> (): kotlin.reflect.KType [inline] declared in kotlin.reflect.TypeOfKt' type=kotlin.reflect.KType origin=null
+                  <T>: kotlin.Int
+          resultType: CALL 'public final fun typeOf <T> (): kotlin.reflect.KType [inline] declared in kotlin.reflect.TypeOfKt' type=kotlin.reflect.KType origin=null
+            <T>: com.rnett.krosstalk.Data
+          instanceReceiverType: CONST Null type=kotlin.reflect.KType? value=null
+          extensionReceiverType: CONST Null type=kotlin.reflect.KType? value=null
+        requiredScopes: VARARG type=kotlin.Array<kotlin.String> varargElementType=kotlin.String
+          CONST String type=kotlin.String value="auth"
+        call: FUN_EXPR type=kotlin.coroutines.SuspendFunction1<kotlin.collections.Map<kotlin.String, *>, com.rnett.krosstalk.Data> origin=LAMBDA
+          FUN LOCAL_FUNCTION_FOR_LAMBDA name:<anonymous> visibility:local modality:FINAL <> (arguments:kotlin.collections.Map<kotlin.String, *>) returnType:com.rnett.krosstalk.Data [suspend]
+            VALUE_PARAMETER name:arguments index:0 type:kotlin.collections.Map<kotlin.String, *>
+            BLOCK_BODY
+              RETURN type=kotlin.Nothing from='local final fun <anonymous> (arguments: kotlin.collections.Map<kotlin.String, *>): com.rnett.krosstalk.Data [suspend] declared in com.rnett.krosstalk.MyKrosstalk'
+                CALL 'public final fun doAuthThing (num: kotlin.Int): com.rnett.krosstalk.Data [suspend] declared in com.rnett.krosstalk' type=com.rnett.krosstalk.Data origin=null
+                  num: CALL 'internal final fun getValueAsOrError <K, V> (key: K of com.rnett.krosstalk.HelpersKt.getValueAsOrError, default: kotlin.Function0<V of com.rnett.krosstalk.HelpersKt.getValueAsOrError?>, nullError: kotlin.String, typeError: kotlin.String): V of com.rnett.krosstalk.HelpersKt.getValueAsOrError [inline] declared in com.rnett.krosstalk.HelpersKt' type=kotlin.Int origin=null
+                    <K>: kotlin.String
+                    <V>: kotlin.Int
+                    $receiver: GET_VAR 'arguments: kotlin.collections.Map<kotlin.String, *> declared in com.rnett.krosstalk.MyKrosstalk.<anonymous>' type=kotlin.collections.Map<kotlin.String, *> origin=null
+                    key: CONST String type=kotlin.String value="num"
+                    default: FUN_EXPR type=kotlin.Int? origin=LAMBDA
+                      FUN LOCAL_FUNCTION_FOR_LAMBDA name:<anonymous> visibility:local modality:FINAL <> () returnType:kotlin.Int?
+                        BLOCK_BODY
+                          RETURN type=kotlin.Nothing from='local final fun <anonymous> (arguments: kotlin.collections.Map<kotlin.String, *>): com.rnett.krosstalk.Data [suspend] declared in com.rnett.krosstalk.MyKrosstalk'
+                            CONST Null type=kotlin.Int? value=null
+                    nullError: CONST String type=kotlin.String value="No argument for num, but it was required"
+                    typeError: CONST String type=kotlin.String value="Argument for num was type $type, but the parameter is of type $required"
+      CALL 'internal final fun addMethod <T> (key: kotlin.String, types: com.rnett.krosstalk.MethodTypes, vararg requiredScopes: kotlin.String, call: kotlin.coroutines.SuspendFunction1<kotlin.collections.Map<kotlin.String, *>, T of com.rnett.krosstalk.Krosstalk.addMethod>): kotlin.Unit declared in com.rnett.krosstalk.Krosstalk' type=kotlin.Unit origin=null
+        <T>: kotlin.collections.List<kotlin.String>
+        $this: GET_VAR '<this>: com.rnett.krosstalk.MyKrosstalk declared in com.rnett.krosstalk.MyKrosstalk' type=com.rnett.krosstalk.MyKrosstalk origin=null
+        key: CONST String type=kotlin.String value="doThing"
+        types: CONSTRUCTOR_CALL 'public constructor <init> (paramTypes: kotlin.collections.Map<kotlin.String, kotlin.reflect.KType>, resultType: kotlin.reflect.KType, instanceReceiverType: kotlin.reflect.KType?, extensionReceiverType: kotlin.reflect.KType?) [primary] declared in com.rnett.krosstalk.MethodTypes' type=com.rnett.krosstalk.MethodTypes origin=null
+          paramTypes: CALL 'public final fun mapOf <K, V> (vararg pairs: kotlin.Pair<K of kotlin.collections.MapsKt.mapOf, V of kotlin.collections.MapsKt.mapOf>): kotlin.collections.Map<K of kotlin.collections.MapsKt.mapOf, V of kotlin.collections.MapsKt.mapOf> declared in kotlin.collections.MapsKt' type=kotlin.collections.Map<kotlin.String, kotlin.reflect.KType> origin=null
+            <K>: kotlin.String
+            <V>: kotlin.reflect.KType
+            pairs: VARARG type=kotlin.Array<kotlin.Pair<kotlin.String, kotlin.reflect.KType>> varargElementType=kotlin.Pair<kotlin.String, kotlin.reflect.KType>
+              CALL 'public final fun to <A, B> (that: B of kotlin.TuplesKt.to): kotlin.Pair<A of kotlin.TuplesKt.to, B of kotlin.TuplesKt.to> declared in kotlin.TuplesKt' type=kotlin.Pair<kotlin.String, kotlin.reflect.KType> origin=null
+                <A>: kotlin.String
+                <B>: kotlin.reflect.KType
+                $receiver: CONST String type=kotlin.String value="data"
+                that: CALL 'public final fun typeOf <T> (): kotlin.reflect.KType [inline] declared in kotlin.reflect.TypeOfKt' type=kotlin.reflect.KType origin=null
+                  <T>: com.rnett.krosstalk.Data
+          resultType: CALL 'public final fun typeOf <T> (): kotlin.reflect.KType [inline] declared in kotlin.reflect.TypeOfKt' type=kotlin.reflect.KType origin=null
+            <T>: kotlin.collections.List<kotlin.String>
+          instanceReceiverType: CONST Null type=kotlin.reflect.KType? value=null
+          extensionReceiverType: CONST Null type=kotlin.reflect.KType? value=null
+        requiredScopes: VARARG type=kotlin.Array<kotlin.String> varargElementType=kotlin.String
+        call: FUN_EXPR type=kotlin.coroutines.SuspendFunction1<kotlin.collections.Map<kotlin.String, *>, kotlin.collections.List<kotlin.String>> origin=LAMBDA
+          FUN LOCAL_FUNCTION_FOR_LAMBDA name:<anonymous> visibility:local modality:FINAL <> (arguments:kotlin.collections.Map<kotlin.String, *>) returnType:kotlin.collections.List<kotlin.String> [suspend]
+            VALUE_PARAMETER name:arguments index:0 type:kotlin.collections.Map<kotlin.String, *>
+            BLOCK_BODY
+              RETURN type=kotlin.Nothing from='local final fun <anonymous> (arguments: kotlin.collections.Map<kotlin.String, *>): kotlin.collections.List<kotlin.String> [suspend] declared in com.rnett.krosstalk.MyKrosstalk'
+                CALL 'public final fun doThing (data: com.rnett.krosstalk.Data): kotlin.collections.List<kotlin.String> [suspend] declared in com.rnett.krosstalk' type=kotlin.collections.List<kotlin.String> origin=null
+                  data: CALL 'internal final fun getValueAsOrError <K, V> (key: K of com.rnett.krosstalk.HelpersKt.getValueAsOrError, default: kotlin.Function0<V of com.rnett.krosstalk.HelpersKt.getValueAsOrError?>, nullError: kotlin.String, typeError: kotlin.String): V of com.rnett.krosstalk.HelpersKt.getValueAsOrError [inline] declared in com.rnett.krosstalk.HelpersKt' type=com.rnett.krosstalk.Data origin=null
+                    <K>: kotlin.String
+                    <V>: com.rnett.krosstalk.Data
+                    $receiver: GET_VAR 'arguments: kotlin.collections.Map<kotlin.String, *> declared in com.rnett.krosstalk.MyKrosstalk.<anonymous>' type=kotlin.collections.Map<kotlin.String, *> origin=null
+                    key: CONST String type=kotlin.String value="data"
+                    default: FUN_EXPR type=com.rnett.krosstalk.Data? origin=LAMBDA
+                      FUN LOCAL_FUNCTION_FOR_LAMBDA name:<anonymous> visibility:local modality:FINAL <> () returnType:com.rnett.krosstalk.Data?
+                        BLOCK_BODY
+                          RETURN type=kotlin.Nothing from='local final fun <anonymous> (arguments: kotlin.collections.Map<kotlin.String, *>): kotlin.collections.List<kotlin.String> [suspend] declared in com.rnett.krosstalk.MyKrosstalk'
+                            CONST Null type=com.rnett.krosstalk.Data? value=null
+                    nullError: CONST String type=kotlin.String value="No argument for data, but it was required"
+                    typeError: CONST String type=kotlin.String value="Argument for data was type $type, but the parameter is of type $required"
+      CALL 'internal final fun addMethod <T> (key: kotlin.String, types: com.rnett.krosstalk.MethodTypes, vararg requiredScopes: kotlin.String, call: kotlin.coroutines.SuspendFunction1<kotlin.collections.Map<kotlin.String, *>, T of com.rnett.krosstalk.Krosstalk.addMethod>): kotlin.Unit declared in com.rnett.krosstalk.Krosstalk' type=kotlin.Unit origin=null
+        <T>: kotlin.Double
+        $this: GET_VAR '<this>: com.rnett.krosstalk.MyKrosstalk declared in com.rnett.krosstalk.MyKrosstalk' type=com.rnett.krosstalk.MyKrosstalk origin=null
+        key: CONST String type=kotlin.String value="doExt"
+        types: CONSTRUCTOR_CALL 'public constructor <init> (paramTypes: kotlin.collections.Map<kotlin.String, kotlin.reflect.KType>, resultType: kotlin.reflect.KType, instanceReceiverType: kotlin.reflect.KType?, extensionReceiverType: kotlin.reflect.KType?) [primary] declared in com.rnett.krosstalk.MethodTypes' type=com.rnett.krosstalk.MethodTypes origin=null
+          paramTypes: CALL 'public final fun mapOf <K, V> (vararg pairs: kotlin.Pair<K of kotlin.collections.MapsKt.mapOf, V of kotlin.collections.MapsKt.mapOf>): kotlin.collections.Map<K of kotlin.collections.MapsKt.mapOf, V of kotlin.collections.MapsKt.mapOf> declared in kotlin.collections.MapsKt' type=kotlin.collections.Map<kotlin.String, kotlin.reflect.KType> origin=null
+            <K>: kotlin.String
+            <V>: kotlin.reflect.KType
+            pairs: VARARG type=kotlin.Array<kotlin.Pair<kotlin.String, kotlin.reflect.KType>> varargElementType=kotlin.Pair<kotlin.String, kotlin.reflect.KType>
+              CALL 'public final fun to <A, B> (that: B of kotlin.TuplesKt.to): kotlin.Pair<A of kotlin.TuplesKt.to, B of kotlin.TuplesKt.to> declared in kotlin.TuplesKt' type=kotlin.Pair<kotlin.String, kotlin.reflect.KType> origin=null
+                <A>: kotlin.String
+                <B>: kotlin.reflect.KType
+                $receiver: CONST String type=kotlin.String value="other"
+                that: CALL 'public final fun typeOf <T> (): kotlin.reflect.KType [inline] declared in kotlin.reflect.TypeOfKt' type=kotlin.reflect.KType origin=null
+                  <T>: kotlin.Int
+          resultType: CALL 'public final fun typeOf <T> (): kotlin.reflect.KType [inline] declared in kotlin.reflect.TypeOfKt' type=kotlin.reflect.KType origin=null
+            <T>: kotlin.Double
+          instanceReceiverType: CONST Null type=kotlin.reflect.KType? value=null
+          extensionReceiverType: CALL 'public final fun typeOf <T> (): kotlin.reflect.KType [inline] declared in kotlin.reflect.TypeOfKt' type=kotlin.reflect.KType origin=null
+            <T>: kotlin.Int
+        requiredScopes: VARARG type=kotlin.Array<kotlin.String> varargElementType=kotlin.String
+        call: FUN_EXPR type=kotlin.coroutines.SuspendFunction1<kotlin.collections.Map<kotlin.String, *>, kotlin.Double> origin=LAMBDA
+          FUN LOCAL_FUNCTION_FOR_LAMBDA name:<anonymous> visibility:local modality:FINAL <> (arguments:kotlin.collections.Map<kotlin.String, *>) returnType:kotlin.Double [suspend]
+            VALUE_PARAMETER name:arguments index:0 type:kotlin.collections.Map<kotlin.String, *>
+            BLOCK_BODY
+              RETURN type=kotlin.Nothing from='local final fun <anonymous> (arguments: kotlin.collections.Map<kotlin.String, *>): kotlin.Double [suspend] declared in com.rnett.krosstalk.MyKrosstalk'
+                CALL 'public final fun doExt (other: kotlin.Int): kotlin.Double [suspend] declared in com.rnett.krosstalk' type=kotlin.Double origin=null
+                  $receiver: CALL 'internal final fun getValueAsOrError <K, V> (key: K of com.rnett.krosstalk.HelpersKt.getValueAsOrError, default: kotlin.Function0<V of com.rnett.krosstalk.HelpersKt.getValueAsOrError?>, nullError: kotlin.String, typeError: kotlin.String): V of com.rnett.krosstalk.HelpersKt.getValueAsOrError [inline] declared in com.rnett.krosstalk.HelpersKt' type=kotlin.Int origin=null
+                    <K>: kotlin.String
+                    <V>: kotlin.Int
+                    $receiver: GET_VAR 'arguments: kotlin.collections.Map<kotlin.String, *> declared in com.rnett.krosstalk.MyKrosstalk.<anonymous>' type=kotlin.collections.Map<kotlin.String, *> origin=null
+                    key: CONST String type=kotlin.String value="$extension"
+                    default: FUN_EXPR type=kotlin.Int? origin=LAMBDA
+                      FUN LOCAL_FUNCTION_FOR_LAMBDA name:<anonymous> visibility:local modality:FINAL <> () returnType:kotlin.Int?
+                        BLOCK_BODY
+                          RETURN type=kotlin.Nothing from='local final fun <anonymous> (arguments: kotlin.collections.Map<kotlin.String, *>): kotlin.Double [suspend] declared in com.rnett.krosstalk.MyKrosstalk'
+                            CONST Null type=kotlin.Int? value=null
+                    nullError: CONST String type=kotlin.String value="No extension receiver argument, but it was required"
+                    typeError: CONST String type=kotlin.String value="Extension receiver argument was type $type, but parameter is of type $required"
+                  other: CALL 'internal final fun getValueAsOrError <K, V> (key: K of com.rnett.krosstalk.HelpersKt.getValueAsOrError, default: kotlin.Function0<V of com.rnett.krosstalk.HelpersKt.getValueAsOrError?>, nullError: kotlin.String, typeError: kotlin.String): V of com.rnett.krosstalk.HelpersKt.getValueAsOrError [inline] declared in com.rnett.krosstalk.HelpersKt' type=kotlin.Int origin=null
+                    <K>: kotlin.String
+                    <V>: kotlin.Int
+                    $receiver: GET_VAR 'arguments: kotlin.collections.Map<kotlin.String, *> declared in com.rnett.krosstalk.MyKrosstalk.<anonymous>' type=kotlin.collections.Map<kotlin.String, *> origin=null
+                    key: CONST String type=kotlin.String value="other"
+                    default: FUN_EXPR type=kotlin.Int? origin=LAMBDA
+                      FUN LOCAL_FUNCTION_FOR_LAMBDA name:<anonymous> visibility:local modality:FINAL <> () returnType:kotlin.Int?
+                        BLOCK_BODY
+                          RETURN type=kotlin.Nothing from='local final fun <anonymous> (arguments: kotlin.collections.Map<kotlin.String, *>): kotlin.Double [suspend] declared in com.rnett.krosstalk.MyKrosstalk'
+                            CONST Null type=kotlin.Int? value=null
+                    nullError: CONST String type=kotlin.String value="No argument for other, but it was required"
+                    typeError: CONST String type=kotlin.String value="Argument for other was type $type, but the parameter is of type $required"
 

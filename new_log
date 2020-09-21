@@ -1,0 +1,448 @@
+CLASS OBJECT name:MyKrosstalk modality:FINAL visibility:public superTypes:[com.rnett.krosstalk.Krosstalk; com.rnett.krosstalk.KrosstalkServer<com.rnett.krosstalk.ktor.server.KtorServerScope>; com.rnett.krosstalk.Scopes]
+  annotations:
+    OptIn(markerClass = [CLASS_REFERENCE 'CLASS IR_EXTERNAL_DECLARATION_STUB ANNOTATION_CLASS name:ExperimentalStdlibApi modality:FINAL visibility:public superTypes:[kotlin.Annotation]' type=kotlin.reflect.KClass<kotlin.ExperimentalStdlibApi>])
+    KrosstalkHost
+  $this: VALUE_PARAMETER INSTANCE_RECEIVER name:<this> type:com.rnett.krosstalk.MyKrosstalk
+  FIELD FIELD_FOR_OBJECT_INSTANCE name:INSTANCE type:com.rnett.krosstalk.MyKrosstalk visibility:public [final,static]
+  FIELD GENERATED_PROPERTY_REFERENCE name:$$delegatedProperties type:kotlin.Array<out kotlin.reflect.KProperty<out kotlin.Any?>> visibility:public/*package*/ [final,static]
+  CONSTRUCTOR visibility:private <> () returnType:com.rnett.krosstalk.MyKrosstalk [primary]
+    BLOCK_BODY
+      DELEGATING_CONSTRUCTOR_CALL 'public constructor <init> () [primary] declared in com.rnett.krosstalk.Krosstalk'
+      BLOCK type=kotlin.Unit origin=null
+  FIELD PROPERTY_BACKING_FIELD name:serialization type:com.rnett.krosstalk.KotlinxSerializationHandler visibility:private [final,static]
+  FUN DEFAULT_PROPERTY_ACCESSOR name:<get-serialization> visibility:public modality:OPEN <> ($this:com.rnett.krosstalk.MyKrosstalk) returnType:com.rnett.krosstalk.KotlinxSerializationHandler
+    correspondingProperty: PROPERTY name:serialization visibility:public modality:OPEN [val]
+    overridden:
+      public abstract fun <get-serialization> (): com.rnett.krosstalk.SerializationHandler declared in com.rnett.krosstalk.Krosstalk
+    $this: VALUE_PARAMETER name:<this> type:com.rnett.krosstalk.MyKrosstalk
+    BLOCK_BODY
+      RETURN type=kotlin.Nothing from='public open fun <get-serialization> (): com.rnett.krosstalk.KotlinxSerializationHandler declared in com.rnett.krosstalk.MyKrosstalk'
+        GET_FIELD 'FIELD PROPERTY_BACKING_FIELD name:serialization type:com.rnett.krosstalk.KotlinxSerializationHandler visibility:private [final,static]' type=com.rnett.krosstalk.KotlinxSerializationHandler origin=null
+  FIELD PROPERTY_BACKING_FIELD name:server type:com.rnett.krosstalk.ktor.server.KtorServer visibility:private [final,static]
+  FUN DEFAULT_PROPERTY_ACCESSOR name:<get-server> visibility:public modality:OPEN <> ($this:com.rnett.krosstalk.MyKrosstalk) returnType:com.rnett.krosstalk.ktor.server.KtorServer
+    correspondingProperty: PROPERTY name:server visibility:public modality:OPEN [val]
+    overridden:
+      public abstract fun <get-server> (): com.rnett.krosstalk.ServerHandler<S of com.rnett.krosstalk.KrosstalkServer> declared in com.rnett.krosstalk.KrosstalkServer
+    $this: VALUE_PARAMETER name:<this> type:com.rnett.krosstalk.MyKrosstalk
+    BLOCK_BODY
+      RETURN type=kotlin.Nothing from='public open fun <get-server> (): com.rnett.krosstalk.ktor.server.KtorServer declared in com.rnett.krosstalk.MyKrosstalk'
+        GET_FIELD 'FIELD PROPERTY_BACKING_FIELD name:server type:com.rnett.krosstalk.ktor.server.KtorServer visibility:private [final,static]' type=com.rnett.krosstalk.ktor.server.KtorServer origin=null
+  FIELD PROPERTY_DELEGATE name:auth$delegate type:kotlin.properties.ReadOnlyProperty<com.rnett.krosstalk.Krosstalk, com.rnett.krosstalk.ServerScopeHolder<com.rnett.krosstalk.ktor.server.KtorServerAuth>> visibility:private [final,static]
+  FUN DELEGATED_PROPERTY_ACCESSOR name:<get-auth> visibility:public modality:OPEN <> ($this:com.rnett.krosstalk.MyKrosstalk) returnType:com.rnett.krosstalk.ServerScopeHolder<com.rnett.krosstalk.ktor.server.KtorServerAuth>
+    correspondingProperty: PROPERTY name:auth visibility:public modality:OPEN [delegated,val]
+    overridden:
+      public abstract fun <get-auth> (): com.rnett.krosstalk.ScopeHolder declared in com.rnett.krosstalk.Scopes
+    $this: VALUE_PARAMETER name:<this> type:com.rnett.krosstalk.MyKrosstalk
+    BLOCK_BODY
+      RETURN type=kotlin.Nothing from='public open fun <get-auth> (): com.rnett.krosstalk.ServerScopeHolder<com.rnett.krosstalk.ktor.server.KtorServerAuth> declared in com.rnett.krosstalk.MyKrosstalk'
+        CALL 'public abstract fun getValue (thisRef: T of kotlin.properties.ReadOnlyProperty, property: kotlin.reflect.KProperty<*>): V of kotlin.properties.ReadOnlyProperty [operator] declared in kotlin.properties.ReadOnlyProperty' type=com.rnett.krosstalk.ServerScopeHolder<com.rnett.krosstalk.ktor.server.KtorServerAuth> origin=null
+          $this: GET_FIELD 'FIELD PROPERTY_DELEGATE name:auth$delegate type:kotlin.properties.ReadOnlyProperty<com.rnett.krosstalk.Krosstalk, com.rnett.krosstalk.ServerScopeHolder<com.rnett.krosstalk.ktor.server.KtorServerAuth>> visibility:private [final,static]' type=kotlin.properties.ReadOnlyProperty<com.rnett.krosstalk.Krosstalk, com.rnett.krosstalk.ServerScopeHolder<com.rnett.krosstalk.ktor.server.KtorServerAuth>> origin=null
+          thisRef: GET_VAR '<this>: com.rnett.krosstalk.MyKrosstalk declared in com.rnett.krosstalk.MyKrosstalk.<get-auth>' type=com.rnett.krosstalk.MyKrosstalk origin=null
+          property: CALL 'public final fun get (index: kotlin.Int): T of kotlin.Array [operator] declared in kotlin.Array' type=T of kotlin.Array origin=null
+            $this: GET_FIELD 'FIELD GENERATED_PROPERTY_REFERENCE name:$$delegatedProperties type:kotlin.Array<out kotlin.reflect.KProperty<out kotlin.Any?>> visibility:public/*package*/ [final,static]' type=kotlin.Array<out kotlin.reflect.KProperty<out kotlin.Any?>> origin=null
+            index: CONST Int type=kotlin.Int value=0
+  FUN FAKE_OVERRIDE name:addMethod visibility:public modality:FINAL <T> ($this:com.rnett.krosstalk.Krosstalk, key:kotlin.String, types:com.rnett.krosstalk.MethodTypes, requiredScopes:kotlin.Array<out kotlin.String>, call:kotlin.coroutines.SuspendFunction1<kotlin.collections.Map<kotlin.String, *>, T of com.rnett.krosstalk.MyKrosstalk.addMethod>) returnType:kotlin.Unit [fake_override]
+    overridden:
+      public final fun addMethod <T> (key: kotlin.String, types: com.rnett.krosstalk.MethodTypes, vararg requiredScopes: kotlin.String, call: kotlin.coroutines.SuspendFunction1<kotlin.collections.Map<kotlin.String, *>, T of com.rnett.krosstalk.Krosstalk.addMethod>): kotlin.Unit declared in com.rnett.krosstalk.Krosstalk
+    TYPE_PARAMETER name:T index:0 variance: superTypes:[kotlin.Any?]
+    $this: VALUE_PARAMETER name:<this> type:com.rnett.krosstalk.Krosstalk
+    VALUE_PARAMETER name:key index:0 type:kotlin.String
+    VALUE_PARAMETER name:types index:1 type:com.rnett.krosstalk.MethodTypes
+    VALUE_PARAMETER name:requiredScopes index:2 type:kotlin.Array<out kotlin.String> varargElementType:kotlin.String [vararg]
+    VALUE_PARAMETER name:call index:3 type:kotlin.coroutines.SuspendFunction1<kotlin.collections.Map<kotlin.String, *>, T of com.rnett.krosstalk.MyKrosstalk.addMethod>
+  FUN FAKE_OVERRIDE name:closeAllScopes visibility:public modality:FINAL <> ($this:com.rnett.krosstalk.Krosstalk) returnType:kotlin.Unit [fake_override]
+    overridden:
+      public final fun closeAllScopes (): kotlin.Unit declared in com.rnett.krosstalk.Krosstalk
+    $this: VALUE_PARAMETER name:<this> type:com.rnett.krosstalk.Krosstalk
+  FUN FAKE_OVERRIDE name:<get-methods> visibility:public modality:FINAL <> ($this:com.rnett.krosstalk.Krosstalk) returnType:kotlin.collections.Map<kotlin.String, com.rnett.krosstalk.MethodDefinition<*>> [fake_override]
+    correspondingProperty: PROPERTY FAKE_OVERRIDE name:methods visibility:public modality:FINAL [fake_override,val]
+    overridden:
+      public final fun <get-methods> (): kotlin.collections.Map<kotlin.String, com.rnett.krosstalk.MethodDefinition<*>> declared in com.rnett.krosstalk.Krosstalk
+    $this: VALUE_PARAMETER name:<this> type:com.rnett.krosstalk.Krosstalk
+  FUN DEFAULT_IMPLS_BRIDGE name:scope visibility:public modality:OPEN <S1> ($this:com.rnett.krosstalk.KrosstalkServer<com.rnett.krosstalk.ktor.server.KtorServerScope>, server:S1 of com.rnett.krosstalk.MyKrosstalk.scope) returnType:com.rnett.krosstalk.ScopeAdder<com.rnett.krosstalk.ServerScopeHolder<S1 of com.rnett.krosstalk.MyKrosstalk.scope>>
+    overridden:
+      public open fun scope <S1> (server: S1 of com.rnett.krosstalk.KrosstalkServer.scope): com.rnett.krosstalk.ScopeAdder<com.rnett.krosstalk.ServerScopeHolder<S1 of com.rnett.krosstalk.KrosstalkServer.scope>> declared in com.rnett.krosstalk.KrosstalkServer
+    TYPE_PARAMETER name:S1 index:0 variance: superTypes:[com.rnett.krosstalk.ktor.server.KtorServerScope]
+    $this: VALUE_PARAMETER name:<this> type:com.rnett.krosstalk.KrosstalkServer<com.rnett.krosstalk.ktor.server.KtorServerScope>
+    VALUE_PARAMETER name:server index:0 type:S1 of com.rnett.krosstalk.MyKrosstalk.scope
+    BLOCK_BODY
+      RETURN type=kotlin.Nothing from='public open fun scope <S1> (server: S1 of com.rnett.krosstalk.MyKrosstalk.scope): com.rnett.krosstalk.ScopeAdder<com.rnett.krosstalk.ServerScopeHolder<S1 of com.rnett.krosstalk.MyKrosstalk.scope>> declared in com.rnett.krosstalk.MyKrosstalk'
+        CALL 'public open fun scope <S, S1> (this: com.rnett.krosstalk.KrosstalkServer<S of com.rnett.krosstalk.KrosstalkServer.DefaultImpls.scope>, server: S1 of com.rnett.krosstalk.KrosstalkServer.DefaultImpls.scope): com.rnett.krosstalk.ScopeAdder<com.rnett.krosstalk.ServerScopeHolder<S1 of com.rnett.krosstalk.KrosstalkServer.scope>> declared in com.rnett.krosstalk.KrosstalkServer.DefaultImpls' type=com.rnett.krosstalk.ScopeAdder<com.rnett.krosstalk.ServerScopeHolder<S1 of com.rnett.krosstalk.MyKrosstalk.scope>> origin=null
+          <S>: kotlin.Any?
+          <S1>: S1 of com.rnett.krosstalk.MyKrosstalk.scope
+          this: GET_VAR '<this>: com.rnett.krosstalk.KrosstalkServer<com.rnett.krosstalk.ktor.server.KtorServerScope> declared in com.rnett.krosstalk.MyKrosstalk.scope' type=com.rnett.krosstalk.KrosstalkServer<com.rnett.krosstalk.ktor.server.KtorServerScope> origin=null
+          server: GET_VAR 'server: S1 of com.rnett.krosstalk.MyKrosstalk.scope declared in com.rnett.krosstalk.MyKrosstalk.scope' type=S1 of com.rnett.krosstalk.MyKrosstalk.scope origin=null
+  FUN FAKE_OVERRIDE name:<get-endpointName> visibility:public modality:OPEN <> ($this:com.rnett.krosstalk.Krosstalk) returnType:kotlin.String [fake_override]
+    correspondingProperty: PROPERTY FAKE_OVERRIDE name:endpointName visibility:public modality:OPEN [fake_override,val]
+    overridden:
+      public open fun <get-endpointName> (): kotlin.String declared in com.rnett.krosstalk.Krosstalk
+    $this: VALUE_PARAMETER name:<this> type:com.rnett.krosstalk.Krosstalk
+  FUN FAKE_OVERRIDE name:equals visibility:public modality:OPEN <> ($this:kotlin.Any, other:kotlin.Any?) returnType:kotlin.Boolean [fake_override,operator]
+    overridden:
+      public open fun equals (other: kotlin.Any?): kotlin.Boolean [fake_override,operator] declared in com.rnett.krosstalk.Krosstalk
+      public open fun equals (other: kotlin.Any?): kotlin.Boolean [fake_override,operator] declared in com.rnett.krosstalk.KrosstalkServer
+      public open fun equals (other: kotlin.Any?): kotlin.Boolean [fake_override,operator] declared in com.rnett.krosstalk.Scopes
+    $this: VALUE_PARAMETER name:<this> type:kotlin.Any
+    VALUE_PARAMETER name:other index:0 type:kotlin.Any?
+  FUN FAKE_OVERRIDE name:hashCode visibility:public modality:OPEN <> ($this:kotlin.Any) returnType:kotlin.Int [fake_override]
+    overridden:
+      public open fun hashCode (): kotlin.Int [fake_override] declared in com.rnett.krosstalk.Krosstalk
+      public open fun hashCode (): kotlin.Int [fake_override] declared in com.rnett.krosstalk.KrosstalkServer
+      public open fun hashCode (): kotlin.Int [fake_override] declared in com.rnett.krosstalk.Scopes
+    $this: VALUE_PARAMETER name:<this> type:kotlin.Any
+  FUN FAKE_OVERRIDE name:toString visibility:public modality:OPEN <> ($this:kotlin.Any) returnType:kotlin.String [fake_override]
+    overridden:
+      public open fun toString (): kotlin.String [fake_override] declared in com.rnett.krosstalk.Krosstalk
+      public open fun toString (): kotlin.String [fake_override] declared in com.rnett.krosstalk.KrosstalkServer
+      public open fun toString (): kotlin.String [fake_override] declared in com.rnett.krosstalk.Scopes
+    $this: VALUE_PARAMETER name:<this> type:kotlin.Any
+  FUN name:testInitMethod visibility:private modality:FINAL <> () returnType:kotlin.Unit
+    BLOCK_BODY
+      CALL 'public final fun println (message: kotlin.Any?): kotlin.Unit [inline] declared in kotlin.io.ConsoleKt' type=kotlin.Unit origin=null
+        message: GET_FIELD 'FIELD FIELD_FOR_OBJECT_INSTANCE name:INSTANCE type:com.rnett.krosstalk.MyKrosstalk visibility:public [final,static]' type=com.rnett.krosstalk.MyKrosstalk origin=null
+  FUN CLASS_STATIC_INITIALIZER name:<clinit> visibility:public/*package*/ modality:FINAL <> () returnType:kotlin.Unit
+    BLOCK_BODY
+      SET_FIELD 'FIELD FIELD_FOR_OBJECT_INSTANCE name:INSTANCE type:com.rnett.krosstalk.MyKrosstalk visibility:public [final,static]' type=kotlin.Unit origin=INITIALIZE_FIELD
+        value: CONSTRUCTOR_CALL 'private constructor <init> () [primary] declared in com.rnett.krosstalk.MyKrosstalk' type=com.rnett.krosstalk.MyKrosstalk origin=null
+      SET_FIELD 'FIELD GENERATED_PROPERTY_REFERENCE name:$$delegatedProperties type:kotlin.Array<out kotlin.reflect.KProperty<out kotlin.Any?>> visibility:public/*package*/ [final,static]' type=kotlin.Unit origin=INITIALIZE_FIELD
+        value: BLOCK type=kotlin.Array<out kotlin.reflect.KProperty<out kotlin.Any?>> origin=null
+          VAR IR_TEMPORARY_VARIABLE name:tmp_0 type:kotlin.Array<out kotlin.reflect.KProperty<out kotlin.Any?>> [val]
+            CALL 'public final fun arrayOfNulls <T> (size: kotlin.Int): kotlin.Array<T of kotlin.arrayOfNulls?> declared in kotlin' type=kotlin.Array<out kotlin.reflect.KProperty<out kotlin.Any?>> origin=null
+              <T>: kotlin.reflect.KProperty<out kotlin.Any?>
+              size: CONST Int type=kotlin.Int value=1
+          CALL 'public final fun set (index: kotlin.Int, value: T of kotlin.Array): kotlin.Unit [operator] declared in kotlin.Array' type=kotlin.Unit origin=null
+            $this: GET_VAR 'val tmp_0: kotlin.Array<out kotlin.reflect.KProperty<out kotlin.Any?>> [val] declared in com.rnett.krosstalk.MyKrosstalk.<clinit>' type=kotlin.Array<out kotlin.reflect.KProperty<out kotlin.Any?>> origin=null
+            index: CONST Int type=kotlin.Int value=0
+            value: CALL 'public final fun property1 (p: kotlin.jvm.internal.PropertyReference1): kotlin.reflect.KProperty1<*, *> declared in kotlin.jvm.internal.Reflection' type=kotlin.reflect.KProperty1<*, *> origin=null
+              p: CONSTRUCTOR_CALL 'public constructor <init> (owner: kotlin.reflect.KDeclarationContainer, name: kotlin.String, string: kotlin.String) declared in kotlin.jvm.internal.PropertyReference1Impl' type=kotlin.jvm.internal.PropertyReference1Impl origin=null
+                owner: CLASS_REFERENCE 'CLASS IR_EXTERNAL_DECLARATION_STUB INTERFACE name:KClass modality:ABSTRACT visibility:public superTypes:[kotlin.reflect.KDeclarationContainer; kotlin.reflect.KAnnotatedElement; kotlin.reflect.KClassifier]' type=kotlin.reflect.KClass<*>
+                name: CONST String type=kotlin.String value="auth"
+                string: CALL 'public final fun <signature-string> (v: kotlin.Any?): kotlin.String declared in kotlin.jvm.internal' type=kotlin.String origin=null
+                  v: FUNCTION_REFERENCE 'public open fun <get-auth> (): com.rnett.krosstalk.ServerScopeHolder<com.rnett.krosstalk.ktor.server.KtorServerAuth> declared in com.rnett.krosstalk.MyKrosstalk' type=kotlin.reflect.KProperty1<com.rnett.krosstalk.MyKrosstalk, com.rnett.krosstalk.ServerScopeHolder<com.rnett.krosstalk.ktor.server.KtorServerAuth>> origin=null reflectionTarget=<same>
+          GET_VAR 'val tmp_0: kotlin.Array<out kotlin.reflect.KProperty<out kotlin.Any?>> [val] declared in com.rnett.krosstalk.MyKrosstalk.<clinit>' type=kotlin.Array<out kotlin.reflect.KProperty<out kotlin.Any?>> origin=null
+      SET_FIELD 'FIELD PROPERTY_BACKING_FIELD name:serialization type:com.rnett.krosstalk.KotlinxSerializationHandler visibility:private [final,static]' type=kotlin.Unit origin=INITIALIZE_FIELD
+        value: GET_FIELD 'FIELD FIELD_FOR_OBJECT_INSTANCE name:INSTANCE type:com.rnett.krosstalk.KotlinxSerializationHandler visibility:public [final,static]' type=com.rnett.krosstalk.KotlinxSerializationHandler origin=null
+      SET_FIELD 'FIELD PROPERTY_BACKING_FIELD name:server type:com.rnett.krosstalk.ktor.server.KtorServer visibility:private [final,static]' type=kotlin.Unit origin=INITIALIZE_FIELD
+        value: GET_FIELD 'FIELD FIELD_FOR_OBJECT_INSTANCE name:INSTANCE type:com.rnett.krosstalk.ktor.server.KtorServer visibility:public [final,static]' type=com.rnett.krosstalk.ktor.server.KtorServer origin=null
+      SET_FIELD 'FIELD PROPERTY_DELEGATE name:auth$delegate type:kotlin.properties.ReadOnlyProperty<com.rnett.krosstalk.Krosstalk, com.rnett.krosstalk.ServerScopeHolder<com.rnett.krosstalk.ktor.server.KtorServerAuth>> visibility:private [final,static]' type=kotlin.Unit origin=INITIALIZE_FIELD
+        value: CALL 'public final fun provideDelegate (thisRef: com.rnett.krosstalk.Krosstalk, prop: kotlin.reflect.KProperty<*>): kotlin.properties.ReadOnlyProperty<com.rnett.krosstalk.Krosstalk, S of com.rnett.krosstalk.ScopeAdder> [operator] declared in com.rnett.krosstalk.ScopeAdder' type=kotlin.properties.ReadOnlyProperty<com.rnett.krosstalk.Krosstalk, com.rnett.krosstalk.ServerScopeHolder<com.rnett.krosstalk.ktor.server.KtorServerAuth>> origin=null
+          $this: CALL 'public open fun scope <S1> (server: S1 of com.rnett.krosstalk.MyKrosstalk.scope): com.rnett.krosstalk.ScopeAdder<com.rnett.krosstalk.ServerScopeHolder<S1 of com.rnett.krosstalk.MyKrosstalk.scope>> [fake_override] declared in com.rnett.krosstalk.MyKrosstalk' type=com.rnett.krosstalk.ScopeAdder<com.rnett.krosstalk.ServerScopeHolder<com.rnett.krosstalk.ktor.server.KtorServerAuth>> origin=null
+            <S1>: com.rnett.krosstalk.ktor.server.KtorServerAuth
+            $this: GET_FIELD 'FIELD FIELD_FOR_OBJECT_INSTANCE name:INSTANCE type:com.rnett.krosstalk.MyKrosstalk visibility:public [final,static]' type=com.rnett.krosstalk.MyKrosstalk origin=null
+            server: CONSTRUCTOR_CALL 'public constructor <init> (accounts: kotlin.collections.Map<kotlin.String, kotlin.String>) [primary] declared in com.rnett.krosstalk.ktor.server.KtorServerAuth' type=com.rnett.krosstalk.ktor.server.KtorServerAuth origin=null
+              accounts: CALL 'public final fun mapOf <K, V> (pair: kotlin.Pair<K of kotlin.collections.MapsKt.mapOf, V of kotlin.collections.MapsKt.mapOf>): kotlin.collections.Map<K of kotlin.collections.MapsKt.mapOf, V of kotlin.collections.MapsKt.mapOf> declared in kotlin.collections.MapsKt' type=kotlin.collections.Map<kotlin.String, kotlin.String> origin=null
+                <K>: kotlin.String
+                <V>: kotlin.String
+                pair: CALL 'public final fun to <A, B> (that: B of kotlin.TuplesKt.to): kotlin.Pair<A of kotlin.TuplesKt.to, B of kotlin.TuplesKt.to> declared in kotlin.TuplesKt' type=kotlin.Pair<kotlin.String, kotlin.String> origin=null
+                  <A>: kotlin.String
+                  <B>: kotlin.String
+                  $receiver: CONST String type=kotlin.String value="username"
+                  that: CONST String type=kotlin.String value="password"
+          thisRef: GET_FIELD 'FIELD FIELD_FOR_OBJECT_INSTANCE name:INSTANCE type:com.rnett.krosstalk.MyKrosstalk visibility:public [final,static]' type=com.rnett.krosstalk.MyKrosstalk origin=null
+          prop: CALL 'public final fun get (index: kotlin.Int): T of kotlin.Array [operator] declared in kotlin.Array' type=T of kotlin.Array origin=null
+            $this: GET_FIELD 'FIELD GENERATED_PROPERTY_REFERENCE name:$$delegatedProperties type:kotlin.Array<out kotlin.reflect.KProperty<out kotlin.Any?>> visibility:public/*package*/ [final,static]' type=kotlin.Array<out kotlin.reflect.KProperty<out kotlin.Any?>> origin=null
+            index: CONST Int type=kotlin.Int value=0
+      BLOCK type=kotlin.Unit origin=SYNTHESIZED_INIT_BLOCK
+        COMPOSITE type=kotlin.Unit origin=null
+        CALL 'private final fun testInitMethod (): kotlin.Unit declared in com.rnett.krosstalk.MyKrosstalk' type=kotlin.Unit origin=null
+      BLOCK type=kotlin.Unit origin=SYNTHESIZED_INIT_BLOCK
+        CALL 'public final fun addMethod <T> (key: kotlin.String, types: com.rnett.krosstalk.MethodTypes, vararg requiredScopes: kotlin.String, call: kotlin.coroutines.SuspendFunction1<kotlin.collections.Map<kotlin.String, *>, T of com.rnett.krosstalk.Krosstalk.addMethod>): kotlin.Unit declared in com.rnett.krosstalk.Krosstalk' type=kotlin.Unit origin=null
+          <T>: com.rnett.krosstalk.Data
+          $this: GET_FIELD 'FIELD FIELD_FOR_OBJECT_INSTANCE name:INSTANCE type:com.rnett.krosstalk.MyKrosstalk visibility:public [final,static]' type=com.rnett.krosstalk.MyKrosstalk origin=null
+          key: CONST String type=kotlin.String value="doAuthThing"
+          types: CONSTRUCTOR_CALL 'public constructor <init> (paramTypes: kotlin.collections.Map<kotlin.String, kotlin.reflect.KType>, resultType: kotlin.reflect.KType, instanceReceiverType: kotlin.reflect.KType?, extensionReceiverType: kotlin.reflect.KType?, $mask0: kotlin.Int, $marker: kotlin.jvm.internal.DefaultConstructorMarker?) declared in com.rnett.krosstalk.MethodTypes' type=com.rnett.krosstalk.MethodTypes origin=DEFAULT_DISPATCH_CALL
+            paramTypes: CALL 'public final fun mapOf <K, V> (vararg pairs: kotlin.Pair<K of kotlin.collections.MapsKt.mapOf, V of kotlin.collections.MapsKt.mapOf>): kotlin.collections.Map<K of kotlin.collections.MapsKt.mapOf, V of kotlin.collections.MapsKt.mapOf> declared in kotlin.collections.MapsKt' type=kotlin.collections.Map<K of kotlin.collections.MapsKt.mapOf, V of kotlin.collections.MapsKt.mapOf> origin=null
+              <K>: kotlin.String
+              <V>: kotlin.reflect.KType
+              pairs: BLOCK type=kotlin.Array<kotlin.Pair<kotlin.String, kotlin.reflect.KType>> origin=null
+                VAR IR_TEMPORARY_VARIABLE name:tmp_1 type:kotlin.Array<kotlin.Pair<kotlin.String, kotlin.reflect.KType>> [val]
+                  CALL 'public final fun arrayOfNulls <T> (size: kotlin.Int): kotlin.Array<T of kotlin.arrayOfNulls?> declared in kotlin' type=kotlin.Array<kotlin.Pair<kotlin.String, kotlin.reflect.KType>> origin=null
+                    <T>: kotlin.Pair<kotlin.String, kotlin.reflect.KType>
+                    size: CONST Int type=kotlin.Int value=1
+                CALL 'public final fun set (index: kotlin.Int, value: T of kotlin.Array): kotlin.Unit [operator] declared in kotlin.Array' type=kotlin.Unit origin=null
+                  $this: GET_VAR 'val tmp_1: kotlin.Array<kotlin.Pair<kotlin.String, kotlin.reflect.KType>> [val] declared in com.rnett.krosstalk.MyKrosstalk.<clinit>' type=kotlin.Array<kotlin.Pair<kotlin.String, kotlin.reflect.KType>> origin=null
+                  index: CONST Int type=kotlin.Int value=0
+                  value: CALL 'public final fun to <A, B> (that: B of kotlin.TuplesKt.to): kotlin.Pair<A of kotlin.TuplesKt.to, B of kotlin.TuplesKt.to> declared in kotlin.TuplesKt' type=kotlin.Pair<A of kotlin.TuplesKt.to, B of kotlin.TuplesKt.to> origin=null
+                    <A>: kotlin.String
+                    <B>: kotlin.reflect.KType
+                    $receiver: CONST String type=kotlin.String value="num"
+                    that: CALL 'public final fun typeOf <T> (): kotlin.reflect.KType [inline] declared in kotlin.reflect.TypeOfKt' type=kotlin.reflect.KType origin=null
+                      <T>: kotlin.Int
+                GET_VAR 'val tmp_1: kotlin.Array<kotlin.Pair<kotlin.String, kotlin.reflect.KType>> [val] declared in com.rnett.krosstalk.MyKrosstalk.<clinit>' type=kotlin.Array<kotlin.Pair<kotlin.String, kotlin.reflect.KType>> origin=null
+            resultType: CALL 'public final fun typeOf <T> (): kotlin.reflect.KType [inline] declared in kotlin.reflect.TypeOfKt' type=kotlin.reflect.KType origin=null
+              <T>: com.rnett.krosstalk.Data
+            instanceReceiverType: CONST Null type=kotlin.reflect.KType value=null
+            extensionReceiverType: COMPOSITE type=kotlin.reflect.KType? origin=DEFAULT_VALUE
+              CONST Null type=kotlin.reflect.KType? value=null
+            $mask0: CONST Int type=kotlin.Int value=8
+            $marker: CONST Null type=kotlin.jvm.internal.DefaultConstructorMarker? value=null
+          requiredScopes: BLOCK type=kotlin.Array<kotlin.String> origin=null
+            VAR IR_TEMPORARY_VARIABLE name:tmp_2 type:kotlin.Array<kotlin.String> [val]
+              CALL 'public final fun arrayOfNulls <T> (size: kotlin.Int): kotlin.Array<T of kotlin.arrayOfNulls?> declared in kotlin' type=kotlin.Array<kotlin.String> origin=null
+                <T>: kotlin.String
+                size: CONST Int type=kotlin.Int value=1
+            CALL 'public final fun set (index: kotlin.Int, value: T of kotlin.Array): kotlin.Unit [operator] declared in kotlin.Array' type=kotlin.Unit origin=null
+              $this: GET_VAR 'val tmp_2: kotlin.Array<kotlin.String> [val] declared in com.rnett.krosstalk.MyKrosstalk.<clinit>' type=kotlin.Array<kotlin.String> origin=null
+              index: CONST Int type=kotlin.Int value=0
+              value: CONST String type=kotlin.String value="auth"
+            GET_VAR 'val tmp_2: kotlin.Array<kotlin.String> [val] declared in com.rnett.krosstalk.MyKrosstalk.<clinit>' type=kotlin.Array<kotlin.String> origin=null
+          call: BLOCK type=kotlin.coroutines.SuspendFunction1<kotlin.collections.Map<kotlin.String, *>, com.rnett.krosstalk.Data> origin=LAMBDA
+            FUN LOCAL_FUNCTION_FOR_LAMBDA name:<anonymous> visibility:public modality:FINAL <> (arguments:kotlin.collections.Map<kotlin.String, *>) returnType:com.rnett.krosstalk.Data [suspend]
+              VALUE_PARAMETER name:arguments index:0 type:kotlin.collections.Map<kotlin.String, *>
+              EXPRESSION_BODY
+                CONST Null type=com.rnett.krosstalk.Data value=null
+            BLOCK type=com.rnett.krosstalk.MyKrosstalk.<clinit>.<Continuation> origin=null
+              CLASS SUSPEND_LAMBDA CLASS name:<Continuation> modality:FINAL visibility:public/*package*/ superTypes:[kotlin.coroutines.jvm.internal.SuspendLambda; kotlin.jvm.functions.Function2<kotlin.collections.Map<kotlin.String, *>, kotlin.coroutines.Continuation<com.rnett.krosstalk.Data>?, kotlin.Any?>]
+                $this: VALUE_PARAMETER INSTANCE_RECEIVER name:<this> type:com.rnett.krosstalk.MyKrosstalk.<clinit>.<Continuation>
+                FIELD name:label type:kotlin.Int visibility:public/*package*/
+                FIELD FIELD_FOR_CAPTURED_VALUE name:arguments type:kotlin.collections.Map<kotlin.String, *> visibility:public/*package*/
+                CONSTRUCTOR visibility:public/*package*/ <> ($completion:kotlin.coroutines.Continuation<com.rnett.krosstalk.MyKrosstalk.<clinit>.<Continuation>>?) returnType:com.rnett.krosstalk.MyKrosstalk.<clinit>.<Continuation> [primary]
+                  VALUE_PARAMETER name:$completion index:0 type:kotlin.coroutines.Continuation<com.rnett.krosstalk.MyKrosstalk.<clinit>.<Continuation>>?
+                  BLOCK_BODY
+                    DELEGATING_CONSTRUCTOR_CALL 'public constructor <init> (arity: kotlin.Int, $completion: kotlin.coroutines.Continuation<kotlin.Any?>?) declared in kotlin.coroutines.jvm.internal.SuspendLambda'
+                      arity: CONST Int type=kotlin.Int value=2
+                      $completion: GET_VAR '$completion: kotlin.coroutines.Continuation<com.rnett.krosstalk.MyKrosstalk.<clinit>.<Continuation>>? declared in com.rnett.krosstalk.MyKrosstalk.<clinit>.<Continuation>.<init>' type=kotlin.coroutines.Continuation<com.rnett.krosstalk.MyKrosstalk.<clinit>.<Continuation>>? origin=null
+                FUN name:invokeSuspend visibility:public modality:FINAL <> ($this:com.rnett.krosstalk.MyKrosstalk.<clinit>.<Continuation>, $result:kotlin.Result<kotlin.Any?>) returnType:kotlin.Any?
+                  overridden:
+                    protected abstract fun invokeSuspend ($result: kotlin.Result<kotlin.Any?>): kotlin.Any? declared in kotlin.coroutines.jvm.internal.SuspendLambda
+                  $this: VALUE_PARAMETER INSTANCE_RECEIVER name:<this> type:com.rnett.krosstalk.MyKrosstalk.<clinit>.<Continuation>
+                  VALUE_PARAMETER name:$result index:0 type:kotlin.Result<kotlin.Any?>
+                  EXPRESSION_BODY
+                    CONST Null type=com.rnett.krosstalk.Data value=null
+                FUN name:create visibility:public modality:FINAL <> ($this:com.rnett.krosstalk.MyKrosstalk.<clinit>.<Continuation>, value:kotlin.Any?, $completion:kotlin.coroutines.Continuation<kotlin.Nothing>) returnType:kotlin.coroutines.Continuation<kotlin.Unit>
+                  overridden:
+                    public open fun create (value: kotlin.Any?, $completion: kotlin.coroutines.Continuation<kotlin.Nothing>): kotlin.coroutines.Continuation<kotlin.Unit> declared in kotlin.coroutines.jvm.internal.SuspendLambda
+                  $this: VALUE_PARAMETER INSTANCE_RECEIVER name:<this> type:com.rnett.krosstalk.MyKrosstalk.<clinit>.<Continuation>
+                  VALUE_PARAMETER name:value index:0 type:kotlin.Any?
+                  VALUE_PARAMETER name:$completion index:1 type:kotlin.coroutines.Continuation<kotlin.Nothing>
+                  BLOCK_BODY
+                    VAR IR_TEMPORARY_VARIABLE name:tmp_3 type:com.rnett.krosstalk.MyKrosstalk.<clinit>.<Continuation> [val]
+                      CONSTRUCTOR_CALL 'public/*package*/ constructor <init> ($completion: kotlin.coroutines.Continuation<com.rnett.krosstalk.MyKrosstalk.<clinit>.<Continuation>>?) [primary] declared in com.rnett.krosstalk.MyKrosstalk.<clinit>.<Continuation>' type=com.rnett.krosstalk.MyKrosstalk.<clinit>.<Continuation> origin=null
+                        $completion: GET_VAR '$completion: kotlin.coroutines.Continuation<kotlin.Nothing> declared in com.rnett.krosstalk.MyKrosstalk.<clinit>.<Continuation>.create' type=kotlin.coroutines.Continuation<kotlin.Nothing> origin=null
+                    SET_FIELD 'FIELD FIELD_FOR_CAPTURED_VALUE name:arguments type:kotlin.collections.Map<kotlin.String, *> visibility:public/*package*/' type=kotlin.Unit origin=null
+                      receiver: GET_VAR 'val tmp_3: com.rnett.krosstalk.MyKrosstalk.<clinit>.<Continuation> [val] declared in com.rnett.krosstalk.MyKrosstalk.<clinit>.<Continuation>.create' type=com.rnett.krosstalk.MyKrosstalk.<clinit>.<Continuation> origin=null
+                      value: GET_VAR 'value: kotlin.Any? declared in com.rnett.krosstalk.MyKrosstalk.<clinit>.<Continuation>.create' type=kotlin.Any? origin=null
+                    RETURN type=kotlin.Nothing from='public final fun create (value: kotlin.Any?, $completion: kotlin.coroutines.Continuation<kotlin.Nothing>): kotlin.coroutines.Continuation<kotlin.Unit> declared in com.rnett.krosstalk.MyKrosstalk.<clinit>.<Continuation>'
+                      GET_VAR 'val tmp_3: com.rnett.krosstalk.MyKrosstalk.<clinit>.<Continuation> [val] declared in com.rnett.krosstalk.MyKrosstalk.<clinit>.<Continuation>.create' type=com.rnett.krosstalk.MyKrosstalk.<clinit>.<Continuation> origin=null
+                FUN name:invoke visibility:public modality:FINAL <> ($this:com.rnett.krosstalk.MyKrosstalk.<clinit>.<Continuation>, p1:P1 of kotlin.jvm.functions.Function2, p2:P2 of kotlin.jvm.functions.Function2) returnType:R of kotlin.jvm.functions.Function2
+                  overridden:
+                    public abstract fun invoke (p1: P1 of kotlin.jvm.functions.Function2, p2: P2 of kotlin.jvm.functions.Function2): R of kotlin.jvm.functions.Function2 declared in kotlin.jvm.functions.Function2
+                  $this: VALUE_PARAMETER INSTANCE_RECEIVER name:<this> type:com.rnett.krosstalk.MyKrosstalk.<clinit>.<Continuation>
+                  VALUE_PARAMETER name:p1 index:0 type:P1 of kotlin.jvm.functions.Function2
+                  VALUE_PARAMETER name:p2 index:1 type:P2 of kotlin.jvm.functions.Function2
+                  BLOCK_BODY
+                    RETURN type=kotlin.Nothing from='public final fun invoke (p1: P1 of kotlin.jvm.functions.Function2, p2: P2 of kotlin.jvm.functions.Function2): R of kotlin.jvm.functions.Function2 declared in com.rnett.krosstalk.MyKrosstalk.<clinit>.<Continuation>'
+                      CALL 'public final fun invokeSuspend ($result: kotlin.Result<kotlin.Any?>): kotlin.Any? declared in com.rnett.krosstalk.MyKrosstalk.<clinit>.<Continuation>' type=kotlin.Any? origin=null
+                        $this: TYPE_OP type=com.rnett.krosstalk.MyKrosstalk.<clinit>.<Continuation> origin=IMPLICIT_CAST typeOperand=com.rnett.krosstalk.MyKrosstalk.<clinit>.<Continuation>
+                          CALL 'public final fun create (value: kotlin.Any?, $completion: kotlin.coroutines.Continuation<kotlin.Nothing>): kotlin.coroutines.Continuation<kotlin.Unit> declared in com.rnett.krosstalk.MyKrosstalk.<clinit>.<Continuation>' type=kotlin.coroutines.Continuation<kotlin.Unit> origin=null
+                            $this: GET_VAR '<this>: com.rnett.krosstalk.MyKrosstalk.<clinit>.<Continuation> declared in com.rnett.krosstalk.MyKrosstalk.<clinit>.<Continuation>.invoke' type=com.rnett.krosstalk.MyKrosstalk.<clinit>.<Continuation> origin=null
+                            value: GET_VAR 'p1: P1 of kotlin.jvm.functions.Function2 declared in com.rnett.krosstalk.MyKrosstalk.<clinit>.<Continuation>.invoke' type=P1 of kotlin.jvm.functions.Function2 origin=null
+                            $completion: GET_VAR 'p2: P2 of kotlin.jvm.functions.Function2 declared in com.rnett.krosstalk.MyKrosstalk.<clinit>.<Continuation>.invoke' type=P2 of kotlin.jvm.functions.Function2 origin=null
+                        $result: GET_FIELD 'FIELD FIELD_FOR_OBJECT_INSTANCE name:INSTANCE type:kotlin.Unit visibility:public [final,static]' type=kotlin.Unit origin=null
+              CONSTRUCTOR_CALL 'public/*package*/ constructor <init> ($completion: kotlin.coroutines.Continuation<com.rnett.krosstalk.MyKrosstalk.<clinit>.<Continuation>>?) [primary] declared in com.rnett.krosstalk.MyKrosstalk.<clinit>.<Continuation>' type=com.rnett.krosstalk.MyKrosstalk.<clinit>.<Continuation> origin=null
+                $completion: CONST Null type=kotlin.Nothing? value=null
+        CALL 'public final fun addMethod <T> (key: kotlin.String, types: com.rnett.krosstalk.MethodTypes, vararg requiredScopes: kotlin.String, call: kotlin.coroutines.SuspendFunction1<kotlin.collections.Map<kotlin.String, *>, T of com.rnett.krosstalk.Krosstalk.addMethod>): kotlin.Unit declared in com.rnett.krosstalk.Krosstalk' type=kotlin.Unit origin=null
+          <T>: kotlin.collections.List<kotlin.String>
+          $this: GET_FIELD 'FIELD FIELD_FOR_OBJECT_INSTANCE name:INSTANCE type:com.rnett.krosstalk.MyKrosstalk visibility:public [final,static]' type=com.rnett.krosstalk.MyKrosstalk origin=null
+          key: CONST String type=kotlin.String value="doThing"
+          types: CONSTRUCTOR_CALL 'public constructor <init> (paramTypes: kotlin.collections.Map<kotlin.String, kotlin.reflect.KType>, resultType: kotlin.reflect.KType, instanceReceiverType: kotlin.reflect.KType?, extensionReceiverType: kotlin.reflect.KType?, $mask0: kotlin.Int, $marker: kotlin.jvm.internal.DefaultConstructorMarker?) declared in com.rnett.krosstalk.MethodTypes' type=com.rnett.krosstalk.MethodTypes origin=DEFAULT_DISPATCH_CALL
+            paramTypes: CALL 'public final fun mapOf <K, V> (vararg pairs: kotlin.Pair<K of kotlin.collections.MapsKt.mapOf, V of kotlin.collections.MapsKt.mapOf>): kotlin.collections.Map<K of kotlin.collections.MapsKt.mapOf, V of kotlin.collections.MapsKt.mapOf> declared in kotlin.collections.MapsKt' type=kotlin.collections.Map<K of kotlin.collections.MapsKt.mapOf, V of kotlin.collections.MapsKt.mapOf> origin=null
+              <K>: kotlin.String
+              <V>: kotlin.reflect.KType
+              pairs: BLOCK type=kotlin.Array<kotlin.Pair<kotlin.String, kotlin.reflect.KType>> origin=null
+                VAR IR_TEMPORARY_VARIABLE name:tmp_4 type:kotlin.Array<kotlin.Pair<kotlin.String, kotlin.reflect.KType>> [val]
+                  CALL 'public final fun arrayOfNulls <T> (size: kotlin.Int): kotlin.Array<T of kotlin.arrayOfNulls?> declared in kotlin' type=kotlin.Array<kotlin.Pair<kotlin.String, kotlin.reflect.KType>> origin=null
+                    <T>: kotlin.Pair<kotlin.String, kotlin.reflect.KType>
+                    size: CONST Int type=kotlin.Int value=1
+                CALL 'public final fun set (index: kotlin.Int, value: T of kotlin.Array): kotlin.Unit [operator] declared in kotlin.Array' type=kotlin.Unit origin=null
+                  $this: GET_VAR 'val tmp_4: kotlin.Array<kotlin.Pair<kotlin.String, kotlin.reflect.KType>> [val] declared in com.rnett.krosstalk.MyKrosstalk.<clinit>' type=kotlin.Array<kotlin.Pair<kotlin.String, kotlin.reflect.KType>> origin=null
+                  index: CONST Int type=kotlin.Int value=0
+                  value: CALL 'public final fun to <A, B> (that: B of kotlin.TuplesKt.to): kotlin.Pair<A of kotlin.TuplesKt.to, B of kotlin.TuplesKt.to> declared in kotlin.TuplesKt' type=kotlin.Pair<A of kotlin.TuplesKt.to, B of kotlin.TuplesKt.to> origin=null
+                    <A>: kotlin.String
+                    <B>: kotlin.reflect.KType
+                    $receiver: CONST String type=kotlin.String value="data"
+                    that: CALL 'public final fun typeOf <T> (): kotlin.reflect.KType [inline] declared in kotlin.reflect.TypeOfKt' type=kotlin.reflect.KType origin=null
+                      <T>: com.rnett.krosstalk.Data
+                GET_VAR 'val tmp_4: kotlin.Array<kotlin.Pair<kotlin.String, kotlin.reflect.KType>> [val] declared in com.rnett.krosstalk.MyKrosstalk.<clinit>' type=kotlin.Array<kotlin.Pair<kotlin.String, kotlin.reflect.KType>> origin=null
+            resultType: CALL 'public final fun typeOf <T> (): kotlin.reflect.KType [inline] declared in kotlin.reflect.TypeOfKt' type=kotlin.reflect.KType origin=null
+              <T>: kotlin.collections.List<kotlin.String>
+            instanceReceiverType: CONST Null type=kotlin.reflect.KType value=null
+            extensionReceiverType: COMPOSITE type=kotlin.reflect.KType? origin=DEFAULT_VALUE
+              CONST Null type=kotlin.reflect.KType? value=null
+            $mask0: CONST Int type=kotlin.Int value=8
+            $marker: CONST Null type=kotlin.jvm.internal.DefaultConstructorMarker? value=null
+          requiredScopes: CALL 'public final fun arrayOfNulls <T> (size: kotlin.Int): kotlin.Array<T of kotlin.arrayOfNulls?> declared in kotlin' type=kotlin.Array<kotlin.String> origin=null
+            <T>: kotlin.String
+            size: CONST Int type=kotlin.Int value=0
+          call: BLOCK type=kotlin.coroutines.SuspendFunction1<kotlin.collections.Map<kotlin.String, *>, kotlin.collections.List<kotlin.String>> origin=LAMBDA
+            FUN LOCAL_FUNCTION_FOR_LAMBDA name:<anonymous> visibility:public modality:FINAL <> (arguments:kotlin.collections.Map<kotlin.String, *>) returnType:kotlin.collections.List<kotlin.String> [suspend]
+              VALUE_PARAMETER name:arguments index:0 type:kotlin.collections.Map<kotlin.String, *>
+              EXPRESSION_BODY
+                CONST Null type=kotlin.collections.List<kotlin.String> value=null
+            BLOCK type=com.rnett.krosstalk.MyKrosstalk.<clinit>.<Continuation> origin=null
+              CLASS SUSPEND_LAMBDA CLASS name:<Continuation> modality:FINAL visibility:public/*package*/ superTypes:[kotlin.coroutines.jvm.internal.SuspendLambda; kotlin.jvm.functions.Function2<kotlin.collections.Map<kotlin.String, *>, kotlin.coroutines.Continuation<kotlin.collections.List<kotlin.String>>?, kotlin.Any?>]
+                $this: VALUE_PARAMETER INSTANCE_RECEIVER name:<this> type:com.rnett.krosstalk.MyKrosstalk.<clinit>.<Continuation>
+                FIELD name:label type:kotlin.Int visibility:public/*package*/
+                FIELD FIELD_FOR_CAPTURED_VALUE name:arguments type:kotlin.collections.Map<kotlin.String, *> visibility:public/*package*/
+                CONSTRUCTOR visibility:public/*package*/ <> ($completion:kotlin.coroutines.Continuation<com.rnett.krosstalk.MyKrosstalk.<clinit>.<Continuation>>?) returnType:com.rnett.krosstalk.MyKrosstalk.<clinit>.<Continuation> [primary]
+                  VALUE_PARAMETER name:$completion index:0 type:kotlin.coroutines.Continuation<com.rnett.krosstalk.MyKrosstalk.<clinit>.<Continuation>>?
+                  BLOCK_BODY
+                    DELEGATING_CONSTRUCTOR_CALL 'public constructor <init> (arity: kotlin.Int, $completion: kotlin.coroutines.Continuation<kotlin.Any?>?) declared in kotlin.coroutines.jvm.internal.SuspendLambda'
+                      arity: CONST Int type=kotlin.Int value=2
+                      $completion: GET_VAR '$completion: kotlin.coroutines.Continuation<com.rnett.krosstalk.MyKrosstalk.<clinit>.<Continuation>>? declared in com.rnett.krosstalk.MyKrosstalk.<clinit>.<Continuation>.<init>' type=kotlin.coroutines.Continuation<com.rnett.krosstalk.MyKrosstalk.<clinit>.<Continuation>>? origin=null
+                FUN name:invokeSuspend visibility:public modality:FINAL <> ($this:com.rnett.krosstalk.MyKrosstalk.<clinit>.<Continuation>, $result:kotlin.Result<kotlin.Any?>) returnType:kotlin.Any?
+                  overridden:
+                    protected abstract fun invokeSuspend ($result: kotlin.Result<kotlin.Any?>): kotlin.Any? declared in kotlin.coroutines.jvm.internal.SuspendLambda
+                  $this: VALUE_PARAMETER INSTANCE_RECEIVER name:<this> type:com.rnett.krosstalk.MyKrosstalk.<clinit>.<Continuation>
+                  VALUE_PARAMETER name:$result index:0 type:kotlin.Result<kotlin.Any?>
+                  EXPRESSION_BODY
+                    CONST Null type=kotlin.collections.List<kotlin.String> value=null
+                FUN name:create visibility:public modality:FINAL <> ($this:com.rnett.krosstalk.MyKrosstalk.<clinit>.<Continuation>, value:kotlin.Any?, $completion:kotlin.coroutines.Continuation<kotlin.Nothing>) returnType:kotlin.coroutines.Continuation<kotlin.Unit>
+                  overridden:
+                    public open fun create (value: kotlin.Any?, $completion: kotlin.coroutines.Continuation<kotlin.Nothing>): kotlin.coroutines.Continuation<kotlin.Unit> declared in kotlin.coroutines.jvm.internal.SuspendLambda
+                  $this: VALUE_PARAMETER INSTANCE_RECEIVER name:<this> type:com.rnett.krosstalk.MyKrosstalk.<clinit>.<Continuation>
+                  VALUE_PARAMETER name:value index:0 type:kotlin.Any?
+                  VALUE_PARAMETER name:$completion index:1 type:kotlin.coroutines.Continuation<kotlin.Nothing>
+                  BLOCK_BODY
+                    VAR IR_TEMPORARY_VARIABLE name:tmp_5 type:com.rnett.krosstalk.MyKrosstalk.<clinit>.<Continuation> [val]
+                      CONSTRUCTOR_CALL 'public/*package*/ constructor <init> ($completion: kotlin.coroutines.Continuation<com.rnett.krosstalk.MyKrosstalk.<clinit>.<Continuation>>?) [primary] declared in com.rnett.krosstalk.MyKrosstalk.<clinit>.<Continuation>' type=com.rnett.krosstalk.MyKrosstalk.<clinit>.<Continuation> origin=null
+                        $completion: GET_VAR '$completion: kotlin.coroutines.Continuation<kotlin.Nothing> declared in com.rnett.krosstalk.MyKrosstalk.<clinit>.<Continuation>.create' type=kotlin.coroutines.Continuation<kotlin.Nothing> origin=null
+                    SET_FIELD 'FIELD FIELD_FOR_CAPTURED_VALUE name:arguments type:kotlin.collections.Map<kotlin.String, *> visibility:public/*package*/' type=kotlin.Unit origin=null
+                      receiver: GET_VAR 'val tmp_5: com.rnett.krosstalk.MyKrosstalk.<clinit>.<Continuation> [val] declared in com.rnett.krosstalk.MyKrosstalk.<clinit>.<Continuation>.create' type=com.rnett.krosstalk.MyKrosstalk.<clinit>.<Continuation> origin=null
+                      value: GET_VAR 'value: kotlin.Any? declared in com.rnett.krosstalk.MyKrosstalk.<clinit>.<Continuation>.create' type=kotlin.Any? origin=null
+                    RETURN type=kotlin.Nothing from='public final fun create (value: kotlin.Any?, $completion: kotlin.coroutines.Continuation<kotlin.Nothing>): kotlin.coroutines.Continuation<kotlin.Unit> declared in com.rnett.krosstalk.MyKrosstalk.<clinit>.<Continuation>'
+                      GET_VAR 'val tmp_5: com.rnett.krosstalk.MyKrosstalk.<clinit>.<Continuation> [val] declared in com.rnett.krosstalk.MyKrosstalk.<clinit>.<Continuation>.create' type=com.rnett.krosstalk.MyKrosstalk.<clinit>.<Continuation> origin=null
+                FUN name:invoke visibility:public modality:FINAL <> ($this:com.rnett.krosstalk.MyKrosstalk.<clinit>.<Continuation>, p1:P1 of kotlin.jvm.functions.Function2, p2:P2 of kotlin.jvm.functions.Function2) returnType:R of kotlin.jvm.functions.Function2
+                  overridden:
+                    public abstract fun invoke (p1: P1 of kotlin.jvm.functions.Function2, p2: P2 of kotlin.jvm.functions.Function2): R of kotlin.jvm.functions.Function2 declared in kotlin.jvm.functions.Function2
+                  $this: VALUE_PARAMETER INSTANCE_RECEIVER name:<this> type:com.rnett.krosstalk.MyKrosstalk.<clinit>.<Continuation>
+                  VALUE_PARAMETER name:p1 index:0 type:P1 of kotlin.jvm.functions.Function2
+                  VALUE_PARAMETER name:p2 index:1 type:P2 of kotlin.jvm.functions.Function2
+                  BLOCK_BODY
+                    RETURN type=kotlin.Nothing from='public final fun invoke (p1: P1 of kotlin.jvm.functions.Function2, p2: P2 of kotlin.jvm.functions.Function2): R of kotlin.jvm.functions.Function2 declared in com.rnett.krosstalk.MyKrosstalk.<clinit>.<Continuation>'
+                      CALL 'public final fun invokeSuspend ($result: kotlin.Result<kotlin.Any?>): kotlin.Any? declared in com.rnett.krosstalk.MyKrosstalk.<clinit>.<Continuation>' type=kotlin.Any? origin=null
+                        $this: TYPE_OP type=com.rnett.krosstalk.MyKrosstalk.<clinit>.<Continuation> origin=IMPLICIT_CAST typeOperand=com.rnett.krosstalk.MyKrosstalk.<clinit>.<Continuation>
+                          CALL 'public final fun create (value: kotlin.Any?, $completion: kotlin.coroutines.Continuation<kotlin.Nothing>): kotlin.coroutines.Continuation<kotlin.Unit> declared in com.rnett.krosstalk.MyKrosstalk.<clinit>.<Continuation>' type=kotlin.coroutines.Continuation<kotlin.Unit> origin=null
+                            $this: GET_VAR '<this>: com.rnett.krosstalk.MyKrosstalk.<clinit>.<Continuation> declared in com.rnett.krosstalk.MyKrosstalk.<clinit>.<Continuation>.invoke' type=com.rnett.krosstalk.MyKrosstalk.<clinit>.<Continuation> origin=null
+                            value: GET_VAR 'p1: P1 of kotlin.jvm.functions.Function2 declared in com.rnett.krosstalk.MyKrosstalk.<clinit>.<Continuation>.invoke' type=P1 of kotlin.jvm.functions.Function2 origin=null
+                            $completion: GET_VAR 'p2: P2 of kotlin.jvm.functions.Function2 declared in com.rnett.krosstalk.MyKrosstalk.<clinit>.<Continuation>.invoke' type=P2 of kotlin.jvm.functions.Function2 origin=null
+                        $result: GET_FIELD 'FIELD FIELD_FOR_OBJECT_INSTANCE name:INSTANCE type:kotlin.Unit visibility:public [final,static]' type=kotlin.Unit origin=null
+              CONSTRUCTOR_CALL 'public/*package*/ constructor <init> ($completion: kotlin.coroutines.Continuation<com.rnett.krosstalk.MyKrosstalk.<clinit>.<Continuation>>?) [primary] declared in com.rnett.krosstalk.MyKrosstalk.<clinit>.<Continuation>' type=com.rnett.krosstalk.MyKrosstalk.<clinit>.<Continuation> origin=null
+                $completion: CONST Null type=kotlin.Nothing? value=null
+        CALL 'public final fun addMethod <T> (key: kotlin.String, types: com.rnett.krosstalk.MethodTypes, vararg requiredScopes: kotlin.String, call: kotlin.coroutines.SuspendFunction1<kotlin.collections.Map<kotlin.String, *>, T of com.rnett.krosstalk.Krosstalk.addMethod>): kotlin.Unit declared in com.rnett.krosstalk.Krosstalk' type=kotlin.Unit origin=null
+          <T>: kotlin.Double
+          $this: GET_FIELD 'FIELD FIELD_FOR_OBJECT_INSTANCE name:INSTANCE type:com.rnett.krosstalk.MyKrosstalk visibility:public [final,static]' type=com.rnett.krosstalk.MyKrosstalk origin=null
+          key: CONST String type=kotlin.String value="doExt"
+          types: CONSTRUCTOR_CALL 'public constructor <init> (paramTypes: kotlin.collections.Map<kotlin.String, kotlin.reflect.KType>, resultType: kotlin.reflect.KType, instanceReceiverType: kotlin.reflect.KType?, extensionReceiverType: kotlin.reflect.KType?, $mask0: kotlin.Int, $marker: kotlin.jvm.internal.DefaultConstructorMarker?) declared in com.rnett.krosstalk.MethodTypes' type=com.rnett.krosstalk.MethodTypes origin=DEFAULT_DISPATCH_CALL
+            paramTypes: CALL 'public final fun mapOf <K, V> (vararg pairs: kotlin.Pair<K of kotlin.collections.MapsKt.mapOf, V of kotlin.collections.MapsKt.mapOf>): kotlin.collections.Map<K of kotlin.collections.MapsKt.mapOf, V of kotlin.collections.MapsKt.mapOf> declared in kotlin.collections.MapsKt' type=kotlin.collections.Map<K of kotlin.collections.MapsKt.mapOf, V of kotlin.collections.MapsKt.mapOf> origin=null
+              <K>: kotlin.String
+              <V>: kotlin.reflect.KType
+              pairs: BLOCK type=kotlin.Array<kotlin.Pair<kotlin.String, kotlin.reflect.KType>> origin=null
+                VAR IR_TEMPORARY_VARIABLE name:tmp_6 type:kotlin.Array<kotlin.Pair<kotlin.String, kotlin.reflect.KType>> [val]
+                  CALL 'public final fun arrayOfNulls <T> (size: kotlin.Int): kotlin.Array<T of kotlin.arrayOfNulls?> declared in kotlin' type=kotlin.Array<kotlin.Pair<kotlin.String, kotlin.reflect.KType>> origin=null
+                    <T>: kotlin.Pair<kotlin.String, kotlin.reflect.KType>
+                    size: CONST Int type=kotlin.Int value=1
+                CALL 'public final fun set (index: kotlin.Int, value: T of kotlin.Array): kotlin.Unit [operator] declared in kotlin.Array' type=kotlin.Unit origin=null
+                  $this: GET_VAR 'val tmp_6: kotlin.Array<kotlin.Pair<kotlin.String, kotlin.reflect.KType>> [val] declared in com.rnett.krosstalk.MyKrosstalk.<clinit>' type=kotlin.Array<kotlin.Pair<kotlin.String, kotlin.reflect.KType>> origin=null
+                  index: CONST Int type=kotlin.Int value=0
+                  value: CALL 'public final fun to <A, B> (that: B of kotlin.TuplesKt.to): kotlin.Pair<A of kotlin.TuplesKt.to, B of kotlin.TuplesKt.to> declared in kotlin.TuplesKt' type=kotlin.Pair<A of kotlin.TuplesKt.to, B of kotlin.TuplesKt.to> origin=null
+                    <A>: kotlin.String
+                    <B>: kotlin.reflect.KType
+                    $receiver: CONST String type=kotlin.String value="other"
+                    that: CALL 'public final fun typeOf <T> (): kotlin.reflect.KType [inline] declared in kotlin.reflect.TypeOfKt' type=kotlin.reflect.KType origin=null
+                      <T>: kotlin.Int
+                GET_VAR 'val tmp_6: kotlin.Array<kotlin.Pair<kotlin.String, kotlin.reflect.KType>> [val] declared in com.rnett.krosstalk.MyKrosstalk.<clinit>' type=kotlin.Array<kotlin.Pair<kotlin.String, kotlin.reflect.KType>> origin=null
+            resultType: CALL 'public final fun typeOf <T> (): kotlin.reflect.KType [inline] declared in kotlin.reflect.TypeOfKt' type=kotlin.reflect.KType origin=null
+              <T>: kotlin.Double
+            instanceReceiverType: CALL 'public final fun typeOf <T> (): kotlin.reflect.KType [inline] declared in kotlin.reflect.TypeOfKt' type=kotlin.reflect.KType origin=null
+              <T>: kotlin.Int
+            extensionReceiverType: COMPOSITE type=kotlin.reflect.KType? origin=DEFAULT_VALUE
+              CONST Null type=kotlin.reflect.KType? value=null
+            $mask0: CONST Int type=kotlin.Int value=8
+            $marker: CONST Null type=kotlin.jvm.internal.DefaultConstructorMarker? value=null
+          requiredScopes: CALL 'public final fun arrayOfNulls <T> (size: kotlin.Int): kotlin.Array<T of kotlin.arrayOfNulls?> declared in kotlin' type=kotlin.Array<kotlin.String> origin=null
+            <T>: kotlin.String
+            size: CONST Int type=kotlin.Int value=0
+          call: BLOCK type=kotlin.coroutines.SuspendFunction1<kotlin.collections.Map<kotlin.String, *>, kotlin.Double> origin=LAMBDA
+            FUN LOCAL_FUNCTION_FOR_LAMBDA name:<anonymous> visibility:public modality:FINAL <> (arguments:kotlin.collections.Map<kotlin.String, *>) returnType:kotlin.Double [suspend]
+              VALUE_PARAMETER name:arguments index:0 type:kotlin.collections.Map<kotlin.String, *>
+              EXPRESSION_BODY
+                CONST Null type=kotlin.Double value=null
+            BLOCK type=com.rnett.krosstalk.MyKrosstalk.<clinit>.<Continuation> origin=null
+              CLASS SUSPEND_LAMBDA CLASS name:<Continuation> modality:FINAL visibility:public/*package*/ superTypes:[kotlin.coroutines.jvm.internal.SuspendLambda; kotlin.jvm.functions.Function2<kotlin.collections.Map<kotlin.String, *>, kotlin.coroutines.Continuation<kotlin.Double>?, kotlin.Any?>]
+                $this: VALUE_PARAMETER INSTANCE_RECEIVER name:<this> type:com.rnett.krosstalk.MyKrosstalk.<clinit>.<Continuation>
+                FIELD name:label type:kotlin.Int visibility:public/*package*/
+                FIELD FIELD_FOR_CAPTURED_VALUE name:arguments type:kotlin.collections.Map<kotlin.String, *> visibility:public/*package*/
+                CONSTRUCTOR visibility:public/*package*/ <> ($completion:kotlin.coroutines.Continuation<com.rnett.krosstalk.MyKrosstalk.<clinit>.<Continuation>>?) returnType:com.rnett.krosstalk.MyKrosstalk.<clinit>.<Continuation> [primary]
+                  VALUE_PARAMETER name:$completion index:0 type:kotlin.coroutines.Continuation<com.rnett.krosstalk.MyKrosstalk.<clinit>.<Continuation>>?
+                  BLOCK_BODY
+                    DELEGATING_CONSTRUCTOR_CALL 'public constructor <init> (arity: kotlin.Int, $completion: kotlin.coroutines.Continuation<kotlin.Any?>?) declared in kotlin.coroutines.jvm.internal.SuspendLambda'
+                      arity: CONST Int type=kotlin.Int value=2
+                      $completion: GET_VAR '$completion: kotlin.coroutines.Continuation<com.rnett.krosstalk.MyKrosstalk.<clinit>.<Continuation>>? declared in com.rnett.krosstalk.MyKrosstalk.<clinit>.<Continuation>.<init>' type=kotlin.coroutines.Continuation<com.rnett.krosstalk.MyKrosstalk.<clinit>.<Continuation>>? origin=null
+                FUN name:invokeSuspend visibility:public modality:FINAL <> ($this:com.rnett.krosstalk.MyKrosstalk.<clinit>.<Continuation>, $result:kotlin.Result<kotlin.Any?>) returnType:kotlin.Any?
+                  overridden:
+                    protected abstract fun invokeSuspend ($result: kotlin.Result<kotlin.Any?>): kotlin.Any? declared in kotlin.coroutines.jvm.internal.SuspendLambda
+                  $this: VALUE_PARAMETER INSTANCE_RECEIVER name:<this> type:com.rnett.krosstalk.MyKrosstalk.<clinit>.<Continuation>
+                  VALUE_PARAMETER name:$result index:0 type:kotlin.Result<kotlin.Any?>
+                  EXPRESSION_BODY
+                    CONST Null type=kotlin.Double value=null
+                FUN name:create visibility:public modality:FINAL <> ($this:com.rnett.krosstalk.MyKrosstalk.<clinit>.<Continuation>, value:kotlin.Any?, $completion:kotlin.coroutines.Continuation<kotlin.Nothing>) returnType:kotlin.coroutines.Continuation<kotlin.Unit>
+                  overridden:
+                    public open fun create (value: kotlin.Any?, $completion: kotlin.coroutines.Continuation<kotlin.Nothing>): kotlin.coroutines.Continuation<kotlin.Unit> declared in kotlin.coroutines.jvm.internal.SuspendLambda
+                  $this: VALUE_PARAMETER INSTANCE_RECEIVER name:<this> type:com.rnett.krosstalk.MyKrosstalk.<clinit>.<Continuation>
+                  VALUE_PARAMETER name:value index:0 type:kotlin.Any?
+                  VALUE_PARAMETER name:$completion index:1 type:kotlin.coroutines.Continuation<kotlin.Nothing>
+                  BLOCK_BODY
+                    VAR IR_TEMPORARY_VARIABLE name:tmp_7 type:com.rnett.krosstalk.MyKrosstalk.<clinit>.<Continuation> [val]
+                      CONSTRUCTOR_CALL 'public/*package*/ constructor <init> ($completion: kotlin.coroutines.Continuation<com.rnett.krosstalk.MyKrosstalk.<clinit>.<Continuation>>?) [primary] declared in com.rnett.krosstalk.MyKrosstalk.<clinit>.<Continuation>' type=com.rnett.krosstalk.MyKrosstalk.<clinit>.<Continuation> origin=null
+                        $completion: GET_VAR '$completion: kotlin.coroutines.Continuation<kotlin.Nothing> declared in com.rnett.krosstalk.MyKrosstalk.<clinit>.<Continuation>.create' type=kotlin.coroutines.Continuation<kotlin.Nothing> origin=null
+                    SET_FIELD 'FIELD FIELD_FOR_CAPTURED_VALUE name:arguments type:kotlin.collections.Map<kotlin.String, *> visibility:public/*package*/' type=kotlin.Unit origin=null
+                      receiver: GET_VAR 'val tmp_7: com.rnett.krosstalk.MyKrosstalk.<clinit>.<Continuation> [val] declared in com.rnett.krosstalk.MyKrosstalk.<clinit>.<Continuation>.create' type=com.rnett.krosstalk.MyKrosstalk.<clinit>.<Continuation> origin=null
+                      value: GET_VAR 'value: kotlin.Any? declared in com.rnett.krosstalk.MyKrosstalk.<clinit>.<Continuation>.create' type=kotlin.Any? origin=null
+                    RETURN type=kotlin.Nothing from='public final fun create (value: kotlin.Any?, $completion: kotlin.coroutines.Continuation<kotlin.Nothing>): kotlin.coroutines.Continuation<kotlin.Unit> declared in com.rnett.krosstalk.MyKrosstalk.<clinit>.<Continuation>'
+                      GET_VAR 'val tmp_7: com.rnett.krosstalk.MyKrosstalk.<clinit>.<Continuation> [val] declared in com.rnett.krosstalk.MyKrosstalk.<clinit>.<Continuation>.create' type=com.rnett.krosstalk.MyKrosstalk.<clinit>.<Continuation> origin=null
+                FUN name:invoke visibility:public modality:FINAL <> ($this:com.rnett.krosstalk.MyKrosstalk.<clinit>.<Continuation>, p1:P1 of kotlin.jvm.functions.Function2, p2:P2 of kotlin.jvm.functions.Function2) returnType:R of kotlin.jvm.functions.Function2
+                  overridden:
+                    public abstract fun invoke (p1: P1 of kotlin.jvm.functions.Function2, p2: P2 of kotlin.jvm.functions.Function2): R of kotlin.jvm.functions.Function2 declared in kotlin.jvm.functions.Function2
+                  $this: VALUE_PARAMETER INSTANCE_RECEIVER name:<this> type:com.rnett.krosstalk.MyKrosstalk.<clinit>.<Continuation>
+                  VALUE_PARAMETER name:p1 index:0 type:P1 of kotlin.jvm.functions.Function2
+                  VALUE_PARAMETER name:p2 index:1 type:P2 of kotlin.jvm.functions.Function2
+                  BLOCK_BODY
+                    RETURN type=kotlin.Nothing from='public final fun invoke (p1: P1 of kotlin.jvm.functions.Function2, p2: P2 of kotlin.jvm.functions.Function2): R of kotlin.jvm.functions.Function2 declared in com.rnett.krosstalk.MyKrosstalk.<clinit>.<Continuation>'
+                      CALL 'public final fun invokeSuspend ($result: kotlin.Result<kotlin.Any?>): kotlin.Any? declared in com.rnett.krosstalk.MyKrosstalk.<clinit>.<Continuation>' type=kotlin.Any? origin=null
+                        $this: TYPE_OP type=com.rnett.krosstalk.MyKrosstalk.<clinit>.<Continuation> origin=IMPLICIT_CAST typeOperand=com.rnett.krosstalk.MyKrosstalk.<clinit>.<Continuation>
+                          CALL 'public final fun create (value: kotlin.Any?, $completion: kotlin.coroutines.Continuation<kotlin.Nothing>): kotlin.coroutines.Continuation<kotlin.Unit> declared in com.rnett.krosstalk.MyKrosstalk.<clinit>.<Continuation>' type=kotlin.coroutines.Continuation<kotlin.Unit> origin=null
+                            $this: GET_VAR '<this>: com.rnett.krosstalk.MyKrosstalk.<clinit>.<Continuation> declared in com.rnett.krosstalk.MyKrosstalk.<clinit>.<Continuation>.invoke' type=com.rnett.krosstalk.MyKrosstalk.<clinit>.<Continuation> origin=null
+                            value: GET_VAR 'p1: P1 of kotlin.jvm.functions.Function2 declared in com.rnett.krosstalk.MyKrosstalk.<clinit>.<Continuation>.invoke' type=P1 of kotlin.jvm.functions.Function2 origin=null
+                            $completion: GET_VAR 'p2: P2 of kotlin.jvm.functions.Function2 declared in com.rnett.krosstalk.MyKrosstalk.<clinit>.<Continuation>.invoke' type=P2 of kotlin.jvm.functions.Function2 origin=null
+                        $result: GET_FIELD 'FIELD FIELD_FOR_OBJECT_INSTANCE name:INSTANCE type:kotlin.Unit visibility:public [final,static]' type=kotlin.Unit origin=null
+              CONSTRUCTOR_CALL 'public/*package*/ constructor <init> ($completion: kotlin.coroutines.Continuation<com.rnett.krosstalk.MyKrosstalk.<clinit>.<Continuation>>?) [primary] declared in com.rnett.krosstalk.MyKrosstalk.<clinit>.<Continuation>' type=com.rnett.krosstalk.MyKrosstalk.<clinit>.<Continuation> origin=null
+                $completion: CONST Null type=kotlin.Nothing? value=null
+  FUN BRIDGE name:getSerialization visibility:public modality:OPEN <> ($this:com.rnett.krosstalk.MyKrosstalk) returnType:com.rnett.krosstalk.SerializationHandler
+    $this: VALUE_PARAMETER INSTANCE_RECEIVER name:<this> type:com.rnett.krosstalk.MyKrosstalk
+    EXPRESSION_BODY
+      TYPE_OP type=com.rnett.krosstalk.SerializationHandler origin=IMPLICIT_CAST typeOperand=com.rnett.krosstalk.SerializationHandler
+        CALL 'public open fun <get-serialization> (): com.rnett.krosstalk.KotlinxSerializationHandler declared in com.rnett.krosstalk.MyKrosstalk' type=com.rnett.krosstalk.KotlinxSerializationHandler origin=BRIDGE_DELEGATION
+          $this: GET_VAR '<this>: com.rnett.krosstalk.MyKrosstalk declared in com.rnett.krosstalk.MyKrosstalk.getSerialization' type=com.rnett.krosstalk.MyKrosstalk origin=null
+  FUN BRIDGE name:getServer visibility:public modality:OPEN <> ($this:com.rnett.krosstalk.MyKrosstalk) returnType:com.rnett.krosstalk.ServerHandler<com.rnett.krosstalk.ServerScope>
+    $this: VALUE_PARAMETER INSTANCE_RECEIVER name:<this> type:com.rnett.krosstalk.MyKrosstalk
+    EXPRESSION_BODY
+      TYPE_OP type=com.rnett.krosstalk.ServerHandler<com.rnett.krosstalk.ServerScope> origin=IMPLICIT_CAST typeOperand=com.rnett.krosstalk.ServerHandler<com.rnett.krosstalk.ServerScope>
+        CALL 'public open fun <get-server> (): com.rnett.krosstalk.ktor.server.KtorServer declared in com.rnett.krosstalk.MyKrosstalk' type=com.rnett.krosstalk.ktor.server.KtorServer origin=BRIDGE_DELEGATION
+          $this: GET_VAR '<this>: com.rnett.krosstalk.MyKrosstalk declared in com.rnett.krosstalk.MyKrosstalk.getServer' type=com.rnett.krosstalk.MyKrosstalk origin=null
+  FUN BRIDGE name:getAuth visibility:public modality:OPEN <> ($this:com.rnett.krosstalk.MyKrosstalk) returnType:com.rnett.krosstalk.ScopeHolder
+    $this: VALUE_PARAMETER INSTANCE_RECEIVER name:<this> type:com.rnett.krosstalk.MyKrosstalk
+    EXPRESSION_BODY
+      TYPE_OP type=com.rnett.krosstalk.ScopeHolder origin=IMPLICIT_CAST typeOperand=com.rnett.krosstalk.ScopeHolder
+        CALL 'public open fun <get-auth> (): com.rnett.krosstalk.ServerScopeHolder<com.rnett.krosstalk.ktor.server.KtorServerAuth> declared in com.rnett.krosstalk.MyKrosstalk' type=com.rnett.krosstalk.ServerScopeHolder<com.rnett.krosstalk.ktor.server.KtorServerAuth> origin=BRIDGE_DELEGATION
+          $this: GET_VAR '<this>: com.rnett.krosstalk.MyKrosstalk declared in com.rnett.krosstalk.MyKrosstalk.getAuth' type=com.rnett.krosstalk.MyKrosstalk origin=null
+  FUN BRIDGE name:scope visibility:public modality:OPEN <> ($this:com.rnett.krosstalk.MyKrosstalk, server:com.rnett.krosstalk.ServerScope) returnType:com.rnett.krosstalk.ScopeAdder<com.rnett.krosstalk.ServerScopeHolder<com.rnett.krosstalk.ServerScope>>
+    $this: VALUE_PARAMETER INSTANCE_RECEIVER name:<this> type:com.rnett.krosstalk.MyKrosstalk
+    VALUE_PARAMETER BRIDGE name:server index:0 type:com.rnett.krosstalk.ServerScope
+    EXPRESSION_BODY
+      TYPE_OP type=com.rnett.krosstalk.ScopeAdder<com.rnett.krosstalk.ServerScopeHolder<com.rnett.krosstalk.ServerScope>> origin=IMPLICIT_CAST typeOperand=com.rnett.krosstalk.ScopeAdder<com.rnett.krosstalk.ServerScopeHolder<com.rnett.krosstalk.ServerScope>>
+        CALL 'public open fun scope <S1> (server: S1 of com.rnett.krosstalk.MyKrosstalk.scope): com.rnett.krosstalk.ScopeAdder<com.rnett.krosstalk.ServerScopeHolder<S1 of com.rnett.krosstalk.MyKrosstalk.scope>> declared in com.rnett.krosstalk.MyKrosstalk' type=com.rnett.krosstalk.ScopeAdder<com.rnett.krosstalk.ServerScopeHolder<S1 of com.rnett.krosstalk.MyKrosstalk.scope>> origin=BRIDGE_DELEGATION
+          <S1>: <none>
+          $this: GET_VAR '<this>: com.rnett.krosstalk.MyKrosstalk declared in com.rnett.krosstalk.MyKrosstalk.scope' type=com.rnett.krosstalk.MyKrosstalk origin=null
+          server: TYPE_OP type=S1 of com.rnett.krosstalk.MyKrosstalk.scope origin=IMPLICIT_CAST typeOperand=S1 of com.rnett.krosstalk.MyKrosstalk.scope
+            GET_VAR 'server: com.rnett.krosstalk.ServerScope declared in com.rnett.krosstalk.MyKrosstalk.scope' type=com.rnett.krosstalk.ServerScope origin=null
