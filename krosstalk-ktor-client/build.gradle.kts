@@ -1,22 +1,9 @@
 plugins {
     kotlin("multiplatform")
-
 }
-group = "com.rnett.krosstalk"
-version = "1.0-SNAPSHOT"
 
 val ktor_version = "1.4.0"
 
-repositories {
-    mavenCentral()
-    jcenter()
-    maven {
-        url = uri("https://dl.bintray.com/kotlin/ktor")
-    }
-    maven {
-        url = uri("https://dl.bintray.com/kotlin/kotlin-eap")
-    }
-}
 kotlin {
     jvm {
         compilations.all {
@@ -27,16 +14,16 @@ kotlin {
     }
     js(IR) {
         browser { }
-//        configure(compilations) {
-//            kotlinOptions {
-//                noStdlib = true
-//                sourceMapEmbedSources = "always"
-//                metaInfo = true
-//                sourceMap = true
-//                moduleKind = "commonjs"
-//            }
-//        }
     }
+
+    configure(listOf(targets["metadata"], jvm(), js())) {
+        mavenPublication {
+            val targetPublication = this@mavenPublication
+            tasks.withType<AbstractPublishToMaven>()
+                .matching { it.publication == targetPublication }
+        }
+    }
+
     sourceSets {
         val commonMain by getting {
             dependencies {

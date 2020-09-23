@@ -15,9 +15,9 @@ class KrosstalkGradlePlugin : KotlinCompilerPluginSupportPlugin {
     override fun getCompilerPluginId(): String = "com.rnett.krosstalk-compiler-plugin"
 
     override fun getPluginArtifact(): SubpluginArtifact = SubpluginArtifact(
-        "com.rnett.krosstalk",
-        "krosstalk-compiler-plugin",
-        "1.0-SNAPSHOT"
+        BuildConfig.PROJECT_GROUP_ID,
+        BuildConfig.PROJECT_ARTIFACT_ID,
+        BuildConfig.PROJECT_VERSION
     )
 
     override fun isApplicable(kotlinCompilation: KotlinCompilation<*>): Boolean = true

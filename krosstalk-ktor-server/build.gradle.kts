@@ -1,22 +1,11 @@
 plugins {
-    kotlin("jvm") apply true
-
+    kotlin("jvm")
+    `maven-publish`
 }
-group = "com.rnett.krosstalk"
-version = "1.0-SNAPSHOT"
 
 val ktor_version = "1.4.0"
 
-repositories {
-    mavenCentral()
-    jcenter()
-    maven {
-        url = uri("https://dl.bintray.com/kotlin/ktor")
-    }
-    maven {
-        url = uri("https://dl.bintray.com/kotlin/kotlin-eap")
-    }
-}
+
 dependencies {
     implementation("io.ktor:ktor-server-core:$ktor_version")
     implementation("io.ktor:ktor-auth:$ktor_version")

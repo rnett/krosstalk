@@ -17,6 +17,6 @@ include(
     "krosstalk-compiler-plugin", "krosstalk-gradle-plugin", "krosstalk",
     "krosstalk-ktor-server",
     "krosstalk-ktor-client",
-    "test"
+    "sample"
 )
 

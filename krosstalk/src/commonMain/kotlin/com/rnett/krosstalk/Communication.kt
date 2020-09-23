@@ -3,8 +3,14 @@ package com.rnett.krosstalk
 import kotlinx.serialization.Serializable
 import kotlinx.serialization.cbor.Cbor
 
-interface ClientHandler<C : ClientScope> {
-    suspend fun sendKrosstalkRequest(methodName: String, body: ByteArray, scopes: List<C>): ByteArray
+interface ClientHandler<C : ClientScope<*>> {
+    val serverUrl: String
+    suspend fun sendKrosstalkRequest(
+        endpoint: String,
+        method: String,
+        body: ByteArray,
+        scopes: List<ActiveScope<*, C>>
+    ): ByteArray
 }
 
 interface ServerHandler<S : ServerScope>
@@ -20,71 +26,116 @@ sealed class Optional {
     }
 }
 
+//TODO just use serialized parameter map, use Krosstalk serializer for this so you could use it to target existing JSON endpoint
 @Serializable
-data class KrosstalkCall(val function: String,
-                         val parameters: Map<String, ByteArray>,
-                         val instanceReceiver: ByteArray?,
-                         val extensionReceiver: ByteArray?
-) {
-    override fun equals(other: Any?): Boolean {
-        if (this === other) return true
-        if (other !is KrosstalkCall) return false
+data class KrosstalkCall(
+    val function: String,
+    val parameters: Map<String, ByteArray>
+)
 
-        if (function != other.function) return false
-        if (parameters != other.parameters) return false
-        if (instanceReceiver != null) {
-            if (other.instanceReceiver == null) return false
-            if (!instanceReceiver.contentEquals(other.instanceReceiver)) return false
-        } else if (other.instanceReceiver != null) return false
-        if (extensionReceiver != null) {
-            if (other.extensionReceiver == null) return false
-            if (!extensionReceiver.contentEquals(other.extensionReceiver)) return false
-        } else if (other.extensionReceiver != null) return false
+fun krosstalkCall(): Nothing = error("Should have been replaced with a krosstalk call during compilation")
 
-        return true
+private val valueRegex = Regex("\\{([^}]+?)\\}")
+
+/**
+ * Substitute values into an endpoint template
+ */
+fun fillInEndpoint(
+    endpointTemplate: String,
+    methodName: String,
+    prefix: String,
+    params: Map<String, *> = emptyMap<String, String>(),
+    allowMissingParams: Boolean = false
+) =
+    endpointTemplate.replace(valueRegex) {
+        when (val param = it.groupValues[1]) {
+            methodNameKey -> methodName
+            prefixKey -> prefix
+            in params -> params[param].toString()
+            else -> if (allowMissingParams)
+                it.value
+            else
+                error("Endpoint template used parameter $param, but it wasn't present in arguments: ${params.keys}")
+        }
     }
 
-    override fun hashCode(): Int {
-        var result = function.hashCode()
-        result = 31 * result + parameters.hashCode()
-        result = 31 * result + (instanceReceiver?.contentHashCode() ?: 0)
-        result = 31 * result + (extensionReceiver?.contentHashCode() ?: 0)
-        return result
-    }
-}
+/**
+ * Substitute values into an endpoint template, but require all parameter templates to be substituted
+ *
+ * @see [fillInEndpoint]
+ */
+fun fillInEndpointWithParams(endpointTemplate: String, methodName: String, prefix: String, params: Map<String, *>) =
+    fillInEndpoint(endpointTemplate, methodName, prefix, params, allowMissingParams = false)
 
-fun krosstaklCall(): Nothing = error("Should have been replaced with a krosstalk call during compilation")
+/**
+ * Substitute method name and prefix values into an endpoint template
+ *
+ * @see [fillInEndpoint]
+ */
+fun fillInEndpointWithStatic(endpointTemplate: String, methodName: String, prefix: String) =
+    fillInEndpoint(endpointTemplate, methodName, prefix, allowMissingParams = true)
 
-suspend inline fun <T, K, reified C : ClientScope> K.call(methodName: String,
-                                                          parameters: Map<String, *>,
-                                                          extensionReceiver: Optional = Optional.None,
-                                                          instanceReceiver: Optional = Optional.None
-): T where K : KrosstalkClient<C>, K : Krosstalk {
+@Suppress("unused")
+suspend inline fun <T, K, reified C : ClientScope<*>> K.call(methodName: String, parameters: Map<String, *>): T
+        where K : KrosstalkClient<C>, K : Krosstalk {
     val method = methods[methodName] ?: error("Unknown method $methodName")
     val serializedParams = parameters.mapValues {
         val serializer = method.serializers.paramSerializers[it.key]
-                ?: error("No serializer found for param ${it.key}")
+            ?: error("No serializer found for param ${it.key}")
         (serializer as Serializer<Any?>).serialize(it.value)
     }
 
-    val instance = if (instanceReceiver is Optional.Some) {
-        ((method.serializers.instanceReceiverSerializer
-                ?: error("No instance receiver serializer found, but argument passed"))
-                as Serializer<Any?>).serialize(instanceReceiver.value)
-    } else null
-
-    val extension = if (extensionReceiver is Optional.Some) {
-        ((method.serializers.extensionReceiverSerializer
-                ?: error("No extension receiver serializer found, but argument passed"))
-                as Serializer<Any?>).serialize(extensionReceiver.value)
-    } else null
-
     val data = Cbor.encodeToByteArray(
         KrosstalkCall.serializer(),
-        KrosstalkCall(methodName, serializedParams, instance, extension)
+        KrosstalkCall(methodName, serializedParams)
     )
-    val result = client.sendKrosstalkRequest(methodName, data, activeScopes.values.map {
-        it as? C ?: error("Scope $it was not of required type ${C::class}")
-    })
+
+    val usedScopes = mutableListOf<ActiveScope<*, *>>()
+
+    val missingRequires = mutableSetOf<String>()
+
+    method.requiredScopes.forEach {
+        val holder = _scopes.getValue(it)
+
+        if (holder !in activeScopes)
+            missingRequires += it
+        else
+            usedScopes += activeScopes.getValue(holder)
+    }
+
+    if (missingRequires.isNotEmpty())
+        error(
+            "Missing required scopes for $methodName.  Required: ${method.requiredScopes}, active: ${
+                activeScopes.map { it.key.name }.toSet()
+            }, missing: $missingRequires"
+        )
+
+    method.optionalScopes.forEach {
+        activeScopes[_scopes.getValue(it)]?.let(usedScopes::add)
+    }
+
+    val result = client.sendKrosstalkRequest(
+        fillInEndpoint(method.endpoint, methodName, this.endpointPrefix, parameters),
+        method.httpMethod,
+        data,
+        usedScopes.map {
+            if (it.scope !is C) error("Scope ${it.scope} was not of required type ${C::class}.  This should be impossible.")
+            it as ActiveScope<*, C>
+        })
     return method.serializers.resultSerializer.deserialize(result) as T
+}
+
+suspend fun <K> K.handle(data: ByteArray): ByteArray where K : Krosstalk, K : KrosstalkServer<*> {
+    val call = Cbor.decodeFromByteArray(KrosstalkCall.serializer(), data)
+    val method = methods[call.function] ?: error("No method found for ${call.function}")
+
+    val params = call.parameters.mapValues {
+        val serializer = method.serializers.paramSerializers[it.key]
+            ?: error("No serializer found for ${it.key}")
+        serializer.deserialize(it.value)
+    }.toMutableMap()
+
+    val result = method.call(params)
+    val resultSerializer = method.serializers.resultSerializer as Serializer<Any?>
+    return resultSerializer.serialize(result)
 }

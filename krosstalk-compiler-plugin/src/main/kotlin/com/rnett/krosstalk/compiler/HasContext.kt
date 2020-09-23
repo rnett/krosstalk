@@ -94,12 +94,12 @@ interface HasContext {
             IrStatementOrigin.LAMBDA
     )
 
-    fun varargOf(elementType: IrType, elements: List<IrExpression>) = IrVarargImpl(
-            UNDEFINED_OFFSET,
-            UNDEFINED_OFFSET,
-            context.irBuiltIns.arrayClass.typeWith(elementType),
-            elementType,
-            elements
+    fun varargOf(elementType: IrType, elements: Iterable<IrExpression>) = IrVarargImpl(
+        UNDEFINED_OFFSET,
+        UNDEFINED_OFFSET,
+        context.irBuiltIns.arrayClass.typeWith(elementType),
+        elementType,
+        elements.toList()
     )
 
     fun IrSymbolOwner.newBuilder() = DeclarationIrBuilder(context, symbol, startOffset, endOffset)

@@ -7,35 +7,29 @@ import kotlin.reflect.KType
 
 
 data class MethodSerializers(
-        val paramSerializers: Map<String, Serializer<*>>,
-        val instanceReceiverSerializer: Serializer<*>?,
-        val extensionReceiverSerializer: Serializer<*>?,
-        val resultSerializer: Serializer<*>
-)
+    val paramSerializers: Map<String, Serializer<*>>,
+    val resultSerializer: Serializer<*>
+) {
+    val instanceReceiverSerializer by lazy { paramSerializers[instanceParameterKey] }
+    val extensionReceiverSerializer by lazy { paramSerializers[extensionParameterKey] }
+}
 
 class MethodTypes(
-        val paramTypes: Map<String, KType>,
-        val resultType: KType,
-        val instanceReceiverType: KType? = null,
-        val extensionReceiverType: KType? = null
+    val paramTypes: Map<String, KType>,
+    val resultType: KType
 ) {
     inline fun toSerializers(getSerializer: (KType) -> Serializer<*>) = MethodSerializers(
-            paramTypes.mapValues { getSerializer(it.value) },
-            instanceReceiverType?.let(getSerializer),
-            extensionReceiverType?.let(getSerializer),
-            getSerializer(resultType)
+        paramTypes.mapValues { getSerializer(it.value) },
+        getSerializer(resultType)
     )
+
+    val instanceReceiverType by lazy { paramTypes[instanceParameterKey] }
+    val extensionReceiverSerializer by lazy { paramTypes[extensionParameterKey] }
 
     fun checkSerializers(serializers: MethodSerializers) {
         paramTypes.keys.forEach {
             check(it in serializers.paramSerializers) { "Missing serializer for $it" }
         }
-
-        if (instanceReceiverType != null)
-            check(serializers.instanceReceiverSerializer != null) { "Missing serializer for instance receiver" }
-
-        if (extensionReceiverType != null)
-            check(serializers.extensionReceiverSerializer != null) { "Missing serializer for extension receiver" }
     }
 }
 

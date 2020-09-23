@@ -1,41 +1,76 @@
 package com.rnett.krosstalk.ktor.client
 
+import com.rnett.krosstalk.ActiveScope
 import com.rnett.krosstalk.ClientHandler
 import com.rnett.krosstalk.ClientScope
 import io.ktor.client.*
 import io.ktor.client.features.auth.*
 import io.ktor.client.features.auth.providers.*
 import io.ktor.client.request.*
+import io.ktor.http.*
+import io.ktor.utils.io.core.*
+
+fun <D> ActiveScope<*, KtorClientScope<D>>.configureClient(client: HttpClientConfig<*>) {
+    client.apply {
+        scope.apply { configureClient(data as D) }
+    }
+}
+
+fun <D> ActiveScope<*, KtorClientScope<D>>.configureRequest(request: HttpRequestBuilder) {
+    request.apply {
+        scope.apply { configureRequest(data as D) }
+    }
+}
 
 
-object KtorClient : ClientHandler<KtorClientScope> {
-    override suspend fun sendKrosstalkRequest(methodName: String, body: ByteArray, scopes: List<KtorClientScope>): ByteArray {
+class KtorClient(override val serverUrl: String) : ClientHandler<KtorClientScope<*>> {
+    override suspend fun sendKrosstalkRequest(
+        endpoint: String,
+        method: String,
+        body: ByteArray,
+        scopes: List<ActiveScope<*, KtorClientScope<*>>>
+    ): ByteArray {
         return HttpClient {
             scopes.forEach {
-                it.apply { configureClient() }
+                it.configureClient(this)
             }
-        }.post(path = "/krosstalk/$methodName", port = 8080) {
-            this.body = body
-            scopes.forEach {
-                it.apply { configureRequest() }
+        }.use {
+            it.request(urlString = "${serverUrl.trimEnd('/')}/${endpoint.trimStart('/')}") {
+                this.body = body
+                this.method = HttpMethod(method.toUpperCase())
+                scopes.forEach {
+                    it.configureRequest(this)
+                }
             }
         }
     }
 }
 
 
-interface KtorClientScope : ClientScope {
-    fun HttpClientConfig<*>.configureClient() {}
-    fun HttpRequestBuilder.configureRequest() {}
+interface KtorClientScope<in D> : ClientScope<D> {
+    fun HttpClientConfig<*>.configureClient(data: D) {}
+    fun HttpRequestBuilder.configureRequest(data: D) {}
 }
 
-data class KtorClientAuth(val username: String, val password: String) : KtorClientScope {
-    override fun HttpClientConfig<*>.configureClient() {
+fun interface KtorClientRequestScope<D> : KtorClientScope<D> {
+    override fun HttpRequestBuilder.configureRequest(data: D)
+}
+
+fun interface KtorClientClientScope<D> : KtorClientScope<D> {
+    override fun HttpClientConfig<*>.configureClient(data: D)
+}
+
+data class Credentials(val username: String, val password: String)
+
+class KtorClientBasicAuth(val sendWithoutRequest: Boolean = true, val realm: String? = null) :
+    KtorClientScope<Credentials> {
+    override fun HttpClientConfig<*>.configureClient(data: Credentials) {
         install(Auth) {
             basic {
-                sendWithoutRequest = true
-                username = this@KtorClientAuth.username
-                password = this@KtorClientAuth.password
+                sendWithoutRequest = this@KtorClientBasicAuth.sendWithoutRequest
+                username = data.username
+                password = data.password
+                realm = this@KtorClientBasicAuth.realm
             }
         }
     }

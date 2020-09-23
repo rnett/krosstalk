@@ -1,0 +1,8 @@
+<component name="ArtifactManager">
+  <artifact type="jar" name="sample-js-1.0-ALPHA">
+    <output-path>C:\Users\jimne\Google Drive\My Stuff\krosstalk\sample\build\libs</output-path>
+    <root id="archive" name="sample-js-1.0-ALPHA.jar">
+      <element id="module-output" name="krosstalk.sample.jsMain" />
+    </root>
+  </artifact>
+</component>
