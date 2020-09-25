@@ -3,15 +3,19 @@ package com.rnett.krosstalk
 import com.rnett.krosstalk.ktor.server.KtorServer
 import com.rnett.krosstalk.ktor.server.KtorServerAuth
 import com.rnett.krosstalk.ktor.server.KtorServerScope
-import io.ktor.application.*
-import io.ktor.features.*
-import io.ktor.html.*
-import io.ktor.http.*
-import io.ktor.http.content.*
-import io.ktor.routing.*
-import io.ktor.server.engine.*
-import io.ktor.server.netty.*
+import io.ktor.application.call
+import io.ktor.application.install
+import io.ktor.features.CORS
+import io.ktor.html.respondHtml
+import io.ktor.http.HttpStatusCode
+import io.ktor.http.content.resource
+import io.ktor.http.content.static
+import io.ktor.routing.get
+import io.ktor.routing.routing
+import io.ktor.server.engine.embeddedServer
+import io.ktor.server.netty.Netty
 import kotlinx.html.*
+import kotlinx.serialization.cbor.Cbor
 
 fun HTML.index() {
     head {
@@ -62,7 +66,7 @@ actual suspend fun doThing(data: Data): List<String> {
 actual suspend fun Int.doExt(other: Int): Double = (this + other).toDouble()
 
 actual object MyKrosstalk : Krosstalk(), KrosstalkServer<KtorServerScope>, Scopes {
-    override val serialization = KotlinxSerializationHandler
+    override val serialization = KotlinxBinarySerializationHandler(Cbor { })
     override val server = KtorServer
     override val auth by scope(KtorServerAuth(mapOf("username" to "password")))
 }

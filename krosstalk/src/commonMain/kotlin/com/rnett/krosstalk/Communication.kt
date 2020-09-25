@@ -1,7 +1,6 @@
 package com.rnett.krosstalk
 
 import kotlinx.serialization.Serializable
-import kotlinx.serialization.cbor.Cbor
 
 interface ClientHandler<C : ClientScope<*>> {
     val serverUrl: String
@@ -14,17 +13,6 @@ interface ClientHandler<C : ClientScope<*>> {
 }
 
 interface ServerHandler<S : ServerScope>
-
-sealed class Optional {
-    object None : Optional()
-    data class Some(val value: Any?) : Optional()
-
-    val isSome inline get() = this is Some
-
-    companion object {
-        operator fun invoke(value: Any?) = Some(value)
-    }
-}
 
 //TODO just use serialized parameter map, use Krosstalk serializer for this so you could use it to target existing JSON endpoint
 @Serializable
@@ -76,19 +64,11 @@ fun fillInEndpointWithStatic(endpointTemplate: String, methodName: String, prefi
     fillInEndpoint(endpointTemplate, methodName, prefix, allowMissingParams = true)
 
 @Suppress("unused")
-suspend inline fun <T, K, reified C : ClientScope<*>> K.call(methodName: String, parameters: Map<String, *>): T
+@PublishedApi
+internal suspend inline fun <T, K, reified C : ClientScope<*>> K.call(methodName: String, arguments: Map<String, *>): T
         where K : KrosstalkClient<C>, K : Krosstalk {
     val method = methods[methodName] ?: error("Unknown method $methodName")
-    val serializedParams = parameters.mapValues {
-        val serializer = method.serializers.paramSerializers[it.key]
-            ?: error("No serializer found for param ${it.key}")
-        (serializer as Serializer<Any?>).serialize(it.value)
-    }
-
-    val data = Cbor.encodeToByteArray(
-        KrosstalkCall.serializer(),
-        KrosstalkCall(methodName, serializedParams)
-    )
+    val serializedArgs = serialization.serializeByteArguments(arguments, method.serializers)
 
     val usedScopes = mutableListOf<ActiveScope<*, *>>()
 
@@ -115,27 +95,21 @@ suspend inline fun <T, K, reified C : ClientScope<*>> K.call(methodName: String,
     }
 
     val result = client.sendKrosstalkRequest(
-        fillInEndpoint(method.endpoint, methodName, this.endpointPrefix, parameters),
-        method.httpMethod,
-        data,
-        usedScopes.map {
-            if (it.scope !is C) error("Scope ${it.scope} was not of required type ${C::class}.  This should be impossible.")
-            it as ActiveScope<*, C>
-        })
-    return method.serializers.resultSerializer.deserialize(result) as T
+            fillInEndpoint(method.endpoint, methodName, this.endpointPrefix, arguments),
+            method.httpMethod,
+            serializedArgs,
+            usedScopes.map {
+                if (it.scope !is C) error("Scope ${it.scope} was not of required type ${C::class}.  This should be impossible.")
+                it as ActiveScope<*, C>
+            })
+    return method.serializers.resultSerializer.deserializeFromBytes(result) as T
 }
 
-suspend fun <K> K.handle(data: ByteArray): ByteArray where K : Krosstalk, K : KrosstalkServer<*> {
-    val call = Cbor.decodeFromByteArray(KrosstalkCall.serializer(), data)
-    val method = methods[call.function] ?: error("No method found for ${call.function}")
+suspend fun <K> K.handle(method: String, data: ByteArray): ByteArray where K : Krosstalk, K : KrosstalkServer<*> {
+    val method = methods[method] ?: error("No method found for $method")
+    val arguments = serialization.deserializeByteArguments(data, method.serializers)
 
-    val params = call.parameters.mapValues {
-        val serializer = method.serializers.paramSerializers[it.key]
-            ?: error("No serializer found for ${it.key}")
-        serializer.deserialize(it.value)
-    }.toMutableMap()
-
-    val result = method.call(params)
-    val resultSerializer = method.serializers.resultSerializer as Serializer<Any?>
-    return resultSerializer.serialize(result)
+    val result = method.call(arguments)
+    val resultSerializer = method.serializers.resultSerializer as Serializer<Any?, *>
+    return resultSerializer.serializeToBytes(result)
 }

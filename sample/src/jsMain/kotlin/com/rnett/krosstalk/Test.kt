@@ -6,6 +6,7 @@ import com.rnett.krosstalk.ktor.client.KtorClientBasicAuth
 import com.rnett.krosstalk.ktor.client.KtorClientScope
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
+import kotlinx.serialization.cbor.Cbor
 
 actual suspend fun doThing(data: Data): List<String> = krosstalkCall()
 
@@ -42,7 +43,7 @@ fun main() {
 }
 
 actual object MyKrosstalk : Krosstalk(), KrosstalkClient<KtorClientScope<*>>, Scopes {
-    override val serialization = KotlinxSerializationHandler
+    override val serialization = KotlinxBinarySerializationHandler(Cbor { })
     override val client = KtorClient("http://localhost:8080")
     override val auth by scope(KtorClientBasicAuth())
 }

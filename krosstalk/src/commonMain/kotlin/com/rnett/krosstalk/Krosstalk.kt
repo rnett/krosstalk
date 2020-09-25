@@ -9,20 +9,21 @@ const val prefixKey = "\$prefix"
 
 data class MethodDefinition<T>(
 //        val method: KCallable<T>,
-    val endpoint: String,
-    val httpMethod: String,
-    val requiredScopes: Set<String>,
-    val optionalScopes: Set<String>,
-    val serializers: MethodSerializers,
-    val call: suspend (Map<String, *>) -> T
+        val endpoint: String,
+        val httpMethod: String,
+        val requiredScopes: Set<String>,
+        val optionalScopes: Set<String>,
+        val serializers: MethodSerializers<*>,
+        val call: suspend (Map<String, *>) -> T
 ) {
     val hasInstanceParameter = serializers.instanceReceiverSerializer != null
     val hasExtensionParameter = serializers.extensionReceiverSerializer != null
 }
 
 //TODO import from other
+//TODO maybe add serializer type?
 abstract class Krosstalk {
-    abstract val serialization: SerializationHandler
+    abstract val serialization: SerializationHandler<*>
     open val endpointPrefix: String = "krosstalk"
 
     @PublishedApi
