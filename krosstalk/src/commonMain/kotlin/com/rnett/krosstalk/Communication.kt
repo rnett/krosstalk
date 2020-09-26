@@ -1,27 +1,44 @@
 package com.rnett.krosstalk
 
-import kotlinx.serialization.Serializable
+//TODO I really need custom exceptions in here
+
+sealed class KrosstalkResponse {
+    abstract val responseCode: Int
+
+    data class Success(override val responseCode: Int = 200, val data: ByteArray) : KrosstalkResponse() {
+        override fun equals(other: Any?): Boolean {
+            if (this === other) return true
+            if (other !is Success) return false
+
+            if (responseCode != other.responseCode) return false
+            if (!data.contentEquals(other.data)) return false
+
+            return true
+        }
+
+        override fun hashCode(): Int {
+            var result = responseCode
+            result = 31 * result + data.contentHashCode()
+            return result
+        }
+    }
+
+    data class Failure(override val responseCode: Int = 200, val error: (suspend (methodName: String) -> Nothing)? = null) : KrosstalkResponse()
+}
 
 interface ClientHandler<C : ClientScope<*>> {
     val serverUrl: String
     suspend fun sendKrosstalkRequest(
-        endpoint: String,
-        method: String,
-        body: ByteArray,
-        scopes: List<ActiveScope<*, C>>
-    ): ByteArray
+            endpoint: String,
+            method: String,
+            body: ByteArray?,
+            scopes: List<ActiveScope<*, C>>
+    ): KrosstalkResponse
 }
 
 interface ServerHandler<S : ServerScope>
 
-//TODO just use serialized parameter map, use Krosstalk serializer for this so you could use it to target existing JSON endpoint
-@Serializable
-data class KrosstalkCall(
-    val function: String,
-    val parameters: Map<String, ByteArray>
-)
-
-fun krosstalkCall(): Nothing = error("Should have been replaced with a krosstalk call during compilation")
+suspend fun krosstalkCall(): Nothing = error("Should have been replaced with a krosstalk call during compilation")
 
 private val valueRegex = Regex("\\{([^}]+?)\\}")
 
@@ -68,7 +85,8 @@ fun fillInEndpointWithStatic(endpointTemplate: String, methodName: String, prefi
 internal suspend inline fun <T, K, reified C : ClientScope<*>> K.call(methodName: String, arguments: Map<String, *>): T
         where K : KrosstalkClient<C>, K : Krosstalk {
     val method = methods[methodName] ?: error("Unknown method $methodName")
-    val serializedArgs = serialization.serializeByteArguments(arguments, method.serializers)
+    val keptArgs = arguments.filterKeys { it !in method.leaveOutArguments }
+    val serializedArgs = serialization.serializeByteArguments(keptArgs, method.serializers)
 
     val usedScopes = mutableListOf<ActiveScope<*, *>>()
 
@@ -97,16 +115,29 @@ internal suspend inline fun <T, K, reified C : ClientScope<*>> K.call(methodName
     val result = client.sendKrosstalkRequest(
             fillInEndpoint(method.endpoint, methodName, this.endpointPrefix, arguments),
             method.httpMethod,
-            serializedArgs,
+            if (keptArgs.isEmpty()) null else serializedArgs,
             usedScopes.map {
                 if (it.scope !is C) error("Scope ${it.scope} was not of required type ${C::class}.  This should be impossible.")
                 it as ActiveScope<*, C>
             })
-    return method.serializers.resultSerializer.deserializeFromBytes(result) as T
+
+    @Suppress("UNCHECKED_CAST") // checked in compiler plugin
+    if (result.responseCode in method.nullOnResponseCodes)
+        return null as T
+
+    return when (result) {
+        is KrosstalkResponse.Success -> method.serializers.resultSerializer.deserializeFromBytes(result.data) as T
+        is KrosstalkResponse.Failure -> result.error?.let { it(methodName) }
+                ?: error("Krosstalk method $methodName failed with HTTP status code ${result.responseCode}")
+    }
 }
 
 suspend fun <K> K.handle(method: String, data: ByteArray): ByteArray where K : Krosstalk, K : KrosstalkServer<*> {
     val method = methods[method] ?: error("No method found for $method")
+
+    if (method.leaveOutArguments.isNotEmpty())
+        error("You somehow set MinimizeBody or EmptyBody on a call with a krosstalk server.  It should cause a compiler error, this is a bug.")
+
     val arguments = serialization.deserializeByteArguments(data, method.serializers)
 
     val result = method.call(arguments)

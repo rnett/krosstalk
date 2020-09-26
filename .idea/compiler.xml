@@ -17,6 +17,10 @@
       <module name="krosstalk.krosstalk-ktor-server.commonTest" target="13" />
       <module name="krosstalk.krosstalk-ktor-server.jvmMain" target="13" />
       <module name="krosstalk.krosstalk-ktor-server.jvmTest" target="13" />
+      <module name="krosstalk.sample.commonMain" target="13" />
+      <module name="krosstalk.sample.commonTest" target="13" />
+      <module name="krosstalk.sample.jvmMain" target="13" />
+      <module name="krosstalk.sample.jvmTest" target="13" />
       <module name="krosstalk.test.commonMain" target="13" />
       <module name="krosstalk.test.commonTest" target="13" />
       <module name="krosstalk.test.jvmMain" target="13" />

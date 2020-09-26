@@ -3,9 +3,7 @@ pluginManagement {
         jcenter()
         mavenCentral()
         gradlePluginPortal()
-        maven {
-            url = uri("https://dl.bintray.com/kotlin/kotlin-eap")
-        }
+        maven("https://dl.bintray.com/kotlin/kotlin-eap")
         mavenLocal()
     }
 
@@ -14,9 +12,8 @@ enableFeaturePreview("GRADLE_METADATA")
 rootProject.name = "krosstalk"
 
 include(
-    "krosstalk-compiler-plugin", "krosstalk-gradle-plugin", "krosstalk",
-    "krosstalk-ktor-server",
-    "krosstalk-ktor-client",
-    "sample"
+        "krosstalk-compiler-plugin", "krosstalk-gradle-plugin", "krosstalk",
+        "krosstalk-ktor-server", "krosstalk-ktor-client",
+        "fullstack-sample", "client-sample"
 )
 

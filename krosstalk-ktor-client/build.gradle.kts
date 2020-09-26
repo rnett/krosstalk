@@ -9,6 +9,7 @@ kotlin {
         compilations.all {
             kotlinOptions.apply {
                 jvmTarget = "1.8"
+                useIR = true
             }
         }
     }

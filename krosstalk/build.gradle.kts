@@ -4,7 +4,7 @@ plugins {
 
 }
 
-val serialization_version = "1.0.0-RC"
+val serialization_version = "1.0.0-RC2"
 
 
 kotlin {
@@ -16,7 +16,8 @@ kotlin {
         }
     }
     js(IR) {
-        browser { }
+        browser {
+        }
     }
 
     configure(listOf(targets["metadata"], jvm(), js())) {
@@ -33,6 +34,7 @@ kotlin {
                 implementation(kotlin("stdlib-common"))
                 implementation("org.jetbrains.kotlinx:kotlinx-serialization-core:$serialization_version")
                 implementation("org.jetbrains.kotlinx:kotlinx-serialization-cbor:$serialization_version")
+                implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:$serialization_version")
             }
         }
 

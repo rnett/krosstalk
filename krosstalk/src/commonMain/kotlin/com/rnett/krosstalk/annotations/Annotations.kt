@@ -59,3 +59,32 @@ annotation class RequiredScopes(vararg val scopes: String)
 @Retention(AnnotationRetention.BINARY)
 @MustBeDocumented
 annotation class OptionalScopes(vararg val scopes: String)
+
+/**
+ * Return null when the listed HTTP response codes are encountered.
+ * For example, turning a "404: Item not found" into a null for Map.get like behavior.
+ *
+ * The return type must be nullable.  Only affects the client.
+ */
+@Target(AnnotationTarget.FUNCTION)
+@Retention(AnnotationRetention.BINARY)
+@MustBeDocumented
+annotation class NullOn(vararg val responseCodes: Int)
+
+/**
+ * Don't include arguments that are part of the [KrosstalkEndpoint] endpoint in the body.
+ * **Only usable on client-only methods.**
+ */
+@Target(AnnotationTarget.FUNCTION)
+@Retention(AnnotationRetention.BINARY)
+@MustBeDocumented
+annotation class MinimizeBody
+
+/**
+ * Don't include arguments that are part of the [KrosstalkEndpoint] endpoint in the body, and error if all arguments aren't in the endpoint.
+ * **Only usable on client-only methods.**
+ */
+@Target(AnnotationTarget.FUNCTION)
+@Retention(AnnotationRetention.BINARY)
+@MustBeDocumented
+annotation class EmptyBody

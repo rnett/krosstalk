@@ -1,0 +1,8 @@
+<component name="ArtifactManager">
+  <artifact type="jar" name="fullstack-sample-js-1.0.1-ALPHA">
+    <output-path>C:\Users\jimne\Google Drive\My Stuff\krosstalk\fullstack-sample\build\libs</output-path>
+    <root id="archive" name="fullstack-sample-js-1.0.1-ALPHA.jar">
+      <element id="module-output" name="krosstalk.fullstack-sample.jsMain" />
+    </root>
+  </artifact>
+</component>

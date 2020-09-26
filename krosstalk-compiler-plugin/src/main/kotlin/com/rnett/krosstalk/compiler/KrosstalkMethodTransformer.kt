@@ -34,7 +34,9 @@ const val prefixKey = "\$prefix"
 private val valueRegex = Regex("\\{([^}]+?)\\}")
 
 class KrosstalkMethodTransformer(override val context: IrPluginContext, val messageCollector: MessageCollector) :
-    IrElementTransformerVoidWithContext(), FileLoweringPass, HasContext {
+        IrElementTransformerVoidWithContext(), FileLoweringPass, HasContext {
+
+    val stringType = context.irBuiltIns.stringType
 
     private lateinit var file: IrFile
     private lateinit var fileSource: String
@@ -87,10 +89,10 @@ class KrosstalkMethodTransformer(override val context: IrPluginContext, val mess
 //    val error by Names.error.function()
 
     fun IrBuilderWithScope.constStringProperty(name: FqName) =
-        this@KrosstalkMethodTransformer.context.referenceProperties(name).single().owner.let {
-            assert(it.isConst) { "Expected $name to be a const" }
-            it.backingField!!.initializer!!.expression as IrConst<String>
-        }.value
+            this@KrosstalkMethodTransformer.context.referenceProperties(name).single().owner.let {
+                assert(it.isConst) { "Expected $name to be a const" }
+                it.backingField!!.initializer!!.expression as IrConst<String>
+            }.value
 
     // constants
     //TODO use these instead of hardcoded constants (js is broken, see slack)
@@ -111,35 +113,35 @@ class KrosstalkMethodTransformer(override val context: IrPluginContext, val mess
             putTypeArgument(0, keyType)
             putTypeArgument(1, valueType)
             putValueArgument(0,
-                varargOf(
-                    Pair.typeWith(keyType, valueType),
-                    map.map { (key, value) ->
-                        irCall(to, Pair.typeWith(keyType, valueType)).apply {
-                            putTypeArgument(0, keyType)
-                            putTypeArgument(1, valueType)
-                            extensionReceiver = key
-                            putValueArgument(0, value)
-                        }
-                    }
-                )
+                    varargOf(
+                            Pair.typeWith(keyType, valueType),
+                            map.map { (key, value) ->
+                                irCall(to, Pair.typeWith(keyType, valueType)).apply {
+                                    putTypeArgument(0, keyType)
+                                    putTypeArgument(1, valueType)
+                                    extensionReceiver = key
+                                    putValueArgument(0, value)
+                                }
+                            }
+                    )
             )
         }
     }
 
     fun IrBuilderWithScope.setOf(type: IrType, items: Iterable<IrExpression>) =
-        irCall(setOf, Set.typeWith(type)).apply {
-            putTypeArgument(0, type)
-            putValueArgument(0, varargOf(type, items))
-        }
+            irCall(setOf, Set.typeWith(type)).apply {
+                putTypeArgument(0, type)
+                putValueArgument(0, varargOf(type, items))
+            }
 
     fun IrBuilderWithScope.getValueOrError(
-        map: IrExpression,
-        type: IrType,
-        key: String,
-        default: IrSimpleFunction,
-        nullError: String,
-        typeError: String,
-        keyType: IrType = context.irBuiltIns.stringType
+            map: IrExpression,
+            type: IrType,
+            key: String,
+            default: IrSimpleFunction,
+            nullError: String,
+            typeError: String,
+            keyType: IrType = stringType
     ) = irCall(getValueAsOrError, type).apply {
         putTypeArgument(0, keyType)
         putTypeArgument(1, type)
@@ -152,7 +154,7 @@ class KrosstalkMethodTransformer(override val context: IrPluginContext, val mess
     }
 
     fun IrBuilderWithScope.callTypeOf(type: IrType) =
-        irCall(typeOf, KType.typeWith()).apply { putTypeArgument(0, type) }
+            irCall(typeOf, KType.typeWith()).apply { putTypeArgument(0, type) }
 
     override fun visitClassNew(declaration: IrClass): IrStatement {
         log("Class", declaration.dump(true))
@@ -163,20 +165,33 @@ class KrosstalkMethodTransformer(override val context: IrPluginContext, val mess
      * Register a method in the krosstalk object's init blocks.
      */
     fun addMethodToClass(
-        declaration: IrSimpleFunction,
-        expectDeclaration: IrFunction,
-        methodAnnotation: IrConstructorCall,
-        klass: IrClass
+            declaration: IrSimpleFunction,
+            annotations: List<IrConstructorCall>,
+            klass: IrClass,
+            isClientOnly: Boolean
     ) {
 
-        val requiredScopes = expectDeclaration.getAnnotation(Names.RequiredScopes)?.let {
+        if (!isClientOnly) {
+            if (annotations.hasAnnotation(Names.MinimizeBody))
+                messageCollector.report(CompilerMessageSeverity.ERROR,
+                        "Can not have MinimizeBody annotation on a krosstalk method that could have a krosstalk server.  Krosstalk object must be a non-actual client.",
+                        declaration.location()
+                )
+            if (annotations.hasAnnotation(Names.EmptyBody))
+                messageCollector.report(CompilerMessageSeverity.ERROR,
+                        "Can not have EmptyBody annotation on a krosstalk method that could have a krosstalk server.  Krosstalk object must be a non-actual client.",
+                        declaration.location()
+                )
+        }
+
+        val requiredScopes = annotations.getAnnotation(Names.RequiredScopes)?.let {
             if (it.valueArgumentsCount > 0)
                 (it.getValueArgument(0) as IrVararg).elements.map { (it as IrConst<String>).value }.toSet()
             else
                 emptySet()
         } ?: emptySet()
 
-        val optionalScopes = expectDeclaration.getAnnotation(Names.OptionalScopes)?.let {
+        val optionalScopes = annotations.getAnnotation(Names.OptionalScopes)?.let {
             if (it.valueArgumentsCount > 0)
                 (it.getValueArgument(0) as IrVararg).elements.map { (it as IrConst<String>).value }.toSet()
             else
@@ -188,11 +203,97 @@ class KrosstalkMethodTransformer(override val context: IrPluginContext, val mess
         (requiredScopes + optionalScopes).forEach {
             if (it !in scopeProps) {
                 messageCollector.report(
-                    CompilerMessageSeverity.ERROR,
-                    "No known attribute $it.  Must define a property of the same name with type ScopeHolder in ${klass.fqNameForIrSerialization} or a superclass/interface.",
-                    methodAnnotation.location()
+                        CompilerMessageSeverity.ERROR,
+                        "No known scope $it.  Must define a property of the same name with type ScopeHolder in ${klass.fqNameForIrSerialization} or a superclass/interface.",
+                        declaration.location()
                 )
             }
+        }
+
+
+        if (annotations.hasAnnotation(Names.NullOn) && !declaration.returnType.isNullable())
+            messageCollector.report(CompilerMessageSeverity.ERROR,
+                    "Can't use NullOn annotation on function with non-nullable return type.",
+                    declaration.location())
+
+        val nullOnCodes = annotations.getAnnotation(Names.NullOn)?.let {
+            if (it.valueArgumentsCount > 0)
+                (it.getValueArgument(0) as IrVararg).elements.map { (it as IrConst<Int>).value }.toSet()
+            else
+                emptySet()
+        } ?: emptySet()
+
+
+        val requireEmptyBody = annotations.hasAnnotation(Names.EmptyBody)
+        val minimizeBody = annotations.hasAnnotation(Names.MinimizeBody) || requireEmptyBody
+
+        val validArgumentNames = mutableSetOf<String>()
+
+        if (declaration.extensionReceiverParameter != null)
+            validArgumentNames += extensionParameterKey
+
+        if (declaration.dispatchReceiverParameter != null)
+            validArgumentNames += instanceParameterKey
+
+        validArgumentNames += declaration.valueParameters.map { it.name.asString() }
+
+        val requiredArgumentNames = validArgumentNames.toSet()
+
+        validArgumentNames.addAll(listOf(prefixKey, methodNameKey))
+
+
+        val endpointAnnotation = annotations.getAnnotation(Names.KrosstalkEndpoint)
+
+        if (minimizeBody && endpointAnnotation == null) {
+            if (requireEmptyBody)
+                messageCollector.report(CompilerMessageSeverity.ERROR,
+                        "Can't use EmptyBody annotation without specifying an endpoint using KrosstalkEndpoint",
+                        declaration.location())
+            else
+                messageCollector.report(CompilerMessageSeverity.ERROR,
+                        "Can't use MinimizeBody annotation without specifying an endpoint using KrosstalkEndpoint",
+                        declaration.location())
+        }
+
+        val endpoint = endpointAnnotation?.let {
+            it.getValueArgument(0)!! as IrConst<String>
+        }?.value ?: "{$prefixKey}/{$methodNameKey}"
+
+        val usedArgumentNames = mutableSetOf<String>()
+
+        if (endpointAnnotation != null) {
+            valueRegex.findAll(endpoint).forEach {
+                val name = it.groupValues[1]
+                if (name !in validArgumentNames) {
+                    when (name) {
+                        extensionParameterKey -> messageCollector.report(
+                                CompilerMessageSeverity.ERROR,
+                                "Used $extensionParameterKey in endpoint template, but method does not have an extension receiver",
+                                endpointAnnotation.location()
+                        )
+                        instanceParameterKey -> messageCollector.report(
+                                CompilerMessageSeverity.ERROR,
+                                "Used $instanceParameterKey in endpoint template, but method does not have an instance/dispatch receiver",
+                                endpointAnnotation.location()
+                        )
+                        else -> messageCollector.report(
+                                CompilerMessageSeverity.ERROR,
+                                "Used $name in endpoint template, but method does not have a parameter named $name",
+                                endpointAnnotation.location()
+                        )
+                    }
+                } else {
+                    usedArgumentNames += name
+                }
+            }
+        }
+
+        if (requireEmptyBody) {
+            val leftovers = requiredArgumentNames - usedArgumentNames
+            if (leftovers.isNotEmpty())
+                messageCollector.report(CompilerMessageSeverity.ERROR,
+                        "EmptyBody is specified, but not all arguments are used in endpoint: missing $leftovers",
+                        declaration.location())
         }
 
         val initializer = addedInitalizers.getOrPut(klass.symbol) {
@@ -212,87 +313,52 @@ class KrosstalkMethodTransformer(override val context: IrPluginContext, val mess
 
                     // endpoint and method
 
-                    val endpointAnnotation = expectDeclaration.getAnnotation(Names.KrosstalkEndpoint)
-
-                    val endpoint = endpointAnnotation?.let {
-                        it.getValueArgument(0)!! as IrConst<String>
-                    }?.value ?: "{$prefixKey}/{$methodNameKey}"
-
                     val method = endpointAnnotation?.let {
                         it.getValueArgument(1) as IrConst<String>?
                     }?.value ?: "POST"
-
-                    val validNames = mutableSetOf(prefixKey, methodNameKey)
-
-                    if (declaration.extensionReceiverParameter != null)
-                        validNames += extensionParameterKey
-
-                    if (declaration.dispatchReceiverParameter != null)
-                        validNames += instanceParameterKey
-
-                    validNames += declaration.valueParameters.map { it.name.asString() }
-
-                    if (endpointAnnotation != null) {
-                        valueRegex.findAll(endpoint).forEach {
-                            val name = it.groupValues[1]
-                            if (name !in validNames) {
-                                when (name) {
-                                    extensionParameterKey -> messageCollector.report(
-                                        CompilerMessageSeverity.ERROR,
-                                        "Used $extensionParameterKey in endpoint template, but method does not have an extension receiver",
-                                        endpointAnnotation.location()
-                                    )
-                                    instanceParameterKey -> messageCollector.report(
-                                        CompilerMessageSeverity.ERROR,
-                                        "Used $instanceParameterKey in endpoint template, but method does not have an instance/dispatch receiver",
-                                        endpointAnnotation.location()
-                                    )
-                                    else -> messageCollector.report(
-                                        CompilerMessageSeverity.ERROR,
-                                        "Used $name in endpoint template, but method does not have a parameter named $name",
-                                        endpointAnnotation.location()
-                                    )
-                                }
-                            }
-                        }
-                    }
 
                     putValueArgument(1, endpoint.asConst())
                     putValueArgument(2, method.asConst())
 
                     // MethodTypes
                     putValueArgument(3,
-                        irCall(MethodTypes.constructors.single { it.owner.isPrimary }).apply {
-                            val parameterMap: MutableMap<IrExpression, IrExpression> = declaration.valueParameters
-                                .associate { it.name.asString().asConst() to callTypeOf(it.type) }.toMutableMap()
+                            irCall(MethodTypes.constructors.single { it.owner.isPrimary }).apply {
+                                val parameterMap: MutableMap<IrExpression, IrExpression> = declaration.valueParameters
+                                        .associate { it.name.asString().asConst() to callTypeOf(it.type) }.toMutableMap()
 
-                            declaration.extensionReceiverParameter?.let {
-                                parameterMap[extensionParameterKey.asConst()] = callTypeOf(it.type)
-                            }
+                                declaration.extensionReceiverParameter?.let {
+                                    parameterMap[extensionParameterKey.asConst()] = callTypeOf(it.type)
+                                }
 
-                            declaration.dispatchReceiverParameter?.let {
-                                parameterMap[instanceParameterKey.asConst()] = callTypeOf(it.type)
-                            }
+                                declaration.dispatchReceiverParameter?.let {
+                                    parameterMap[instanceParameterKey.asConst()] = callTypeOf(it.type)
+                                }
 
-                            putValueArgument(
-                                0,
-                                mapOf(
-                                    context.irBuiltIns.stringType,
-                                    KType.typeWith(),
-                                    parameterMap
+                                putValueArgument(
+                                        0,
+                                        mapOf(
+                                                stringType,
+                                                KType.typeWith(),
+                                                parameterMap
+                                        )
                                 )
-                            )
-                            putValueArgument(1, callTypeOf(declaration.returnType))
-                        }
+                                putValueArgument(1, callTypeOf(declaration.returnType))
+                            }
                     )
 
                     if (declaration.name.asString() == "doAuthThing")
                         println()
 
                     // required scopes
-                    putValueArgument(4, setOf(context.irBuiltIns.stringType, requiredScopes.map { it.asConst() }))
+                    putValueArgument(4, setOf(stringType, requiredScopes.map { it.asConst() }))
                     // optional scopes
-                    putValueArgument(5, setOf(context.irBuiltIns.stringType, optionalScopes.map { it.asConst() }))
+                    putValueArgument(5, setOf(stringType, optionalScopes.map { it.asConst() }))
+
+                    // leave out arguments
+                    putValueArgument(6, if (minimizeBody) setOf(stringType, usedArgumentNames.map { it.asConst() }) else nullConst(Set.typeWith(stringType)))
+
+                    // nullOnResponse
+                    putValueArgument(7, setOf(context.irBuiltIns.intType, nullOnCodes.map { it.asConst() }))
 
                     // call function
 
@@ -301,10 +367,10 @@ class KrosstalkMethodTransformer(override val context: IrPluginContext, val mess
                             val args = addValueParameter {
                                 name = Name.identifier("arguments")
                                 type = IrSimpleTypeImpl(
-                                    Map,
-                                    false,
-                                    listOf(context.irBuiltIns.stringType as IrTypeBase, IrStarProjectionImpl),
-                                    emptyList()
+                                        Map,
+                                        false,
+                                        listOf(stringType as IrTypeBase, IrStarProjectionImpl),
+                                        emptyList()
                                 )
                             }
 //                                    if(Platform.platform == Platform.JS) {
@@ -315,45 +381,45 @@ class KrosstalkMethodTransformer(override val context: IrPluginContext, val mess
                             body = irJsExperBody(irCall(declaration.symbol).apply {
                                 declaration.valueParameters.forEach {
                                     putValueArgument(
-                                        it.index,
-                                        getValueOrError(
-                                            irGet(args),
-                                            it.type,
-                                            it.name.asString(),
-                                            buildLambda(it.type.makeNullable()) {
-                                                body = it.defaultValue?.deepCopyWithSymbols()
-                                                    ?.let { irJsExperBody(it) }
-                                                    ?: irJsExperBody(nullConst(it.type.makeNullable()))
-                                            },
-                                            "No argument for ${it.name}, but it was required",
-                                            "Argument for ${it.name} was type \$type, but the parameter is of type \$required"
-                                        )
+                                            it.index,
+                                            getValueOrError(
+                                                    irGet(args),
+                                                    it.type,
+                                                    it.name.asString(),
+                                                    buildLambda(it.type.makeNullable()) {
+                                                        body = it.defaultValue?.deepCopyWithSymbols()
+                                                                ?.let { irJsExperBody(it) }
+                                                                ?: irJsExperBody(nullConst(it.type.makeNullable()))
+                                                    },
+                                                    "No argument for ${it.name}, but it was required",
+                                                    "Argument for ${it.name} was type \$type, but the parameter is of type \$required"
+                                            )
                                     )
                                 }
 
                                 declaration.extensionReceiverParameter?.let {
                                     extensionReceiver = getValueOrError(
-                                        irGet(args),
-                                        it.type,
-                                        extensionParameterKey,
-                                        buildLambda(it.type.makeNullable()) {
-                                            body = irJsExperBody(nullConst(it.type.makeNullable()))
-                                        },
-                                        "No extension receiver argument, but it was required",
-                                        "Extension receiver argument was type \$type, but parameter is of type \$required"
+                                            irGet(args),
+                                            it.type,
+                                            extensionParameterKey,
+                                            buildLambda(it.type.makeNullable()) {
+                                                body = irJsExperBody(nullConst(it.type.makeNullable()))
+                                            },
+                                            "No extension receiver argument, but it was required",
+                                            "Extension receiver argument was type \$type, but parameter is of type \$required"
                                     )
                                 }
 
                                 declaration.dispatchReceiverParameter?.let {
                                     dispatchReceiver = getValueOrError(
-                                        irGet(args),
-                                        it.type,
-                                        instanceParameterKey,
-                                        buildLambda(it.type.makeNullable()) {
-                                            body = irJsExperBody(nullConst(it.type.makeNullable()))
-                                        },
-                                        "No instance receiver argument, but it was required",
-                                        "Instance receiver argument was type \$type, but parameter is of type \$required"
+                                            irGet(args),
+                                            it.type,
+                                            instanceParameterKey,
+                                            buildLambda(it.type.makeNullable()) {
+                                                body = irJsExperBody(nullConst(it.type.makeNullable()))
+                                            },
+                                            "No instance receiver argument, but it was required",
+                                            "Instance receiver argument was type \$type, but parameter is of type \$required"
                                     )
                                 }
 
@@ -362,7 +428,7 @@ class KrosstalkMethodTransformer(override val context: IrPluginContext, val mess
                         }
                     }
 
-                    putValueArgument(6, lambdaArgument(lambda))
+                    putValueArgument(8, lambdaArgument(lambda))
 
                 }
             }
@@ -382,12 +448,12 @@ class KrosstalkMethodTransformer(override val context: IrPluginContext, val mess
                 putTypeArgument(1, krosstalkClass.defaultType.makeNotNull())
 
                 val clientScopeType = krosstalkClass.superTypes.single { it.classifierOrNull == KrosstalkClient }
-                    .cast<IrSimpleType>().arguments.single().typeOrNull!!
+                        .cast<IrSimpleType>().arguments.single().typeOrNull!!
 
                 putTypeArgument(2, clientScopeType)
 
                 val argumentsMap = function.valueParameters.associate { it.name.asString().asConst() to irGet(it) }
-                    .toMutableMap<IrExpression, IrExpression>()
+                        .toMutableMap<IrExpression, IrExpression>()
 
                 function.extensionReceiverParameter?.let {
                     argumentsMap[extensionParameterKey.asConst()] = irGet(it)
@@ -398,11 +464,11 @@ class KrosstalkMethodTransformer(override val context: IrPluginContext, val mess
 
                 putValueArgument(0, function.name.asString().asConst())
                 putValueArgument(
-                    1, mapOf(
-                        context.irBuiltIns.stringType,
+                        1, mapOf(
+                        stringType,
                         context.irBuiltIns.anyType.makeNullable(),
                         argumentsMap
-                    )
+                )
                 )
             })
         }
@@ -413,61 +479,89 @@ class KrosstalkMethodTransformer(override val context: IrPluginContext, val mess
 
 //        log("Function", declaration.dump(true))
 
+        val annotations: List<IrConstructorCall>
+        val expectKrosstalk: Boolean
+
         if (declaration.descriptor.isActual) {
             val expect = context.symbolTable.referenceFunction(
-                declaration.descriptor.findExpects().single() as CallableDescriptor
+                    declaration.descriptor.findExpects().single() as CallableDescriptor
             ).owner
-            val methodAnnotation = expect.getAnnotation(Names.KrosstalkMethod)
 
-            if (methodAnnotation != null) {
-                if (!declaration.isSuspend)
-                    messageCollector.report(
-                        CompilerMessageSeverity.ERROR,
-                        "Krosstalk methods must be suspend",
-                        declaration.location()
-                    )
+            annotations = expect.annotations
 
-                val klass = (methodAnnotation.getValueArgument(0) as IrClassReference).symbol.owner as IrClass
+            if (expect.hasAnnotation(Names.KrosstalkMethod)) {
+                expectKrosstalk = true
+                if (declaration.hasAnnotation(Names.KrosstalkMethod))
+                    messageCollector.report(CompilerMessageSeverity.ERROR, "Can't define a method as a Krosstalk more than once.  It was defined on both the expect and actual declarations.", declaration.location())
 
-                if (!klass.isObject)
-                    messageCollector.report(CompilerMessageSeverity.ERROR,
-                        "Krosstalk class must be an object",
+                if (declaration.hasAnnotation(Names.KrosstalkEndpoint))
+                    messageCollector.report(CompilerMessageSeverity.ERROR, "Can't configure Krosstalk endpoint on the actual method when the expect declaration is a Krosstalk method.", declaration.location())
+
+                if (declaration.hasAnnotation(Names.RequiredScopes))
+                    messageCollector.report(CompilerMessageSeverity.ERROR, "Can't configure Krosstalk required scopes on the actual method when the expect declaration is a Krosstalk method.", declaration.location())
+
+                if (declaration.hasAnnotation(Names.OptionalScopes))
+                    messageCollector.report(CompilerMessageSeverity.ERROR, "Can't configure Krosstalk optional scopes on the actual method when the expect declaration is a Krosstalk method.", declaration.location())
+
+            } else
+                expectKrosstalk = false
+        } else {
+            annotations = declaration.annotations
+            expectKrosstalk = false
+        }
+
+        val methodAnnotation = annotations.getAnnotation(Names.KrosstalkMethod)
+                ?: return super.visitSimpleFunction(declaration)
+
+        if (!declaration.isSuspend)
+            messageCollector.report(
+                    CompilerMessageSeverity.ERROR,
+                    "Krosstalk methods must be suspend",
+                    declaration.location()
+            )
+
+        val klass = (methodAnnotation.getValueArgument(0) as IrClassReference).symbol.owner as IrClass
+
+        if (!klass.isObject)
+            messageCollector.report(CompilerMessageSeverity.ERROR,
+                    "Used Krosstalk class must be an object, ${klass.fqNameForIrSerialization} was not",
+                    declaration.location())
+
+        //TODO I'd like to allow client only things for an expect krosstalk where all actuals are clients.  Unsure if possible
+        val isClient = klass.isSubclassOf(KrosstalkClient.owner)
+        val isClientOnly = !expectKrosstalk && isClient
+
+        addMethodToClass(declaration, annotations, klass, isClientOnly)
+
+        if (klass.isSubclassOf(KrosstalkClient.owner)) {
+            //TODO can I use no body and suppress the error?  But then I need an ide plugin
+            fun bodyError() {
+                messageCollector.report(CompilerMessageSeverity.ERROR,
+                        "Krosstalk client side methods should be only empty or ${Names.clientPlaceholder.shortName().asString()}",
                         declaration.location())
+            }
 
-                addMethodToClass(declaration, expect, methodAnnotation, klass)
+            val body = declaration.body
+            if (body is IrExpressionBody) {
+                val expr = body.expression
+                if (!(expr is IrCall && expr.symbol == clientPlaceholder))
+                    bodyError()
 
-                if (klass.isSubclassOf(KrosstalkClient.owner)) {
-                    //TODO can I use no body and suppress the error?  But then I need an ide plugin
-                    fun bodyError() {
-                        messageCollector.report(CompilerMessageSeverity.ERROR,
-                            "Krosstalk client side methods should be only empty or ${Names.clientPlaceholder.shortName().asString()}",
-                            declaration.location())
-                    }
-
-                    val body = declaration.body
-                    if (body is IrExpressionBody) {
-                        val expr = body.expression
+            } else if (body is IrBlockBody) {
+                if (body.statements.size > 1)
+                    bodyError()
+                else if (body.statements.isNotEmpty()) {
+                    val ret = body.statements[0]
+                    if (ret is IrReturn) {
+                        val expr = ret.value
                         if (!(expr is IrCall && expr.symbol == clientPlaceholder))
                             bodyError()
-
-                    } else if (body is IrBlockBody) {
-                        if (body.statements.size > 1)
-                            bodyError()
-                        else if (body.statements.isNotEmpty()) {
-                            val ret = body.statements[0]
-                            if (ret is IrReturn) {
-                                val expr = ret.value
-                                if (!(expr is IrCall && expr.symbol == clientPlaceholder))
-                                    bodyError()
-                            } else if (!(ret is IrCall && ret.symbol == clientPlaceholder))
-                                bodyError()
-                        }
-                    }
-
-                    addCallMethodBody(klass, declaration)
+                    } else if (!(ret is IrCall && ret.symbol == clientPlaceholder))
+                        bodyError()
                 }
-
             }
+
+            addCallMethodBody(klass, declaration)
         }
         return super.visitSimpleFunction(declaration)
     }

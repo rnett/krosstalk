@@ -57,6 +57,7 @@ interface HasContext {
     }
 
     fun String.asConst() = IrConstImpl.string(UNDEFINED_OFFSET, UNDEFINED_OFFSET, context.irBuiltIns.stringType, this)
+    fun Int.asConst() = IrConstImpl.int(UNDEFINED_OFFSET, UNDEFINED_OFFSET, context.irBuiltIns.stringType, this)
 
     fun nullConst(type: IrType) = IrConstImpl.constNull(UNDEFINED_OFFSET, UNDEFINED_OFFSET, type)
 

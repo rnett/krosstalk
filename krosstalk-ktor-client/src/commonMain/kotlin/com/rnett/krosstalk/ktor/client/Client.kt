@@ -3,12 +3,18 @@ package com.rnett.krosstalk.ktor.client
 import com.rnett.krosstalk.ActiveScope
 import com.rnett.krosstalk.ClientHandler
 import com.rnett.krosstalk.ClientScope
-import io.ktor.client.*
-import io.ktor.client.features.auth.*
-import io.ktor.client.features.auth.providers.*
-import io.ktor.client.request.*
-import io.ktor.http.*
-import io.ktor.utils.io.core.*
+import com.rnett.krosstalk.KrosstalkResponse
+import io.ktor.client.HttpClient
+import io.ktor.client.HttpClientConfig
+import io.ktor.client.call.receive
+import io.ktor.client.features.auth.Auth
+import io.ktor.client.features.auth.providers.basic
+import io.ktor.client.request.HttpRequestBuilder
+import io.ktor.client.request.request
+import io.ktor.client.statement.HttpResponse
+import io.ktor.http.HttpMethod
+import io.ktor.http.isSuccess
+import io.ktor.utils.io.core.use
 
 fun <D> ActiveScope<*, KtorClientScope<D>>.configureClient(client: HttpClientConfig<*>) {
     client.apply {
@@ -25,23 +31,35 @@ fun <D> ActiveScope<*, KtorClientScope<D>>.configureRequest(request: HttpRequest
 
 class KtorClient(override val serverUrl: String) : ClientHandler<KtorClientScope<*>> {
     override suspend fun sendKrosstalkRequest(
-        endpoint: String,
-        method: String,
-        body: ByteArray,
-        scopes: List<ActiveScope<*, KtorClientScope<*>>>
-    ): ByteArray {
-        return HttpClient {
+            endpoint: String,
+            method: String,
+            body: ByteArray?,
+            scopes: List<ActiveScope<*, KtorClientScope<*>>>
+    ): KrosstalkResponse {
+        HttpClient {
             scopes.forEach {
                 it.configureClient(this)
             }
+            expectSuccess = false
         }.use {
-            it.request(urlString = "${serverUrl.trimEnd('/')}/${endpoint.trimStart('/')}") {
-                this.body = body
+            val response = it.request<HttpResponse>(urlString = "${serverUrl.trimEnd('/')}/${endpoint.trimStart('/')}") {
+                if (body != null)
+                    this.body = body
                 this.method = HttpMethod(method.toUpperCase())
                 scopes.forEach {
                     it.configureRequest(this)
                 }
             }
+
+            val status = response.status
+
+            return if (status.isSuccess())
+                KrosstalkResponse.Success(status.value, response.receive())
+            else
+                KrosstalkResponse.Failure(status.value) {
+                    //TODO try to receive string?  Seems like a possibly bad idea
+                    error("Krosstalk method $it failed with: $status")
+                }
         }
     }
 }

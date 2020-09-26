@@ -24,7 +24,9 @@ kotlin {
     }
 
     target.compilations.all {
-        kotlinOptions.jvmTarget = "1.8"
-        kotlinOptions.freeCompilerArgs += "-Xjvm-default=enable"
+        kotlinOptions {
+            jvmTarget = "1.8"
+            useIR = true
+        }
     }
 }

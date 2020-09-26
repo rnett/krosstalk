@@ -8,6 +8,9 @@ object Names {
     val KrosstalkEndpoint = FqName("com.rnett.krosstalk.annotations.KrosstalkEndpoint")
     val RequiredScopes = FqName("com.rnett.krosstalk.annotations.RequiredScopes")
     val OptionalScopes = FqName("com.rnett.krosstalk.annotations.OptionalScopes")
+    val NullOn = FqName("com.rnett.krosstalk.annotations.NullOn")
+    val MinimizeBody = FqName("com.rnett.krosstalk.annotations.MinimizeBody")
+    val EmptyBody = FqName("com.rnett.krosstalk.annotations.EmptyBody")
 
     val ScopeHolder = FqName("com.rnett.krosstalk.ScopeHolder")
     val addMethod = FqName("com.rnett.krosstalk.Krosstalk.addMethod")
