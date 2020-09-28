@@ -9,13 +9,19 @@ import kotlinx.serialization.json.jsonObject
 import kotlinx.serialization.serializer
 import kotlin.reflect.KType
 
-
+/**
+ * A serializer that uses a kotlinx [KSerializer] with a [BinaryFormat].
+ */
 class KotlinxBinarySerializer<T>(val serializer: KSerializer<T>, val format: BinaryFormat) : BinarySerializer<T> {
     override fun deserialize(data: ByteArray): T = format.decodeFromByteArray(serializer, data)
 
     override fun serialize(data: T): ByteArray = format.encodeToByteArray(serializer, data)
 }
 
+
+/**
+ * A serializer that uses a kotlinx [KSerializer] with a [StringFormat].
+ */
 class KotlinxStringSerializer<T>(val serializer: KSerializer<T>, val format: StringFormat) : StringSerializer<T> {
     override fun deserialize(data: String): T = format.decodeFromString(serializer, data)
 
@@ -23,7 +29,7 @@ class KotlinxStringSerializer<T>(val serializer: KSerializer<T>, val format: Str
 }
 
 /**
- * Kotlinx binary serialization handler.  Combines arguments into a `Map<String, ByteArray>`, then serializes the map.
+ * Kotlinx serialization handler that uses a [BinaryFormat].  Combines arguments into a `Map<String, ByteArray>`, then serializes the map.
  */
 class KotlinxBinarySerializationHandler(val format: BinaryFormat) : BinaryArgumentSerializationHandler() {
     override fun serializeArguments(serializedArguments: Map<String, ByteArray>): ByteArray {
@@ -41,10 +47,11 @@ class KotlinxBinarySerializationHandler(val format: BinaryFormat) : BinaryArgume
 
 
 /**
- * Kotlinx string serialization handler.  Combines arguments into a `Map<String, String>`, then serializes the map.
+ * Kotlinx serialization handler that uses a [StringFormat].  Combines arguments into a `Map<String, String>`, then serializes the map.
  *
- * Note that this will result in arguments being wrapped in strings.
+ * Note that this will result in arguments being wrapped in strings in the final object.
  * If you want the arguments to be objects, which you probably do, use [KotlinxJsonObjectSerializationHandler].
+ * This is necessary for using non-krosstalk apis.
  */
 class KotlinxStringSerializationHandler(val format: StringFormat) : StringArgumentSerializationHandler() {
     override fun serializeArguments(serializedArguments: Map<String, String>): String {
@@ -61,25 +68,25 @@ class KotlinxStringSerializationHandler(val format: StringFormat) : StringArgume
 }
 
 /**
- * Kotlinx json serialization handler that instead of combining arguments into a `Map<String, String>`, uses them as fields in a json object.
+ * Kotlinx json serialization handler that, instead of combining arguments into a `Map<String, String>`, uses them as fields in a json object.
  * If you are interacting with a non-krosstalk api, this is almost certainly what you want to use.
  */
 class KotlinxJsonObjectSerializationHandler(val format: Json) : StringSerializationHandler() {
     override fun getSerializer(type: KType) = KotlinxStringSerializer(serializer(type), format)
 
-    override fun serializeArguments(arguments: Map<String, *>, serializers: Map<String, Serializer<*, String>>): String {
+    override fun serializeArguments(arguments: Map<String, *>, serializers: ArgumentSerializers<String>): String {
         val jsonObject = buildJsonObject {
             arguments.forEach { (key, data) ->
-                put(key, format.encodeToJsonElement((serializers.getValue(key) as KotlinxStringSerializer<Any?>).serializer, data))
+                put(key, format.encodeToJsonElement((serializers[key] as KotlinxStringSerializer<Any?>).serializer, data))
             }
         }
         return jsonObject.toString()
     }
 
-    override fun deserializeArguments(arguments: String, serializers: Map<String, Serializer<*, String>>): Map<String, *> {
+    override fun deserializeArguments(arguments: String, serializers: ArgumentSerializers<String>): Map<String, *> {
         val jsonObject = format.parseToJsonElement(arguments).jsonObject
         return jsonObject.mapValues { (key, data) ->
-            Json.decodeFromJsonElement((serializers.getValue(key) as KotlinxStringSerializer<Any?>).serializer, data)
+            Json.decodeFromJsonElement((serializers[key] as KotlinxStringSerializer<Any?>).serializer, data)
         }
     }
 }

@@ -4,7 +4,7 @@
     <annotationProcessing>
       <profile default="true" name="Default" enabled="true" />
     </annotationProcessing>
-    <bytecodeTargetLevel target="14">
+    <bytecodeTargetLevel target="11">
       <module name="krosstalk.commonMain" target="13" />
       <module name="krosstalk.commonTest" target="13" />
       <module name="krosstalk.jvmMain" target="13" />

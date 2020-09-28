@@ -1,12 +1,31 @@
 package com.rnett.krosstalk
 
+import com.rnett.krosstalk.annotations.KrosstalkEndpoint
 import kotlin.jvm.JvmName
 
+/**
+ * The key used for instance/dispatch receiver parameters/arguments in parameter/argument maps and [KrosstalkEndpoint] templates.
+ */
 const val instanceParameterKey = "\$instance"
+
+/**
+ * The key used for extension receiver parameters/arguments in parameter/argument maps and [KrosstalkEndpoint] templates.
+ */
 const val extensionParameterKey = "\$extension"
+
+/**
+ * The key to use the method's name in a [KrosstalkEndpoint] template.
+ */
 const val methodNameKey = "\$name"
+
+/**
+ * The key to use the Krosstalk object's [Krosstalk.endpointPrefix] in a [KrosstalkEndpoint] template.
+ */
 const val prefixKey = "\$prefix"
 
+/**
+ * All the Krosstalk metedata associated with a krosstalk method.
+ */
 data class MethodDefinition<T>(
 //        val method: KCallable<T>,
         val endpoint: String,
@@ -22,8 +41,13 @@ data class MethodDefinition<T>(
     val hasExtensionParameter = serializers.extensionReceiverSerializer != null
 }
 
+//TODO finish commenting
+
 //TODO import from other
 //TODO maybe add serializer type?
+/**
+ * The Krosstalk coordinator.  Krosstalk objects extend this.  Contains a listing of defined methods, the serialization handler, and optionally the client or server.
+ */
 abstract class Krosstalk {
     abstract val serialization: SerializationHandler<*>
     open val endpointPrefix: String = "krosstalk"
@@ -31,7 +55,14 @@ abstract class Krosstalk {
     @PublishedApi
     internal val _methods = mutableMapOf<String, MethodDefinition<*>>()
 
+    /**
+     * Methods known to this Krosstalk instance.
+     */
     val methods: Map<String, MethodDefinition<*>> = _methods
+
+    @PublishedApi
+    internal fun requiredMethod(name: String) = methods[name]
+            ?: throw KrosstalkException.MissingMethod(this, name)
 
     @PublishedApi
     internal fun <T> addMethod(
@@ -46,7 +77,7 @@ abstract class Krosstalk {
             call: suspend (Map<String, *>) -> T
     ) {
         if (methodName in methods)
-            error("Already registered method with name $methodName")
+            throw KrosstalkException.CompilerError("Already registered method with name $methodName.")
 
         val serializers = serialization.getAndCheckSerializers(types)
         _methods[methodName] = MethodDefinition(endpoint, method, requiredScopes, optionalScopes, leaveOutArguments
@@ -56,6 +87,9 @@ abstract class Krosstalk {
     @PublishedApi
     internal val activeScopes = mutableMapOf<ScopeHolder, ActiveScope<*, *>>()
 
+    /**
+     * Close all active scopes.  Be careful with this.
+     */
     fun closeAllScopes() {
         activeScopes.clear()
     }
@@ -64,20 +98,31 @@ abstract class Krosstalk {
     internal val _scopes = mutableMapOf<String, ScopeHolder>()
 }
 
-
+/**
+ * Client scopes.
+ */
 inline val <K, C : ClientScope<*>> K.scopes: Map<String, ClientScopeHolder<C, *>> where K : Krosstalk, K : KrosstalkClient<C>
     @JvmName("clientScopes")
     get() = _scopes.mapValues { it as ClientScopeHolder<C, *> }
 
+/**
+ * Server scopes.
+ */
 inline val <K, S : ServerScope> K.scopes: Map<String, ServerScopeHolder<S>> where K : Krosstalk, K : KrosstalkServer<S>
     @JvmName("serverScopes")
     get() = _scopes.mapValues { it as ServerScopeHolder<S> }
 
+/**
+ * The interface for a krosstalk client.  Have your Krosstalk object implement this to be a client.
+ */
 interface KrosstalkClient<C : ClientScope<*>> {
     val client: ClientHandler<C>
 }
 
 
+/**
+ * The interface for a krosstalk server.  Have your Krosstalk object implement this to be a server.
+ */
 interface KrosstalkServer<S : ServerScope> {
     val server: ServerHandler<S>
 }

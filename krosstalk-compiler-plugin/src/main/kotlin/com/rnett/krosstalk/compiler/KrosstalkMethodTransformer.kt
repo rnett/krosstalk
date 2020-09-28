@@ -135,6 +135,7 @@ class KrosstalkMethodTransformer(override val context: IrPluginContext, val mess
             }
 
     fun IrBuilderWithScope.getValueOrError(
+            methodName: String,
             map: IrExpression,
             type: IrType,
             key: String,
@@ -147,10 +148,11 @@ class KrosstalkMethodTransformer(override val context: IrPluginContext, val mess
         putTypeArgument(1, type)
 
         extensionReceiver = map
-        putValueArgument(0, key.asConst())
-        putValueArgument(1, lambdaArgument(default, type.makeNullable()))
-        putValueArgument(2, nullError.asConst())
-        putValueArgument(3, typeError.asConst())
+        putValueArgument(0, methodName.asConst())
+        putValueArgument(1, key.asConst())
+        putValueArgument(2, lambdaArgument(default, type.makeNullable()))
+        putValueArgument(3, nullError.asConst())
+        putValueArgument(4, typeError.asConst())
     }
 
     fun IrBuilderWithScope.callTypeOf(type: IrType) =
@@ -383,6 +385,7 @@ class KrosstalkMethodTransformer(override val context: IrPluginContext, val mess
                                     putValueArgument(
                                             it.index,
                                             getValueOrError(
+                                                    declaration.name.asString(),
                                                     irGet(args),
                                                     it.type,
                                                     it.name.asString(),
@@ -399,6 +402,7 @@ class KrosstalkMethodTransformer(override val context: IrPluginContext, val mess
 
                                 declaration.extensionReceiverParameter?.let {
                                     extensionReceiver = getValueOrError(
+                                            declaration.name.asString(),
                                             irGet(args),
                                             it.type,
                                             extensionParameterKey,
@@ -412,6 +416,7 @@ class KrosstalkMethodTransformer(override val context: IrPluginContext, val mess
 
                                 declaration.dispatchReceiverParameter?.let {
                                     dispatchReceiver = getValueOrError(
+                                            declaration.name.asString(),
                                             irGet(args),
                                             it.type,
                                             instanceParameterKey,
@@ -474,7 +479,6 @@ class KrosstalkMethodTransformer(override val context: IrPluginContext, val mess
         }
     }
 
-    //TODO support non-expect (i.e. client only for existing server)
     override fun visitSimpleFunction(declaration: IrSimpleFunction): IrStatement {
 
 //        log("Function", declaration.dump(true))

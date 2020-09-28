@@ -10,6 +10,7 @@ class KrosstalkIrGenerationExtension(val messageCollector: MessageCollector) : I
     override fun generate(moduleFragment: IrModuleFragment, pluginContext: IrPluginContext) {
         Platform.init(moduleFragment)
         KrosstalkMethodTransformer(pluginContext, messageCollector).lower(moduleFragment)
+        //TODO phase to make sure there's no annotations on non-krosstalk methods, all `krosstalkCall()`s get replaced, etc
 //        log("Post transform:", moduleFragment.dump(true))
 //        Tester(pluginContext).lower(moduleFragment)
     }

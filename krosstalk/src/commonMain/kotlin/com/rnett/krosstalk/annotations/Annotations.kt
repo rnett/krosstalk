@@ -3,6 +3,8 @@ package com.rnett.krosstalk.annotations
 import com.rnett.krosstalk.Krosstalk
 import kotlin.reflect.KClass
 
+//TODO the ability to return something like KrosstalkResponse (but deserialized on Sucess) directly, including error codes, etc
+
 //@Target(AnnotationTarget.CLASS)
 //@Retention(AnnotationRetention.BINARY)
 //@MustBeDocumented
@@ -63,6 +65,7 @@ annotation class OptionalScopes(vararg val scopes: String)
 /**
  * Return null when the listed HTTP response codes are encountered.
  * For example, turning a "404: Item not found" into a null for Map.get like behavior.
+ * Note that using this with codes like 404 or 500 can make debugging connection issues much harder.
  *
  * The return type must be nullable.  Only affects the client.
  */

@@ -32,7 +32,7 @@ fun <D> ActiveScope<*, KtorClientScope<D>>.configureRequest(request: HttpRequest
 class KtorClient(override val serverUrl: String) : ClientHandler<KtorClientScope<*>> {
     override suspend fun sendKrosstalkRequest(
             endpoint: String,
-            method: String,
+            httpMethod: String,
             body: ByteArray?,
             scopes: List<ActiveScope<*, KtorClientScope<*>>>
     ): KrosstalkResponse {
@@ -45,7 +45,7 @@ class KtorClient(override val serverUrl: String) : ClientHandler<KtorClientScope
             val response = it.request<HttpResponse>(urlString = "${serverUrl.trimEnd('/')}/${endpoint.trimStart('/')}") {
                 if (body != null)
                     this.body = body
-                this.method = HttpMethod(method.toUpperCase())
+                this.method = HttpMethod(httpMethod.toUpperCase())
                 scopes.forEach {
                     it.configureRequest(this)
                 }
