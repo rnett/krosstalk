@@ -7,8 +7,8 @@ val ktor_version = "1.4.0"
 
 
 dependencies {
-    implementation("io.ktor:ktor-server-core:$ktor_version")
-    implementation("io.ktor:ktor-auth:$ktor_version")
+    api("io.ktor:ktor-server-core:$ktor_version")
+    api("io.ktor:ktor-auth:$ktor_version")
     api(project(":krosstalk"))
 }
 

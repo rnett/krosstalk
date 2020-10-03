@@ -31,7 +31,7 @@ const val extensionParameterKey = "\$extension"
 const val methodNameKey = "\$name"
 const val prefixKey = "\$prefix"
 
-private val valueRegex = Regex("\\{([^}]+?)\\}")
+private val keyRegex = Regex("\\{([^}]+?)\\}")
 
 class KrosstalkMethodTransformer(override val context: IrPluginContext, val messageCollector: MessageCollector) :
         IrElementTransformerVoidWithContext(), FileLoweringPass, HasContext {
@@ -264,7 +264,7 @@ class KrosstalkMethodTransformer(override val context: IrPluginContext, val mess
         val usedArgumentNames = mutableSetOf<String>()
 
         if (endpointAnnotation != null) {
-            valueRegex.findAll(endpoint).forEach {
+            keyRegex.findAll(endpoint).forEach {
                 val name = it.groupValues[1]
                 if (name !in validArgumentNames) {
                     when (name) {

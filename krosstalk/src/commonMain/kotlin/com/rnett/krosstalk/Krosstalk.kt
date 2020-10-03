@@ -1,7 +1,6 @@
 package com.rnett.krosstalk
 
 import com.rnett.krosstalk.annotations.KrosstalkEndpoint
-import kotlin.jvm.JvmName
 
 /**
  * The key used for instance/dispatch receiver parameters/arguments in parameter/argument maps and [KrosstalkEndpoint] templates.
@@ -28,15 +27,17 @@ const val prefixKey = "\$prefix"
  */
 data class MethodDefinition<T>(
 //        val method: KCallable<T>,
-        val endpoint: String,
-        val httpMethod: String,
-        val requiredScopes: Set<String>,
-        val optionalScopes: Set<String>,
-        val leaveOutArguments: Set<String>,
-        val nullOnResponseCodes: Set<Int>,
-        val serializers: MethodSerializers<*>,
-        val call: suspend (Map<String, *>) -> T
+    private val _endpoint: String,
+    val httpMethod: String,
+    val requiredScopes: Set<String>,
+    val optionalScopes: Set<String>,
+    val leaveOutArguments: Set<String>,
+    val nullOnResponseCodes: Set<Int>,
+    val serializers: MethodSerializers<*>,
+    val call: suspend (Map<String, *>) -> T
 ) {
+    val endpoint = EndpointTemplate(_endpoint)
+
     val hasInstanceParameter = serializers.instanceReceiverSerializer != null
     val hasExtensionParameter = serializers.extensionReceiverSerializer != null
 }
@@ -97,20 +98,6 @@ abstract class Krosstalk {
     @PublishedApi
     internal val _scopes = mutableMapOf<String, ScopeHolder>()
 }
-
-/**
- * Client scopes.
- */
-inline val <K, C : ClientScope<*>> K.scopes: Map<String, ClientScopeHolder<C, *>> where K : Krosstalk, K : KrosstalkClient<C>
-    @JvmName("clientScopes")
-    get() = _scopes.mapValues { it as ClientScopeHolder<C, *> }
-
-/**
- * Server scopes.
- */
-inline val <K, S : ServerScope> K.scopes: Map<String, ServerScopeHolder<S>> where K : Krosstalk, K : KrosstalkServer<S>
-    @JvmName("serverScopes")
-    get() = _scopes.mapValues { it as ServerScopeHolder<S> }
 
 /**
  * The interface for a krosstalk client.  Have your Krosstalk object implement this to be a client.

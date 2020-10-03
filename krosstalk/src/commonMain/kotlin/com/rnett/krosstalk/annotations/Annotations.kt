@@ -3,7 +3,9 @@ package com.rnett.krosstalk.annotations
 import com.rnett.krosstalk.Krosstalk
 import kotlin.reflect.KClass
 
-//TODO the ability to return something like KrosstalkResponse (but deserialized on Sucess) directly, including error codes, etc
+//TODO the ability to return something like KrosstalkResponse (but deserialized on Success) directly, including error codes, etc.  Use expect, typealias Unit on server side
+//TODO option to not send instance/extension(?) receiver when it is an object
+//TODO dummy/mock server/client
 
 //@Target(AnnotationTarget.CLASS)
 //@Retention(AnnotationRetention.BINARY)
@@ -42,6 +44,7 @@ annotation class KrosstalkMethod(val klass: KClass<out Krosstalk>)
 annotation class KrosstalkEndpoint(val endpoint: String, val httpMethod: String = "POST")
 
 
+//TODO error when same scope is in Required and Optional
 /**
  * The listed scopes will be attached to this method's handler on the server, and applied to the request.  If they are not active, the request will not be sent and will error.
  * Should be on the `expect` declaration with [KrosstalkMethod].

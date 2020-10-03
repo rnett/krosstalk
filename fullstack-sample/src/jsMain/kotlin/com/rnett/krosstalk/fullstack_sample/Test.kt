@@ -1,7 +1,7 @@
 package com.rnett.krosstalk.fullstack_sample
 
 import com.rnett.krosstalk.*
-import com.rnett.krosstalk.ktor.client.Credentials
+import com.rnett.krosstalk.ktor.client.BasicCredentials
 import com.rnett.krosstalk.ktor.client.KtorClient
 import com.rnett.krosstalk.ktor.client.KtorClientBasicAuth
 import com.rnett.krosstalk.ktor.client.KtorClientScope
@@ -28,7 +28,7 @@ fun main() {
             console.log("Expected error:", e)
         }
         console.log("Testing doAuthThing")
-        MyKrosstalk.auth(Credentials("username", "password")) {
+        MyKrosstalk.auth(BasicCredentials("username", "password")) {
             println(doAuthThing(3))
         }
         console.log("Testing doAuthThing, expecting error")

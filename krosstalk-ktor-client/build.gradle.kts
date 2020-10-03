@@ -29,8 +29,8 @@ kotlin {
         val commonMain by getting {
             dependencies {
                 api(project(":krosstalk"))
-                implementation("io.ktor:ktor-client-core:$ktor_version")
-                implementation("io.ktor:ktor-client-auth:$ktor_version")
+                api("io.ktor:ktor-client-core:$ktor_version")
+                api("io.ktor:ktor-client-auth:$ktor_version")
             }
         }
 

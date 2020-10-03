@@ -2,6 +2,7 @@ package com.rnett.krosstalk
 
 import kotlin.contracts.InvocationKind
 import kotlin.contracts.contract
+import kotlin.jvm.JvmName
 import kotlin.properties.PropertyDelegateProvider
 import kotlin.properties.ReadOnlyProperty
 import kotlin.reflect.KProperty
@@ -9,30 +10,61 @@ import kotlin.reflect.KProperty
 interface ClientScope<in D>
 interface ServerScope
 
+
+/**
+ * Client scopes.
+ */
+inline val <K, C : ClientScope<*>> K.scopes: Map<String, ClientScopeHolder<C, *>> where K : Krosstalk, K : KrosstalkClient<C>
+    @JvmName("clientScopes")
+    get() = _scopes.mapValues { it as ClientScopeHolder<C, *> }
+
+/**
+ * Server scopes.
+ */
+inline val <K, S : ServerScope> K.scopes: Map<String, ServerScopeHolder<S>> where K : Krosstalk, K : KrosstalkServer<S>
+    @JvmName("serverScopes")
+    get() = _scopes.mapValues { it as ServerScopeHolder<S> }
+
+fun <K, C : ClientScope<D>, D> K.getScope(scope: String): C where K : Krosstalk, K : KrosstalkClient<C> =
+    (
+            _scopes.getOrElse(scope) { error("Unknown scope $scope") } as? ClientScopeHolder<*, *>
+                ?: error("$scope wasn't a client scope")
+            ).scope as? C ?: error("$scope was not of correct scope type")
+
+fun <K, S : ServerScope> K.getScope(scope: String): S where K : Krosstalk, K : KrosstalkServer<S> =
+    (
+            _scopes.getOrElse(scope) { error("Unknown scope $scope") } as? ServerScopeHolder<*>
+                ?: error("$scope wasn't a server scope")
+            ).scope as? S ?: error("$scope was not of correct scope type")
+
 /**
  * Define a client scope.  Used as a delegate, i.e. `val auth by scope(ClientAuth(...))`.
  */
 fun <C : ClientScope<D>, D, K> K.scope(scope: C): PropertyDelegateProvider<Krosstalk, ReadOnlyProperty<Krosstalk, ClientScopeHolder<C, D>>> where K : Krosstalk, K : KrosstalkClient<in C> =
-        ScopeAdder { ClientScopeHolder(this as Krosstalk, scope, it) }
+    ScopeAdder { ClientScopeHolder(this as Krosstalk, scope, it) }
 
 /**
  * Define a server scope.  Used as a delegate, i.e. `val auth by scope(ServerAuth(...))`.
  */
 fun <S : ServerScope, K> K.scope(server: S): PropertyDelegateProvider<Krosstalk, ReadOnlyProperty<Krosstalk, ServerScopeHolder<S>>> where K : Krosstalk, K : KrosstalkServer<in S> =
-        ScopeAdder { ServerScopeHolder(server, it) }
+    ScopeAdder { ServerScopeHolder(server, it) }
+
+/**
+ * A needed server scope, and whether it is optional
+ */
+data class NeededScope<S : ServerScope>(val scope: S, val optional: Boolean)
 
 //TODO differentiate between optional and required.  Return Pair<ServerScope, Bool> or similar?
 /**
- * Get the needed server scopes for a given definition.  This is both optional and required scopes.
+ * Get the needed server scopes for a given definition.
  */
-fun <K, S : ServerScope> K.neededServerScopes(method: MethodDefinition<*>) where K : Krosstalk, K : KrosstalkServer<S> =
-        (method.requiredScopes + method.optionalScopes)
-                .map {
-                    _scopes.getOrElse(it) { error("Unknown scope $it") } as? ServerScopeHolder<*>
-                            ?: error("$it wasn't a server scope")
-                }
-                .map { it.scope }
-                .map { it as? S ?: error("$it was not of correct scope type") }
+fun <K, S : ServerScope> K.neededServerScopes(method: MethodDefinition<*>): List<NeededScope<S>> where K : Krosstalk, K : KrosstalkServer<S> =
+    method.requiredScopes.map {
+        NeededScope(
+            getScope(it),
+            false
+        )
+    } + method.optionalScopes.map { NeededScope(getScope(it), true) }
 
 
 /**

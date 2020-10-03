@@ -46,8 +46,20 @@ interface ClientHandler<C : ClientScope<*>> {
      */
     val serverUrl: String
 
+
+    /**
+     * Helper function to concatenate the server url and the endpoint
+     */
     fun requestUrl(endpoint: String) = "${serverUrl.trimEnd('/')}/${endpoint.trimStart('/')}"
 
+    /**
+     * Helper function to throw a [KrosstalkException.CallFailure].
+     */
+    fun callFailedException(
+        methodName: String,
+        httpStatusCode: Int,
+        message: String = "Krosstalk method $methodName failed with HTTP status code $httpStatusCode"
+    ): Nothing = throw KrosstalkException.CallFailure(methodName, httpStatusCode, message)
 
     /**
      * Send a krosstalk request to the server.
@@ -72,54 +84,17 @@ interface ClientHandler<C : ClientScope<*>> {
  * Should help you set up receiver endpoints for all Krosstalk methods.
  * No behavior is defined here as what is necessary to do that, and where and how you will want to call it, will vary widely depending on which server you are using.
  *
- * [fillInEndpointWithStatic] will likely be necessary.
+ * Will almost certainly want to use [fillWithStaticAndAdjustParameters], [fillWithStatic], or [splitEndpoint] to handle endpoint templates.
  */
 interface ServerHandler<S : ServerScope>
+
+//fun ServerHandler<*>.fillEndpoint(endpointTemplate: String, methodName: String, )
 
 /**
  * Placeholder for a Krosstalk client side method.  Will be replaced by the compiler plugin.
  */
-suspend fun krosstalkCall(): Nothing = throw KrosstalkException.CompilerError("Should have been replaced with a krosstalk call during compilation")
-
-private val valueRegex = Regex("\\{([^}]+?)\\}")
-
-/**
- * Substitute values into an endpoint template.
- */
-fun fillInEndpoint(
-    endpointTemplate: String,
-    methodName: String,
-    prefix: String,
-    params: Map<String, *> = emptyMap<String, String>(),
-    allowMissingParams: Boolean = false
-) =
-    endpointTemplate.replace(valueRegex) {
-        when (val param = it.groupValues[1]) {
-            methodNameKey -> methodName
-            prefixKey -> prefix
-            in params -> params[param].toString()
-            else -> if (allowMissingParams)
-                it.value
-            else
-                throw KrosstalkException.EndpointUnknownArgument(methodName, endpointTemplate, param, params.keys)
-        }
-    }
-
-/**
- * Substitute values into an endpoint template, but require all parameter templates to be substituted.
- *
- * @see [fillInEndpoint]
- */
-fun fillInEndpointWithParams(endpointTemplate: String, methodName: String, prefix: String, params: Map<String, *>) =
-    fillInEndpoint(endpointTemplate, methodName, prefix, params, allowMissingParams = false)
-
-/**
- * Substitute method name and prefix values into an endpoint template.  Likely necessary for a [SerializationHandler].
- *
- * @see [fillInEndpoint]
- */
-fun fillInEndpointWithStatic(endpointTemplate: String, methodName: String, prefix: String) =
-    fillInEndpoint(endpointTemplate, methodName, prefix, allowMissingParams = true)
+suspend fun krosstalkCall(): Nothing =
+    throw KrosstalkException.CompilerError("Should have been replaced with a krosstalk call during compilation")
 
 @Suppress("unused")
 @PublishedApi
@@ -150,13 +125,13 @@ internal suspend inline fun <T, K, reified C : ClientScope<*>> K.call(methodName
     }
 
     val result = client.sendKrosstalkRequest(
-            fillInEndpoint(method.endpoint, methodName, this.endpointPrefix, arguments),
-            method.httpMethod,
-            if (keptArgs.isEmpty()) null else serializedArgs,
-            usedScopes.map {
-                if (it.scope !is C) throw KrosstalkException.CompilerError("Scope ${it.scope} was not of required type ${C::class}.")
-                it as ActiveScope<*, C>
-            })
+        method.endpoint.fillWithArgs(methodName, this.endpointPrefix, arguments),
+        method.httpMethod,
+        if (keptArgs.isEmpty()) null else serializedArgs,
+        usedScopes.map {
+            if (it.scope !is C) throw KrosstalkException.CompilerError("Scope ${it.scope} was not of required type ${C::class}.")
+            it as ActiveScope<*, C>
+        })
 
     @Suppress("UNCHECKED_CAST") // checked in compiler plugin
     if (result.responseCode in method.nullOnResponseCodes)
@@ -165,11 +140,13 @@ internal suspend inline fun <T, K, reified C : ClientScope<*>> K.call(methodName
     return when (result) {
         is KrosstalkResponse.Success -> method.serializers.resultSerializer.deserializeFromBytes(result.data) as T
         is KrosstalkResponse.Failure -> result.error?.let { it(methodName) }
-                ?: throw KrosstalkException.CallFailure(methodName, result.responseCode)
+            ?: client.callFailedException(methodName, result.responseCode)
     }
 }
 
 //TODO I'd like to be able to propogate errors in the server method back to the client, rather than getting a 500.  Need flag to turn-on for security reasons (stacktraces).  Also how many exceptions are serializable?
+//  wrap server method in try/catch, respond 505 w/ special header set, exception.toString() as the body?
+//  work with non-deserialized responses
 /**
  * Helper method for server side to handle a method [methodName] with the body data [data].
  *

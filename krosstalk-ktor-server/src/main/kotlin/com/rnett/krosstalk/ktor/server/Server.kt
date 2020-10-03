@@ -1,56 +1,71 @@
 package com.rnett.krosstalk.ktor.server
 
 import com.rnett.krosstalk.*
-import io.ktor.application.Application
-import io.ktor.application.ApplicationCall
-import io.ktor.application.call
-import io.ktor.application.install
-import io.ktor.auth.Authentication
-import io.ktor.auth.Principal
-import io.ktor.auth.authenticate
-import io.ktor.auth.basic
-import io.ktor.http.HttpMethod
-import io.ktor.request.receiveChannel
-import io.ktor.response.respondBytes
-import io.ktor.routing.Route
-import io.ktor.routing.route
-import io.ktor.routing.routing
-import io.ktor.util.pipeline.PipelineContext
-import io.ktor.util.toByteArray
+import com.rnett.krosstalk.ktor.server.KtorServer.define
+import io.ktor.application.*
+import io.ktor.auth.*
+import io.ktor.http.*
+import io.ktor.request.*
+import io.ktor.response.*
+import io.ktor.routing.*
+import io.ktor.util.*
+import kotlin.random.Random
 
 /**
- * Left should be reversed.  The last scope is applied first (as repeated last-removed are much faster than first-removed).
+ * Applies [remaining] scopes in reverse order, recursively, with [final] inside all of them.
  */
-fun wrapScopes(route: Route, left: MutableList<KtorServerScope>, final: Route.() -> Unit) {
-    if (left.isEmpty())
+fun wrapScopesHelper(route: Route, remaining: MutableList<NeededScope<KtorServerScope>>, final: Route.() -> Unit) {
+    if (remaining.isEmpty())
         route.final()
     else {
-        left.removeLast().apply {
-            route.buildEndpoint {
-                wrapScopes(this, left, final)
+        val scope = remaining.removeLast()
+
+        scope.scope.apply {
+            route.wrapEndpoint(scope.optional) {
+                wrapScopesHelper(this, remaining, final)
             }
         }
     }
 }
 
+/**
+ * Applies [remaining] scopes, recursively, with [final] inside all of them.
+ */
+fun wrapScopes(route: Route, remaining: List<NeededScope<KtorServerScope>>, final: Route.() -> Unit) = wrapScopesHelper(route, remaining.toMutableList().asReversed(), final)
+
+/**
+ * A Krosstalk server handler that adds the krosstalk method endpoints to a Ktor server.
+ */
 object KtorServer : ServerHandler<KtorServerScope> {
+
+    /**
+     * Meant to be called from an Application, like:
+     * ```kotlin
+     * fun Application.server(){
+     *     KtorServer.define(this, MyKrosstalk)
+     * }
+     * ```
+     *
+     * @see [defineKtor]
+     */
     fun <K> define(app: Application, krosstalk: K) where K : Krosstalk, K : KrosstalkServer<KtorServerScope> {
+        // apply Application configuration for each defined scopes
         app.apply {
-            krosstalk.methods.values
-                    .flatMap { krosstalk.neededServerScopes(it) }
-                    .distinct()
+            krosstalk.scopes.values
                     .forEach {
-                        it.apply {
+                        it.scope.apply {
                             configureApplication()
                         }
                     }
         }
 
         app.routing {
+            // add each method
             krosstalk.methods.forEach { (name, method) ->
-                wrapScopes(this, krosstalk.neededServerScopes(method).toMutableList().asReversed()) {
+                // wrap the endpoint in the needed scopes
+                wrapScopes(this, krosstalk.neededServerScopes(method)) {
                     route(
-                            fillInEndpointWithStatic(method.endpoint, name, krosstalk.endpointPrefix),
+                            method.endpoint.fillWithStatic(name, krosstalk.endpointPrefix),
                             HttpMethod(method.httpMethod)
                     ) {
                         handle {
@@ -65,31 +80,99 @@ object KtorServer : ServerHandler<KtorServerScope> {
     }
 }
 
-interface KtorServerScope : ServerScope {
-    fun Application.configureApplication() {}
-    fun Route.buildEndpoint(block: Route.() -> Unit) {}
-    fun PipelineContext<Unit, ApplicationCall>.handleRequest() {}
+/**
+ * Meant to be called from an Application, like:
+ * ```kotlin
+ * fun Application.server(){
+ *     MyKrosstalk.defineKtor(this)
+ * }
+ * ```
+ *
+ * @see [define]
+ */
+fun <K> K.defineKtor(app: Application) where K : Krosstalk, K : KrosstalkServer<KtorServerScope> {
+    KtorServer.define(app, this)
 }
 
-data class User(val username: String) : Principal
+/**
+ * A Ktor server scope.  Supports configuring the application and wrapping endpoints.
+ */
+interface KtorServerScope : ServerScope {
+    /**
+     * Configure the Ktor application.
+     */
+    fun Application.configureApplication() {}
 
-class KtorServerAuth(val accounts: Map<String, String>) : KtorServerScope {
-    override fun Application.configureApplication() {
-        install(Authentication) {
-            basic("krosstalk") {
-                validate {
-                    if (it.name in accounts && accounts[it.name] == it.password)
-                        User(it.name)
-                    else
-                        null
+    /**
+     * Wrap the endpoint.  **[endpoint] must be called at some point, it will build the rest of the endpoint.**
+     *
+     * @param optional Whether the scope is a optional scope for the method it is being applied to.
+     * @param endpoint Builder for the rest of the endpoint.
+     */
+    fun Route.wrapEndpoint(optional: Boolean, endpoint: Route.() -> Unit) {}
+
+    // can just use handle in buildEndpoint, I think
+//    fun PipelineContext<Unit, ApplicationCall>.handleRequest() {}
+}
+
+
+abstract class KtorServerAuth(val authName: String? = randomAuthName()) : KtorServerScope {
+    companion object {
+        private val usedNames = mutableSetOf<String>()
+        fun randomAuthName(): String {
+            while (true) {
+                val name = "auth-${Random.nextInt(0, Int.MAX_VALUE)}"
+                if (name !in usedNames) {
+                    usedNames += name
+                    return name
                 }
             }
         }
     }
 
-    override fun Route.buildEndpoint(block: Route.() -> Unit) {
-        authenticate("krosstalk") {
-            block()
+    abstract fun Authentication.Configuration.configureAuth()
+
+    override fun Application.configureApplication() {
+        install(Authentication) {
+            configureAuth()
+        }
+    }
+
+    override fun Route.wrapEndpoint(optional: Boolean, endpoint: Route.() -> Unit) {
+        authenticate(authName) {
+            endpoint()
+        }
+    }
+}
+
+class KtorServerBasicAuth(authName: String? = randomAuthName(), val configure: BasicAuthenticationProvider.Configuration.() -> Unit) : KtorServerAuth(authName) {
+    override fun Authentication.Configuration.configureAuth() {
+        basic(authName) {
+            configure()
+        }
+    }
+}
+
+class KtorServerSessionAuth(authName: String? = randomAuthName(), val configure: FormAuthenticationProvider.Configuration.() -> Unit) : KtorServerAuth(authName) {
+    override fun Authentication.Configuration.configureAuth() {
+        form(authName) {
+            configure()
+        }
+    }
+}
+
+class KtorServerDigestAuth(authName: String? = randomAuthName(), val configure: DigestAuthenticationProvider.Configuration.() -> Unit) : KtorServerAuth(authName) {
+    override fun Authentication.Configuration.configureAuth() {
+        digest(authName) {
+            configure()
+        }
+    }
+}
+
+class KtorServerOAuthAuth(authName: String? = randomAuthName(), val configure: OAuthAuthenticationProvider.Configuration.() -> Unit) : KtorServerAuth(authName) {
+    override fun Authentication.Configuration.configureAuth() {
+        oauth(authName) {
+            configure
         }
     }
 }
