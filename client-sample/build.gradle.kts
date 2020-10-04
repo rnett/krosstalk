@@ -8,7 +8,7 @@ plugins {
     id("com.rnett.krosstalk") version "1.0.1-ALPHA"
 }
 
-val ktor_version = "1.4.0"
+val ktor_version = "1.4.1"
 val coroutines_version = "1.3.9"
 val serialization_version = "1.0.0-RC2"
 

@@ -5,6 +5,8 @@ plugins {
     id("com.github.johnrengelman.shadow") apply true
 }
 
+description = "Krosstalk Kotlin compiler plugin"
+
 dependencies {
     compileOnly("org.jetbrains.kotlin:kotlin-compiler-embeddable:1.4.10")
 

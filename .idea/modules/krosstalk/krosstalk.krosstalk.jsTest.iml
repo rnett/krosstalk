@@ -6,8 +6,8 @@
         <dependsOnModuleNames>:krosstalk:commonTest</dependsOnModuleNames>
         <sourceSets>
           <sourceSet>krosstalk.krosstalk.jsMain</sourceSet>
-          <sourceSet>krosstalk.krosstalk.commonMain</sourceSet>
           <sourceSet>krosstalk.krosstalk.commonTest</sourceSet>
+          <sourceSet>krosstalk.krosstalk.commonMain</sourceSet>
         </sourceSets>
         <newMppModelJpsModuleKind>COMPILATION_AND_SOURCE_SET_HOLDER</newMppModelJpsModuleKind>
         <externalSystemTestTasks>

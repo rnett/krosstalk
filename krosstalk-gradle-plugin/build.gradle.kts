@@ -7,6 +7,8 @@ plugins {
     `maven-publish`
 }
 
+description = "Krosstalk gradle plugin, for serving the compiler plugin"
+
 dependencies {
     implementation("org.jetbrains.kotlin:kotlin-gradle-plugin-api:1.4.10")
 

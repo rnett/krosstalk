@@ -4,14 +4,16 @@ import com.rnett.krosstalk.ActiveScope
 import com.rnett.krosstalk.ClientHandler
 import com.rnett.krosstalk.ClientScope
 import com.rnett.krosstalk.KrosstalkResponse
-import io.ktor.client.*
-import io.ktor.client.call.*
-import io.ktor.client.features.auth.*
-import io.ktor.client.features.auth.providers.*
-import io.ktor.client.request.*
-import io.ktor.client.statement.*
-import io.ktor.http.*
-import io.ktor.utils.io.core.*
+import io.ktor.client.HttpClient
+import io.ktor.client.HttpClientConfig
+import io.ktor.client.call.receive
+import io.ktor.client.features.auth.Auth
+import io.ktor.client.features.auth.providers.basic
+import io.ktor.client.request.HttpRequestBuilder
+import io.ktor.client.request.request
+import io.ktor.client.statement.HttpResponse
+import io.ktor.http.HttpMethod
+import io.ktor.http.isSuccess
 
 /**
  * Helper to apply a scope's client configuration
@@ -49,44 +51,43 @@ open class KtorClient(override val serverUrl: String) : ClientHandler<KtorClient
 
     }
 
+    private val realBaseClient = baseClient.config {
+        expectSuccess = false
+    }
+
     override suspend fun sendKrosstalkRequest(
-        endpoint: String,
-        httpMethod: String,
-        body: ByteArray?,
-        scopes: List<ActiveScope<*, KtorClientScope<*>>>
+            endpoint: String,
+            httpMethod: String,
+            body: ByteArray?,
+            scopes: List<ActiveScope<*, KtorClientScope<*>>>
     ): KrosstalkResponse {
-        // configure the client
-        baseClient.config {
+        // configure the client and make the request
+        val response = realBaseClient.config {
             scopes.forEach {
                 it.configureClient(this)
             }
-            // we want to accept error return codes for KrosstalkResponse.Failure
-            expectSuccess = false
-        }.use {
+        }.request<HttpResponse>(urlString = requestUrl(endpoint)) {
+            if (body != null)
+                this.body = body
+            this.method = HttpMethod(httpMethod.toUpperCase())
+            // base request configuration
+            configureRequest()
 
-            val response = it.request<HttpResponse>(urlString = requestUrl(endpoint)) {
-                if (body != null)
-                    this.body = body
-                this.method = HttpMethod(httpMethod.toUpperCase())
-                // base request configuration
-                configureRequest()
-
-                // configure scopes
-                scopes.forEach {
-                    it.configureRequest(this)
-                }
+            // configure scopes
+            scopes.forEach {
+                it.configureRequest(this)
             }
-
-            val status = response.status
-
-            return if (status.isSuccess())
-                KrosstalkResponse.Success(status.value, response.receive())
-            else
-                KrosstalkResponse.Failure(status.value) {
-                    // use a custom exception here to use HttpStatusCode.toString()
-                    callFailedException(it, status.value, "Krosstalk method $it failed with: $status")
-                }
         }
+
+        val status = response.status
+
+        return if (status.isSuccess())
+            KrosstalkResponse.Success(status.value, response.receive())
+        else
+            KrosstalkResponse.Failure(status.value) {
+                // use a custom exception here to use HttpStatusCode.toString()
+                callFailedException(it, status.value, "Krosstalk method $it failed with: $status")
+            }
     }
 }
 

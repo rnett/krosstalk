@@ -144,9 +144,6 @@ internal suspend inline fun <T, K, reified C : ClientScope<*>> K.call(methodName
     }
 }
 
-//TODO I'd like to be able to propogate errors in the server method back to the client, rather than getting a 500.  Need flag to turn-on for security reasons (stacktraces).  Also how many exceptions are serializable?
-//  wrap server method in try/catch, respond 505 w/ special header set, exception.toString() as the body?
-//  work with non-deserialized responses
 /**
  * Helper method for server side to handle a method [methodName] with the body data [data].
  *

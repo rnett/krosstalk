@@ -483,6 +483,9 @@ class KrosstalkMethodTransformer(override val context: IrPluginContext, val mess
 
 //        log("Function", declaration.dump(true))
 
+        if (declaration.isExpect)
+            return super.visitSimpleFunction(declaration)
+
         val annotations: List<IrConstructorCall>
         val expectKrosstalk: Boolean
 

@@ -20,9 +20,8 @@ expect object MyKrosstalk : Krosstalk, Scopes
 @KrosstalkEndpoint("/test/thing")
 expect suspend fun doThing(data: Data): List<String>
 
-//TODO test/support multiple auth scopes (i.e. user vs admin)
 @KrosstalkMethod(MyKrosstalk::class)
-@RequiredScopes("auth", "test")
+@RequiredScopes("auth")
 expect suspend fun doAuthThing(num: Int): Data
 
 @KrosstalkMethod(MyKrosstalk::class)

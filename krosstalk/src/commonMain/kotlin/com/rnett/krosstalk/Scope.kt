@@ -16,14 +16,14 @@ interface ServerScope
  */
 inline val <K, C : ClientScope<*>> K.scopes: Map<String, ClientScopeHolder<C, *>> where K : Krosstalk, K : KrosstalkClient<C>
     @JvmName("clientScopes")
-    get() = _scopes.mapValues { it as ClientScopeHolder<C, *> }
+    get() = _scopes.mapValues { it.value as ClientScopeHolder<C, *> }
 
 /**
  * Server scopes.
  */
 inline val <K, S : ServerScope> K.scopes: Map<String, ServerScopeHolder<S>> where K : Krosstalk, K : KrosstalkServer<S>
     @JvmName("serverScopes")
-    get() = _scopes.mapValues { it as ServerScopeHolder<S> }
+    get() = _scopes.mapValues { it.value as ServerScopeHolder<S> }
 
 fun <K, C : ClientScope<D>, D> K.getScope(scope: String): C where K : Krosstalk, K : KrosstalkClient<C> =
     (

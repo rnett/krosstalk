@@ -3,7 +3,9 @@ package com.rnett.krosstalk.annotations
 import com.rnett.krosstalk.Krosstalk
 import kotlin.reflect.KClass
 
-//TODO the ability to return something like KrosstalkResponse (but deserialized on Success) directly, including error codes, etc.  Use expect, typealias Unit on server side
+//TODO the ability to return something like KrosstalkResponse (but deserialized on Success) directly, including error codes, etc.  Use expect, typealias Unit on server side?  Still need to return something
+//  maybe force a return type of generic KrosstalkResponse?  Server can return success or error (or just success), turn http status codes into error returns.  Success/CustomError/HttpError?
+//TODO  similar, but wrap server side in try/catch, send any exception's stack traces
 //TODO option to not send instance/extension(?) receiver when it is an object
 //TODO dummy/mock server/client
 

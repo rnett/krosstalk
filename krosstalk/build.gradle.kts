@@ -6,6 +6,7 @@ plugins {
 
 val serialization_version = "1.0.0-RC2"
 
+description = "Krosstalk runtime library"
 
 kotlin {
     jvm {

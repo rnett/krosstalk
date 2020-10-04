@@ -3,8 +3,9 @@ plugins {
     `maven-publish`
 }
 
-val ktor_version = "1.4.0"
+val ktor_version = "1.4.1"
 
+description = "Basic Ktor server support for Krosstalk"
 
 dependencies {
     api("io.ktor:ktor-server-core:$ktor_version")
