@@ -16,7 +16,7 @@ allprojects {
 }
 
 val jvmProjects = setOf("krosstalk-compiler-plugin", "krosstalk-ktor-server")
-val multiplatformProjects = setOf("krosstalk", "krosstalk-ktor-client", "krosstalk-ktor-server")
+val multiplatformProjects = setOf("krosstalk", "krosstalk-ktor-client")
 
 repositories {
     mavenCentral()
@@ -64,6 +64,10 @@ inline fun nonSampleProjects(crossinline block: Project.() -> Unit) {
 nonSampleProjects {
     val currentProject = this@nonSampleProjects
 
+    apply(plugin = "maven-publish")
+    apply(plugin = "com.jfrog.bintray")
+    apply(plugin = "signing")
+
 
     tasks.register("dokkaJar", Jar::class) {
         group = "documentation"
@@ -74,11 +78,39 @@ nonSampleProjects {
         dependsOn(tasks["dokkaHtml"])
     }
 
+    if (this.name != "krosstalk-gradle-plugin") {
+        configure<com.jfrog.bintray.gradle.BintrayExtension> {
+            user = System.getenv("BINTRAY_USER")
+            key = System.getenv("BINTRAY_KEY")
+            publish = true
+            override = true
+
+            pkg.apply {
+                repo = "krosstalk"
+                name = currentProject.name
+                userOrg = "rnett"
+                githubRepo = "https://github.com/rnett/krosstalk"
+                vcsUrl = "https://github.com/rnett/krosstalk.git"
+                description = currentProject.description
+                setLabels("kotlin", "multiplatform", "js", "server", "api", "compiler")
+                setLicenses("Apache-2.0")
+                desc = currentProject.description
+                websiteUrl = "https://github.com/rnett/krosstalk"
+                issueTrackerUrl = "https://github.com/rnett/krosstalk/issues"
+//                githubReleaseNotesFile = githubReadme
+
+                version.apply {
+                    name = currentProject.version.toString()
+                    desc = currentProject.description
+                    released = java.util.Date().toString()
+                    vcsTag = currentProject.version.toString()
+                }
+            }
+        }
+    }
+
     afterEvaluate {
         if (this.name != "krosstalk-gradle-plugin") {
-            apply(plugin = "maven-publish")
-            apply(plugin = "com.jfrog.bintray")
-            apply(plugin = "signing")
 
             jvmProjects {
 
@@ -109,12 +141,7 @@ nonSampleProjects {
             configure<PublishingExtension> {
                 publications.all {
                     this as MavenPublication
-//                    if(name == "krosstalk-compiler-plugin")
-//                        from(components["java"])
-//                    else
-//                        from(components["kotlin"])
 
-//                    artifact(tasks["kotlinSourcesJar"])
                     artifact(tasks["dokkaJar"])
 
                     pom {
@@ -141,42 +168,18 @@ nonSampleProjects {
                     }
                 }
             }
-
             configure<com.jfrog.bintray.gradle.BintrayExtension> {
-                user = System.getenv("BINTRAY_USER")
-                key = System.getenv("BINTRAY_KEY")
-                publish = true
-                override = true
-
                 setPublications(
                     *currentProject.extensions.getByName<PublishingExtension>("publishing")
                         .publications.map { it.name }.toTypedArray()
                 )
-
-                pkg.apply {
-                    repo = "krosstalk"
-                    name = currentProject.name
-                    userOrg = "rnett"
-                    githubRepo = githubRepo
-                    vcsUrl = "https://github.com/rnett/krosstalk.git"
-                    description = currentProject.description
-                    setLabels("kotlin", "multiplatform", "js", "server", "api", "compiler")
-                    setLicenses("Apache-2.0")
-                    desc = description
-                    websiteUrl = "https://github.com/rnett/krosstalk"
-                    issueTrackerUrl = "https://github.com/rnett/krosstalk/issues"
-//                githubReleaseNotesFile = githubReadme
-
-                    version.apply {
-                        name = currentProject.version.toString()
-                        desc = currentProject.description
-                        released = java.util.Date().toString()
-                        vcsTag = currentProject.version.toString()
-                    }
-                }
             }
         }
     }
+}
+
+tasks.getByName("bintrayPublish") {
+    enabled = false
 }
 
 tasks.create("upload") {

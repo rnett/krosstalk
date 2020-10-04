@@ -61,21 +61,25 @@ abstract class Krosstalk {
      */
     val methods: Map<String, MethodDefinition<*>> = _methods
 
+    init {
+        //TODO detect compiler plugin by replacement, error if not
+    }
+
     @PublishedApi
     internal fun requiredMethod(name: String) = methods[name]
-            ?: throw KrosstalkException.MissingMethod(this, name)
+        ?: throw KrosstalkException.MissingMethod(this, name)
 
     @PublishedApi
     internal fun <T> addMethod(
-            methodName: String,
-            endpoint: String,
-            method: String,
-            types: MethodTypes,
-            requiredScopes: Set<String>,
-            optionalScopes: Set<String>,
-            leaveOutArguments: Set<String>?,
-            nullOnResponses: Set<Int>,
-            call: suspend (Map<String, *>) -> T
+        methodName: String,
+        endpoint: String,
+        method: String,
+        types: MethodTypes,
+        requiredScopes: Set<String>,
+        optionalScopes: Set<String>,
+        leaveOutArguments: Set<String>?,
+        nullOnResponses: Set<Int>,
+        call: suspend (Map<String, *>) -> T
     ) {
         if (methodName in methods)
             throw KrosstalkException.CompilerError("Already registered method with name $methodName.")

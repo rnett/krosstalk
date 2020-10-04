@@ -1,6 +1,6 @@
 plugins {
     kotlin("jvm")
-    `maven-publish`
+    `maven-publish` apply true
 }
 
 val ktor_version = "1.4.1"
@@ -14,15 +14,6 @@ dependencies {
 }
 
 kotlin {
-    sourceSets.all {
-        languageSettings.apply {
-            enableLanguageFeature("InlineClasses")
-            enableLanguageFeature("NewInference")
-            useExperimentalAnnotation("kotlin.contracts.ExperimentalContracts")
-            useExperimentalAnnotation("kotlin.RequiresOptIn")
-            useExperimentalAnnotation("kotlin.time.ExperimentalTime")
-        }
-    }
 
     target.compilations.all {
         kotlinOptions {
