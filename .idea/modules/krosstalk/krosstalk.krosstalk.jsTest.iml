@@ -5,9 +5,9 @@
       <configuration version="3" platform="JavaScript " allPlatforms="JS []" useProjectSettings="false" isTestModule="true" externalProjectId=":krosstalk">
         <dependsOnModuleNames>:krosstalk:commonTest</dependsOnModuleNames>
         <sourceSets>
-          <sourceSet>krosstalk.krosstalk.commonMain</sourceSet>
           <sourceSet>krosstalk.krosstalk.jsMain</sourceSet>
           <sourceSet>krosstalk.krosstalk.commonTest</sourceSet>
+          <sourceSet>krosstalk.krosstalk.commonMain</sourceSet>
         </sourceSets>
         <newMppModelJpsModuleKind>COMPILATION_AND_SOURCE_SET_HOLDER</newMppModelJpsModuleKind>
         <externalSystemTestTasks>

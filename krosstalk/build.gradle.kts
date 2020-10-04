@@ -17,16 +17,8 @@ kotlin {
         }
     }
     js(IR) {
-        browser {
-        }
-    }
-
-    configure(listOf(targets["metadata"], jvm(), js())) {
-        mavenPublication {
-            val targetPublication = this@mavenPublication
-            tasks.withType<AbstractPublishToMaven>()
-                .matching { it.publication == targetPublication }
-        }
+//        moduleName = project.name
+        browser()
     }
 
     sourceSets {

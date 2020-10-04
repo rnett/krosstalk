@@ -1,8 +1,0 @@
-<component name="ArtifactManager">
-  <artifact type="jar" name="test-jvm-1.0-ALPHA">
-    <output-path>C:\Users\jimne\Google Drive\My Stuff\krosstalk\test\build\libs</output-path>
-    <root id="archive" name="test-jvm-1.0-ALPHA.jar">
-      <element id="module-output" name="krosstalk.test.jvmMain" />
-    </root>
-  </artifact>
-</component>

@@ -6,8 +6,8 @@
         <dependsOnModuleNames>:fullstack-sample:commonTest</dependsOnModuleNames>
         <sourceSets>
           <sourceSet>krosstalk.fullstack-sample.jsMain</sourceSet>
-          <sourceSet>krosstalk.fullstack-sample.commonTest</sourceSet>
           <sourceSet>krosstalk.fullstack-sample.commonMain</sourceSet>
+          <sourceSet>krosstalk.fullstack-sample.commonTest</sourceSet>
         </sourceSets>
         <newMppModelJpsModuleKind>COMPILATION_AND_SOURCE_SET_HOLDER</newMppModelJpsModuleKind>
         <externalSystemTestTasks>

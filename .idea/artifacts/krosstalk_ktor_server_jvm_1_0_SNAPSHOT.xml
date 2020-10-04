@@ -1,8 +1,0 @@
-<component name="ArtifactManager">
-  <artifact type="jar" name="krosstalk-ktor-server-jvm-1.0-SNAPSHOT">
-    <output-path>C:\Users\jimne\Google Drive\My Stuff\krosstalk\krosstalk-ktor-server\build\libs</output-path>
-    <root id="archive" name="krosstalk-ktor-server-jvm-1.0-SNAPSHOT.jar">
-      <element id="module-output" name="krosstalk.krosstalk-ktor-server.jvmMain" />
-    </root>
-  </artifact>
-</component>

@@ -6,8 +6,8 @@
         <dependsOnModuleNames>:client-sample:commonTest</dependsOnModuleNames>
         <sourceSets>
           <sourceSet>krosstalk.client-sample.jvmMain</sourceSet>
-          <sourceSet>krosstalk.client-sample.commonTest</sourceSet>
           <sourceSet>krosstalk.client-sample.commonMain</sourceSet>
+          <sourceSet>krosstalk.client-sample.commonTest</sourceSet>
         </sourceSets>
         <newMppModelJpsModuleKind>COMPILATION_AND_SOURCE_SET_HOLDER</newMppModelJpsModuleKind>
         <externalSystemTestTasks>
@@ -27,7 +27,7 @@
             <array>
               <option value="$MODULE_DIR$/../../../client-sample/build/classes/kotlin/jvm/main" />
               <option value="$MODULE_DIR$/../../../client-sample/build/classes/java/main" />
-              <option value="$MODULE_DIR$/../../../client-sample/build/libs/client-sample-jvm-1.0.2-ALPHA.jar" />
+              <option value="$MODULE_DIR$/../../../client-sample/build/libs/client-sample-jvm-1.0.3-ALPHA.jar" />
             </array>
           </option>
           <option name="languageVersion" value="1.4" />

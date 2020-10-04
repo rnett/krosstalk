@@ -1,10 +1,13 @@
+//import com.jfrog.bintray.gradle.tasks.BintrayUploadTask
+//import org.gradle.api.publish.maven.internal.artifact.FileBasedMavenArtifact
+
 plugins {
     kotlin("multiplatform") version "1.4.10" apply false
     kotlin("jvm") version "1.4.10" apply false
     id("org.jetbrains.kotlin.plugin.serialization") version "1.4.10" apply false
     kotlin("kapt") version "1.4.10" apply false
     id("com.github.johnrengelman.shadow") version "5.2.0" apply false
-    id("com.jfrog.bintray") version "1.8.5" apply false
+//    id("com.jfrog.bintray") version "1.8.5" apply false
     id("com.gradle.plugin-publish") version "0.11.0" apply false
     id("org.jetbrains.dokka") version "1.4.10" apply false
     id("com.github.gmazzo.buildconfig") version "2.0.2" apply false
@@ -12,11 +15,11 @@ plugins {
 
 allprojects {
     group = "com.rnett.krosstalk"
-    version = "1.0.2-ALPHA"
+    version = "1.0.3-ALPHA"
 }
 
-val jvmProjects = setOf("krosstalk-compiler-plugin", "krosstalk-ktor-server")
-val multiplatformProjects = setOf("krosstalk", "krosstalk-ktor-client")
+val jvmPublishedProjects = setOf("krosstalk-compiler-plugin", "krosstalk-ktor-server")
+val publishedProjects = jvmPublishedProjects + setOf("krosstalk", "krosstalk-ktor-client")
 
 repositories {
     mavenCentral()
@@ -45,12 +48,7 @@ allprojects {
 }
 
 inline fun Project.jvmProjects(block: () -> Unit) {
-    if (this.name in jvmProjects)
-        block()
-}
-
-inline fun Project.multiplatformProjects(block: () -> Unit) {
-    if (this.name in multiplatformProjects)
+    if (this.name in jvmPublishedProjects)
         block()
 }
 
@@ -65,9 +63,7 @@ nonSampleProjects {
     val currentProject = this@nonSampleProjects
 
     apply(plugin = "maven-publish")
-    apply(plugin = "com.jfrog.bintray")
     apply(plugin = "signing")
-
 
     tasks.register("dokkaJar", Jar::class) {
         group = "documentation"
@@ -79,38 +75,39 @@ nonSampleProjects {
     }
 
     if (this.name != "krosstalk-gradle-plugin") {
-        configure<com.jfrog.bintray.gradle.BintrayExtension> {
-            user = System.getenv("BINTRAY_USER")
-            key = System.getenv("BINTRAY_KEY")
-            publish = true
-            override = true
 
-            pkg.apply {
-                repo = "krosstalk"
-                name = currentProject.name
-                userOrg = "rnett"
-                githubRepo = "https://github.com/rnett/krosstalk"
-                vcsUrl = "https://github.com/rnett/krosstalk.git"
-                description = currentProject.description
-                setLabels("kotlin", "multiplatform", "js", "server", "api", "compiler")
-                setLicenses("Apache-2.0")
-                desc = currentProject.description
-                websiteUrl = "https://github.com/rnett/krosstalk"
-                issueTrackerUrl = "https://github.com/rnett/krosstalk/issues"
-//                githubReleaseNotesFile = githubReadme
+//        apply(plugin = "com.jfrog.bintray")
+//
+//        configure<com.jfrog.bintray.gradle.BintrayExtension> {
+//            user = System.getenv("BINTRAY_USER")
+//            key = System.getenv("BINTRAY_KEY")
+//            publish = true
+//            override = true
+//
+//            pkg.apply {
+//                repo = "krosstalk"
+//                name = currentProject.name
+//                userOrg = "rnett"
+//                githubRepo = "https://github.com/rnett/krosstalk"
+//                vcsUrl = "https://github.com/rnett/krosstalk.git"
+//                description = currentProject.description
+//                setLabels("kotlin", "multiplatform", "js", "server", "api", "compiler")
+//                setLicenses("Apache-2.0")
+//                desc = currentProject.description
+//                websiteUrl = "https://github.com/rnett/krosstalk"
+//                issueTrackerUrl = "https://github.com/rnett/krosstalk/issues"
+////                githubReleaseNotesFile = githubReadme
+//
+//                version.apply {
+//                    name = currentProject.version.toString()
+//                    desc = currentProject.description
+//                    released = java.util.Date().toString()
+//                    vcsTag = currentProject.version.toString()
+//                }
+//            }
+//        }
 
-                version.apply {
-                    name = currentProject.version.toString()
-                    desc = currentProject.description
-                    released = java.util.Date().toString()
-                    vcsTag = currentProject.version.toString()
-                }
-            }
-        }
-    }
-
-    afterEvaluate {
-        if (this.name != "krosstalk-gradle-plugin") {
+        afterEvaluate {
 
             jvmProjects {
 
@@ -167,22 +164,58 @@ nonSampleProjects {
                         }
                     }
                 }
+
+                repositories {
+                    maven {
+                        name = "bintray"
+                        url = uri("https://api.bintray.com/maven/rnett/krosstalk/${currentProject.name}/;publish=1;override=1")
+                        credentials {
+                            username = System.getenv("BINTRAY_USER")
+                            password = System.getenv("BINTRAY_KEY")
+                        }
+                    }
+                }
             }
-            configure<com.jfrog.bintray.gradle.BintrayExtension> {
-                setPublications(
-                    *currentProject.extensions.getByName<PublishingExtension>("publishing")
-                        .publications.map { it.name }.toTypedArray()
-                )
-            }
+//            configure<com.jfrog.bintray.gradle.BintrayExtension> {
+//                setPublications(
+//                    *currentProject.extensions.getByName<PublishingExtension>("publishing")
+//                        .publications.map { it.name }.toTypedArray()
+//                )
+//            }
+
+//            tasks["bintrayUpload"].dependsOn(tasks["build"])
+
+            // Workaround bintray plugin issue for Gradle metadata publishing
+            // https://github.com/bintray/gradle-bintray-plugin/issues/229
+//            tasks.withType<BintrayUploadTask> {
+//                doFirst {
+//                    publications
+//                            .filterIsInstance<MavenPublication>()
+//                            .forEach { pub ->
+//                                val moduleFile = buildDir.resolve("publications/${pub.name}/module.json")
+//                                if (moduleFile.exists()) {
+//                                    pub.artifact(object : FileBasedMavenArtifact(moduleFile) {
+//                                        override fun getDefaultExtension() = "module"
+//                                    })
+//                                }
+//                            }
+//                }
+//            }
         }
     }
 }
 
-tasks.getByName("bintrayPublish") {
-    enabled = false
+tasks.create("publishGradlePlugin") {
+    group = "*publish"
+    dependsOn(":krosstalk-gradle-plugin:publishPlugins")
 }
 
-tasks.create("upload") {
-    dependsOn("bintrayUpload")
-    dependsOn(":krosstalk-gradle-plugin:publishPlugins")
+tasks.create("publishArtifacts") {
+    group = "*publish"
+    dependsOn(*publishedProjects.map { ":$it:publishAllPublicationsToBintrayRepository" }.toTypedArray())
+}
+
+tasks.create("publishAll") {
+    group = "*publish"
+    dependsOn("publishArtifacts", "publishGradlePlugin")
 }
