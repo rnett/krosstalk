@@ -12,7 +12,7 @@ plugins {
 
 allprojects {
     group = "com.rnett.krosstalk"
-    version = "1.0.1-ALPHA"
+    version = "1.0.2-ALPHA"
 }
 
 val jvmProjects = setOf("krosstalk-compiler-plugin", "krosstalk-ktor-server")
