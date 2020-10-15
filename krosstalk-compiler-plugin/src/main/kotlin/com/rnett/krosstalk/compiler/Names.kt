@@ -1,41 +1,56 @@
 package com.rnett.krosstalk.compiler
 
-import org.jetbrains.kotlin.name.FqName
+import com.rnett.krosstalk.compiler.naming.Package
+import com.rnett.krosstalk.compiler.naming.RootPackage
+import org.jetbrains.kotlin.ir.symbols.IrFunctionSymbol
+import org.jetbrains.kotlin.ir.util.isVararg
 
-object Names {
-    //    val KrosstalkHost = FqName("com.rnett.krosstalk.annotations.KrosstalkHost")
-    val KrosstalkMethod = FqName("com.rnett.krosstalk.annotations.KrosstalkMethod")
-    val KrosstalkEndpoint = FqName("com.rnett.krosstalk.annotations.KrosstalkEndpoint")
-    val RequiredScopes = FqName("com.rnett.krosstalk.annotations.RequiredScopes")
-    val OptionalScopes = FqName("com.rnett.krosstalk.annotations.OptionalScopes")
-    val NullOn = FqName("com.rnett.krosstalk.annotations.NullOn")
-    val MinimizeBody = FqName("com.rnett.krosstalk.annotations.MinimizeBody")
-    val EmptyBody = FqName("com.rnett.krosstalk.annotations.EmptyBody")
+const val krosstalkPackage = "com.rnett.krosstalk"
+const val annotationPackage = "$krosstalkPackage.annotations"
 
-    val ScopeHolder = FqName("com.rnett.krosstalk.ScopeHolder")
-    val addMethod = FqName("com.rnett.krosstalk.Krosstalk.addMethod")
-    val MethodTypes = FqName("com.rnett.krosstalk.MethodTypes")
-    val KrosstalkClient = FqName("com.rnett.krosstalk.KrosstalkClient")
-    val call = FqName("com.rnett.krosstalk.call")
-    val OptionalNone = FqName("com.rnett.krosstalk.Optional.None")
-    val OptionalSome = FqName("com.rnett.krosstalk.Optional.Some")
-    val clientPlaceholder = FqName("com.rnett.krosstalk.krosstalkCall")
+fun firstParamIsVararg(symbol: IrFunctionSymbol) = symbol.owner.valueParameters.firstOrNull()?.isVararg == true
 
-    val getValueAsOrError = FqName("com.rnett.krosstalk.getValueAsOrError")
+object Krosstalk : RootPackage(krosstalkPackage) {
+    object Annotations : Package by -"annotations" {
+        val KrosstalkMethod by Class()
+        val ClientOnly by Class()
+        val MustMatch by Class()
+    }
 
-    val typeOf = FqName("kotlin.reflect.typeOf")
-    val to = FqName("kotlin.to")
-    val mapOf = FqName("kotlin.collections.mapOf")
-    val setOf = FqName("kotlin.collections.setOf")
-    val Pair = FqName("kotlin.Pair")
-    val Map = FqName("kotlin.collections.Map")
-    val Set = FqName("kotlin.collections.Set")
-    val Iterable = FqName("kotlin.collections.Iterable")
-    val KType = FqName("kotlin.reflect.KType")
-    val error = FqName("kotlin.error")
+    val KrosstalkResult by Class()
+    val MethodTypes by Class()
+    val ScopeHolder by Class()
+    val KrosstalkClient by Class()
+    val call by function()
+    val clientPlaceholder by function("krosstalkCall")
+    val getValueAsOrError by function()
 
-    val instanceParameterKey = FqName("com.rnett.krosstalk.instanceParameterKey")
-    val extensionParameterKey = FqName("com.rnett.krosstalk.extensionParameterKey")
-    val methodNameKey = FqName("com.rnett.krosstalk.methodNameKey")
-    val prefixKey = FqName("com.rnett.krosstalk.prefixKey")
+
+    val addMethod by function("Krosstalk.addMethod")
+
+}
+
+object Kotlin : RootPackage("kotlin") {
+    val typeOf by function("reflect.typeOf")
+    val KType by Class("reflect.KType")
+
+    val to by function()
+    val Pair by Class()
+
+    val error by function()
+
+    val Annotation by Class()
+
+    object Collections : Package by -"collections" {
+        val mapOf by function(::firstParamIsVararg)
+        val setOf by function(::firstParamIsVararg)
+        val listOf by function(::firstParamIsVararg)
+
+        val Map by Class()
+        val Set by Class()
+        val List by Class()
+
+        val Iterable by Class()
+    }
+
 }

@@ -2,7 +2,7 @@
 <module version="4">
   <component name="FacetManager">
     <facet type="kotlin-language" name="Kotlin">
-      <configuration version="3" platform="JavaScript " allPlatforms="JS []" useProjectSettings="false" isTestModule="false" externalProjectId=":client-sample">
+      <configuration version="3" platform="JavaScript " allPlatforms="JS []" useProjectSettings="false" isTestModule="false" externalProjectId=":client-sample" pureKotlinSourceFolders="C:\Users\jimne\Google Drive\My Stuff\krosstalk\client-sample\src\jsMain\kotlin;C:\Users\jimne\Google Drive\My Stuff\krosstalk\client-sample\build\externals\krosstalk-client-sample\src;C:\Users\jimne\Google Drive\My Stuff\krosstalk\client-sample\src\jsTest\kotlin;C:\Users\jimne\Google Drive\My Stuff\krosstalk\client-sample\src\jvmMain\kotlin;C:\Users\jimne\Google Drive\My Stuff\krosstalk\client-sample\src\jvmTest\kotlin;C:\Users\jimne\Google Drive\My Stuff\krosstalk\client-sample\src\commonMain\kotlin">
         <dependsOnModuleNames>:client-sample:commonMain</dependsOnModuleNames>
         <sourceSets>
           <sourceSet>krosstalk.client-sample.commonMain</sourceSet>
@@ -37,7 +37,7 @@
               <option value="$USER_HOME$/.gradle/caches/modules-2/files-2.1/org.jetbrains.kotlin/kotlin-stdlib/1.4.10/ea29e063d2bbe695be13e9d044dcfb0c7add398e/kotlin-stdlib-1.4.10.jar" />
               <option value="$USER_HOME$/.gradle/caches/modules-2/files-2.1/org.jetbrains.kotlinx/kotlinx-coroutines-core/1.3.7/8e2eb78158638b33793d204ffef0b65c4a578e1c/kotlinx-coroutines-core-1.3.7.jar" />
               <option value="$USER_HOME$/.gradle/caches/modules-2/files-2.1/org.jetbrains/annotations/13.0/919f0dfe192fb4e063e7dacadee7f8bb9a2672a9/annotations-13.0.jar" />
-              <option value="$MAVEN_REPOSITORY$/com/rnett/krosstalk/krosstalk-compiler-plugin/1.0.2-ALPHA/krosstalk-compiler-plugin-1.0.2-ALPHA.jar" />
+              <option value="$MAVEN_REPOSITORY$/com/rnett/krosstalk/krosstalk-compiler-plugin/1.0.3-ALPHA/krosstalk-compiler-plugin-1.0.3-ALPHA.jar" />
               <option value="$KOTLIN_BUNDLED$/lib/kotlinx-serialization-compiler-plugin.jar" />
             </array>
           </option>

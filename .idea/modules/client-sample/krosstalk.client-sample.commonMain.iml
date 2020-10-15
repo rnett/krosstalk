@@ -2,7 +2,7 @@
 <module version="4">
   <component name="FacetManager">
     <facet type="kotlin-language" name="Kotlin">
-      <configuration version="3" platform="Common (experimental) " allPlatforms="JS []/JVM [1.6]/Native []/Native [general]" useProjectSettings="false" isTestModule="false" externalProjectId=":client-sample">
+      <configuration version="3" platform="Common (experimental) " allPlatforms="JS []/JVM [1.6]/Native []/Native [general]" useProjectSettings="false" isTestModule="false" externalProjectId=":client-sample" pureKotlinSourceFolders="C:\Users\jimne\Google Drive\My Stuff\krosstalk\client-sample\src\jsMain\kotlin;C:\Users\jimne\Google Drive\My Stuff\krosstalk\client-sample\build\externals\krosstalk-client-sample\src;C:\Users\jimne\Google Drive\My Stuff\krosstalk\client-sample\src\jsTest\kotlin;C:\Users\jimne\Google Drive\My Stuff\krosstalk\client-sample\src\jvmMain\kotlin;C:\Users\jimne\Google Drive\My Stuff\krosstalk\client-sample\src\jvmTest\kotlin;C:\Users\jimne\Google Drive\My Stuff\krosstalk\client-sample\src\commonMain\kotlin">
         <newMppModelJpsModuleKind>SOURCE_SET_HOLDER</newMppModelJpsModuleKind>
         <compilerSettings>
           <option name="additionalArguments" value="-Xuse-experimental=kotlin.contracts.ExperimentalContracts,kotlin.RequiresOptIn,kotlin.time.ExperimentalTime -XXLanguage:+InlineClasses -XXLanguage:+NewInference" />
@@ -15,7 +15,7 @@
           </option>
           <option name="pluginClasspaths">
             <array>
-              <option value="$MAVEN_REPOSITORY$/com/rnett/krosstalk/krosstalk-compiler-plugin/1.0.2-ALPHA/krosstalk-compiler-plugin-1.0.2-ALPHA.jar" />
+              <option value="$MAVEN_REPOSITORY$/com/rnett/krosstalk/krosstalk-compiler-plugin/1.0.3-ALPHA/krosstalk-compiler-plugin-1.0.3-ALPHA.jar" />
               <option value="$USER_HOME$/.gradle/caches/modules-2/files-2.1/org.jetbrains.kotlin/kotlin-stdlib-jdk8/1.4.10/998caa30623f73223194a8b657abd2baec4880ea/kotlin-stdlib-jdk8-1.4.10.jar" />
               <option value="$USER_HOME$/.gradle/caches/modules-2/files-2.1/org.jetbrains.kotlin/kotlin-gradle-plugin-api/1.4.10/c06dc95764119b3188034c644805de9b76148806/kotlin-gradle-plugin-api-1.4.10.jar" />
               <option value="$USER_HOME$/.gradle/caches/modules-2/files-2.1/org.jetbrains.kotlin/kotlin-stdlib-jdk7/1.4.10/30e46450b0bb3dbf43898d2f461be4a942784780/kotlin-stdlib-jdk7-1.4.10.jar" />

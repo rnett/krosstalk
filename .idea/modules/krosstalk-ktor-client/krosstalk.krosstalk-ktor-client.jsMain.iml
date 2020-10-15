@@ -2,7 +2,7 @@
 <module version="4">
   <component name="FacetManager">
     <facet type="kotlin-language" name="Kotlin">
-      <configuration version="3" platform="JavaScript " allPlatforms="JS []" useProjectSettings="false" isTestModule="false" externalProjectId=":krosstalk-ktor-client">
+      <configuration version="3" platform="JavaScript " allPlatforms="JS []" useProjectSettings="false" isTestModule="false" externalProjectId=":krosstalk-ktor-client" pureKotlinSourceFolders="C:\Users\jimne\Google Drive\My Stuff\krosstalk\krosstalk-ktor-client\src\jsMain\kotlin;C:\Users\jimne\Google Drive\My Stuff\krosstalk\krosstalk-ktor-client\build\externals\krosstalk-krosstalk-ktor-client\src;C:\Users\jimne\Google Drive\My Stuff\krosstalk\krosstalk-ktor-client\src\jsTest\kotlin;C:\Users\jimne\Google Drive\My Stuff\krosstalk\krosstalk-ktor-client\src\jvmMain\kotlin;C:\Users\jimne\Google Drive\My Stuff\krosstalk\krosstalk-ktor-client\src\jvmTest\kotlin;C:\Users\jimne\Google Drive\My Stuff\krosstalk\krosstalk-ktor-client\src\commonMain\kotlin">
         <dependsOnModuleNames>:krosstalk-ktor-client:commonMain</dependsOnModuleNames>
         <sourceSets>
           <sourceSet>krosstalk.krosstalk-ktor-client.commonMain</sourceSet>

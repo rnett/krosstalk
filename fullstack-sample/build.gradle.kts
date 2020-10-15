@@ -4,7 +4,7 @@ plugins {
     kotlin("multiplatform")
     id("org.jetbrains.kotlin.plugin.serialization")
     application
-    id("com.rnett.krosstalk") version "1.0.2-ALPHA"
+    id("com.rnett.krosstalk") version "1.0.3-ALPHA"
 }
 
 val ktor_version = "1.4.1"

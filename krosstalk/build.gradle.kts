@@ -25,9 +25,9 @@ kotlin {
         val commonMain by getting {
             dependencies {
                 implementation(kotlin("stdlib-common"))
-                implementation("org.jetbrains.kotlinx:kotlinx-serialization-core:$serialization_version")
-                implementation("org.jetbrains.kotlinx:kotlinx-serialization-cbor:$serialization_version")
-                implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:$serialization_version")
+                api("org.jetbrains.kotlinx:kotlinx-serialization-core:$serialization_version")
+                api("org.jetbrains.kotlinx:kotlinx-serialization-cbor:$serialization_version")
+                api("org.jetbrains.kotlinx:kotlinx-serialization-json:$serialization_version")
             }
         }
 

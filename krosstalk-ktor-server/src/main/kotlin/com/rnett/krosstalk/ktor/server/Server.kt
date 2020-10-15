@@ -2,13 +2,17 @@ package com.rnett.krosstalk.ktor.server
 
 import com.rnett.krosstalk.*
 import com.rnett.krosstalk.ktor.server.KtorServer.define
-import io.ktor.application.*
+import io.ktor.application.Application
+import io.ktor.application.call
+import io.ktor.application.install
 import io.ktor.auth.*
-import io.ktor.http.*
-import io.ktor.request.*
-import io.ktor.response.*
-import io.ktor.routing.*
-import io.ktor.util.*
+import io.ktor.http.HttpMethod
+import io.ktor.request.receiveChannel
+import io.ktor.response.respondBytes
+import io.ktor.routing.Route
+import io.ktor.routing.route
+import io.ktor.routing.routing
+import io.ktor.util.toByteArray
 import kotlin.random.Random
 
 /**
@@ -31,7 +35,12 @@ fun wrapScopesHelper(route: Route, remaining: MutableList<NeededScope<KtorServer
 /**
  * Applies [remaining] scopes, recursively, with [final] inside all of them.
  */
-fun wrapScopes(route: Route, remaining: List<NeededScope<KtorServerScope>>, final: Route.() -> Unit) = wrapScopesHelper(route, remaining.toMutableList().asReversed(), final)
+fun wrapScopes(route: Route, remaining: List<NeededScope<KtorServerScope>>, final: Route.() -> Unit) =
+    wrapScopesHelper(route, remaining.toMutableList().asReversed(), final)
+
+interface KtorKrosstalkServer : KrosstalkServer<KtorServerScope> {
+    override val server: KtorServer
+}
 
 /**
  * A Krosstalk server handler that adds the krosstalk method endpoints to a Ktor server.

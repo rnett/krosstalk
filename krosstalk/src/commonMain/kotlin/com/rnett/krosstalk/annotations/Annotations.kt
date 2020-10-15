@@ -1,18 +1,24 @@
 package com.rnett.krosstalk.annotations
 
 import com.rnett.krosstalk.Krosstalk
+import com.rnett.krosstalk.KrosstalkResult
 import kotlin.reflect.KClass
 
-//TODO the ability to return something like KrosstalkResponse (but deserialized on Success) directly, including error codes, etc.  Use expect, typealias Unit on server side?  Still need to return something
-//  maybe force a return type of generic KrosstalkResponse?  Server can return success or error (or just success), turn http status codes into error returns.  Success/CustomError/HttpError?
-//TODO  similar, but wrap server side in try/catch, send any exception's stack traces
+//TODO option to auto-wrap response in a KrosstalkResult for interop w/ non krosstalk server
 //TODO option to not send instance/extension(?) receiver when it is an object
 //TODO dummy/mock server/client
+//TODO allow string arguments to be pulled out of the endpoint (i.e. EmptyBody on methods w/ server implementations).  Allow defaults on server side (i.e. not specified)?  Would be good for interoperability.
 
-//@Target(AnnotationTarget.CLASS)
-//@Retention(AnnotationRetention.BINARY)
-//@MustBeDocumented
-//annotation class KrosstalkHost
+// meta annotations
+@Target(AnnotationTarget.ANNOTATION_CLASS)
+@Retention(AnnotationRetention.BINARY)
+@MustBeDocumented
+internal annotation class ClientOnly
+
+@Target(AnnotationTarget.ANNOTATION_CLASS)
+@Retention(AnnotationRetention.BINARY)
+@MustBeDocumented
+internal annotation class MustMatch
 
 /**
  * Makes a method a krosstalk method.   Should only be on the `expect` declaration.
@@ -43,6 +49,7 @@ annotation class KrosstalkMethod(val klass: KClass<out Krosstalk>)
 @Target(AnnotationTarget.FUNCTION)
 @Retention(AnnotationRetention.BINARY)
 @MustBeDocumented
+@MustMatch
 annotation class KrosstalkEndpoint(val endpoint: String, val httpMethod: String = "POST")
 
 
@@ -54,6 +61,7 @@ annotation class KrosstalkEndpoint(val endpoint: String, val httpMethod: String 
 @Target(AnnotationTarget.FUNCTION)
 @Retention(AnnotationRetention.BINARY)
 @MustBeDocumented
+@MustMatch
 annotation class RequiredScopes(vararg val scopes: String)
 
 /**
@@ -65,6 +73,7 @@ annotation class RequiredScopes(vararg val scopes: String)
 @Target(AnnotationTarget.FUNCTION)
 @Retention(AnnotationRetention.BINARY)
 @MustBeDocumented
+@MustMatch
 annotation class OptionalScopes(vararg val scopes: String)
 
 /**
@@ -86,6 +95,7 @@ annotation class NullOn(vararg val responseCodes: Int)
 @Target(AnnotationTarget.FUNCTION)
 @Retention(AnnotationRetention.BINARY)
 @MustBeDocumented
+@ClientOnly
 annotation class MinimizeBody
 
 /**
@@ -95,4 +105,16 @@ annotation class MinimizeBody
 @Target(AnnotationTarget.FUNCTION)
 @Retention(AnnotationRetention.BINARY)
 @MustBeDocumented
+@ClientOnly
 annotation class EmptyBody
+
+/**
+ * Return [KrosstalkResult].  Method return type must be [KrosstalkResult].
+ * Server side function should return a [KrosstalkResult.Success].
+ * [KrosstalkResult.HttpError] and [KrosstalkResult.Exception] will be used depending on the call result.
+ */
+@Target(AnnotationTarget.FUNCTION)
+@Retention(AnnotationRetention.BINARY)
+@MustBeDocumented
+@MustMatch
+annotation class ExplicitResult(val includeStacktrace: Boolean = false)

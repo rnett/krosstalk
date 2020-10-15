@@ -2,12 +2,12 @@
 <module version="4">
   <component name="FacetManager">
     <facet type="kotlin-language" name="Kotlin">
-      <configuration version="3" platform="JavaScript " allPlatforms="JS []" useProjectSettings="false" isTestModule="true" externalProjectId=":krosstalk">
+      <configuration version="3" platform="JavaScript " allPlatforms="JS []" useProjectSettings="false" isTestModule="true" externalProjectId=":krosstalk" pureKotlinSourceFolders="C:\Users\jimne\Google Drive\My Stuff\krosstalk\krosstalk\src\jsMain\kotlin;C:\Users\jimne\Google Drive\My Stuff\krosstalk\krosstalk\build\externals\krosstalk-krosstalk\src;C:\Users\jimne\Google Drive\My Stuff\krosstalk\krosstalk\src\jsTest\kotlin;C:\Users\jimne\Google Drive\My Stuff\krosstalk\krosstalk\src\jvmMain\kotlin;C:\Users\jimne\Google Drive\My Stuff\krosstalk\krosstalk\src\jvmTest\kotlin;C:\Users\jimne\Google Drive\My Stuff\krosstalk\krosstalk\src\commonMain\kotlin">
         <dependsOnModuleNames>:krosstalk:commonTest</dependsOnModuleNames>
         <sourceSets>
           <sourceSet>krosstalk.krosstalk.jsMain</sourceSet>
-          <sourceSet>krosstalk.krosstalk.commonTest</sourceSet>
           <sourceSet>krosstalk.krosstalk.commonMain</sourceSet>
+          <sourceSet>krosstalk.krosstalk.commonTest</sourceSet>
         </sourceSets>
         <newMppModelJpsModuleKind>COMPILATION_AND_SOURCE_SET_HOLDER</newMppModelJpsModuleKind>
         <externalSystemTestTasks>

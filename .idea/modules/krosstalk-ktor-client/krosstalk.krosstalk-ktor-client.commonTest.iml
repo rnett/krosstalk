@@ -2,7 +2,7 @@
 <module version="4">
   <component name="FacetManager">
     <facet type="kotlin-language" name="Kotlin">
-      <configuration version="3" platform="Common (experimental) " allPlatforms="JS []/JVM [1.6]/Native []/Native [general]" useProjectSettings="false" isTestModule="true" externalProjectId=":krosstalk-ktor-client">
+      <configuration version="3" platform="Common (experimental) " allPlatforms="JS []/JVM [1.6]/Native []/Native [general]" useProjectSettings="false" isTestModule="true" externalProjectId=":krosstalk-ktor-client" pureKotlinSourceFolders="C:\Users\jimne\Google Drive\My Stuff\krosstalk\krosstalk-ktor-client\src\jsMain\kotlin;C:\Users\jimne\Google Drive\My Stuff\krosstalk\krosstalk-ktor-client\build\externals\krosstalk-krosstalk-ktor-client\src;C:\Users\jimne\Google Drive\My Stuff\krosstalk\krosstalk-ktor-client\src\jsTest\kotlin;C:\Users\jimne\Google Drive\My Stuff\krosstalk\krosstalk-ktor-client\src\jvmMain\kotlin;C:\Users\jimne\Google Drive\My Stuff\krosstalk\krosstalk-ktor-client\src\jvmTest\kotlin;C:\Users\jimne\Google Drive\My Stuff\krosstalk\krosstalk-ktor-client\src\commonMain\kotlin">
         <newMppModelJpsModuleKind>SOURCE_SET_HOLDER</newMppModelJpsModuleKind>
         <externalSystemTestTasks>
           <externalSystemTestTask>jsBrowserTest|:krosstalk-ktor-client:jsTest|js</externalSystemTestTask>

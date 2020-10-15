@@ -31,8 +31,10 @@ data class MethodDefinition<T>(
     val httpMethod: String,
     val requiredScopes: Set<String>,
     val optionalScopes: Set<String>,
-    val leaveOutArguments: Set<String>,
+    val leaveOutArguments: Set<String>?,
     val nullOnResponseCodes: Set<Int>,
+    val useExplicitResult: Boolean,
+    val includeStacktrace: Boolean,
     val serializers: MethodSerializers<*>,
     val call: suspend (Map<String, *>) -> T
 ) {
@@ -79,14 +81,27 @@ abstract class Krosstalk {
         optionalScopes: Set<String>,
         leaveOutArguments: Set<String>?,
         nullOnResponses: Set<Int>,
+        useExplicitResult: Boolean,
+        includeStacktrace: Boolean,
+//        annotations: Map<KClass<Annotation>, Map<String, Any?>>,
         call: suspend (Map<String, *>) -> T
     ) {
         if (methodName in methods)
             throw KrosstalkException.CompilerError("Already registered method with name $methodName.")
 
         val serializers = serialization.getAndCheckSerializers(types)
-        _methods[methodName] = MethodDefinition(endpoint, method, requiredScopes, optionalScopes, leaveOutArguments
-                ?: emptySet(), nullOnResponses, serializers, call)
+        _methods[methodName] = MethodDefinition(
+            endpoint,
+            method,
+            requiredScopes,
+            optionalScopes,
+            leaveOutArguments,
+            nullOnResponses,
+            useExplicitResult,
+            includeStacktrace,
+            serializers,
+            call
+        )
     }
 
     @PublishedApi

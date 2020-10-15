@@ -1,9 +1,6 @@
 package com.rnett.krosstalk.ktor.client
 
-import com.rnett.krosstalk.ActiveScope
-import com.rnett.krosstalk.ClientHandler
-import com.rnett.krosstalk.ClientScope
-import com.rnett.krosstalk.KrosstalkResponse
+import com.rnett.krosstalk.*
 import io.ktor.client.HttpClient
 import io.ktor.client.HttpClientConfig
 import io.ktor.client.call.receive
@@ -33,6 +30,11 @@ fun <D> ActiveScope<*, KtorClientScope<D>>.configureRequest(request: HttpRequest
     }
 }
 
+interface KtorKrosstalkClient : KrosstalkClient<KtorClientScope<*>> {
+    override val client: KtorClient
+}
+
+//TODO baseClient/configureRequest as parameters?
 /**
  * A Krosstalk client using a Ktor HttpClient to make requests.
  * Note that a new client is used for each request.
@@ -56,11 +58,11 @@ open class KtorClient(override val serverUrl: String) : ClientHandler<KtorClient
     }
 
     override suspend fun sendKrosstalkRequest(
-            endpoint: String,
-            httpMethod: String,
-            body: ByteArray?,
-            scopes: List<ActiveScope<*, KtorClientScope<*>>>
-    ): KrosstalkResponse {
+        endpoint: String,
+        httpMethod: String,
+        body: ByteArray?,
+        scopes: List<ActiveScope<*, KtorClientScope<*>>>
+    ): InternalKrosstalkResponse {
         // configure the client and make the request
         val response = realBaseClient.config {
             scopes.forEach {
@@ -82,9 +84,9 @@ open class KtorClient(override val serverUrl: String) : ClientHandler<KtorClient
         val status = response.status
 
         return if (status.isSuccess())
-            KrosstalkResponse.Success(status.value, response.receive())
+            InternalKrosstalkResponse.Success(status.value, response.receive())
         else
-            KrosstalkResponse.Failure(status.value) {
+            InternalKrosstalkResponse.Failure(status.value) {
                 // use a custom exception here to use HttpStatusCode.toString()
                 callFailedException(it, status.value, "Krosstalk method $it failed with: $status")
             }

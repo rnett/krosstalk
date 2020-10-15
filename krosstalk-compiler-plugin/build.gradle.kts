@@ -8,6 +8,7 @@ plugins {
 description = "Krosstalk Kotlin compiler plugin"
 
 dependencies {
+    implementation(kotlin("reflect"))
     compileOnly("org.jetbrains.kotlin:kotlin-compiler-embeddable:1.4.10")
 
     compileOnly("com.google.auto.service:auto-service-annotations:1.0-rc6")
