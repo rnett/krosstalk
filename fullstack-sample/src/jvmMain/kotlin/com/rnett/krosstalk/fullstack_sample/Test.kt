@@ -4,6 +4,7 @@ import com.rnett.krosstalk.*
 import com.rnett.krosstalk.ktor.server.KtorServer
 import com.rnett.krosstalk.ktor.server.KtorServerBasicAuth
 import com.rnett.krosstalk.ktor.server.KtorServerScope
+import com.rnett.krosstalk.serialization.KotlinxBinarySerializationHandler
 import io.ktor.application.call
 import io.ktor.application.install
 import io.ktor.auth.Principal
@@ -18,6 +19,7 @@ import io.ktor.server.engine.embeddedServer
 import io.ktor.server.netty.Netty
 import kotlinx.html.*
 import kotlinx.serialization.cbor.Cbor
+import kotlinx.serialization.encodeToByteArray
 
 fun HTML.index() {
     head {
@@ -57,12 +59,14 @@ fun main() {
     }.start(true)
 }
 
-actual suspend fun doAuthThing(num: Int): Data {
-    return Data(num, (num * 10).toString())
-}
-
 actual suspend fun doThing(data: Data): List<String> {
     return List(data.num) { data.str }
+}
+
+actual suspend fun doEmptyThing(): Int = 5
+
+actual suspend fun doAuthThing(num: Int): Data {
+    return Data(num, (num * 10).toString())
 }
 
 actual suspend fun Int.doExt(other: Int): Double = (this + other).toDouble()
@@ -78,6 +82,8 @@ fun throwException(): Nothing {
 actual suspend fun doAuthHTTPExceptionTest(): KrosstalkResult<Int> {
     return KrosstalkResult.Success(2)
 }
+
+actual suspend fun doEndpointTest(data: Data, value: Int): String = List(value){data.toString()}.joinToString(" + ")
 
 data class User(val username: String) : Principal
 

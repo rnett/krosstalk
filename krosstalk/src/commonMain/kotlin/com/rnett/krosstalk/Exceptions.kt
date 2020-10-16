@@ -28,7 +28,7 @@ sealed class KrosstalkException(message: String, cause: Throwable? = null) : Run
      */
     class EndpointUnknownArgument(
         val methodName: String,
-        val endpointTemplate: EndpointTemplate,
+        val endpointTemplate: Endpoint,
         val missingParam: String,
         val knownParams: Set<String>
     ) : KrosstalkException(

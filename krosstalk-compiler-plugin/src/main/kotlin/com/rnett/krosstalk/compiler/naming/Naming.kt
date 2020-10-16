@@ -18,6 +18,8 @@ class NameWrapperDelegate<T>(val build: (String) -> T) {
     inline operator fun provideDelegate(thisRef: Any?, property: KProperty<*>) = WrapperDelegate(build(property.name))
 }
 
+infix fun String.withPrefix(prefix: String?) = if(prefix.isNullOrBlank()) this else "$prefix.$this"
+
 interface HasName {
     val fqName: FqName
     val parent: HasName?
@@ -28,14 +30,13 @@ interface HasName {
     fun String.Package() = PackageRef(this, this@HasName)
     fun String.Class() = ClassRef(this, this@HasName)
 
-    fun function(filter: (IrSimpleFunctionSymbol) -> Boolean = { true }) = NameWrapperDelegate { FunctionRef(it, this, filter) }
-    fun property(filter: (IrPropertySymbol) -> Boolean = { true }) = NameWrapperDelegate { PropertyRef(it, this, filter) }
-    fun Class() = NameWrapperDelegate { ClassRef(it, this) }
-
-    fun function(name: String, filter: (IrSimpleFunctionSymbol) -> Boolean = { true }) = WrapperDelegate(FunctionRef(name, this, filter))
-    fun property(name: String, filter: (IrPropertySymbol) -> Boolean = { true }) = WrapperDelegate(PropertyRef(name, this, filter))
-    fun Class(name: String) = WrapperDelegate(ClassRef(name, this))
+    fun function(name: String? = null, prefix: String? = null, filter: (IrSimpleFunctionSymbol) -> Boolean = { true }) = NameWrapperDelegate { FunctionRef((name ?: it) withPrefix prefix, this, filter) }
+    fun property(name: String? = null, prefix: String? = null, filter: (IrPropertySymbol) -> Boolean = { true }) = NameWrapperDelegate { PropertyRef((name ?: it) withPrefix prefix, this, filter) }
+    fun Class(name: String? = null, prefix: String? = null) = NameWrapperDelegate { ClassRef((name ?: it) withPrefix prefix, this) }
 }
+
+//TODO restructure to have inner packages/classes use prefixes?  delegates would be in Root and look like `fun HasPrefix.function` etc, with both receivers in context
+//  probably wouldn't work for class (because I would need to get the prefix).
 
 abstract class RootPackage(override val fqName: FqName = FqName.ROOT) : HasName {
     override val parent: HasName? = null
@@ -65,26 +66,41 @@ class PackageRef(name: String, parent: HasName) : BaseRef(name, parent), Package
 val IrClassSymbol.primaryConstructor get() = constructors.singleOrNull { it.owner.isPrimary }
 
 interface Class : Reference<IrClassSymbol> {
-    override fun get(context: IrPluginContext) = context.referenceClass(fqName)!!
+    override fun get(context: IrPluginContext) = context.referenceClass(fqName) ?: error("Class not found: $fqName")
 
     fun constructor(filter: (IrConstructorSymbol) -> Boolean) = NameWrapperDelegate { ConstructorRef(it, this, filter) }
     fun primaryConstructor() = constructor { it.owner.isPrimary }
 
 }
 
+public inline fun <T> Iterable<T>.singleOrError(onMultiple: String, onNone: String, predicate: (T) -> Boolean): T {
+    var single: T? = null
+    var found = false
+    for (element in this) {
+        if (predicate(element)) {
+            if (found) throw IllegalArgumentException(onMultiple)
+            single = element
+            found = true
+        }
+    }
+    if (!found) throw NoSuchElementException(onNone)
+    @Suppress("UNCHECKED_CAST")
+    return single as T
+}
+
 class ClassRef(name: String, parent: HasName) : BaseRef(name, parent), Class
 
 class FunctionRef(name: String, parent: HasName, val filter: (IrSimpleFunctionSymbol) -> Boolean) :
     BaseRef(name, parent), Reference<IrSimpleFunctionSymbol> {
-    override fun get(context: IrPluginContext) = context.referenceFunctions(fqName).single(filter)
+    override fun get(context: IrPluginContext) = context.referenceFunctions(fqName).singleOrError("Multiple matches for $fqName", "No matches for $fqName", filter)
 }
 
 class PropertyRef(name: String, parent: HasName, val filter: (IrPropertySymbol) -> Boolean) :
     BaseRef(name, parent), Reference<IrPropertySymbol> {
-    override fun get(context: IrPluginContext) = context.referenceProperties(fqName).single(filter)
+    override fun get(context: IrPluginContext) = context.referenceProperties(fqName).singleOrError("Multiple matches for $fqName", "No matches for $fqName", filter)
 }
 
 class ConstructorRef(name: String, override val parent: Class, val filter: (IrConstructorSymbol) -> Boolean) :
     BaseRef(name, parent), Reference<IrConstructorSymbol> {
-    override fun get(context: IrPluginContext) = context.referenceConstructors(fqName).single(filter)
+    override fun get(context: IrPluginContext) = context.referenceConstructors(fqName).singleOrError("Multiple matches for $fqName", "No matches for $fqName", filter)
 }

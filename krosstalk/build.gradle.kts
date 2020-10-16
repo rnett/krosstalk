@@ -5,6 +5,7 @@ plugins {
 }
 
 val serialization_version = "1.0.0-RC2"
+val kotlinx_io_version = "0.1.16"
 
 description = "Krosstalk runtime library"
 

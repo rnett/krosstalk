@@ -8,6 +8,7 @@ import com.rnett.krosstalk.annotations.NullOn
 import com.rnett.krosstalk.ktor.client.KtorClient
 import com.rnett.krosstalk.ktor.client.KtorClientBasicAuth
 import com.rnett.krosstalk.ktor.client.KtorClientScope
+import com.rnett.krosstalk.serialization.KotlinxJsonObjectSerializationHandler
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
 import kotlinx.serialization.json.Json

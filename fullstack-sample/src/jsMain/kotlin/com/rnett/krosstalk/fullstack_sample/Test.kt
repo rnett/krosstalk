@@ -5,11 +5,14 @@ import com.rnett.krosstalk.ktor.client.BasicCredentials
 import com.rnett.krosstalk.ktor.client.KtorClient
 import com.rnett.krosstalk.ktor.client.KtorClientBasicAuth
 import com.rnett.krosstalk.ktor.client.KtorClientScope
+import com.rnett.krosstalk.serialization.KotlinxBinarySerializationHandler
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
 import kotlinx.serialization.cbor.Cbor
 
 actual suspend fun doThing(data: Data): List<String> = krosstalkCall()
+
+actual suspend fun doEmptyThing(): Int = krosstalkCall()
 
 actual suspend fun doAuthThing(num: Int): Data = krosstalkCall()
 
@@ -19,11 +22,17 @@ actual suspend fun doExplicitServerExceptionTest(): KrosstalkResult<Int> = kross
 
 actual suspend fun doAuthHTTPExceptionTest(): KrosstalkResult<Int> = krosstalkCall()
 
+actual suspend fun doEndpointTest(data: Data, value: Int): String = krosstalkCall()
+
 //TODO test instance receiver (should work)
 fun main() {
     GlobalScope.launch {
         console.log("Testing doThing")
         println(doThing(Data(3, "test")))
+
+        console.log("Testing doEmptyThing")
+        println(doEmptyThing())
+
         console.log("Testing doAuthThing, expecting error")
         try {
             println(doAuthThing(2))
@@ -39,6 +48,7 @@ fun main() {
             println(doAuthThing(4))
         } catch (e: Exception) {
             console.log("Expected error:", e)
+            println()
         }
 
         console.log("Testing doExt")
@@ -53,6 +63,9 @@ fun main() {
             val x = doAuthHTTPExceptionTest()
             console.log(x)
         }
+
+        console.log("Testing doEndpontTest")
+        println(doEndpointTest(Data(10, "test"), 3))
 
     }
 }

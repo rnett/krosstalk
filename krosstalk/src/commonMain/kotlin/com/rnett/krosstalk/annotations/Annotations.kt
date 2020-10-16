@@ -2,12 +2,13 @@ package com.rnett.krosstalk.annotations
 
 import com.rnett.krosstalk.Krosstalk
 import com.rnett.krosstalk.KrosstalkResult
+import com.rnett.krosstalk.serialization.SerializationHandler
 import kotlin.reflect.KClass
 
-//TODO option to auto-wrap response in a KrosstalkResult for interop w/ non krosstalk server
+//TODO !! enforce empty body when get is used as method in endpoint.
+
 //TODO option to not send instance/extension(?) receiver when it is an object
 //TODO dummy/mock server/client
-//TODO allow string arguments to be pulled out of the endpoint (i.e. EmptyBody on methods w/ server implementations).  Allow defaults on server side (i.e. not specified)?  Would be good for interoperability.
 
 // meta annotations
 @Target(AnnotationTarget.ANNOTATION_CLASS)
@@ -30,13 +31,26 @@ internal annotation class MustMatch
 @MustBeDocumented
 annotation class KrosstalkMethod(val klass: KClass<out Krosstalk>)
 
+/*
+TODO >
+    see to-do in Endpoint.kt
+    I want to include more advanced syntax.
+    key-value pairs, i.e. {{id}} -> /id/{id} or id={id} depending on location
+    optional arguments.  maybe only key value pairs?  or something like [id?:...]
+        how to determine when not sent?  can't really detect default use from method call.  nulls?  another boolean arg?
 
+
+    create route dsl and use ar argument to `krosstalkCall()`?  could pass to the register without much work
+
+ */
 /**
  * Specifies an endpoint for the krosstalk method to use.
- * Can include arguments in the endpoint using `"{parameterName}"`. This will be evaluated with `toString()`.
- * These path arguments won't be used on the server side for evaluation (as everything is put in the request body),
- * but can be used to set endpoints based on arguments.
- * If you want to include non-trivial functions of the arguments in the endpoint, include them as default arguments and use the arguments.
+ * Should be a http-formatted string of the pathname and query string, i.e. `"/items/?id={id}"`.
+ * Can include arguments in the endpoint using `"{parameterName}"`.
+ * This will be evaluated by serializing the argument using the Krosstalk's serialization.
+ * I highly recommend you use a string serialization method ([SerializationHandler] with [String]) when using this.
+ * Unless you specify [MinimizeBody] or [EmptyBody] the arguments used in the endpoint will still be passed in the body.
+ * If you want to include non-trivial functions of the arguments in the endpoint, include them in the function as default arguments and use those.
  *
  * For instance and extension receivers, use `"{\$instance}"` and `"{\$extension}"`, respectively.
  * To include the name of the method, use `"{\$name}"`.
@@ -90,22 +104,22 @@ annotation class NullOn(vararg val responseCodes: Int)
 
 /**
  * Don't include arguments that are part of the [KrosstalkEndpoint] endpoint in the body.
- * **Only usable on client-only methods.**
+ * Those arguments will be passed in the endpoint.
  */
 @Target(AnnotationTarget.FUNCTION)
 @Retention(AnnotationRetention.BINARY)
 @MustBeDocumented
-@ClientOnly
+@MustMatch
 annotation class MinimizeBody
 
 /**
  * Don't include arguments that are part of the [KrosstalkEndpoint] endpoint in the body, and error if all arguments aren't in the endpoint.
- * **Only usable on client-only methods.**
+ * Those arguments will be passed in the endpoint.
  */
 @Target(AnnotationTarget.FUNCTION)
 @Retention(AnnotationRetention.BINARY)
 @MustBeDocumented
-@ClientOnly
+@MustMatch
 annotation class EmptyBody
 
 /**

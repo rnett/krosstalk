@@ -18,12 +18,13 @@ object Krosstalk : RootPackage(krosstalkPackage) {
     }
 
     val KrosstalkResult by Class()
-    val MethodTypes by Class()
     val ScopeHolder by Class()
     val KrosstalkClient by Class()
     val call by function()
     val clientPlaceholder by function("krosstalkCall")
     val getValueAsOrError by function()
+
+    val MethodTypes by Class(prefix = "serialization")
 
 
     val addMethod by function("Krosstalk.addMethod")
@@ -42,9 +43,9 @@ object Kotlin : RootPackage("kotlin") {
     val Annotation by Class()
 
     object Collections : Package by -"collections" {
-        val mapOf by function(::firstParamIsVararg)
-        val setOf by function(::firstParamIsVararg)
-        val listOf by function(::firstParamIsVararg)
+        val mapOf by function(filter = ::firstParamIsVararg)
+        val setOf by function(filter = ::firstParamIsVararg)
+        val listOf by function(filter = ::firstParamIsVararg)
 
         val Map by Class()
         val Set by Class()

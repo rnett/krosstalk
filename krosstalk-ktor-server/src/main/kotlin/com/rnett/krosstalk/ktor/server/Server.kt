@@ -8,11 +8,13 @@ import io.ktor.application.install
 import io.ktor.auth.*
 import io.ktor.http.HttpMethod
 import io.ktor.request.receiveChannel
+import io.ktor.request.uri
 import io.ktor.response.respondBytes
 import io.ktor.routing.Route
 import io.ktor.routing.route
 import io.ktor.routing.routing
 import io.ktor.util.toByteArray
+import io.ktor.util.url
 import kotlin.random.Random
 
 /**
@@ -79,7 +81,7 @@ object KtorServer : ServerHandler<KtorServerScope> {
                     ) {
                         handle {
                             val body = call.receiveChannel().toByteArray()
-                            val response = krosstalk.handle(name, body)
+                            val response = krosstalk.handle(name, call.request.uri, body)
                             call.respondBytes(response)
                         }
                     }

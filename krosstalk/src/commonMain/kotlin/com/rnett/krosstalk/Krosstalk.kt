@@ -1,6 +1,10 @@
 package com.rnett.krosstalk
 
 import com.rnett.krosstalk.annotations.KrosstalkEndpoint
+import com.rnett.krosstalk.serialization.MethodSerializers
+import com.rnett.krosstalk.serialization.MethodTypes
+import com.rnett.krosstalk.serialization.SerializationHandler
+import com.rnett.krosstalk.serialization.getAndCheckSerializers
 
 /**
  * The key used for instance/dispatch receiver parameters/arguments in parameter/argument maps and [KrosstalkEndpoint] templates.
@@ -31,20 +35,23 @@ data class MethodDefinition<T>(
     val httpMethod: String,
     val requiredScopes: Set<String>,
     val optionalScopes: Set<String>,
-    val leaveOutArguments: Set<String>?,
+    val leaveOutArguments: Boolean,
     val nullOnResponseCodes: Set<Int>,
     val useExplicitResult: Boolean,
     val includeStacktrace: Boolean,
     val serializers: MethodSerializers<*>,
     val call: suspend (Map<String, *>) -> T
 ) {
-    val endpoint = EndpointTemplate(_endpoint)
+    val endpoint = Endpoint(_endpoint)
 
     val hasInstanceParameter = serializers.instanceReceiverSerializer != null
     val hasExtensionParameter = serializers.extensionReceiverSerializer != null
-}
 
-//TODO finish commenting
+    fun <V> bodyArguments(map: Map<String, V>) = if(leaveOutArguments) map.filterKeys { it !in endpoint.usedArguments } else map
+    fun <V> urlArguments(map: Map<String, V>) = if(leaveOutArguments) map.filterKeys { it in endpoint.usedArguments } else emptyMap()
+
+    val hasBodyArguments = bodyArguments(serializers.paramSerializers.map).isNotEmpty()
+}
 
 //TODO import from other
 //TODO maybe add serializer type?
@@ -79,7 +86,7 @@ abstract class Krosstalk {
         types: MethodTypes,
         requiredScopes: Set<String>,
         optionalScopes: Set<String>,
-        leaveOutArguments: Set<String>?,
+        leaveOutArguments: Boolean,
         nullOnResponses: Set<Int>,
         useExplicitResult: Boolean,
         includeStacktrace: Boolean,

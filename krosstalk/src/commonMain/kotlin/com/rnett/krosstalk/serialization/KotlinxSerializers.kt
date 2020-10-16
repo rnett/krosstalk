@@ -1,4 +1,4 @@
-package com.rnett.krosstalk
+package com.rnett.krosstalk.serialization
 
 import kotlinx.serialization.BinaryFormat
 import kotlinx.serialization.KSerializer
@@ -31,7 +31,7 @@ class KotlinxStringSerializer<T>(val serializer: KSerializer<T>, val format: Str
 /**
  * Kotlinx serialization handler that uses a [BinaryFormat].  Combines arguments into a `Map<String, ByteArray>`, then serializes the map.
  */
-class KotlinxBinarySerializationHandler(val format: BinaryFormat) : BinaryArgumentSerializationHandler() {
+class KotlinxBinarySerializationHandler(val format: BinaryFormat) : ArgumentSerializationHandler<ByteArray>(ByteTransformer) {
     override fun serializeArguments(serializedArguments: Map<String, ByteArray>): ByteArray {
         return format.encodeToByteArray(mapSerializer, serializedArguments)
     }
@@ -53,7 +53,7 @@ class KotlinxBinarySerializationHandler(val format: BinaryFormat) : BinaryArgume
  * If you want the arguments to be objects, which you probably do, use [KotlinxJsonObjectSerializationHandler].
  * This is necessary for using non-krosstalk apis.
  */
-class KotlinxStringSerializationHandler(val format: StringFormat) : StringArgumentSerializationHandler() {
+class KotlinxStringSerializationHandler(val format: StringFormat) : ArgumentSerializationHandler<String>(StringTransformer) {
     override fun serializeArguments(serializedArguments: Map<String, String>): String {
         return format.encodeToString(mapSerializer, serializedArguments)
     }
@@ -71,7 +71,7 @@ class KotlinxStringSerializationHandler(val format: StringFormat) : StringArgume
  * Kotlinx json serialization handler that, instead of combining arguments into a `Map<String, String>`, uses them as fields in a json object.
  * If you are interacting with a non-krosstalk api, this is almost certainly what you want to use.
  */
-class KotlinxJsonObjectSerializationHandler(val format: Json) : StringSerializationHandler() {
+class KotlinxJsonObjectSerializationHandler(val format: Json) : BaseSerializationHandler<String>(StringTransformer) {
     override fun getSerializer(type: KType) = KotlinxStringSerializer(serializer(type), format)
 
     override fun serializeArguments(arguments: Map<String, *>, serializers: ArgumentSerializers<String>): String {

@@ -6,8 +6,8 @@
         <dependsOnModuleNames>:client-sample:commonTest</dependsOnModuleNames>
         <sourceSets>
           <sourceSet>krosstalk.client-sample.commonTest</sourceSet>
-          <sourceSet>krosstalk.client-sample.jvmMain</sourceSet>
           <sourceSet>krosstalk.client-sample.commonMain</sourceSet>
+          <sourceSet>krosstalk.client-sample.jvmMain</sourceSet>
         </sourceSets>
         <newMppModelJpsModuleKind>COMPILATION_AND_SOURCE_SET_HOLDER</newMppModelJpsModuleKind>
         <externalSystemTestTasks>
@@ -38,6 +38,7 @@
           <option name="pluginClasspaths">
             <array>
               <option value="$USER_HOME$/.gradle/caches/modules-2/files-2.1/org.jetbrains.kotlin/kotlin-gradle-plugin-api/1.4.10/c06dc95764119b3188034c644805de9b76148806/kotlin-gradle-plugin-api-1.4.10.jar" />
+              <option value="$USER_HOME$/.gradle/caches/modules-2/files-2.1/org.jetbrains.kotlin/kotlin-reflect/1.4.10/e2b3c6695eee6085e606d96d685396dce23a3a06/kotlin-reflect-1.4.10.jar" />
               <option value="$USER_HOME$/.gradle/caches/modules-2/files-2.1/org.jetbrains.kotlin/kotlin-script-runtime/1.4.10/7c19d9c2001e016cd7664cebe9eea66fc04a7f4f/kotlin-script-runtime-1.4.10.jar" />
               <option value="$USER_HOME$/.gradle/caches/modules-2/files-2.1/org.jetbrains.kotlin/kotlin-scripting-common/1.4.10/befe5a2bcae1e5b86691e0a0dfb0b3ef039b00a9/kotlin-scripting-common-1.4.10.jar" />
               <option value="$USER_HOME$/.gradle/caches/modules-2/files-2.1/org.jetbrains.kotlin/kotlin-scripting-jvm/1.4.10/89b312aa7b7944586c1e64e5ec52130d03019db0/kotlin-scripting-jvm-1.4.10.jar" />

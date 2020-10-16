@@ -398,10 +398,7 @@ class KrosstalkMethodTransformer(
 
                     // leave out arguments
                     addValueArgument(
-                        if (annotations.MinimizeBody != null || annotations.EmptyBody != null)
-                            setOf(stringType, declaration.krosstalkArgumentNames.map { it.asConst() })
-                        else
-                            nullConst(Kotlin.Collections.Set().typeWith(stringType))
+                        (annotations.MinimizeBody != null || annotations.EmptyBody != null).asConst()
                     )
 
                     // nullOnResponse
@@ -484,8 +481,7 @@ class KrosstalkMethodTransformer(
                                             it.type,
                                             it.name.asString(),
                                             buildLambda(it.type.makeNullable()) {
-                                                body = it.defaultValue?.deepCopyWithSymbols()
-                                                    ?.let { irJsExperBody(it) }
+                                                body = it.defaultValue?.deepCopyWithSymbols()?.let { irJsExperBody(it) }
                                                     ?: irJsExperBody(nullConst(it.type.makeNullable()))
                                             },
                                             "No argument for ${it.name}, but it was required",
