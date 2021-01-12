@@ -4,6 +4,7 @@ import com.rnett.krosstalk.compiler.naming.primaryConstructor
 import org.jetbrains.kotlin.backend.common.FileLoweringPass
 import org.jetbrains.kotlin.backend.common.IrElementTransformerVoidWithContext
 import org.jetbrains.kotlin.backend.common.extensions.IrPluginContext
+import org.jetbrains.kotlin.backend.common.ir.allParameters
 import org.jetbrains.kotlin.backend.common.lower.DeclarationIrBuilder
 import org.jetbrains.kotlin.cli.common.messages.CompilerMessageLocation
 import org.jetbrains.kotlin.cli.common.messages.CompilerMessageSeverity
@@ -11,6 +12,7 @@ import org.jetbrains.kotlin.cli.common.messages.MessageCollector
 import org.jetbrains.kotlin.descriptors.CallableDescriptor
 import org.jetbrains.kotlin.ir.IrElement
 import org.jetbrains.kotlin.ir.IrStatement
+import org.jetbrains.kotlin.ir.ObsoleteDescriptorBasedAPI
 import org.jetbrains.kotlin.ir.builders.*
 import org.jetbrains.kotlin.ir.builders.declarations.addValueParameter
 import org.jetbrains.kotlin.ir.declarations.*
@@ -119,6 +121,7 @@ class KrosstalkMethodTransformer(
 
     val addedInitalizers = mutableMapOf<IrClassSymbol, IrAnonymousInitializer>()
 
+    @OptIn(ObsoleteDescriptorBasedAPI::class)
     fun IrClass.scopeProps() =
         properties.filter {
             it.name.asString() != "serialization" && it.name.asString() != "client" && it.name.asString() != "server" &&
@@ -254,6 +257,7 @@ class KrosstalkMethodTransformer(
                 declaration.location()
             )
 
+        val hasArgs = declaration.allParameters.isNotEmpty()
 
         val endpoint = annotations.KrosstalkEndpoint?.endpoint ?: defaultEndpoint
 
@@ -263,18 +267,14 @@ class KrosstalkMethodTransformer(
         val minimizeBody = annotations.MinimizeBody != null || requireEmptyBody
 
         //TODO allow emptybody without endpoint for no args?
-        if (minimizeBody && !setEndpoint) {
+        if (minimizeBody && !setEndpoint && hasArgs) {
             if (requireEmptyBody)
-                messageCollector.report(
-                    CompilerMessageSeverity.ERROR,
-                    "Can't use EmptyBody annotation without specifying an endpoint using KrosstalkEndpoint",
-                    declaration.location()
+                declaration.reportError(
+                    "Can't use @EmptyBody annotation without specifying an endpoint using @KrosstalkEndpoint (there's nowhere to put the arguments)"
                 )
             else
-                messageCollector.report(
-                    CompilerMessageSeverity.ERROR,
-                    "Can't use MinimizeBody annotation without specifying an endpoint using KrosstalkEndpoint",
-                    declaration.location()
+                declaration.reportError(
+                    "Can't use @MinimizeBody annotation without specifying an endpoint using @KrosstalkEndpoint (there's nowhere to put the arguments)"
                 )
         }
 
@@ -298,6 +298,12 @@ class KrosstalkMethodTransformer(
                 } else {
                     usedArgumentNames += name
                 }
+            }
+        }
+
+        annotations.KrosstalkEndpoint?.httpMethod?.let { method ->
+            if (method.toLowerCase() == "get" && hasArgs && !requireEmptyBody) {
+                declaration.reportError("Can't use HTTP GET method without either having no parameters (including receivers) or using @EmptyBody.")
             }
         }
 
@@ -417,46 +423,6 @@ class KrosstalkMethodTransformer(
                         (annotations.ExplicitResult?.includeStacktrace == true).asConst()
                     )
 
-                    // annotations
-
-//                    putValueArgument(10,
-//                        mapOf(context.irBuiltIns.kClassClass.typeWith(Annotation.defaultType),
-//                            Map.typeWith(stringType, context.irBuiltIns.anyType.makeNullable()),
-//                            annotations.filter {
-//                                it.symbol.owner.parentAsClass.fqNameForIrSerialization.isChildOf(
-//                                    annotationsPackage
-//                                )
-//                            }.associate {
-//                                val klass = it.symbol.owner.parentAsClass
-//
-//                                val arguments = it.getArgumentsWithIr().toMap()
-//
-//                                val argMap = it.symbol.owner.valueParameters.associate {
-//                                    it.name.asString() to (
-//                                            arguments[it]?.deepCopyWithSymbols()
-//                                            //TODO can't get default values, they are IrErrorExpressions
-////                                                ?: it.defaultValue?.expression?.deepCopyWithSymbols()
-//                                                ?: if (it.isVararg)
-//                                                    varargOf(it.varargElementType!!, emptyList())
-//                                                else
-//                                                    null // error("No default but not set?") //TODO handle empty varargs
-//                                            )
-//                                }.filterValues { it != null } as Map<String, IrExpression>
-//
-//                                IrClassReferenceImpl(
-//                                    UNDEFINED_OFFSET,
-//                                    UNDEFINED_OFFSET,
-//                                    context.irBuiltIns.kClassClass.typeWith(Annotation.defaultType),
-//                                    klass.symbol,
-//                                    klass.defaultType
-//                                ) to
-//                                        mapOf(
-//                                            stringType,
-//                                            context.irBuiltIns.anyType.makeNullable(),
-//                                            argMap.mapKeys { it.key.asConst() })
-//                            })
-//                    )
-
                     // call function
 
                     val lambda = buildLambda(declaration.returnType, { isSuspend = true }) {
@@ -570,6 +536,7 @@ class KrosstalkMethodTransformer(
         }
     }
 
+    @OptIn(ObsoleteDescriptorBasedAPI::class)
     override fun visitSimpleFunction(declaration: IrSimpleFunction): IrStatement {
 
 //        log("Function", declaration.dump(true))

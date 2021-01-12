@@ -18,7 +18,7 @@ object Krosstalk : RootPackage(krosstalkPackage) {
     }
 
     val KrosstalkResult by Class()
-    val ScopeHolder by Class()
+    val ScopeHolder by Class() //TODO this is from https://youtrack.jetbrains.com/issue/KT-44199
     val KrosstalkClient by Class()
     val call by function()
     val clientPlaceholder by function("krosstalkCall")

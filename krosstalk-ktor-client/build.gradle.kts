@@ -2,7 +2,7 @@ plugins {
     kotlin("multiplatform")
 }
 
-val ktor_version = "1.4.1"
+val ktor_version = "1.5.0"
 
 description = "Basic Ktor server support for Krosstalk"
 

@@ -4,8 +4,9 @@ import com.rnett.krosstalk.compiler.naming.Reference
 import org.jetbrains.kotlin.backend.common.extensions.IrPluginContext
 import org.jetbrains.kotlin.backend.common.ir.allParameters
 import org.jetbrains.kotlin.backend.common.lower.DeclarationIrBuilder
-import org.jetbrains.kotlin.descriptors.Visibilities
+import org.jetbrains.kotlin.descriptors.DescriptorVisibilities
 import org.jetbrains.kotlin.ir.IrElement
+import org.jetbrains.kotlin.ir.ObsoleteDescriptorBasedAPI
 import org.jetbrains.kotlin.ir.UNDEFINED_OFFSET
 import org.jetbrains.kotlin.ir.builders.*
 import org.jetbrains.kotlin.ir.builders.declarations.IrFunctionBuilder
@@ -51,6 +52,7 @@ interface HasContext {
             ?: error("Function $function not found in $this")
     }
 
+    @OptIn(ObsoleteDescriptorBasedAPI::class)
     fun IrClass.addAnonymousInitializer(builder: IrAnonymousInitializer.() -> Unit): IrAnonymousInitializer {
         return IrAnonymousInitializerImpl(
             UNDEFINED_OFFSET,
@@ -74,11 +76,11 @@ interface HasContext {
 //            parent: IrDeclarationParent,
         funBuilder: IrFunctionBuilder.() -> Unit = {},
         funApply: IrSimpleFunction.() -> Unit
-    ): IrSimpleFunction = buildFun {
+    ): IrSimpleFunction = context.irFactory.buildFun {
         name = Name.special("<anonymous>")
         this.returnType = returnType
         this.origin = IrDeclarationOrigin.LOCAL_FUNCTION_FOR_LAMBDA
-        this.visibility = Visibilities.LOCAL
+        this.visibility = DescriptorVisibilities.LOCAL
         funBuilder()
     }.apply {
 //        this.parent = parent

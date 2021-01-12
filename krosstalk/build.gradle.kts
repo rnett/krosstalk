@@ -4,8 +4,7 @@ plugins {
 
 }
 
-val serialization_version = "1.0.0-RC2"
-val kotlinx_io_version = "0.1.16"
+val serialization_version = "1.0.1"
 
 description = "Krosstalk runtime library"
 
@@ -32,12 +31,33 @@ kotlin {
             }
         }
 
-        val jsMain by getting {
-
+        val commonTest by getting {
+            dependencies {
+                implementation(kotlin("test-common"))
+                implementation(kotlin("test-annotations-common"))
+            }
         }
+
+        val jsMain by getting {
+            dependencies {
+                implementation(kotlin("test-js"))
+            }
+        }
+
+        val jsTest by getting {
+            dependencies {
+
+            }
+        }
+
         val jvmMain by getting {
             dependencies {
-                implementation(kotlin("reflect"))
+            }
+        }
+
+        val jvmTest by getting {
+            dependencies {
+                implementation(kotlin("test-junit"))
             }
         }
 

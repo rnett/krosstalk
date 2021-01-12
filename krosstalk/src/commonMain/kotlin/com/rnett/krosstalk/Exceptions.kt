@@ -1,6 +1,7 @@
 package com.rnett.krosstalk
 
 import com.rnett.krosstalk.annotations.KrosstalkEndpoint
+import com.rnett.krosstalk.endpoint.Endpoint
 
 sealed class KrosstalkException(message: String, cause: Throwable? = null) : RuntimeException(message, cause) {
 

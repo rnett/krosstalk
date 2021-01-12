@@ -3,10 +3,12 @@
 [ ![Download](https://api.bintray.com/packages/rnett/krosstalk/krosstalk/images/download.svg) ](https://bintray.com/rnett/krosstalk/krosstalk/_latestVersion)
 [![License](https://img.shields.io/badge/License-Apache%202.0-yellowgreen.svg)](https://opensource.org/licenses/Apache-2.0)
 
-Krosstalk is a Kotlin compiler plugin supported library that turns `expect`/`actual` methods into api calls and
-endpoints, with fully pluggable serialization, client and server implementations. When a client method is called, the
-arguments are serialized and sent to the server. The server deserializes the arguments, calls the method, and sends the
-serialized result as the response. Note that this means any side-effects will only happen server side.
+<span style="color: red; font-weight: bold">Currently blocked by <a href="https://youtrack.jetbrains.com/issue/KT-44199">KT-44199</a>.</span>
+
+Krosstalk is a Kotlin compiler plugin supported library that turns `expect`/`actual` methods into api calls and endpoints, with fully pluggable
+serialization, client and server implementations. When a client method is called, the arguments are serialized and sent to the server. The server
+deserializes the arguments, calls the method, and sends the serialized result as the response. Note that this means any side-effects will only happen
+server side.
 
 Krosstalk ships with Kotlinx serialization support by default, and a rudimentary Ktor client and server are available.
 

@@ -11,10 +11,9 @@ import io.ktor.request.receiveChannel
 import io.ktor.request.uri
 import io.ktor.response.respondBytes
 import io.ktor.routing.Route
-import io.ktor.routing.route
+import io.ktor.routing.method
 import io.ktor.routing.routing
 import io.ktor.util.toByteArray
-import io.ktor.util.url
 import kotlin.random.Random
 
 /**
@@ -75,13 +74,11 @@ object KtorServer : ServerHandler<KtorServerScope> {
             krosstalk.methods.forEach { (name, method) ->
                 // wrap the endpoint in the needed scopes
                 wrapScopes(this, krosstalk.neededServerScopes(method)) {
-                    route(
-                            method.endpoint.fillWithStatic(name, krosstalk.endpointPrefix),
-                            HttpMethod(method.httpMethod)
-                    ) {
+                    method(HttpMethod(method.httpMethod)) {
                         handle {
+                            val data = method.endpoint.resolve(call.request.uri) ?: return@handle
                             val body = call.receiveChannel().toByteArray()
-                            val response = krosstalk.handle(name, call.request.uri, body)
+                            val response = krosstalk.handle(name, data, body)
                             call.respondBytes(response)
                         }
                     }

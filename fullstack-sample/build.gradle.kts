@@ -73,7 +73,7 @@ kotlin {
 
                 implementation(project(":krosstalk-ktor-server"))
 
-//                implementation("org.jetbrains.kotlinx:kotlinx-html-jvm:0.7.1-1.4.10-rc")
+//                implementation("org.jetbrains.kotlinx:kotlinx-html-jvm:0.7.1-1.4.21-rc")
 
                 implementation("ch.qos.logback:logback-classic:1.2.3")
             }

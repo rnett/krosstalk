@@ -103,18 +103,19 @@ const val baseUrlLegalRegex = "-a-zA-Z0-9._*~'()!"
 @OptIn(ExperimentalUnsignedTypes::class)
 fun String.httpEncode(legal: String = baseUrlLegalRegex): String {
     val regex = Regex("[^$legal]")
-    return this.replace(regex){
+    return this.replace(regex) {
         "%" + it.value[0].toByte().toUByte().toString(16).toUpperCase().let {
-            if(it.length == 1)
+            if (it.length == 1)
                 "0$it"
             else
                 it
         }
     }
 }
+
 @OptIn(ExperimentalUnsignedTypes::class)
 fun String.httpDecode(): String {
-    return Regex("%([0-9A-F]{2})").replace(this){
+    return Regex("%([0-9A-F]{2})").replace(this) {
         it.groupValues[1].toUByte(16).toByte().toChar().toString()
     }
 }
@@ -154,9 +155,9 @@ internal suspend inline fun <T, K, reified C : ClientScope<*>> K.call(methodName
     }
 
     val result = client.sendKrosstalkRequest(
-        method.endpoint.fillWithArgs(methodName, this.endpointPrefix, serializedUrlArgs),
+        method.endpoint.fillWithArgs(methodName, serializedUrlArgs, arguments.filter { it.value != null }.keys), //TODO fix
         method.httpMethod,
-        if(!method.hasBodyArguments) null else serializedBody,
+        if (!method.hasBodyArguments(arguments)) null else serializedBody,
         usedScopes.map {
             if (it.scope !is C) throw KrosstalkException.CompilerError("Scope ${it.scope} was not of required type ${C::class}.")
             it as ActiveScope<*, C>
@@ -196,16 +197,20 @@ internal suspend inline fun <T, K, reified C : ClientScope<*>> K.call(methodName
  *
  * @return The data that should be sent as a response.
  */
-suspend fun <K> K.handle(methodName: String, endpoint: String, data: ByteArray): ByteArray where K : Krosstalk, K : KrosstalkServer<*> {
+suspend fun <K> K.handle(
+    methodName: String,
+    urlArguments: Map<String, String>,
+    data: ByteArray
+): ByteArray where K : Krosstalk, K : KrosstalkServer<*> {
     val method = requiredMethod(methodName)
 
-    val arguments = if(method.hasBodyArguments)
+    val arguments = if (data.isNotEmpty())
         method.serializers.transformedParamSerializers.deserializeArgumentsFromBytes(data).toMutableMap()
     else
         mutableMapOf()
 
-    if (method.leaveOutArguments) {
-        val endpointArguments: Map<String, Any?> = method.endpoint.extractParameters(endpoint).mapValues {
+    if (method.minimizeBody) {
+        val endpointArguments: Map<String, Any?> = urlArguments.mapValues {
             method.serializers.transformedParamSerializers.deserializeArgumentFromString(it.key, it.value.httpDecode())
         }
 

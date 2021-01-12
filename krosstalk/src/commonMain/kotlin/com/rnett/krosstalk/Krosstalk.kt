@@ -1,10 +1,13 @@
 package com.rnett.krosstalk
 
 import com.rnett.krosstalk.annotations.KrosstalkEndpoint
+import com.rnett.krosstalk.endpoint.Endpoint
 import com.rnett.krosstalk.serialization.MethodSerializers
 import com.rnett.krosstalk.serialization.MethodTypes
 import com.rnett.krosstalk.serialization.SerializationHandler
 import com.rnett.krosstalk.serialization.getAndCheckSerializers
+
+//TODO change \$ to %?
 
 /**
  * The key used for instance/dispatch receiver parameters/arguments in parameter/argument maps and [KrosstalkEndpoint] templates.
@@ -31,26 +34,28 @@ const val prefixKey = "\$prefix"
  */
 data class MethodDefinition<T>(
 //        val method: KCallable<T>,
-    private val _endpoint: String,
+    val endpoint: Endpoint,
     val httpMethod: String,
     val requiredScopes: Set<String>,
     val optionalScopes: Set<String>,
-    val leaveOutArguments: Boolean,
+    val minimizeBody: Boolean,
     val nullOnResponseCodes: Set<Int>,
     val useExplicitResult: Boolean,
     val includeStacktrace: Boolean,
     val serializers: MethodSerializers<*>,
     val call: suspend (Map<String, *>) -> T
 ) {
-    val endpoint = Endpoint(_endpoint)
 
     val hasInstanceParameter = serializers.instanceReceiverSerializer != null
     val hasExtensionParameter = serializers.extensionReceiverSerializer != null
 
-    fun <V> bodyArguments(map: Map<String, V>) = if(leaveOutArguments) map.filterKeys { it !in endpoint.usedArguments } else map
-    fun <V> urlArguments(map: Map<String, V>) = if(leaveOutArguments) map.filterKeys { it in endpoint.usedArguments } else emptyMap()
+    fun bodyArguments(arguments: Map<String, *>) =
+        if (minimizeBody) arguments.filterKeys { it !in endpoint.usedParameters(arguments.filter { it.value != null }.keys) } else arguments
 
-    val hasBodyArguments = bodyArguments(serializers.paramSerializers.map).isNotEmpty()
+    fun urlArguments(arguments: Map<String, *>) =
+        if (minimizeBody) arguments.filterKeys { it in endpoint.usedParameters(arguments.filter { it.value != null }.keys) } else emptyMap()
+
+    fun hasBodyArguments(arguments: Map<String, *>) = bodyArguments(arguments).isNotEmpty()
 }
 
 //TODO import from other
@@ -93,12 +98,15 @@ abstract class Krosstalk {
 //        annotations: Map<KClass<Annotation>, Map<String, Any?>>,
         call: suspend (Map<String, *>) -> T
     ) {
+
+        //TODO check endpoint exclusivity
+
         if (methodName in methods)
             throw KrosstalkException.CompilerError("Already registered method with name $methodName.")
 
         val serializers = serialization.getAndCheckSerializers(types)
         _methods[methodName] = MethodDefinition(
-            endpoint,
+            Endpoint(endpoint, methodName, endpointPrefix),
             method,
             requiredScopes,
             optionalScopes,

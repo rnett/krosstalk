@@ -36,7 +36,7 @@ TODO >
     see to-do in Endpoint.kt
     I want to include more advanced syntax.
     key-value pairs, i.e. {{id}} -> /id/{id} or id={id} depending on location
-    optional arguments.  maybe only key value pairs?  or something like [id?:...]
+    optional arguments.  maybe only key value pairs?  or something like [?id:...]
         how to determine when not sent?  can't really detect default use from method call.  nulls?  another boolean arg?
 
 
