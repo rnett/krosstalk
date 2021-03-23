@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<module external.system.module.type="sourceSet" type="JAVA_MODULE" version="4">
+  <component name="NewModuleRootManager">
+    <output url="file://$MODULE_DIR$/../../../../core/krosstalk-core/build/classes/kotlin/js/main" />
+    <exclude-output />
+    <content url="file://$MODULE_DIR$/../../../../core/krosstalk-core/build/externals/krosstalk-krosstalk-common/src" />
+    <content url="file://$MODULE_DIR$/../../../../core/krosstalk-core/src/jsMain" />
+    <orderEntry type="jdk" jdkName="Kotlin SDK" jdkType="KotlinSDK" />
+    <orderEntry type="sourceFolder" forTests="false" />
+    <orderEntry type="module" module-name="krosstalk.core.krosstalk-common.commonMain" />
+    <orderEntry type="library" name="Gradle: org.jetbrains.kotlin:kotlin-test-js:1.4.31" level="project" />
+    <orderEntry type="library" name="Gradle: org.jetbrains.kotlin:kotlin-stdlib-js:1.4.31" level="project" />
+    <orderEntry type="library" name="Gradle: org.jetbrains.kotlin:kotlin-stdlib-common:1.4.31" level="project" />
+    <orderEntry type="library" name="Gradle: org.jetbrains.kotlin:kotlin-test-common:1.4.31" level="project" />
+    <orderEntry type="library" name="Gradle: org.jetbrains.kotlin:kotlin-test-annotations-common:1.4.31" level="project" />
+  </component>
+</module>

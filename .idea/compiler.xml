@@ -5,18 +5,54 @@
       <profile default="true" name="Default" enabled="true" />
     </annotationProcessing>
     <bytecodeTargetLevel target="14">
+      <module name="krosstalk.client-sample.commonMain" target="1.8" />
+      <module name="krosstalk.client-sample.commonTest" target="1.8" />
+      <module name="krosstalk.client-sample.jvmMain" target="1.8" />
+      <module name="krosstalk.client-sample.jvmTest" target="1.8" />
       <module name="krosstalk.commonMain" target="13" />
       <module name="krosstalk.commonTest" target="13" />
+      <module name="krosstalk.core.krosstalk-common.commonMain" target="1.8" />
+      <module name="krosstalk.core.krosstalk-common.commonTest" target="1.8" />
+      <module name="krosstalk.core.krosstalk-common.jvmMain" target="1.8" />
+      <module name="krosstalk.core.krosstalk-common.jvmTest" target="1.8" />
+      <module name="krosstalk.core.krosstalk-core.commonMain" target="1.8" />
+      <module name="krosstalk.core.krosstalk-core.commonTest" target="1.8" />
+      <module name="krosstalk.core.krosstalk-core.jvmMain" target="1.8" />
+      <module name="krosstalk.core.krosstalk-core.jvmTest" target="1.8" />
+      <module name="krosstalk.core.krosstalk.commonMain" target="1.8" />
+      <module name="krosstalk.core.krosstalk.commonTest" target="1.8" />
+      <module name="krosstalk.core.krosstalk.jvmMain" target="1.8" />
+      <module name="krosstalk.core.krosstalk.jvmTest" target="1.8" />
+      <module name="krosstalk.fullstack-sample.commonMain" target="1.8" />
+      <module name="krosstalk.fullstack-sample.commonTest" target="1.8" />
+      <module name="krosstalk.fullstack-sample.jvmMain" target="1.8" />
+      <module name="krosstalk.fullstack-sample.jvmTest" target="1.8" />
       <module name="krosstalk.jvmMain" target="13" />
       <module name="krosstalk.jvmTest" target="13" />
       <module name="krosstalk.krosstalk-annotations.commonMain" target="13" />
       <module name="krosstalk.krosstalk-annotations.commonTest" target="13" />
       <module name="krosstalk.krosstalk-annotations.jvmMain" target="13" />
       <module name="krosstalk.krosstalk-annotations.jvmTest" target="13" />
+      <module name="krosstalk.krosstalk-common.commonMain" target="1.8" />
+      <module name="krosstalk.krosstalk-common.commonTest" target="1.8" />
+      <module name="krosstalk.krosstalk-common.jvmMain" target="1.8" />
+      <module name="krosstalk.krosstalk-common.jvmTest" target="1.8" />
+      <module name="krosstalk.krosstalk-ktor-client.commonMain" target="1.8" />
+      <module name="krosstalk.krosstalk-ktor-client.commonTest" target="1.8" />
+      <module name="krosstalk.krosstalk-ktor-client.jvmMain" target="1.8" />
+      <module name="krosstalk.krosstalk-ktor-client.jvmTest" target="1.8" />
       <module name="krosstalk.krosstalk-ktor-server.commonMain" target="13" />
       <module name="krosstalk.krosstalk-ktor-server.commonTest" target="13" />
       <module name="krosstalk.krosstalk-ktor-server.jvmMain" target="13" />
       <module name="krosstalk.krosstalk-ktor-server.jvmTest" target="13" />
+      <module name="krosstalk.krosstalk.commonMain" target="1.8" />
+      <module name="krosstalk.krosstalk.commonTest" target="1.8" />
+      <module name="krosstalk.krosstalk.jvmMain" target="1.8" />
+      <module name="krosstalk.krosstalk.jvmTest" target="1.8" />
+      <module name="krosstalk.ktor.krosstalk-ktor-client.commonMain" target="1.8" />
+      <module name="krosstalk.ktor.krosstalk-ktor-client.commonTest" target="1.8" />
+      <module name="krosstalk.ktor.krosstalk-ktor-client.jvmMain" target="1.8" />
+      <module name="krosstalk.ktor.krosstalk-ktor-client.jvmTest" target="1.8" />
       <module name="krosstalk.sample.commonMain" target="13" />
       <module name="krosstalk.sample.commonTest" target="13" />
       <module name="krosstalk.sample.jvmMain" target="13" />

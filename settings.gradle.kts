@@ -9,11 +9,11 @@ pluginManagement {
 
 }
 //enableFeaturePreview("GRADLE_METADATA")
-rootProject.name = "krosstalk"
+rootProject.name = "krosstalk-parent"
 
 include(
-        "krosstalk-compiler-plugin", "krosstalk-gradle-plugin", "krosstalk",
-        "krosstalk-ktor-server", "krosstalk-ktor-client",
-        "fullstack-sample", "client-sample"
+    "core:krosstalk", "core:krosstalk-core",
+    "plugins:krosstalk-compiler-plugin", "plugins:krosstalk-gradle-plugin",
+    "ktor:krosstalk-ktor-server", "ktor:krosstalk-ktor-client"
 )
 

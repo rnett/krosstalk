@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="CsvFileAttributes">
+    <option name="attributeMap">
+      <map>
+        <entry key="C:\Users\jimne\.m2\repository\com\github\rnett\compiler-plugin-utils\compiler-plugin-utils\0.1.0-SNAPSHOT\compiler-plugin-utils-0.1.0-20210323.021922-15-sources.jar!\com\rnett\plugin\ir\Utils.kt">
+          <value>
+            <Attribute>
+              <option name="separator" value=":" />
+            </Attribute>
+          </value>
+        </entry>
+        <entry key="\krosstalk\src\commonMain\kotlin\com\rnett\krosstalk\Krosstalk.kt">
+          <value>
+            <Attribute>
+              <option name="separator" value="," />
+            </Attribute>
+          </value>
+        </entry>
+        <entry key="\krosstalk\src\commonMain\kotlin\com\rnett\krosstalk\KrosstalkAnnotations.kt">
+          <value>
+            <Attribute>
+              <option name="separator" value=":" />
+            </Attribute>
+          </value>
+        </entry>
+        <entry key="\krosstalk\src\commonMain\kotlin\com\rnett\krosstalk\Scope.kt">
+          <value>
+            <Attribute>
+              <option name="separator" value=":" />
+            </Attribute>
+          </value>
+        </entry>
+        <entry key="\plugins\krosstalk-compiler-plugin\src\main\kotlin\com\rnett\krosstalk\compiler\KrosstalkAnnotation.kt">
+          <value>
+            <Attribute>
+              <option name="separator" value=":" />
+            </Attribute>
+          </value>
+        </entry>
+        <entry key="\plugins\krosstalk-compiler-plugin\src\main\kotlin\com\rnett\krosstalk\compiler\KrosstalkMethodTransformer.kt">
+          <value>
+            <Attribute>
+              <option name="separator" value="," />
+            </Attribute>
+          </value>
+        </entry>
+      </map>
+    </option>
+  </component>
+</project>
