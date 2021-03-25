@@ -2,6 +2,7 @@ package com.rnett.krosstalk.annotations
 
 import com.rnett.krosstalk.Krosstalk
 import com.rnett.krosstalk.KrosstalkResult
+import com.rnett.krosstalk.defaultEndpoint
 import com.rnett.krosstalk.defaultEndpointMethod
 import com.rnett.krosstalk.serialization.SerializationHandler
 import kotlin.reflect.KClass
@@ -67,7 +68,7 @@ TODO >
 @Retention(AnnotationRetention.BINARY)
 @MustBeDocumented
 @TopLevelOnly
-annotation class KrosstalkEndpoint(val endpoint: String, val httpMethod: String = defaultEndpointMethod)
+annotation class KrosstalkEndpoint(val endpoint: String = defaultEndpoint, val httpMethod: String = defaultEndpointMethod)
 
 /**
  * Return null when the listed HTTP response codes are encountered.
@@ -75,6 +76,7 @@ annotation class KrosstalkEndpoint(val endpoint: String, val httpMethod: String 
  * Note that using this with codes like 404 or 500 can make debugging connection issues much harder.
  *
  * The return type must be nullable.  Only affects the client.
+ * TODO get rid of in favor of better KrosstalkResult API
  */
 @Target(AnnotationTarget.FUNCTION)
 @Retention(AnnotationRetention.BINARY)

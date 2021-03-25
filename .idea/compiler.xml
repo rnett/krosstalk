@@ -5,6 +5,14 @@
       <profile default="true" name="Default" enabled="true" />
     </annotationProcessing>
     <bytecodeTargetLevel target="14">
+      <module name="com.rnett.krosstalk.samples.client-sample.commonMain" target="1.8" />
+      <module name="com.rnett.krosstalk.samples.client-sample.commonTest" target="1.8" />
+      <module name="com.rnett.krosstalk.samples.client-sample.jvmMain" target="1.8" />
+      <module name="com.rnett.krosstalk.samples.client-sample.jvmTest" target="1.8" />
+      <module name="com.rnett.krosstalk.samples.fullstack-sample.commonMain" target="1.8" />
+      <module name="com.rnett.krosstalk.samples.fullstack-sample.commonTest" target="1.8" />
+      <module name="com.rnett.krosstalk.samples.fullstack-sample.jvmMain" target="1.8" />
+      <module name="com.rnett.krosstalk.samples.fullstack-sample.jvmTest" target="1.8" />
       <module name="krosstalk.client-sample.commonMain" target="1.8" />
       <module name="krosstalk.client-sample.commonTest" target="1.8" />
       <module name="krosstalk.client-sample.jvmMain" target="1.8" />

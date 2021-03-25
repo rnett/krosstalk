@@ -9,6 +9,7 @@ import com.rnett.krosstalk.serialization.getAndCheckSerializers
 //TODO change \$ to %?
 
 
+//TODO track empty body, throw if not empty?
 /**
  * All the Krosstalk metedata associated with a krosstalk method.
  */
@@ -30,11 +31,13 @@ data class MethodDefinition<T>(
     val hasInstanceParameter = serializers.instanceReceiverSerializer != null
     val hasExtensionParameter = serializers.extensionReceiverSerializer != null
 
+    //TODO clarify optionals, where things live.  Nulls shouldn't be put in body if they will be infered from url, but when is this.  Always?
     fun bodyArguments(arguments: Map<String, *>) =
-        if (minimizeBody) arguments.filterKeys { it !in endpoint.usedParameters(arguments.filter { it.value != null }.keys) } else arguments
+        if (minimizeBody) arguments.filterValues { it != null }
+            .filterKeys { it !in endpoint.usedParameters(arguments.filter { it.value != null }.keys) } else arguments
 
     fun urlArguments(arguments: Map<String, *>) =
-        if (minimizeBody) arguments.filterKeys { it in endpoint.usedParameters(arguments.filter { it.value != null }.keys) } else emptyMap()
+        arguments.filterKeys { it in endpoint.usedParameters(arguments.filter { it.value != null }.keys) }
 
     fun hasBodyArguments(arguments: Map<String, *>) = bodyArguments(arguments).isNotEmpty()
 }

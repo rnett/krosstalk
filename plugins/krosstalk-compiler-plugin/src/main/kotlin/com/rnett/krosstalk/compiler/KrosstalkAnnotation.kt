@@ -1,5 +1,6 @@
 package com.rnett.krosstalk.compiler
 
+import com.rnett.krosstalk.defaultEndpoint
 import com.rnett.krosstalk.defaultEndpointMethod
 import org.jetbrains.kotlin.ir.declarations.IrAnnotationContainer
 import org.jetbrains.kotlin.ir.expressions.IrConst
@@ -142,7 +143,7 @@ sealed class KrosstalkAnnotation(val call: IrConstructorCall, name: String) {
 
     class KrosstalkEndpoint(call: IrConstructorCall) :
         KrosstalkAnnotation(call, "KrosstalkEndpoint") {
-        val endpoint: String by field()
+        val endpoint: String by field(defaultEndpoint)
         val httpMethod: String by field(defaultEndpointMethod)
     }
 

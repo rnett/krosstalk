@@ -55,6 +55,15 @@ data class Endpoint(
 ) {
     companion object {
 
+        private fun parseApparentStatic(value: String): EndpointPart<EndpointRegion> =
+            when (value) {
+                extensionParameter -> EndpointPart.Parameter(extensionParameter)
+                instanceParameter -> EndpointPart.Parameter(instanceParameter)
+                methodName -> EndpointPart.Parameter(methodName)
+                prefix -> EndpointPart.Parameter(prefix)
+                else -> EndpointPart.Static(value)
+            }
+
         private fun parseUrlParts(template: String): EndpointRegion.UrlParts {
 
             val parts = mutableListOf<EndpointPart<EndpointRegion.UrlParts>>()
@@ -84,7 +93,7 @@ data class Endpoint(
                     left = left.substringAfter('/', "")
 
                     parts += valueRegex.matchEntire(part)?.let { EndpointPart.Parameter(it.groupValues[1]) }
-                        ?: EndpointPart.Static(part)
+                        ?: parseApparentStatic(part)
                 }
             }
 
@@ -138,7 +147,7 @@ data class Endpoint(
                     val value = part.substringAfter("=")
 
                     parts[key] = valueRegex.matchEntire(value)?.let { EndpointPart.Parameter(it.groupValues[1]) }
-                        ?: EndpointPart.Static(value)
+                        ?: parseApparentStatic(value)
                 }
             }
 
@@ -301,7 +310,7 @@ data class Endpoint(
 
     /**
      * Substitute static variables (method name and krosstalk prefix) into the endpoint template, and replace parameters.
-     * [newParameter] is called on non- [methodNameKey] or [prefixKey] keys, and like [fill] replaces the entire parameter, curly braces and all.
+     * [newParameter] is called on non- [methodName] or [prefix] keys, and like [fill] replaces the entire parameter, curly braces and all.
      * For no change, use the default [newParameter] of ` { "{$it}" }`.
      *
      * For example, to change from curly braces to parentheses you could use `fillEndpointWithStaticAndAdjustParameters(..., { "($it)" })`.
@@ -315,8 +324,8 @@ data class Endpoint(
         prefix: String
     ) = fillParameters {
         when (it.param) {
-            methodNameKey -> methodName
-            prefixKey -> prefix
+            com.rnett.krosstalk.methodName -> methodName
+            com.rnett.krosstalk.prefix -> prefix
             else -> null
         }
     }
@@ -335,8 +344,8 @@ data class Endpoint(
     ): String {
         return fill(nonNullArguments) {
             when (it) {
-                methodNameKey -> error("Unresolved method name parameter")
-                prefixKey -> error("Unresolved method name parameter")
+                com.rnett.krosstalk.methodName -> error("Unresolved method name parameter")
+                prefix -> error("Unresolved method name parameter")
                 in arguments -> arguments.getValue(it)
                 else -> throw KrosstalkException.EndpointUnknownArgument(methodName, this, it, arguments.keys)
             }
@@ -364,7 +373,7 @@ data class Endpoint(
         }
 
         return if (excludeStatic)
-            used - setOf(methodNameKey, prefixKey)
+            used - setOf(methodName, prefix)
         else
             used
     }
@@ -415,10 +424,10 @@ sealed class EndpointPart<in L : EndpointRegion> {
     abstract fun resolveOptionals(taken: Set<String>, untaken: Set<String>): EndpointPart<L>?
 
     data class Parameter(val param: String) : EndpointPart<EndpointRegion>() {
-        val isMethodName = param == methodNameKey
-        val isPrefix = param == prefixKey
-        val isExtensionReceiver = param == extensionParameterKey
-        val isInstanceReceiver = param == instanceParameterKey
+        val isMethodName = param == methodName
+        val isPrefix = param == prefix
+        val isExtensionReceiver = param == extensionParameter
+        val isInstanceReceiver = param == instanceParameter
 
         override fun toString(): String = "{$param}"
         override fun resolveOptionals(taken: Set<String>, untaken: Set<String>): EndpointPart<EndpointRegion> = this

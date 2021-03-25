@@ -1,7 +1,7 @@
 package com.rnett.krosstalk.endpoint
 
-import com.rnett.krosstalk.methodNameKey
-import com.rnett.krosstalk.prefixKey
+import com.rnett.krosstalk.methodName
+import com.rnett.krosstalk.prefix
 
 
 fun getUrlPath(url: String): String {
@@ -39,7 +39,7 @@ sealed class ResolveQueryParam {
 
     data class Param(val param: String, override val isOptional: Boolean) : ResolveQueryParam() {
         init {
-            if (param == methodNameKey || param == prefixKey)
+            if (param == methodName || param == prefix)
                 error("Can't have resolve param of static parameter, use withStatic on the Endpoint first.")
         }
 
@@ -82,7 +82,7 @@ sealed class ResolveUrlPart {
 
     data class Param(val param: String) : ResolveUrlPart() {
         init {
-            if (param == methodNameKey || param == prefixKey)
+            if (param == methodName || param == prefix)
                 error("Can't have resolve param of static parameter, use withStatic on the Endpoint first.")
         }
 

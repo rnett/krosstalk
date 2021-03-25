@@ -9,6 +9,8 @@ import kotlinx.serialization.json.jsonObject
 import kotlinx.serialization.serializer
 import kotlin.reflect.KType
 
+//TODO use SerializersModule
+
 /**
  * A serializer that uses a kotlinx [KSerializer] with a [BinaryFormat].
  */

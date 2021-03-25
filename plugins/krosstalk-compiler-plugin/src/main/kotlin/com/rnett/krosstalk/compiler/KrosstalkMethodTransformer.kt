@@ -3,10 +3,10 @@ package com.rnett.krosstalk.compiler
 import com.rnett.krosstalk.defaultEndpoint
 import com.rnett.krosstalk.defaultEndpointMethod
 import com.rnett.krosstalk.endpoint.Endpoint
-import com.rnett.krosstalk.extensionParameterKey
-import com.rnett.krosstalk.instanceParameterKey
-import com.rnett.krosstalk.methodNameKey
-import com.rnett.krosstalk.prefixKey
+import com.rnett.krosstalk.extensionParameter
+import com.rnett.krosstalk.instanceParameter
+import com.rnett.krosstalk.methodName
+import com.rnett.krosstalk.prefix
 import com.rnett.plugin.ir.IrTransformer
 import com.rnett.plugin.ir.addAnonymousInitializer
 import com.rnett.plugin.ir.raiseTo
@@ -359,19 +359,19 @@ class KrosstalkMethodTransformer(
             val paramNames = nonScopeValueParameters.map { it.name.asString() }.toSet()
             if (setEndpoint) {
                 val neededParams = endpoint.allReferencedParameters()
-                if (declaration.extensionReceiverParameter == null && extensionParameterKey in neededParams) {
+                if (declaration.extensionReceiverParameter == null && extensionParameter in neededParams) {
                     messageCollector.reportError(
-                        "Used parameter $extensionParameterKey in endpoint template, but method does not have an extension receiver",
+                        "Used parameter $extensionParameter in endpoint template, but method does not have an extension receiver",
                         declaration
                     )
                 }
-                if (declaration.dispatchReceiverParameter == null && instanceParameterKey in neededParams) {
+                if (declaration.dispatchReceiverParameter == null && instanceParameter in neededParams) {
                     messageCollector.reportError(
-                        "Used parameter $instanceParameterKey in endpoint template, but method does not have an extension receiver",
+                        "Used parameter $instanceParameter in endpoint template, but method does not have an extension receiver",
                         declaration
                     )
                 }
-                neededParams.minus(setOf(extensionParameterKey, instanceParameterKey, methodNameKey, prefixKey)).forEach {
+                neededParams.minus(setOf(extensionParameter, instanceParameter, methodName, prefix)).forEach {
                     if (it !in paramNames) {
                         messageCollector.reportError(
                             "Used parameter $it in endpoint template, but method does not have a non-scope value parameter named $it",
@@ -388,10 +388,10 @@ class KrosstalkMethodTransformer(
                     addAll(paramNames)
 
                     if (declaration.extensionReceiverParameter != null)
-                        add(extensionParameterKey)
+                        add(extensionParameter)
 
                     if (declaration.dispatchReceiverParameter != null)
-                        add(instanceParameterKey)
+                        add(instanceParameter)
                 }.forEach {
                     if (!endpoint.hasWhenNotNull(it)) {
                         messageCollector.reportError(
@@ -539,7 +539,7 @@ class KrosstalkMethodTransformer(
                                 declaration.name.asString(),
                                 irGet(args),
                                 it.type,
-                                extensionParameterKey,
+                                extensionParameter,
                                 buildLambda(it.type.makeNullable()) {
                                     body = irJsExprBody(nullConst(it.type.makeNullable()))
                                 },
@@ -553,7 +553,7 @@ class KrosstalkMethodTransformer(
                                 declaration.name.asString(),
                                 irGet(args),
                                 it.type,
-                                instanceParameterKey,
+                                instanceParameter,
                                 buildLambda(it.type.makeNullable()) {
                                     body = irJsExprBody(nullConst(it.type.makeNullable()))
                                 },
@@ -604,11 +604,11 @@ class KrosstalkMethodTransformer(
                                         }.toMutableMap()
 
                                 declaration.extensionReceiverParameter?.let {
-                                    parameterMap[extensionParameterKey.asConst()] = stdlib.reflect.typeOf(it.type)
+                                    parameterMap[extensionParameter.asConst()] = stdlib.reflect.typeOf(it.type)
                                 }
 
                                 declaration.dispatchReceiverParameter?.let {
-                                    parameterMap[instanceParameterKey.asConst()] = stdlib.reflect.typeOf(it.type)
+                                    parameterMap[instanceParameter.asConst()] = stdlib.reflect.typeOf(it.type)
                                 }
 
                                 putValueArgument(
@@ -691,10 +691,10 @@ class KrosstalkMethodTransformer(
                             .toMutableMap<IrExpression, IrExpression>()
 
                     declaration.extensionReceiverParameter?.let {
-                        argumentsMap[extensionParameterKey.asConst()] = irGet(it)
+                        argumentsMap[extensionParameter.asConst()] = irGet(it)
                     }
                     declaration.dispatchReceiverParameter?.let {
-                        argumentsMap[instanceParameterKey.asConst()] = irGet(it)
+                        argumentsMap[instanceParameter.asConst()] = irGet(it)
                     }
 
                     val scopeList = mutableListOf<IrExpression>()

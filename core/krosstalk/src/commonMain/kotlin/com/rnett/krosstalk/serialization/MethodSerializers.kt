@@ -1,23 +1,23 @@
 package com.rnett.krosstalk.serialization
 
 import com.rnett.krosstalk.KrosstalkException
-import com.rnett.krosstalk.extensionParameterKey
-import com.rnett.krosstalk.instanceParameterKey
+import com.rnett.krosstalk.extensionParameter
+import com.rnett.krosstalk.instanceParameter
 import kotlin.reflect.KType
 
 //TODO MethodSerializer class of Serializer + SerializationHandler?  could have direct serializeBytes/serializeString
 
 /**
  * All necessary serializers for a method.
- * Instance and extension receiver serializers are in the [paramSerializers] map with keys [instanceParameterKey] and [extensionParameterKey], respectively, but can be accessed through their accessors.
+ * Instance and extension receiver serializers are in the [paramSerializers] map with keys [instanceParameter] and [extensionParameter], respectively, but can be accessed through their accessors.
  */
 data class MethodSerializers<S> @PublishedApi internal constructor(
     val serialization: SerializationHandler<S>,
     val paramSerializers: ArgumentSerializers<S>,
     val resultSerializer: Serializer<*, S>
 ) {
-    val instanceReceiverSerializer by lazy { paramSerializers.map[instanceParameterKey] }
-    val extensionReceiverSerializer by lazy { paramSerializers.map[extensionParameterKey] }
+    val instanceReceiverSerializer by lazy { paramSerializers.map[instanceParameter] }
+    val extensionReceiverSerializer by lazy { paramSerializers.map[extensionParameter] }
 
     val transformedResultSerializer by lazy { MethodSerializer(serialization.transformer, resultSerializer) as MethodSerializer<S, Any?> }
     val transformedParamSerializers by lazy { MethodArgumentSerializers(serialization, paramSerializers) }
@@ -26,7 +26,7 @@ data class MethodSerializers<S> @PublishedApi internal constructor(
 
 /**
  * All necessary types for a method.
- * Instance and extension receiver serializers are in the [paramTypes] map with keys [instanceParameterKey] and [extensionParameterKey], respectively, but can be accessed through their accessors.
+ * Instance and extension receiver serializers are in the [paramTypes] map with keys [instanceParameter] and [extensionParameter], respectively, but can be accessed through their accessors.
  */
 class MethodTypes(
     val paramTypes: Map<String, KType>,
@@ -38,8 +38,8 @@ class MethodTypes(
         getSerializer(resultType)
     )
 
-    val instanceReceiverType by lazy { paramTypes[instanceParameterKey] }
-    val extensionReceiverSerializer by lazy { paramTypes[extensionParameterKey] }
+    val instanceReceiverType by lazy { paramTypes[instanceParameter] }
+    val extensionReceiverSerializer by lazy { paramTypes[extensionParameter] }
 
     /**
      * Ensure that a [MethodSerializers] has all nessecary serializers for this method.
