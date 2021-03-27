@@ -4,7 +4,6 @@ import com.rnett.krosstalk.*
 import com.rnett.krosstalk.annotations.EmptyBody
 import com.rnett.krosstalk.annotations.KrosstalkEndpoint
 import com.rnett.krosstalk.annotations.KrosstalkMethod
-import com.rnett.krosstalk.annotations.NullOn
 import com.rnett.krosstalk.ktor.client.KtorClient
 import com.rnett.krosstalk.ktor.client.KtorClientBasicAuth
 import com.rnett.krosstalk.ktor.client.KtorClientScope
@@ -21,8 +20,7 @@ suspend fun itemIds(): List<Int> = krosstalkCall()
 @KrosstalkMethod(MyKrosstalk::class)
 @KrosstalkEndpoint("/items/{id}", "GET")
 @EmptyBody
-@NullOn(404)
-suspend fun getItem(id: Int): Item? = krosstalkCall()
+suspend fun getItem(id: Int): Item = krosstalkCall()
 
 fun main() {
     GlobalScope.launch {

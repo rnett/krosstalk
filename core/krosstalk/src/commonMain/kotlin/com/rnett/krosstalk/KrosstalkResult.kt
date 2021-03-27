@@ -217,7 +217,7 @@ sealed class KrosstalkResult<out T> {
     }
 
     //TODO once we can use result
-    // fun toResult(): Result<T> = fold({ Result.success(it) }, { Result.failure(it.getException()) })
+    //fun toResult(): Result<T> = fold({ Result.success(it) }, { Result.failure(it.getException()) })
 
     companion object {
         fun <T> success(value: T) = Success(value)
@@ -225,7 +225,6 @@ sealed class KrosstalkResult<out T> {
     }
 
     //TODO new API using sealed interfaces and contracts once 1.5 is out
-    //TODO make API more like Result
     //TODO toResult() or similar
 }
 

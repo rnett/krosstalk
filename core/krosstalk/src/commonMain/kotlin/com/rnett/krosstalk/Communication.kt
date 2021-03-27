@@ -147,7 +147,7 @@ internal suspend inline fun <T, K, reified C : ClientScope<*>> K.call(
             methodName,
             serializedUrlArgs,
             arguments.filter { it.value != null }.keys
-        ), //TODO fix
+        ),
         method.httpMethod,
         if (!method.hasBodyArguments(arguments)) null else serializedBody,
         scopes

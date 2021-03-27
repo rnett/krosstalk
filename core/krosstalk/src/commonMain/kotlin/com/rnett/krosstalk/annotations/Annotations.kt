@@ -7,10 +7,7 @@ import com.rnett.krosstalk.defaultEndpointMethod
 import com.rnett.krosstalk.serialization.SerializationHandler
 import kotlin.reflect.KClass
 
-//TODO !! enforce empty body when get is used as method in endpoint.
-
 //TODO option to not send instance/extension(?) receiver when it is an object
-//TODO dummy/mock server/client
 
 // meta annotations
 @Target(AnnotationTarget.ANNOTATION_CLASS)
@@ -35,18 +32,8 @@ internal annotation class TopLevelOnly
 annotation class KrosstalkMethod(val klass: KClass<out Krosstalk>)
 
 //TODO include param hash in default endpoint
-/*
-TODO >
-    see to-do in Endpoint.kt
-    I want to include more advanced syntax.
-    key-value pairs, i.e. {{id}} -> /id/{id} or id={id} depending on location
-    optional arguments.  maybe only key value pairs?  or something like [?id:...]
-        how to determine when not sent?  can't really detect default use from method call.  nulls?  another boolean arg?
-
-
-    create route dsl and use ar argument to `krosstalkCall()`?  could pass to the register without much work
-
- */
+//TODO update docs
+//TODO optional handling.  Make explicit?  Currently nullables don't get sent if optional in url, defaults aren't required on server
 /**
  * Specifies an endpoint for the krosstalk method to use.
  * Should be a http-formatted string of the pathname and query string, i.e. `"/items/?id={id}"`.
@@ -108,6 +95,10 @@ annotation class EmptyBody
 //TODO option to only catch certain types of exceptions?  What's the point
 //TODO option to only do http errors, or only do exceptions
 //TODO post 1.5: a version that uses kotlin.Result.  Would have to limit to http errors, can't serialize exceptions (test)
+
+//TODO option (seperate annotation?) to convert some exceptions (by class) to HTTP error codes.  Useful with NullOn or this
+//      want to do server side though, so things still match
+//      big concern with NullOn is server and client stop matching, easy enough to use Result + wrappers where needed.
 /**
  * Return [KrosstalkResult].  Method return type must be [KrosstalkResult].
  * Server side function should return a [KrosstalkResult.Success].

@@ -314,7 +314,6 @@ class KrosstalkMethodTransformer(
                 )
             }
 
-            //TODO allow emptybody without endpoint for no args?
             if (minimizeBody && !setEndpoint && hasArgs) {
                 if (requireEmptyBody)
                     messageCollector.reportError(
@@ -709,8 +708,6 @@ class KrosstalkMethodTransformer(
 
         }
     }
-
-    //TODO I think everything works now, test it (and setup general tests)
 
     @OptIn(ObsoleteDescriptorBasedAPI::class)
     override fun visitSimpleFunction(declaration: IrSimpleFunction): IrStatement {

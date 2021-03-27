@@ -28,9 +28,9 @@ import io.ktor.request.receiveChannel
 import io.ktor.request.uri
 import io.ktor.response.respondBytes
 import io.ktor.routing.Route
+import io.ktor.routing.application
 import io.ktor.routing.method
 import io.ktor.routing.route
-import io.ktor.routing.routing
 import io.ktor.util.toByteArray
 import kotlin.random.Random
 
@@ -71,20 +71,26 @@ interface KtorKrosstalkServer : KrosstalkServer<KtorServerScope<*>> {
  */
 object KtorServer : ServerHandler<KtorServerScope<*>> {
 
-    //TODO allow wrapping in non-url scopes
     /**
+     * Defines the necessary routes for [krosstalk]'s methods.
+     *
+     * **If called in a non-root route, ensure that the client is configured to call the right URLs.**
+     * You can set [Krosstalk.prefix] differently or set the URL in the client's server (how will depend on your client implementation).
+     *
      * Meant to be called from an Application, like:
      * ```kotlin
      * fun Application.server(){
-     *     KtorServer.define(this, MyKrosstalk)
+     *     routing{
+     *         MyKrosstalk.defineKtor(this)
+     *     }
      * }
      * ```
      *
      * @see [defineKtor]
      */
-    fun <K> define(app: Application, krosstalk: K) where K : Krosstalk, K : KrosstalkServer<KtorServerScope<*>> {
+    fun <K> define(base: Route, krosstalk: K) where K : Krosstalk, K : KrosstalkServer<KtorServerScope<*>> {
         // apply Application configuration for each defined scopes
-        app.apply {
+        base.application.apply {
             krosstalk.serverScopes
                 .forEach {
                     it.apply {
@@ -93,7 +99,8 @@ object KtorServer : ServerHandler<KtorServerScope<*>> {
                 }
         }
 
-        app.routing {
+        base.apply {
+
             // add each method
             krosstalk.methods.values.forEach { method ->
                 // wrap the endpoint in the needed scopes
@@ -137,18 +144,26 @@ object KtorServer : ServerHandler<KtorServerScope<*>> {
     }
 }
 
+//TODO use multiple receivers, add one for Application
 /**
+ * Defines the necessary routes for [this]'s methods.
+ *
+ * **If called in a non-root route, ensure that the client is configured to call the right URLs.**
+ * You can set [Krosstalk.prefix] differently or set the URL in the client's server (how will depend on your client implementation).
+ *
  * Meant to be called from an Application, like:
  * ```kotlin
  * fun Application.server(){
- *     MyKrosstalk.defineKtor(this)
+ *     routing{
+ *         MyKrosstalk.defineKtor(this)
+ *     }
  * }
  * ```
  *
  * @see [define]
  */
-fun <K> K.defineKtor(app: Application) where K : Krosstalk, K : KrosstalkServer<KtorServerScope<*>> {
-    KtorServer.define(app, this)
+fun <K> K.defineKtor(route: Route) where K : Krosstalk, K : KrosstalkServer<KtorServerScope<*>> {
+    KtorServer.define(route, this)
 }
 
 /**

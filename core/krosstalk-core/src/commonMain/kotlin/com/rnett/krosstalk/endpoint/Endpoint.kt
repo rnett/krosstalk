@@ -7,9 +7,6 @@ internal val valueRegex = Regex("\\{([^}]+?)\\}")
 internal val optionalRegex = Regex("\\[(\\w+):([^\\]]+?)\\]")
 internal val paramRegex = Regex("\\{\\{(\\??)([^}]+?)\\}\\}")
 
-//TODO more complex endpoint stuff.  optional arguments, optional keys (i.e. "/id/{id}" onlt if id is != null), etc.
-//  needs support for server side default args?  (i.e. don't send and use default) I think this is actually supported in `call`
-
 
 sealed class EndpointPreprocessor {
     fun preProcessUrlParts(text: String): String = preProcess(text, false)
@@ -268,7 +265,6 @@ data class Endpoint(
                 part
         }
 
-    //TODO should support default and/or nullable args not being required.  For now requiring all
     /**
      * Returns true if each param in [requiredParameters] ends up in the endpoint if it is non-null.
      */
@@ -283,7 +279,6 @@ data class Endpoint(
     /**
      * List endpoints for all possible combinations of null or not null arguments
      */
-    //TODO need a more efficient structure.  Tree?  Then I can use it for extraction too.
     fun enumerateOptionals(): Map<Set<String>, Endpoint> {
         val paramSet = mutableSetOf<String>()
         forEachPart {

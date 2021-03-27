@@ -6,7 +6,6 @@ import com.rnett.krosstalk.serialization.MethodTypes
 import com.rnett.krosstalk.serialization.SerializationHandler
 import com.rnett.krosstalk.serialization.getAndCheckSerializers
 
-//TODO change \$ to %?
 
 
 //TODO track empty body, throw if not empty?
@@ -31,7 +30,7 @@ data class MethodDefinition<T>(
     val hasInstanceParameter = serializers.instanceReceiverSerializer != null
     val hasExtensionParameter = serializers.extensionReceiverSerializer != null
 
-    //TODO clarify optionals, where things live.  Nulls shouldn't be put in body if they will be infered from url, but when is this.  Always?
+    //TODO clarify optionals, where things live.  Nulls shouldn't be put in body if they will be infered from url, but when is this.  Always?  Depends on optional support
     fun bodyArguments(arguments: Map<String, *>) =
         if (minimizeBody) arguments.filterValues { it != null }
             .filterKeys { it !in endpoint.usedParameters(arguments.filter { it.value != null }.keys) } else arguments
@@ -52,7 +51,7 @@ typealias MethodCaller<T> = suspend (arguments: Map<String, *>, scopes: Immutabl
  */
 abstract class Krosstalk {
     abstract val serialization: SerializationHandler<*>
-    open val endpointPrefix: String = "krosstalk"
+    open val prefix: String = "krosstalk"
 
     @PublishedApi
     internal val _methods = mutableMapOf<String, MethodDefinition<*>>()
@@ -107,7 +106,7 @@ abstract class Krosstalk {
         val serializers = serialization.getAndCheckSerializers(types)
         _methods[methodName] = MethodDefinition(
             methodName,
-            Endpoint(endpoint, methodName, endpointPrefix),
+            Endpoint(endpoint, methodName, prefix),
             method,
             requiredScopes,
             optionalScopes,

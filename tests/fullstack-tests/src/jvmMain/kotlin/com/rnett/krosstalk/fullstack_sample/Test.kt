@@ -7,6 +7,7 @@ import com.rnett.krosstalk.Scope
 import com.rnett.krosstalk.ktor.server.KtorServer
 import com.rnett.krosstalk.ktor.server.KtorServerAuth
 import com.rnett.krosstalk.ktor.server.KtorServerScope
+import com.rnett.krosstalk.ktor.server.defineKtor
 import com.rnett.krosstalk.serialization.KotlinxBinarySerializationHandler
 import io.ktor.application.install
 import io.ktor.auth.Authentication
@@ -14,6 +15,7 @@ import io.ktor.auth.Principal
 import io.ktor.auth.basic
 import io.ktor.features.CORS
 import io.ktor.features.CallLogging
+import io.ktor.routing.routing
 import io.ktor.server.cio.CIO
 import io.ktor.server.engine.embeddedServer
 import kotlinx.serialization.cbor.Cbor
@@ -30,7 +32,9 @@ fun main() {
             level = Level.DEBUG
         }
 
-        KtorServer.define(this, MyKrosstalk)
+        routing {
+            MyKrosstalk.defineKtor(this)
+        }
 
     }.start(true)
 }
