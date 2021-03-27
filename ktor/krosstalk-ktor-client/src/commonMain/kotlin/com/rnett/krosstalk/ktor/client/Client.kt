@@ -1,10 +1,12 @@
 package com.rnett.krosstalk.ktor.client
 
-import com.rnett.krosstalk.AppliedClientScope
-import com.rnett.krosstalk.ClientHandler
-import com.rnett.krosstalk.ClientScope
-import com.rnett.krosstalk.InternalKrosstalkResponse
-import com.rnett.krosstalk.KrosstalkClient
+import com.rnett.krosstalk.KrosstalkPluginApi
+import com.rnett.krosstalk.client.AppliedClientScope
+import com.rnett.krosstalk.client.ClientHandler
+import com.rnett.krosstalk.client.ClientScope
+import com.rnett.krosstalk.client.InternalKrosstalkResponse
+import com.rnett.krosstalk.client.KrosstalkClient
+import com.rnett.krosstalk.client.callFailedException
 import io.ktor.client.HttpClient
 import io.ktor.client.HttpClientConfig
 import io.ktor.client.call.receive
@@ -19,6 +21,7 @@ import io.ktor.http.isSuccess
 /**
  * Helper to apply a scope's client configuration
  */
+@KrosstalkPluginApi
 fun <D> AppliedClientScope<KtorClientScope<D>, *>.configureClient(client: HttpClientConfig<*>) {
     client.apply {
         scope.apply { configureClient(data as D) }
@@ -28,6 +31,7 @@ fun <D> AppliedClientScope<KtorClientScope<D>, *>.configureClient(client: HttpCl
 /**
  * Helper to apply a scope's request configuration
  */
+@KrosstalkPluginApi
 fun <D> AppliedClientScope<KtorClientScope<D>, *>.configureRequest(request: HttpRequestBuilder) {
     request.apply {
         scope.apply { configureRequest(data as D) }
@@ -43,6 +47,7 @@ interface KtorKrosstalkClient : KrosstalkClient<KtorClientScope<*>> {
  * A Krosstalk client using a Ktor HttpClient to make requests.
  * Note that a new client is used for each request.
  */
+@OptIn(KrosstalkPluginApi::class)
 open class KtorClient(override val serverUrl: String) : ClientHandler<KtorClientScope<*>> {
 
     /**

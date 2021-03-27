@@ -5,7 +5,7 @@ import com.rnett.krosstalk.serialization.MethodSerializers
 import com.rnett.krosstalk.serialization.MethodTypes
 import com.rnett.krosstalk.serialization.SerializationHandler
 import com.rnett.krosstalk.serialization.getAndCheckSerializers
-
+import com.rnett.krosstalk.server.ImmutableWantedScopes
 
 
 //TODO track empty body, throw if not empty?
@@ -42,6 +42,7 @@ data class MethodDefinition<T>(
 }
 
 // Unit and Nothing? scopes will be handled in the method
+@OptIn(KrosstalkPluginApi::class)
 typealias MethodCaller<T> = suspend (arguments: Map<String, *>, scopes: ImmutableWantedScopes) -> T
 
 //TODO import from other
@@ -65,8 +66,8 @@ abstract class Krosstalk {
         //TODO detect compiler plugin by replacement, error if not
     }
 
-    @PublishedApi
-    internal fun requiredMethod(name: String) = methods[name]
+    @InternalKrosstalkApi
+    fun requiredMethod(name: String) = methods[name]
         ?: throw MissingMethodException(this, name)
 
     private val _scopes = mutableListOf<Scope>()
@@ -78,6 +79,7 @@ abstract class Krosstalk {
         _scopes.add(scope)
     }
 
+    @OptIn(InternalKrosstalkApi::class)
     @PublishedApi
     internal fun <T> addMethod(
         methodName: String,
@@ -120,17 +122,3 @@ abstract class Krosstalk {
     }
 }
 
-/**
- * The interface for a krosstalk client.  Have your Krosstalk object implement this to be a client.
- */
-interface KrosstalkClient<C : ClientScope<*>> {
-    val client: ClientHandler<C>
-}
-
-
-/**
- * The interface for a krosstalk server.  Have your Krosstalk object implement this to be a server.
- */
-interface KrosstalkServer<S : ServerScope<*>> {
-    val server: ServerHandler<S>
-}

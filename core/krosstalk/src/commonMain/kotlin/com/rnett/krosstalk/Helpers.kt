@@ -1,5 +1,6 @@
 package com.rnett.krosstalk
 
+@OptIn(InternalKrosstalkApi::class)
 @PublishedApi
 @Suppress("unused")
 internal inline fun <K, reified V> Map<K, *>.getValueAsOrError(methodName: String, key: K, default: () -> V?, nullError: String, typeError: String): V {

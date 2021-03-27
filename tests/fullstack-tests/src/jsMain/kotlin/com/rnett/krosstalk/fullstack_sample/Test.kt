@@ -1,10 +1,10 @@
 package com.rnett.krosstalk.fullstack_sample
 
 import com.rnett.krosstalk.Krosstalk
-import com.rnett.krosstalk.KrosstalkClient
 import com.rnett.krosstalk.KrosstalkResult
 import com.rnett.krosstalk.Scope
-import com.rnett.krosstalk.krosstalkCall
+import com.rnett.krosstalk.client.KrosstalkClient
+import com.rnett.krosstalk.client.krosstalkCall
 import com.rnett.krosstalk.ktor.client.BasicCredentials
 import com.rnett.krosstalk.ktor.client.KtorClient
 import com.rnett.krosstalk.ktor.client.KtorClientAuth

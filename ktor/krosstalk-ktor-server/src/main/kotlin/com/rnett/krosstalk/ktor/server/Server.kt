@@ -1,14 +1,15 @@
 package com.rnett.krosstalk.ktor.server
 
 import com.rnett.krosstalk.Krosstalk
-import com.rnett.krosstalk.KrosstalkServer
-import com.rnett.krosstalk.MutableWantedScopes
-import com.rnett.krosstalk.ServerHandler
-import com.rnett.krosstalk.ServerScope
-import com.rnett.krosstalk.handle
+import com.rnett.krosstalk.KrosstalkPluginApi
 import com.rnett.krosstalk.ktor.server.KtorServer.define
-import com.rnett.krosstalk.scopesAsType
-import com.rnett.krosstalk.serverScopes
+import com.rnett.krosstalk.server.KrosstalkServer
+import com.rnett.krosstalk.server.MutableWantedScopes
+import com.rnett.krosstalk.server.ServerHandler
+import com.rnett.krosstalk.server.ServerScope
+import com.rnett.krosstalk.server.handle
+import com.rnett.krosstalk.server.scopesAsType
+import com.rnett.krosstalk.server.serverScopes
 import io.ktor.application.Application
 import io.ktor.application.ApplicationCall
 import io.ktor.application.call
@@ -69,6 +70,7 @@ interface KtorKrosstalkServer : KrosstalkServer<KtorServerScope<*>> {
 /**
  * A Krosstalk server handler that adds the krosstalk method endpoints to a Ktor server.
  */
+@OptIn(KrosstalkPluginApi::class)
 object KtorServer : ServerHandler<KtorServerScope<*>> {
 
     /**

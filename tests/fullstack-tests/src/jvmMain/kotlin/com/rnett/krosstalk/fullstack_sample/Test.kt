@@ -2,13 +2,13 @@ package com.rnett.krosstalk.fullstack_sample
 
 import com.rnett.krosstalk.Krosstalk
 import com.rnett.krosstalk.KrosstalkResult
-import com.rnett.krosstalk.KrosstalkServer
 import com.rnett.krosstalk.Scope
 import com.rnett.krosstalk.ktor.server.KtorServer
 import com.rnett.krosstalk.ktor.server.KtorServerAuth
 import com.rnett.krosstalk.ktor.server.KtorServerScope
 import com.rnett.krosstalk.ktor.server.defineKtor
 import com.rnett.krosstalk.serialization.KotlinxBinarySerializationHandler
+import com.rnett.krosstalk.server.KrosstalkServer
 import io.ktor.application.install
 import io.ktor.auth.Authentication
 import io.ktor.auth.Principal

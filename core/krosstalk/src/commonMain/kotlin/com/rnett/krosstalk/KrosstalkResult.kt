@@ -6,9 +6,11 @@ import kotlin.contracts.contract
 import kotlin.reflect.KClass
 
 
+@OptIn(InternalKrosstalkApi::class)
 class ResultHttpErrorException(val httpError: KrosstalkResult.HttpError) :
     KrosstalkException("KrosstalkResult is http error code ${httpError.responseCode}, with message ${httpError.clientMessage}")
 
+@OptIn(InternalKrosstalkApi::class)
 class ResultServerExceptionException(val exception: KrosstalkResult.ServerException) : KrosstalkException("KrosstalkResult is exception $exception")
 
 internal expect fun getClassName(klass: KClass<*>): String?
@@ -53,7 +55,7 @@ sealed class KrosstalkResult<out T> {
      * @property asStringWithStacktrace the exception's [Throwable.stackTraceToString], if it is included (See [ExplicitResult]).
      */
     @Serializable
-    data class ServerException @PublishedApi internal constructor(
+    data class ServerException @InternalKrosstalkApi constructor(
         val className: String?,
         val message: String?,
         val cause: ServerException?,
@@ -61,6 +63,8 @@ sealed class KrosstalkResult<out T> {
         val asString: String,
         val asStringWithStacktrace: String?,
     ) : KrosstalkResult<Nothing>(), Failure {
+
+        @InternalKrosstalkApi
         constructor(throwable: Throwable, includeStacktrace: Boolean) : this(
             getClassName(throwable::class),
             throwable.message,
@@ -81,7 +85,7 @@ sealed class KrosstalkResult<out T> {
      * @property clientMessage Any message that the KrosstalkClient associated with the response
      */
     @Serializable
-    data class HttpError @PublishedApi internal constructor(val responseCode: Int, val clientMessage: String? = null) : KrosstalkResult<Nothing>(),
+    data class HttpError @InternalKrosstalkApi constructor(val responseCode: Int, val clientMessage: String? = null) : KrosstalkResult<Nothing>(),
         Failure {
         override fun getException() = ResultHttpErrorException(this)
     }

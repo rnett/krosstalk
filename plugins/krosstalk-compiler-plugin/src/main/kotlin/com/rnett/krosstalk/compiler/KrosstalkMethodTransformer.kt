@@ -100,8 +100,8 @@ class KrosstalkMethodTransformer(
                 .filter { it.isNonCompanionObject && it.isSubclassOf(Krosstalk.Scope) }
         }
 
-        val isClient by lazy { declaration.isSubclassOf(Krosstalk.KrosstalkClient) }
-        val isServer by lazy { declaration.isSubclassOf(Krosstalk.KrosstalkServer) }
+        val isClient by lazy { Krosstalk.Client.KrosstalkClient.resolveOrNull() != null && declaration.isSubclassOf(Krosstalk.Client.KrosstalkClient) }
+        val isServer by lazy { Krosstalk.Server.KrosstalkServer.resolveOrNull() != null && declaration.isSubclassOf(Krosstalk.Server.KrosstalkServer) }
 
         private fun reportError(message: String) = messageCollector.reportError(message, declaration)
 
@@ -120,7 +120,7 @@ class KrosstalkMethodTransformer(
 
             scopes.forEach {
                 if (isClient) {
-                    val scopeType = declaration.defaultType.raiseTo(Krosstalk.KrosstalkClient()).typeArgument(0)
+                    val scopeType = declaration.defaultType.raiseTo(Krosstalk.Client.KrosstalkClient()).typeArgument(0)
                     if (!it.defaultType.isSubtypeOf(scopeType, context.irBuiltIns))
                         messageCollector.reportError(
                             "All scopes in a Krosstalk Client object must extend the client's scope type ${scopeType.render()}, ${it.name} does not.",
@@ -128,7 +128,7 @@ class KrosstalkMethodTransformer(
                         )
                 }
                 if (isServer) {
-                    val scopeType = declaration.defaultType.raiseTo(Krosstalk.KrosstalkServer()).typeArgument(0)
+                    val scopeType = declaration.defaultType.raiseTo(Krosstalk.Server.KrosstalkServer()).typeArgument(0)
                     if (!it.defaultType.isSubtypeOf(scopeType, context.irBuiltIns))
                         messageCollector.reportError(
                             "All scopes in a Krosstalk Server object must extend the server's scope type ${scopeType.render()}, ${it.name} does not.",
@@ -395,11 +395,11 @@ class KrosstalkMethodTransformer(
 
             val isPlaceholderBody = when (val body = declaration.body) {
                 is IrExpressionBody -> {
-                    body.expression.let { it is IrCall && it.symbol == Krosstalk.clientPlaceholder() }
+                    body.expression.let { it is IrCall && it.symbol == Krosstalk.Client.clientPlaceholder() }
                 }
                 is IrBlockBody -> {
                     body.statements.size == 1 && body.statements.single()
-                        .let { it is IrCall && it.symbol == Krosstalk.clientPlaceholder() }
+                        .let { it is IrCall && it.symbol == Krosstalk.Client.clientPlaceholder() }
                 }
                 else -> {
                     false
@@ -448,7 +448,7 @@ class KrosstalkMethodTransformer(
 
                     val scopes = addValueParameter {
                         name = Name.identifier("scopes")
-                        type = Krosstalk.ImmutableWantedScopes.resolveTypeWith()
+                        type = Krosstalk.Server.ImmutableWantedScopes.resolveTypeWith()
                     }
 
                     body = irJsExprBody(irCall(declaration.symbol).apply {
@@ -472,13 +472,13 @@ class KrosstalkMethodTransformer(
                         }
 
                         requiredScopes.forEach { (param, cls) ->
-                            val dataType = cls.defaultType.raiseTo(Krosstalk.ServerScope()).typeArgument(0)
-                            val data = irCall(Krosstalk.ImmutableWantedScopes.get)
+                            val dataType = cls.defaultType.raiseTo(Krosstalk.Server.ServerScope()).typeArgument(0)
+                            val data = irCall(Krosstalk.Server.ImmutableWantedScopes.get)
                                 .withDispatchReceiver(irGet(scopes))
                                 .withTypeArguments(cls.defaultType, dataType)
                                 .withValueArguments(irGetObject(cls.symbol))
                             putValueArgument(param.index,
-                                irCall(Krosstalk.createServerScopeInstance)
+                                irCall(Krosstalk.Server.createServerScopeInstance)
                                     .withExtensionReceiver(irGetObject(cls.symbol))
                                     .withTypeArguments(cls.defaultType, dataType)
                                     .withValueArguments(data)
@@ -486,8 +486,8 @@ class KrosstalkMethodTransformer(
                         }
 
                         optionalScopes.forEach { (param, cls) ->
-                            val dataType = cls.defaultType.raiseTo(Krosstalk.ServerScope()).typeArgument(0)
-                            val data = irCall(Krosstalk.ImmutableWantedScopes.get)
+                            val dataType = cls.defaultType.raiseTo(Krosstalk.Server.ServerScope()).typeArgument(0)
+                            val data = irCall(Krosstalk.Server.ImmutableWantedScopes.get)
                                 .withDispatchReceiver(irGet(scopes))
                                 .withTypeArguments(cls.defaultType, dataType)
                                 .withValueArguments(irGetObject(cls.symbol))
@@ -495,7 +495,7 @@ class KrosstalkMethodTransformer(
                             val value = stdlib.letExpr(data) {
                                 irIfNull(param.type, irGet(it),
                                     irNull(),
-                                    irCall(Krosstalk.createServerScopeInstance)
+                                    irCall(Krosstalk.Server.createServerScopeInstance)
                                         .withDispatchReceiver(irGetObject(cls.symbol))
                                         .withTypeArguments(cls.defaultType, dataType)
                                         .withValueArguments(data)
@@ -645,14 +645,14 @@ class KrosstalkMethodTransformer(
                 return
 
             declaration.withBuilder {
-                declaration.body = irJsExprBody(irCall(Krosstalk.call(), declaration.returnType).apply {
+                declaration.body = irJsExprBody(irCall(Krosstalk.Client.call(), declaration.returnType).apply {
 
                     extensionReceiver = irGetObject(krosstalkClass.declaration.symbol)
                     putTypeArgument(0, declaration.returnType)
                     putTypeArgument(1, krosstalkClass.declaration.defaultType.makeNotNull())
 
                     val clientScopeType =
-                        krosstalkClass.declaration.defaultType.raiseTo(Krosstalk.KrosstalkClient())
+                        krosstalkClass.declaration.defaultType.raiseTo(Krosstalk.Client.KrosstalkClient())
                             .typeArgument(0)
 
                     putTypeArgument(2, clientScopeType)
@@ -672,7 +672,7 @@ class KrosstalkMethodTransformer(
 
                     requiredScopes.forEach { (param, cls) ->
                         scopeList.add(
-                            irCall(Krosstalk.instanceToAppliedScope)
+                            irCall(Krosstalk.Client.instanceToAppliedScope)
                                 .withExtensionReceiver(irGet(param))
                                 .withTypeArguments(cls.defaultType, context.irBuiltIns.anyType.makeNullable())
                         )
@@ -680,7 +680,7 @@ class KrosstalkMethodTransformer(
 
                     optionalScopes.forEach { (param, cls) ->
                         scopeList.add(
-                            irCall(Krosstalk.instanceToAppliedScope)
+                            irCall(Krosstalk.Client.instanceToAppliedScope)
                                 .withExtensionReceiver(irGet(param))
                                 .withTypeArguments(cls.defaultType, context.irBuiltIns.anyType.makeNullable())
                         )

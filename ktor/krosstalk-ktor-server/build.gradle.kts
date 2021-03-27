@@ -10,7 +10,7 @@ description = "Basic Ktor server support for Krosstalk"
 dependencies {
     api("io.ktor:ktor-server-core:$ktor_version")
     api("io.ktor:ktor-auth:$ktor_version")
-    api(project(":core:krosstalk"))
+    api(project(":core:krosstalk-server"))
 }
 
 kotlin {

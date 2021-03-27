@@ -332,6 +332,7 @@ data class Endpoint(
      *
      * @return The filled endpoint, and the parameters used to fill it (not including the method name or prefix).
      */
+    @OptIn(InternalKrosstalkApi::class)
     fun fillWithArgs(
         methodName: String,
         arguments: Map<String, String>,

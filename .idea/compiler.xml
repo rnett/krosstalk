@@ -13,6 +13,14 @@
       <module name="com.rnett.krosstalk.samples.fullstack-sample.commonTest" target="1.8" />
       <module name="com.rnett.krosstalk.samples.fullstack-sample.jvmMain" target="1.8" />
       <module name="com.rnett.krosstalk.samples.fullstack-sample.jvmTest" target="1.8" />
+      <module name="krosstalk-parent.core.krosstalk-client-sdk.commonMain" target="1.8" />
+      <module name="krosstalk-parent.core.krosstalk-client-sdk.commonTest" target="1.8" />
+      <module name="krosstalk-parent.core.krosstalk-client-sdk.jvmMain" target="1.8" />
+      <module name="krosstalk-parent.core.krosstalk-client-sdk.jvmTest" target="1.8" />
+      <module name="krosstalk-parent.core.krosstalk-server-sdk.commonMain" target="1.8" />
+      <module name="krosstalk-parent.core.krosstalk-server-sdk.commonTest" target="1.8" />
+      <module name="krosstalk-parent.core.krosstalk-server-sdk.jvmMain" target="1.8" />
+      <module name="krosstalk-parent.core.krosstalk-server-sdk.jvmTest" target="1.8" />
       <module name="krosstalk.client-sample.commonMain" target="1.8" />
       <module name="krosstalk.client-sample.commonTest" target="1.8" />
       <module name="krosstalk.client-sample.jvmMain" target="1.8" />

@@ -1,17 +1,15 @@
 plugins {
     kotlin("multiplatform")
+    id("org.jetbrains.kotlin.plugin.serialization")
 }
 
-val ktor_version = "1.5.2"
-
-description = "Basic Ktor server support for Krosstalk"
+description = "Krosstalk runtime library"
 
 kotlin {
     jvm {
         compilations.all {
-            kotlinOptions.apply {
+            kotlinOptions {
                 jvmTarget = "1.8"
-                useIR = true
             }
         }
     }
@@ -23,20 +21,13 @@ kotlin {
     sourceSets {
         val commonMain by getting {
             dependencies {
-                api(project(":core:krosstalk-client"))
-                api("io.ktor:ktor-client-core:$ktor_version")
-                api("io.ktor:ktor-client-auth:$ktor_version")
+                api(project(":core:krosstalk"))
             }
         }
 
-        val jsMain by getting {
-            dependencies {
-            }
-        }
-        val jvmMain by getting {
-            dependencies {
-            }
-        }
+        val jsMain by getting
+
+        val jvmMain by getting
 
         all {
             languageSettings.apply {

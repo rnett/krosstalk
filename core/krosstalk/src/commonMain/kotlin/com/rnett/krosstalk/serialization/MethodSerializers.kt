@@ -1,5 +1,6 @@
 package com.rnett.krosstalk.serialization
 
+import com.rnett.krosstalk.InternalKrosstalkApi
 import com.rnett.krosstalk.KrosstalkException
 import com.rnett.krosstalk.extensionParameter
 import com.rnett.krosstalk.instanceParameter
@@ -60,6 +61,7 @@ class ArgumentSerializers<S>(val map: Map<String, Serializer<*, S>>) {
     /**
      * Get a serializer for an argument as a `Serializer<Any?, S>`, throwing [KrosstalkException.MissingSerializer] if a serializer is missing.
      */
+    @OptIn(InternalKrosstalkApi::class)
     operator fun get(argument: String) = (map[argument]
         ?: throw KrosstalkException.MissingSerializer(argument, map.keys)) as Serializer<Any?, S>
 

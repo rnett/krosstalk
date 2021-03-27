@@ -7,6 +7,7 @@ import com.rnett.krosstalk.defaultEndpointMethod
 import com.rnett.krosstalk.serialization.SerializationHandler
 import kotlin.reflect.KClass
 
+
 //TODO option to not send instance/extension(?) receiver when it is an object
 
 // meta annotations

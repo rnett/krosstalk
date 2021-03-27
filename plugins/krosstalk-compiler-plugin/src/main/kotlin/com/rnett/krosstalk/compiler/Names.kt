@@ -20,34 +20,41 @@ object Krosstalk : RootPackage(krosstalkPackage) {
         val MethodTypes by Class()
     }
 
-    val KrosstalkResult by Class()
-    val ScopeHolder by Class()
+    object Client : PackageRef() {
+        val KrosstalkClient by Class()
+        val ClientScope by Class()
+        val AppliedClientScope by Class()
 
-    val KrosstalkServer by Class()
-    val KrosstalkClient by Class()
+        val instanceToAppliedScope by function("toAppliedScope")
 
-    val call by function()
-    val clientPlaceholder by function("krosstalkCall")
-    val getValueAsOrError by function()
+        val call by function()
+        val clientPlaceholder by function("krosstalkCall")
+    }
 
-    val Scope by Class()
-    val ClientScope by Class()
-    val ServerScope by Class()
-    val ScopeInstance by Class()
-    val AppliedClientScope by Class()
+    object Server : PackageRef() {
+        val KrosstalkServer by Class()
+        val ServerScope by Class()
 
-    val instanceToAppliedScope by function("toAppliedScope")
+        val createServerScopeInstance by function("invoke") {
+            parameters[0] = {
+                it.name.asString() == "serverData"
+            }
+        }
 
-    val createServerScopeInstance by function("invoke") {
-        parameters[0] = {
-            it.name.asString() == "serverData"
+        object ImmutableWantedScopes : ClassRef() {
+            val get by function()
+            val getOptional by function()
         }
     }
 
-    object ImmutableWantedScopes : ClassRef() {
-        val get by function()
-        val getOptional by function()
-    }
+    val KrosstalkResult by Class()
+    val ScopeHolder by Class()
+
+
+    val getValueAsOrError by function()
+
+    val Scope by Class()
+    val ScopeInstance by Class()
 
     object Krosstalk : ClassRef() {
         val addMethod by function()

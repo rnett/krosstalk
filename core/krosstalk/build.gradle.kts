@@ -23,8 +23,6 @@ kotlin {
     sourceSets {
         val commonMain by getting {
             dependencies {
-                implementation(kotlin("stdlib-common"))
-
                 api(project(":core:krosstalk-core"))
                 api("org.jetbrains.kotlinx:kotlinx-serialization-core:$serialization_version")
                 api("org.jetbrains.kotlinx:kotlinx-serialization-cbor:$serialization_version")
@@ -32,35 +30,9 @@ kotlin {
             }
         }
 
-        val commonTest by getting {
-            dependencies {
-                implementation(kotlin("test-common"))
-                implementation(kotlin("test-annotations-common"))
-            }
-        }
+        val jsMain by getting
 
-        val jsMain by getting {
-            dependencies {
-                implementation(kotlin("test-js"))
-            }
-        }
-
-        val jsTest by getting {
-            dependencies {
-
-            }
-        }
-
-        val jvmMain by getting {
-            dependencies {
-            }
-        }
-
-        val jvmTest by getting {
-            dependencies {
-                implementation(kotlin("test-junit"))
-            }
-        }
+        val jvmMain by getting
 
         all {
             languageSettings.apply {
