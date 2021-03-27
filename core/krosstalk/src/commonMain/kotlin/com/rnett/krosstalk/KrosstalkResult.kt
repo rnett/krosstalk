@@ -3,79 +3,24 @@ package com.rnett.krosstalk
 import com.rnett.krosstalk.annotations.ExplicitResult
 import kotlinx.serialization.Serializable
 import kotlin.contracts.contract
+import kotlin.reflect.KClass
 
 
-class ResultHttpErrorException(val responseCode: Int, val clientMessage: String?) :
-    KrosstalkException("KrosstalkResult is http error code $responseCode, with message $clientMessage")
+class ResultHttpErrorException(val httpError: KrosstalkResult.HttpError) :
+    KrosstalkException("KrosstalkResult is http error code ${httpError.responseCode}, with message ${httpError.clientMessage}")
 
-class ResultServerExceptionException(val exception: KrosstalkFailure.ServerException) : KrosstalkException("KrosstalkResult is exception $exception")
+class ResultServerExceptionException(val exception: KrosstalkResult.ServerException) : KrosstalkException("KrosstalkResult is exception $exception")
 
+internal expect fun getClassName(klass: KClass<*>): String?
 
-@Serializable
-sealed class KrosstalkFailure {
-
-    abstract fun throwException(): Nothing
-
-    /**
-     * A non-success HTTP response was gotten from the krosstalk call.
-     *
-     * @property responseCode The HTTP response code of the erroneous response.
-     * @property clientMessage Any message that the KrosstalkClient associated with the response
-     */
-    @Serializable
-    data class HttpError @PublishedApi internal constructor(val responseCode: Int, val clientMessage: String? = null) : KrosstalkFailure() {
-        override fun throwException(): Nothing {
-            throw ResultHttpErrorException(responseCode, clientMessage)
-        }
-    }
-
-    /**
-     * @property className the name of the exception class, or null if it can't be obtained
-     * @property message the [Throwable.message] of the exception, if it has one
-     * @property cause the exception's [Throwable.cause], if it has one
-     * @property suppressed the exception's [Throwable.suppressedExceptions].
-     * @property asString the exception's [Throwable.toString]
-     * @property asStringWithStacktrace the exception's [Throwable.stackTraceToString], if it is included (See [ExplicitResult]).
-     */
-    @Serializable
-    @Suppress("DataClassPrivateConstructor")
-    data class ServerException private constructor(
-        val className: String?,
-        val message: String?,
-        val cause: ServerException?,
-        val suppressed: List<ServerException>,
-        val asString: String,
-        val asStringWithStacktrace: String?,
-    ) : KrosstalkFailure() {
-        constructor(throwable: Throwable, includeStacktrace: Boolean) : this(
-            throwable::class.qualifiedName,
-            throwable.message,
-            throwable.cause?.let { ServerException(it, includeStacktrace) },
-            throwable.suppressedExceptions.map { ServerException(it, includeStacktrace) },
-            throwable.toString(),
-            if (includeStacktrace) throwable.stackTraceToString() else null
-        )
-
-        override fun throwException(): Nothing {
-            throw ResultServerExceptionException(this)
-        }
-    }
-}
-
-typealias KrosstalkResult<T> = KrosstalkCallResult<T, KrosstalkFailure>
-
-inline fun <reified T> Any?.isType(): Boolean {
-    contract { returns(true) implies (this@isType is T) }
-    return this is T
-}
-
+//TODO does not work, https://github.com/Kotlin/kotlinx.serialization/issues/1391
 /**
  * The result of a krosstalk call.  Can be either an exception in the server method, a Http error, or success.
  *
  * Used with [ExplicitResult].
  */
 @Serializable
-sealed class KrosstalkCallResult<out T, out F : KrosstalkFailure> {
+sealed class KrosstalkResult<out T> {
 
     /**
      * The result of a successful krosstalk call.
@@ -83,139 +28,199 @@ sealed class KrosstalkCallResult<out T, out F : KrosstalkFailure> {
      * @property value The result.
      */
     @Serializable
-    data class Success<T>(val value: T) : KrosstalkCallResult<T, Nothing>()
+    data class Success<out T>(val value: T) : KrosstalkResult<T>()
 
+    //TODO seal, inherit from KrosstalkResult
+    /**
+     * A failure result.
+     */
+    interface Failure {
+        fun getException(): KrosstalkException
+        fun throwException(): Nothing = throw getException()
+    }
+
+    //TODO make the failure states inherit Throwable? KrosstalkResult would need to be a sealed interface
+
+    /**
+     * The result when an exception occurred during the execution of the server side function
+     *
+     * @property className the name of the exception class, or null if it can't be obtained.
+     * Will be [KClass.qualifiedName] when it is available on the server (i.e. on a JVM server), and [KClass.simpleName] when it is not.
+     * @property message the [Throwable.message] of the exception, if it has one
+     * @property cause the exception's [Throwable.cause], if it has one
+     * @property suppressed the exception's [Throwable.suppressedExceptions].
+     * @property asString the exception's [Throwable.toString]
+     * @property asStringWithStacktrace the exception's [Throwable.stackTraceToString], if it is included (See [ExplicitResult]).
+     */
     @Serializable
-    data class Failure<F : KrosstalkFailure>(val failure: F) : KrosstalkCallResult<Nothing, F>()
+    data class ServerException @PublishedApi internal constructor(
+        val className: String?,
+        val message: String?,
+        val cause: ServerException?,
+        val suppressed: List<ServerException>,
+        val asString: String,
+        val asStringWithStacktrace: String?,
+    ) : KrosstalkResult<Nothing>(), Failure {
+        constructor(throwable: Throwable, includeStacktrace: Boolean) : this(
+            getClassName(throwable::class),
+            throwable.message,
+            throwable.cause?.let { ServerException(it, includeStacktrace) },
+            throwable.suppressedExceptions.map { ServerException(it, includeStacktrace) },
+            throwable.toString(),
+            if (includeStacktrace) throwable.stackTraceToString() else null
+        )
+
+        override fun getException() = ResultServerExceptionException(this)
+    }
+
+    //TODO look at message, do I want it to be the returned body?
+    /**
+     * A non-success HTTP response was gotten from the krosstalk call.
+     *
+     * @property responseCode The HTTP response code of the erroneous response.
+     * @property clientMessage Any message that the KrosstalkClient associated with the response
+     */
+    @Serializable
+    data class HttpError @PublishedApi internal constructor(val responseCode: Int, val clientMessage: String? = null) : KrosstalkResult<Nothing>(),
+        Failure {
+        override fun getException() = ResultHttpErrorException(this)
+    }
 
     /**
      * Whether the result is success.
      */
     fun isSuccess(): Boolean {
-        // TODO use contracts, blocked by https://youtrack.jetbrains.com/issue/KT-41078
-        // contract { returns(true) implies (this@KrosstalkCallResult is Success) }
+        contract {
+            // TODO use contracts, blocked by https://youtrack.jetbrains.com/issue/KT-41078
+//             returns(true) implies (this@KrosstalkResult is Success)
+            returns(false) implies (this@KrosstalkResult is Failure)
+        }
         return this is Success
     }
 
     /**
      * Get the value if successful, else null
      */
-    val valueOrNull get() = if (this is Success) this.value else null
+    val valueOrNull get() = getOrDefault(null)
+
+    /**
+     * Get the value if successful, otherwise throw with [throwOnFailure]
+     */
+    val valueOrThrow get() = getOrElse { it.throwException() }
+
+    /**
+     * Whether the result is a server exception.
+     */
+    fun isServerException(): Boolean {
+        contract {
+            returns(true) implies (this@KrosstalkResult is ServerException)
+            returns(false) implies (this@KrosstalkResult !is ServerException)
+        }
+        return this is ServerException
+    }
+
+    /**
+     * Get the server exception if there is one, else null
+     */
+    val serverExceptionOrNull: ServerException? get() = if (this is ServerException) this else null
 
     /**
      * Whether the result is a http error.
      */
     fun isHttpError(): Boolean {
-        // TODO use contracts, blocked by https://youtrack.jetbrains.com/issue/KT-41078
-        // contract { returns(true) implies (this@KrosstalkCallResult is HttpError) }
-        return this is Failure && this.failure is KrosstalkFailure.HttpError
+        contract {
+            returns(true) implies (this@KrosstalkResult is HttpError)
+            returns(false) implies (this@KrosstalkResult !is HttpError)
+        }
+        return this is HttpError
     }
 
     /**
      * Get the http error if there is one, else null
      */
-    val httpErrorOrNull: KrosstalkFailure.HttpError? get() = if (this is Failure && failure is KrosstalkFailure.HttpError) failure else null
-
-    /**
-     * Whether the result is success.
-     */
-    fun isServerException(): Boolean {
-        // TODO use contracts, blocked by https://youtrack.jetbrains.com/issue/KT-41078
-        // contract { returns(true) implies (this@KrosstalkCallResult is Exception) }
-        return this is Failure && this.failure is KrosstalkFailure.ServerException
-    }
-
-    //TODO I don't like getting the property for only this one
-    /**
-     * Get the exception if there is one, else null
-     */
-    val serverExceptionOrNull: KrosstalkFailure.ServerException? get() = if (this is Failure && failure is KrosstalkFailure.ServerException) failure else null
+    val httpErrorOrNull: HttpError? get() = if (this is HttpError) this else null
 
     /**
      * Whether the result is not a success.
      */
-    fun isFailure(): Boolean = this is Failure
+    fun isFailure(): Boolean {
+        contract {
+            returns(true) implies (this@KrosstalkResult is Failure)
+            // TODO use contracts, blocked by https://youtrack.jetbrains.com/issue/KT-41078
+//            returns(false) implies (this@KrosstalkResult is Success)
+        }
+        return this is Failure
+    }
 
     /**
      * Get the failure if there is one, else null
      */
-    val failureOrNull get() = if (this is Failure) failure else null
+    val failureOrNull get() = if (this is Failure) this else null
 
     /**
-     * If this is a [HttpError], throw [ResultHttpErrorException].  If this is a [Exception], throw [ResultServerExceptionException].
+     * If this is a [HttpError], throw [ResultHttpErrorException].  If this is a [ServerException], throw [ResultServerExceptionException].
      */
-    fun throwOnFailure() {
+    fun throwOnFailure(): KrosstalkResult<T> {
         // TODO use contracts, blocked by https://youtrack.jetbrains.com/issue/KT-41078
         // contract { returns() implies (this@KrosstalkCallResult is Success) }
 
         if (this is Failure) {
-            failure.throwException()
+            throwException()
         }
+        return this
     }
 
     /**
      * If this is a [HttpError], throw [ResultHttpErrorException].
      */
-    fun throwOnHttpError() {
-        // TODO use contracts, blocked by https://youtrack.jetbrains.com/issue/KT-41078
+    fun throwOnHttpError(): KrosstalkResult<T> {
+        contract { returns() implies (this@KrosstalkResult !is HttpError) }
 
-        if (this is Failure && failure is KrosstalkFailure.HttpError) {
-            failure.throwException()
+        if (this is HttpError) {
+            throwException()
         }
+        return this
     }
 
     /**
-     * If this is a [Exception], throw [ResultServerExceptionException].
+     * If this is a [ServerException], throw [ResultServerExceptionException].
      */
-    fun throwOnServerException() {
-        // TODO use contracts, blocked by https://youtrack.jetbrains.com/issue/KT-41078
+    fun throwOnServerException(): KrosstalkResult<T> {
+        contract { returns() implies (this@KrosstalkResult !is ServerException) }
 
-        if (this is Failure && failure is KrosstalkFailure.ServerException) {
-            failure.throwException()
+        if (this is ServerException) {
+            throwException()
         }
+        return this
     }
 
-    /**
-     * Get the value if successful, otherwise throw with [throwOnFailure]
-     */
-    val valueOrThrow
-        get(): T {
-            throwOnFailure()
-            return (this as Success).value
-        }
-
-    inline fun <R> map(transform: (T) -> R): KrosstalkCallResult<R, F> = when (this) {
+    inline fun <R> map(transform: (T) -> R): KrosstalkResult<R> = when (this) {
         is Success -> success(transform(value))
-        is Failure -> this
+        is ServerException -> this
+        is HttpError -> this
     }
 
-    inline fun <R> fold(onSuccess: (T) -> R, onFailure: (F) -> R): R = when (this) {
+    inline fun <R> fold(onSuccess: (T) -> R, onFailure: (Failure) -> R): R = when (this) {
         is Success -> onSuccess(value)
-        is Failure -> onFailure(failure)
+        is ServerException -> onFailure(this)
+        is HttpError -> onFailure(this)
     }
 
     inline fun <R> fold(
         onSuccess: (T) -> R,
-        onHttpError: (KrosstalkFailure.HttpError) -> R,
-        onServerException: (KrosstalkFailure.ServerException) -> R,
-    ): R =
-        fold(
-            onSuccess,
-            onFailure = {
-                when (val f = it as KrosstalkFailure) {
-                    is KrosstalkFailure.HttpError -> onHttpError(f)
-                    is KrosstalkFailure.ServerException -> onServerException(f)
-                }
-            }
-        )
+        onServerException: (ServerException) -> R,
+        onHttpError: (HttpError) -> R,
+    ): R = when (this) {
+        is Success -> onSuccess(value)
+        is HttpError -> onHttpError(this)
+        is ServerException -> onServerException(this)
+    }
 
-//    fun toResult(): Result<T> = when(this){
-//
-//    }
+    //TODO once we can use result
+    // fun toResult(): Result<T> = fold({ Result.success(it) }, { Result.failure(it.getException()) })
 
     companion object {
         fun <T> success(value: T) = Success(value)
-        fun <F : KrosstalkFailure> failure(failure: F) = Failure(failure)
         operator fun <T> invoke(value: T) = success(value)
     }
 
@@ -224,85 +229,186 @@ sealed class KrosstalkCallResult<out T, out F : KrosstalkFailure> {
     //TODO toResult() or similar
 }
 
-inline fun <R, T : R, F : KrosstalkFailure> KrosstalkCallResult<T, F>.getOrElse(onFailure: (F) -> R): R = fold({ it }, onFailure)
-inline fun <R, T : R, F : KrosstalkFailure> KrosstalkCallResult<T, F>.getOrDefault(onFailure: R): R {
-    if (this is KrosstalkCallResult.Success)
-        return value
-    else
-        return onFailure
+/**
+ * Gets the value on success, or the result of [onFailure] otherwise.
+ *
+ * Alias for `fold({ it }, onFailure)`.
+ */
+inline fun <R, T : R> KrosstalkResult<T>.getOrElse(onFailure: (KrosstalkResult.Failure) -> R): R = fold({ it }, onFailure)
+
+/**
+ * Get the value on success, [onServerException] on a server exception, or [onHttpError] on a http error.
+ *
+ * Alias for `fold({ it }, onServerException, onHttpError)`.
+ */
+inline fun <R, T : R> KrosstalkResult<T>.getOrElse(
+    onServerException: (KrosstalkResult.ServerException) -> R,
+    onHttpError: (KrosstalkResult.HttpError) -> R,
+): R = fold(
+    { it },
+    onServerException = onServerException,
+    onHttpError = onHttpError)
+
+/**
+ * Get the value on success, or [onFailure] otherwise.
+ *
+ * Alias for `fold({ it }, { onFailure })`.
+ */
+inline fun <R, T : R> KrosstalkResult<T>.getOrDefault(onFailure: R): R = fold({ it }, { onFailure })
+
+/**
+ * Get the value on success, [onServerException] on a server exception, or [onHttpError] on a http error.
+ *
+ * Alias for `fold({ it }, { onServerException }, { onHttpError })`.
+ */
+inline fun <R, T : R> KrosstalkResult<T>.getOrDefault(onServerException: R, onHttpError: R): R = fold(
+    { it },
+    onServerException = { onServerException },
+    onHttpError = { onHttpError }
+)
+
+/**
+ * Recover from some failures.  Successes will be preserved, otherwise the result will be [onFailure] called on [this].
+ */
+inline fun <R, T : R> KrosstalkResult<T>.recover(onFailure: (KrosstalkResult.Failure) -> KrosstalkResult<R>): KrosstalkResult<R> = when (this) {
+    is KrosstalkResult.Success -> this
+    is KrosstalkResult.ServerException -> onFailure(this)
+    is KrosstalkResult.HttpError -> onFailure(this)
 }
 
-inline fun <R, T : R> KrosstalkCallResult<T, KrosstalkFailure>.recoverHttpError(onFailure: (KrosstalkFailure.HttpError) -> R): KrosstalkCallResult<R, KrosstalkFailure.ServerException> =
-    when (this) {
-        is KrosstalkCallResult.Success -> this
-        is KrosstalkCallResult.Failure -> when (failure) {
-            is KrosstalkFailure.HttpError -> KrosstalkCallResult.success(onFailure(failure))
-            is KrosstalkFailure.ServerException -> KrosstalkCallResult.Failure(failure)
-        }
+/**
+ * Recover from some failures.  Successes will be presented, and if [onFailure] successfully completes, a success will be returned.
+ * If [onFailure] throws a [ResultServerExceptionException] or [ResultHttpErrorException], like from [KrosstalkResult.Failure.throwException],
+ * the originating result will be used.
+ *
+ * For example:
+ * ```kotlin
+ * result.recoverCatching{
+ *     if(it is KrosstalkResult.HttpError && it.responseCode == 404)
+ *         null
+ *     else
+ *         it.throwException()
+ * }
+ * ```
+ * will result in a `KrosstalkResult<T?>` that is the success value if success, null if it was a HttpError with 404, or the failure otherwise.
+ */
+inline fun <R, T : R> KrosstalkResult<T>.recoverCatching(onFailure: (KrosstalkResult.Failure) -> R): KrosstalkResult<R> = recover {
+    try {
+        KrosstalkResult.success(onFailure(it))
+    } catch (e: ResultServerExceptionException) {
+        e.exception
+    } catch (e: ResultHttpErrorException) {
+        e.httpError
     }
+}
 
-inline fun <R, T : R> KrosstalkCallResult<T, KrosstalkFailure>.recoverException(onFailure: (KrosstalkFailure.ServerException) -> R): KrosstalkCallResult<R, KrosstalkFailure.HttpError> =
-    when (this) {
-        is KrosstalkCallResult.Success -> this
-        is KrosstalkCallResult.Failure -> when (failure) {
-            is KrosstalkFailure.HttpError -> KrosstalkCallResult.Failure(failure)
-            is KrosstalkFailure.ServerException -> KrosstalkCallResult.success(onFailure(failure))
-        }
-    }
-
-inline fun <R, T : R> KrosstalkCallResult<T, KrosstalkFailure>.maybeRecoverHttpError(onFailure: (KrosstalkFailure.HttpError) -> KrosstalkCallResult<R, KrosstalkFailure.HttpError>): KrosstalkCallResult<R, KrosstalkFailure> =
-    when (this) {
-        is KrosstalkCallResult.Success -> this
-        is KrosstalkCallResult.Failure -> when (failure) {
-            is KrosstalkFailure.HttpError -> onFailure(failure)
-            is KrosstalkFailure.ServerException -> KrosstalkCallResult.Failure(failure)
-        }
-    }
-
-inline fun <R, T : R> KrosstalkCallResult<T, KrosstalkFailure>.maybeRecoverHttpError(
-    responseCode: Int,
-    result: () -> R,
-): KrosstalkCallResult<R, KrosstalkFailure> =
-    maybeRecoverHttpError {
-        if (it.responseCode == responseCode)
-            KrosstalkCallResult.success(result())
+/**
+ * Recover from some failures.  Successes will be preserved, otherwise the result will be [onFailure] called on [this].
+ */
+inline fun <R, T : R> KrosstalkResult<T>.recoverServerException(onServerException: (KrosstalkResult.ServerException) -> KrosstalkResult<R>) =
+    recover {
+        if (it is KrosstalkResult.ServerException)
+            onServerException(it)
         else
-            KrosstalkCallResult.failure(it)
+            it as KrosstalkResult<R>
     }
 
-inline fun <R, T : R> KrosstalkCallResult<T, KrosstalkFailure>.recoverSomeHttpErrors(handlers: Map<Int, () -> R>): KrosstalkCallResult<R, KrosstalkFailure> =
-    maybeRecoverHttpError {
-        handlers[it.responseCode]?.invoke()?.let { KrosstalkCallResult.success(it) } ?: KrosstalkCallResult.failure(it)
-    }
-
-inline fun <R, T : R> KrosstalkCallResult<T, KrosstalkFailure>.recoverSomeHttpErrors(vararg handlers: Pair<Int, () -> R>): KrosstalkCallResult<R, KrosstalkFailure> =
-    recoverSomeHttpErrors(handlers.toMap())
-
-inline fun <R, T : R> KrosstalkCallResult<T, KrosstalkFailure>.maybeRecoverException(onFailure: (KrosstalkFailure.ServerException) -> KrosstalkCallResult<R, KrosstalkFailure.ServerException>): KrosstalkCallResult<R, KrosstalkFailure> =
-    when (this) {
-        is KrosstalkCallResult.Success -> this
-        is KrosstalkCallResult.Failure -> when (failure) {
-            is KrosstalkFailure.HttpError -> KrosstalkCallResult.Failure(failure)
-            is KrosstalkFailure.ServerException -> onFailure(failure)
+/**
+ * Recover from some failures.  Successes will be presented, and if [onServerException] successfully completes, a success will be returned.
+ * If [onServerException] throws a [ResultServerExceptionException], like from [KrosstalkResult.ServerException.throwException],
+ * the originating result will be used.
+ *
+ * @see recoverCatching
+ */
+inline fun <R, T : R> KrosstalkResult<T>.recoverServerExceptionCatching(onServerException: (KrosstalkResult.ServerException) -> R) = recover {
+    if (it is KrosstalkResult.ServerException) {
+        try {
+            KrosstalkResult.success(onServerException(it))
+        } catch (e: ResultServerExceptionException) {
+            e.exception
         }
-    }
-
-inline fun <T> KrosstalkCallResult<T, *>.onSuccess(handle: (T) -> Unit) {
-    if (this is KrosstalkCallResult.Success)
-        handle(value)
+    } else
+        it as KrosstalkResult<R>
 }
 
-inline fun KrosstalkCallResult<*, *>.onFailure(handle: (KrosstalkFailure) -> Unit) {
-    if (this is KrosstalkCallResult.Failure)
-        handle(failure)
+/**
+ * Recover from some failures.  Successes will be preserved, otherwise the result will be [onFailure] called on [this].
+ */
+inline fun <R, T : R> KrosstalkResult<T>.recoverHttpError(onHttpError: (KrosstalkResult.HttpError) -> KrosstalkResult<R>) = recover {
+    if (it is KrosstalkResult.HttpError)
+        onHttpError(it)
+    else
+        it as KrosstalkResult<R>
 }
 
-inline fun KrosstalkCallResult<*, *>.onHttpError(handle: (KrosstalkFailure.HttpError) -> Unit) {
-    if (this is KrosstalkCallResult.Failure && failure is KrosstalkFailure.HttpError)
-        handle(failure)
+/**
+ * Recover from some failures.  Successes will be presented, and if [onServerException] successfully completes, a success will be returned.
+ * If [onServerException] throws a [ResultServerExceptionException], like from [KrosstalkResult.ServerException.throwException],
+ * the originating result will be used.
+ *
+ * @see recoverCatching
+ */
+inline fun <R, T : R> KrosstalkResult<T>.recoverHttpErrorCatching(onHttpError: (KrosstalkResult.HttpError) -> R) = recover {
+    if (it is KrosstalkResult.HttpError) {
+        try {
+            KrosstalkResult.success(onHttpError(it))
+        } catch (e: ResultHttpErrorException) {
+            e.httpError
+        }
+    } else
+        it as KrosstalkResult<R>
 }
 
-inline fun KrosstalkCallResult<*, *>.onException(handle: (KrosstalkFailure.ServerException) -> Unit) {
-    if (this is KrosstalkCallResult.Failure && failure is KrosstalkFailure.ServerException)
-        handle(failure)
+/**
+ * Recover a http error code.  Successes will be preserved, and if the result is a [KrosstalkResult.HttpError] with [responseCode], a success with
+ * the value of [onHttpError] will be used to get the result.
+ */
+inline fun <R, T : R> KrosstalkResult<T>.recoverHttpError(responseCode: Int, onError: (KrosstalkResult.HttpError) -> R) = recover {
+    if (it is KrosstalkResult.HttpError && it.responseCode == responseCode)
+        KrosstalkResult.success(onError(it))
+    else
+        it as KrosstalkResult<R>
+}
+
+/**
+ * Recover a http error code.  Successes will be preserved, and if the result is a [KrosstalkResult.HttpError] with [responseCode], a success with
+ * the value of [onHttpError] will be used.
+ */
+inline fun <R, T : R> KrosstalkResult<T>.recoverHttpError(responseCode: Int, onError: R) = recover {
+    if (it is KrosstalkResult.HttpError && it.responseCode == responseCode)
+        KrosstalkResult.success(onError)
+    else
+        it as KrosstalkResult<R>
+}
+
+/**
+ * Execute [onSuccess] if the result is a success.
+ */
+inline fun <T> KrosstalkResult<T>.onSuccess(onSuccess: (T) -> Unit) = also {
+    if (it is KrosstalkResult.Success)
+        onSuccess(it.value)
+}
+
+/**
+ * Execute [onFailure] if the result is a failure.
+ */
+inline fun <T> KrosstalkResult<T>.onFailure(onFailure: (KrosstalkResult.Failure) -> Unit) = also {
+    if (it.isFailure())
+        onFailure(it)
+}
+
+/**
+ * Execute [onServerException] if the result is a server exception.
+ */
+inline fun <T> KrosstalkResult<T>.onServerException(onServerException: (KrosstalkResult.ServerException) -> Unit) = also {
+    if (it.isServerException())
+        onServerException(it)
+}
+
+/**
+ * Execute [onHttpError] if the result is a http error.
+ */
+inline fun <T> KrosstalkResult<T>.onHttpError(onHttpError: (KrosstalkResult.HttpError) -> Unit) = also {
+    if (it.isHttpError())
+        onHttpError(it)
 }

@@ -3,7 +3,7 @@ plugins {
     id("org.jetbrains.kotlin.plugin.serialization")
 }
 
-val serialization_version = "1.0.1"
+val serialization_version = "1.1.0"
 
 description = "Krosstalk runtime library"
 

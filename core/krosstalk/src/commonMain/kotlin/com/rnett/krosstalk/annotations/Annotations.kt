@@ -104,6 +104,10 @@ annotation class MinimizeBody
 @TopLevelOnly
 annotation class EmptyBody
 
+//TODO option to re-throw caught exceptions on the server
+//TODO option to only catch certain types of exceptions?  What's the point
+//TODO option to only do http errors, or only do exceptions
+//TODO post 1.5: a version that uses kotlin.Result.  Would have to limit to http errors, can't serialize exceptions (test)
 /**
  * Return [KrosstalkResult].  Method return type must be [KrosstalkResult].
  * Server side function should return a [KrosstalkResult.Success].

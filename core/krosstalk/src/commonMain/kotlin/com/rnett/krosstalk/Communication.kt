@@ -169,7 +169,7 @@ internal suspend inline fun <T, K, reified C : ClientScope<*>> K.call(
                     result.error?.let { it(methodName) }
                         ?: client.callFailedException(methodName, result.responseCode)
                 } catch (e: Throwable) {
-                    KrosstalkResult.failure(KrosstalkFailure.HttpError(result.responseCode, e.message))
+                    KrosstalkResult.HttpError(result.responseCode, e.message)
                 } as T
             }
         }
@@ -215,7 +215,7 @@ suspend fun <K> K.handle(
         try {
             method.call(arguments, wantedScopes)
         } catch (e: Throwable) {
-            KrosstalkResult.failure(KrosstalkFailure.ServerException(ExceptionData(e, method.includeStacktrace)))
+            KrosstalkResult.ServerException(e, method.includeStacktrace)
         }
     } else {
         method.call(arguments, wantedScopes)

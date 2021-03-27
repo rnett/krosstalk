@@ -71,6 +71,7 @@ interface KtorKrosstalkServer : KrosstalkServer<KtorServerScope<*>> {
  */
 object KtorServer : ServerHandler<KtorServerScope<*>> {
 
+    //TODO allow wrapping in non-url scopes
     /**
      * Meant to be called from an Application, like:
      * ```kotlin

@@ -4,7 +4,6 @@ import com.rnett.krosstalk.Krosstalk
 import com.rnett.krosstalk.KrosstalkResult
 import com.rnett.krosstalk.KrosstalkServer
 import com.rnett.krosstalk.Scope
-import com.rnett.krosstalk.krosstalkCall
 import com.rnett.krosstalk.ktor.server.KtorServer
 import com.rnett.krosstalk.ktor.server.KtorServerAuth
 import com.rnett.krosstalk.ktor.server.KtorServerScope

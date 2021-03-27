@@ -14,7 +14,7 @@ import kotlin.reflect.KType
 /**
  * A serializer that uses a kotlinx [KSerializer] with a [BinaryFormat].
  */
-class KotlinxBinarySerializer<T>(val serializer: KSerializer<T>, val format: BinaryFormat) : BinarySerializer<T> {
+data class KotlinxBinarySerializer<T>(val serializer: KSerializer<T>, val format: BinaryFormat) : BinarySerializer<T> {
     override fun deserialize(data: ByteArray): T = format.decodeFromByteArray(serializer, data)
 
     override fun serialize(data: T): ByteArray = format.encodeToByteArray(serializer, data)
@@ -24,7 +24,7 @@ class KotlinxBinarySerializer<T>(val serializer: KSerializer<T>, val format: Bin
 /**
  * A serializer that uses a kotlinx [KSerializer] with a [StringFormat].
  */
-class KotlinxStringSerializer<T>(val serializer: KSerializer<T>, val format: StringFormat) : StringSerializer<T> {
+data class KotlinxStringSerializer<T>(val serializer: KSerializer<T>, val format: StringFormat) : StringSerializer<T> {
     override fun deserialize(data: String): T = format.decodeFromString(serializer, data)
 
     override fun serialize(data: T): String = format.encodeToString(serializer, data)
@@ -33,7 +33,7 @@ class KotlinxStringSerializer<T>(val serializer: KSerializer<T>, val format: Str
 /**
  * Kotlinx serialization handler that uses a [BinaryFormat].  Combines arguments into a `Map<String, ByteArray>`, then serializes the map.
  */
-class KotlinxBinarySerializationHandler(val format: BinaryFormat) : ArgumentSerializationHandler<ByteArray>(ByteTransformer) {
+data class KotlinxBinarySerializationHandler(val format: BinaryFormat) : ArgumentSerializationHandler<ByteArray>(ByteTransformer) {
     override fun serializeArguments(serializedArguments: Map<String, ByteArray>): ByteArray {
         return format.encodeToByteArray(mapSerializer, serializedArguments)
     }
@@ -55,7 +55,7 @@ class KotlinxBinarySerializationHandler(val format: BinaryFormat) : ArgumentSeri
  * If you want the arguments to be objects, which you probably do, use [KotlinxJsonObjectSerializationHandler].
  * This is necessary for using non-krosstalk apis.
  */
-class KotlinxStringSerializationHandler(val format: StringFormat) : ArgumentSerializationHandler<String>(StringTransformer) {
+data class KotlinxStringSerializationHandler(val format: StringFormat) : ArgumentSerializationHandler<String>(StringTransformer) {
     override fun serializeArguments(serializedArguments: Map<String, String>): String {
         return format.encodeToString(mapSerializer, serializedArguments)
     }
@@ -73,7 +73,7 @@ class KotlinxStringSerializationHandler(val format: StringFormat) : ArgumentSeri
  * Kotlinx json serialization handler that, instead of combining arguments into a `Map<String, String>`, uses them as fields in a json object.
  * If you are interacting with a non-krosstalk api, this is almost certainly what you want to use.
  */
-class KotlinxJsonObjectSerializationHandler(val format: Json) : BaseSerializationHandler<String>(StringTransformer) {
+data class KotlinxJsonObjectSerializationHandler(val format: Json) : BaseSerializationHandler<String>(StringTransformer) {
     override fun getSerializer(type: KType) = KotlinxStringSerializer(serializer(type), format)
 
     override fun serializeArguments(arguments: Map<String, *>, serializers: ArgumentSerializers<String>): String {

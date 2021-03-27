@@ -104,8 +104,9 @@ class Tests {
     fun testWithResult() = GlobalScope.promise {
         val result = withResult(-2)
 
+        println(result)
         assertTrue(result.isServerException())
-        assertEquals("java.lang.IllegalStateException: Can't have n < 0", result.serverExceptionOrNull!!.asString)
+        assertEquals("java.lang.IllegalStateException: Can't have n < 0", result.serverExceptionOrNull?.asString)
 
         println("Result: " + withResult(2))
         assertEquals(2, withResult(2).valueOrNull)
