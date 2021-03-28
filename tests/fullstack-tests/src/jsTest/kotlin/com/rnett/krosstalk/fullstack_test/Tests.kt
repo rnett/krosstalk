@@ -1,5 +1,8 @@
-package com.rnett.krosstalk.fullstack_sample
+package com.rnett.krosstalk.fullstack_test
 
+import com.rnett.krosstalk.fullstack_test.Data
+import com.rnett.krosstalk.fullstack_test.lastBody
+import com.rnett.krosstalk.fullstack_test.lastUrl
 import io.ktor.client.utils.EmptyContent
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.promise
@@ -15,7 +18,7 @@ class Tests {
     fun testBasic() = GlobalScope.promise {
         assertEquals(listOf("t", "t"), basicTest(Data(2, "t")))
         assertEquals("/krosstalk/basicTest", lastUrl)
-    }
+    }.asDynamic()
 
     @Test
     fun testBasicEndpoint() = GlobalScope.promise {
@@ -102,14 +105,7 @@ class Tests {
 
     @Test
     fun testWithResult() = GlobalScope.promise {
-        val result = withResult(-2)
-
-        println(result)
-        assertTrue(result.isServerException())
-        assertEquals("java.lang.IllegalStateException: Can't have n < 0", result.serverExceptionOrNull?.asString)
-
-        println("Result: " + withResult(2))
-        assertEquals(2, withResult(2).valueOrNull)
+        testKrosstalkResultMatching()
     }
 
 

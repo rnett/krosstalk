@@ -92,7 +92,7 @@ annotation class MinimizeBody
 @TopLevelOnly
 annotation class EmptyBody
 
-//TODO option to re-throw caught exceptions on the server
+//TODO option to re-throw caught exceptions on the server (use throwAfterResponse, need to do it after response though, how?)
 //TODO option to only catch certain types of exceptions?  What's the point
 //TODO option to only do http errors, or only do exceptions
 //TODO post 1.5: a version that uses kotlin.Result.  Would have to limit to http errors, can't serialize exceptions (test)
@@ -109,4 +109,4 @@ annotation class EmptyBody
 @Retention(AnnotationRetention.BINARY)
 @MustBeDocumented
 @TopLevelOnly
-annotation class ExplicitResult(val includeStacktrace: Boolean = false)
+annotation class ExplicitResult(val includeStacktrace: Boolean = false, val throwAfterResponse: Boolean = false)

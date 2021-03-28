@@ -2,6 +2,7 @@ package com.rnett.krosstalk
 
 import com.rnett.krosstalk.annotations.ExplicitResult
 import kotlinx.serialization.Serializable
+import kotlinx.serialization.Transient
 import kotlin.contracts.contract
 import kotlin.reflect.KClass
 
@@ -62,6 +63,7 @@ sealed class KrosstalkResult<out T> {
         val suppressed: List<ServerException>,
         val asString: String,
         val asStringWithStacktrace: String?,
+        @Transient @PublishedApi internal val throwable: Throwable? = null,
     ) : KrosstalkResult<Nothing>(), Failure {
 
         @InternalKrosstalkApi
@@ -71,7 +73,8 @@ sealed class KrosstalkResult<out T> {
             throwable.cause?.let { ServerException(it, includeStacktrace) },
             throwable.suppressedExceptions.map { ServerException(it, includeStacktrace) },
             throwable.toString(),
-            if (includeStacktrace) throwable.stackTraceToString() else null
+            if (includeStacktrace) throwable.stackTraceToString() else null,
+            throwable
         )
 
         override fun getException() = ResultServerExceptionException(this)

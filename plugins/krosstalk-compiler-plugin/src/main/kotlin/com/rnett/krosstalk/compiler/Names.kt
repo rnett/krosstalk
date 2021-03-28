@@ -4,6 +4,7 @@ import com.rnett.plugin.naming.Class
 import com.rnett.plugin.naming.ClassRef
 import com.rnett.plugin.naming.PackageRef
 import com.rnett.plugin.naming.RootPackage
+import com.rnett.plugin.naming.constructor
 import com.rnett.plugin.naming.function
 
 const val krosstalkPackage = "com.rnett.krosstalk"
@@ -47,7 +48,12 @@ object Krosstalk : RootPackage(krosstalkPackage) {
         }
     }
 
-    val KrosstalkResult by Class()
+    object KrosstalkResult : ClassRef() {
+        object ServerException : ClassRef() {
+            val throwableConstructor by constructor { numParameters = 2 }
+        }
+    }
+
     val ScopeHolder by Class()
 
 

@@ -165,5 +165,6 @@ sealed class KrosstalkAnnotation(val call: IrConstructorCall, name: String) {
 
     class ExplicitResult(call: IrConstructorCall) : KrosstalkAnnotation(call, "ExplicitResult") {
         val includeStacktrace by field(false)
+        val throwAfterResponse by field(false)
     }
 }

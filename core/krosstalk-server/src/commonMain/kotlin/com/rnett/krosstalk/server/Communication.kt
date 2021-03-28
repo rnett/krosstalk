@@ -3,7 +3,6 @@ package com.rnett.krosstalk.server
 import com.rnett.krosstalk.InternalKrosstalkApi
 import com.rnett.krosstalk.Krosstalk
 import com.rnett.krosstalk.KrosstalkPluginApi
-import com.rnett.krosstalk.KrosstalkResult
 import com.rnett.krosstalk.httpDecode
 
 
@@ -47,15 +46,7 @@ suspend fun <K> K.handle(
         arguments += endpointArguments
     }
 
-    val result = if (method.useExplicitResult) {
-        try {
-            method.call(arguments, wantedScopes)
-        } catch (e: Throwable) {
-            KrosstalkResult.ServerException(e, method.includeStacktrace)
-        }
-    } else {
-        method.call(arguments, wantedScopes)
-    }
+    val result = method.call(arguments, wantedScopes)
 
     return method.serializers.transformedResultSerializer.serializeToBytes(result)
 }

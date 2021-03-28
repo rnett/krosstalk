@@ -56,12 +56,12 @@ kotlin {
             }
         }
 
-//        val commonTest by getting {
-//            dependencies {
-//                implementation(kotlin("test-common"))
-//                implementation(kotlin("test-annotations-common"))
-//            }
-//        }
+        val commonTest by getting {
+            dependencies {
+                implementation(kotlin("test-common"))
+                implementation(kotlin("test-annotations-common"))
+            }
+        }
         val jvmMain by getting {
             dependencies {
                 implementation("io.ktor:ktor-server-cio:$ktor_version")
@@ -71,11 +71,11 @@ kotlin {
                 implementation("ch.qos.logback:logback-classic:1.2.3")
             }
         }
-//        val jvmTest by getting {
-//            dependencies {
-//                implementation(kotlin("test-junit5"))
-//            }
-//        }
+        val jvmTest by getting {
+            dependencies {
+                implementation(kotlin("test-junit"))
+            }
+        }
         val jsMain by getting {
             dependencies {
                 implementation("com.github.rnett.krosstalk:krosstalk-ktor-client")
@@ -101,7 +101,7 @@ kotlin {
 }
 
 application {
-    this.mainClass.set("com.rnett.krosstalk.fullstack_sample.TestKt")
+    this.mainClass.set("com.rnett.krosstalk.fullstack_test.TestKt")
 }
 tasks.getByName<KotlinWebpack>("jsBrowserProductionWebpack") {
     outputFileName = "test.js"
@@ -117,7 +117,7 @@ tasks.create<com.github.psxpaul.task.JavaExecFork>("startTestServer") {
     group = "verification"
 
     classpath = sourceSets.main.get().runtimeClasspath
-    main = "com.rnett.krosstalk.fullstack_sample.TestKt"
+    main = "com.rnett.krosstalk.fullstack_test.TestKt"
     Thread.sleep(2_000)
 
     dependsOn("jvmJar")

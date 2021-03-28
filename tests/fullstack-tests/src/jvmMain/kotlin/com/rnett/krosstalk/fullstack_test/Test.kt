@@ -1,4 +1,4 @@
-package com.rnett.krosstalk.fullstack_sample
+package com.rnett.krosstalk.fullstack_test
 
 import com.rnett.krosstalk.Krosstalk
 import com.rnett.krosstalk.KrosstalkResult

@@ -20,6 +20,7 @@ import com.rnett.plugin.naming.isClassifierOf
 import com.rnett.plugin.stdlib.Kotlin
 import org.jetbrains.kotlin.backend.common.extensions.IrPluginContext
 import org.jetbrains.kotlin.backend.common.lower.DeclarationIrBuilder
+import org.jetbrains.kotlin.backend.common.lower.irCatch
 import org.jetbrains.kotlin.backend.common.lower.irThrow
 import org.jetbrains.kotlin.cli.common.messages.MessageCollector
 import org.jetbrains.kotlin.descriptors.CallableDescriptor
@@ -31,19 +32,23 @@ import org.jetbrains.kotlin.ir.builders.declarations.addValueParameter
 import org.jetbrains.kotlin.ir.builders.irBlockBody
 import org.jetbrains.kotlin.ir.builders.irCall
 import org.jetbrains.kotlin.ir.builders.irCallConstructor
+import org.jetbrains.kotlin.ir.builders.irComposite
 import org.jetbrains.kotlin.ir.builders.irGet
 import org.jetbrains.kotlin.ir.builders.irGetObject
 import org.jetbrains.kotlin.ir.builders.irIfNull
 import org.jetbrains.kotlin.ir.builders.irNull
+import org.jetbrains.kotlin.ir.builders.irTemporary
 import org.jetbrains.kotlin.ir.declarations.IrAnonymousInitializer
 import org.jetbrains.kotlin.ir.declarations.IrClass
 import org.jetbrains.kotlin.ir.declarations.IrSimpleFunction
 import org.jetbrains.kotlin.ir.declarations.IrValueParameter
+import org.jetbrains.kotlin.ir.declarations.IrVariable
 import org.jetbrains.kotlin.ir.expressions.IrBlockBody
 import org.jetbrains.kotlin.ir.expressions.IrCall
 import org.jetbrains.kotlin.ir.expressions.IrClassReference
 import org.jetbrains.kotlin.ir.expressions.IrExpression
 import org.jetbrains.kotlin.ir.expressions.IrExpressionBody
+import org.jetbrains.kotlin.ir.expressions.impl.IrCompositeImpl
 import org.jetbrains.kotlin.ir.symbols.IrClassSymbol
 import org.jetbrains.kotlin.ir.types.IrType
 import org.jetbrains.kotlin.ir.types.classOrNull
@@ -423,6 +428,34 @@ class KrosstalkMethodTransformer(
             checked = true
         }
 
+        fun wrapBodyForExplicitResultIfNeeded() {
+            val explicitResult = annotations.ExplicitResult ?: return
+            if (!krosstalkClass.isServer) return
+            if (declaration.isExpect) return
+            if (declaration.body == null) return
+
+            declaration.withBuilder {
+                val result = declaration.body!!.let { body ->
+                    if (body is IrExpressionBody) {
+                        body.expression
+                    } else {
+                        body as IrBlockBody
+                        irComposite {
+                            declaration.body!!.statements.forEach {
+                                +it
+                            }
+                        }
+                    }
+                }
+                declaration.body = irJsExprBody(irTry(result, declaration.returnType) {
+                    irCatch(context.irBuiltIns.throwableType) {
+                        irCallConstructor(Krosstalk.KrosstalkResult.ServerException.throwableConstructor(), emptyList())
+                            .withValueArguments(irGet(it), explicitResult.includeStacktrace.asConst())
+                    }
+                })
+            }
+        }
+
         fun IrBuilderWithScope.buildCallLambda(): IrSimpleFunction {
             if (!krosstalkClass.isServer) {
                 return buildLambda(declaration.returnType, { isSuspend = true }) {
@@ -737,6 +770,7 @@ class KrosstalkMethodTransformer(
                 check()
                 addToKrosstalkClass()
                 addCallMethodBody()
+                wrapBodyForExplicitResultIfNeeded()
             }
         }
         return super.visitSimpleFunction(declaration)
