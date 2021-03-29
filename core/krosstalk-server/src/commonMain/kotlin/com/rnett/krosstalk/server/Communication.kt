@@ -4,6 +4,7 @@ import com.rnett.krosstalk.InternalKrosstalkApi
 import com.rnett.krosstalk.Krosstalk
 import com.rnett.krosstalk.KrosstalkPluginApi
 import com.rnett.krosstalk.KrosstalkResult
+import com.rnett.krosstalk.MethodDefinition
 import com.rnett.krosstalk.httpDecode
 import com.rnett.krosstalk.serialization.getMethodSerializer
 import kotlin.contracts.InvocationKind
@@ -41,7 +42,7 @@ typealias Responder = suspend (statusCode: Int, contentType: String?, data: Byte
 @OptIn(InternalKrosstalkApi::class)
 @KrosstalkPluginApi
 suspend fun <K> K.handle(
-    methodName: String,
+    method: MethodDefinition<*>,
     urlArguments: Map<String, String>,
     data: ByteArray,
     scopes: WantedScopes,
@@ -53,8 +54,7 @@ suspend fun <K> K.handle(
         callsInPlace(handleException, InvocationKind.AT_MOST_ONCE)
     }
     val wantedScopes = scopes.toImmutable()
-    val method = requiredMethod(methodName)
-    val contentType = "application/*" //TODO set in KrosstalkEndpoint
+    val contentType = method.contentType ?: serialization.contentType
 
     val arguments = if (data.isNotEmpty())
         method.serializers.transformedParamSerializers.deserializeArgumentsFromBytes(data).toMutableMap()
@@ -82,6 +82,7 @@ suspend fun <K> K.handle(
                 responder(200, contentType, method.serializers.transformedResultSerializer.serializeToBytes(kr.value))
             }
             is KrosstalkResult.ServerException -> {
+                //TODO something in plaintext for non-krosstalk servers?  JSON serialize the exception maybe.  I can just use Kotlinx here too, rather than getting the serializer
                 responder(500, "application/octet-stream", serialization.getMethodSerializer<KrosstalkResult.ServerException>().serializeToBytes(kr))
             }
             is KrosstalkResult.HttpError -> {

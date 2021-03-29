@@ -5,7 +5,6 @@ import com.rnett.krosstalk.KrosstalkResult
 import com.rnett.krosstalk.Scope
 import com.rnett.krosstalk.client.KrosstalkClient
 import com.rnett.krosstalk.client.krosstalkCall
-import com.rnett.krosstalk.fullstack_test.Data
 import com.rnett.krosstalk.ktor.client.BasicCredentials
 import com.rnett.krosstalk.ktor.client.KtorClient
 import com.rnett.krosstalk.ktor.client.KtorClientAuth
@@ -16,7 +15,10 @@ import io.ktor.client.features.auth.providers.basic
 import io.ktor.client.features.defaultRequest
 import io.ktor.client.features.logging.LogLevel
 import io.ktor.client.features.logging.Logging
+import io.ktor.http.ContentType
+import io.ktor.http.HttpMethod
 import io.ktor.http.authority
+import io.ktor.http.contentType
 import kotlinx.serialization.cbor.Cbor
 import kotlin.properties.Delegates
 
@@ -24,6 +26,12 @@ internal var lastUrl: String by Delegates.notNull()
     private set
 
 internal var lastBody: Any by Delegates.notNull()
+    private set
+
+internal var lastHttpMethod: HttpMethod by Delegates.notNull()
+    private set
+
+internal var lastContentType: ContentType? = null
     private set
 
 actual object MyKrosstalk : Krosstalk(), KrosstalkClient<KtorClientScope<*>> {
@@ -36,6 +44,8 @@ actual object MyKrosstalk : Krosstalk(), KrosstalkClient<KtorClientScope<*>> {
             this.defaultRequest {
                 lastUrl = url.buildString().removePrefix(url.protocol.name).removePrefix("://").removePrefix(url.authority)
                 lastBody = body
+                lastHttpMethod = this.method
+                lastContentType = this.contentType()
             }
 
         }
@@ -57,6 +67,8 @@ actual suspend fun basicTest(data: Data): List<String> = krosstalkCall()
 actual suspend fun basicEndpointTest(number: Int, str: String): String = krosstalkCall()
 
 actual suspend fun endpointMethodTest(a: Int, b: Int): Int = krosstalkCall()
+
+actual suspend fun endpointContentTypeTest(a: Int, b: Int): Int = krosstalkCall()
 
 actual suspend fun emptyGet(): String = krosstalkCall()
 

@@ -315,14 +315,6 @@ class KrosstalkMethodTransformer(
                 }
             }
 
-
-            if (annotations.NullOn != null && !declaration.returnType.isNullable()) {
-                messageCollector.reportError(
-                    "Can't use NullOn annotation on function with non-nullable return type.",
-                    declaration
-                )
-            }
-
             if (minimizeBody && !setEndpoint && hasArgs) {
                 if (requireEmptyBody)
                     messageCollector.reportError(
@@ -390,9 +382,6 @@ class KrosstalkMethodTransformer(
                     )
                 }
             }
-
-            if (annotations.NullOn != null && annotations.ExplicitResult != null)
-                messageCollector.reportError("Can't use @NullOn and @ExplicitResult on the same method.", declaration)
 
             if (annotations.ExplicitResult != null) {
                 if (declaration.returnType.classOrNull != Krosstalk.KrosstalkResult())
@@ -608,12 +597,17 @@ class KrosstalkMethodTransformer(
                         // Name
                         addValueArgument(declaration.name.asString().asConst())
 
-                        // endpoint and method
+                        // endpoint
 
                         addValueArgument(endpointTemplate.asConst())
+
+                        // method
                         addValueArgument(
                             (annotations.KrosstalkEndpoint?.httpMethod ?: defaultEndpointMethod).asConst()
                         )
+
+                        // content type
+                        addValueArgument((annotations.KrosstalkEndpoint?.contentType ?: "").asConst())
 
                         // MethodTypes
                         addValueArgument(
@@ -665,14 +659,6 @@ class KrosstalkMethodTransformer(
                         // leave out arguments
                         addValueArgument(
                             (annotations.MinimizeBody != null || annotations.EmptyBody != null).asConst()
-                        )
-
-                        // nullOnResponse
-                        addValueArgument(
-                            stdlib.collections.setOf(
-                                context.irBuiltIns.intType,
-                                (annotations.NullOn?.responseCodes ?: emptySet()).map { it.asConst() }
-                            )
                         )
 
                         // useExplicitResult

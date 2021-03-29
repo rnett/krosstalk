@@ -138,7 +138,7 @@ object KtorServer : ServerHandler<KtorServerScope<*>> {
                                         scope.getData(call)?.let { scopes[scope as KtorServerScope<Any?>] = it }
                                     }
 
-                                    krosstalk.handle(method.name, data, body, scopes.toImmutable(), {
+                                    krosstalk.handle(method, data, body, scopes.toImmutable(), {
                                         application.log.error("Server exception during ${method.name}, passed on to client", it)
                                     }) { status: Int, contentType: String?, bytes: ByteArray ->
                                         call.respondBytes(

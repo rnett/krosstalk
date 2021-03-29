@@ -17,7 +17,6 @@ import io.ktor.client.statement.HttpResponse
 import io.ktor.http.HttpMethod
 import io.ktor.http.HttpStatusCode
 import io.ktor.http.charset
-import io.ktor.http.contentType
 import io.ktor.utils.io.charsets.Charsets
 import io.ktor.utils.io.core.String
 
@@ -74,6 +73,7 @@ open class KtorClient(override val serverUrl: String) : ClientHandler<KtorClient
     override suspend fun sendKrosstalkRequest(
         endpoint: String,
         httpMethod: String,
+        contentType: String,
         body: ByteArray?,
         scopes: List<AppliedClientScope<KtorClientScope<*>, *>>,
     ): InternalKrosstalkResponse {
@@ -86,6 +86,7 @@ open class KtorClient(override val serverUrl: String) : ClientHandler<KtorClient
             if (body != null)
                 this.body = body
             this.method = HttpMethod(httpMethod.toUpperCase())
+
             // base request configuration
             configureRequest()
 
@@ -94,8 +95,6 @@ open class KtorClient(override val serverUrl: String) : ClientHandler<KtorClient
                 it.configureRequest(this)
             }
         }
-
-        response.contentType()
 
         val bytes = response.receive<ByteArray>()
         val charset = response.charset() ?: Charsets.UTF_8

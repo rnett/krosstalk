@@ -37,6 +37,10 @@ expect suspend fun basicEndpointTest(number: Int, str: String): String
 expect suspend fun endpointMethodTest(a: Int, b: Int): Int
 
 @KrosstalkMethod(MyKrosstalk::class)
+@KrosstalkEndpoint(contentType = "text/plain")
+expect suspend fun endpointContentTypeTest(a: Int, b: Int): Int
+
+@KrosstalkMethod(MyKrosstalk::class)
 @KrosstalkEndpoint(httpMethod = "GET")
 expect suspend fun emptyGet(): String
 

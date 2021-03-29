@@ -70,6 +70,8 @@ actual suspend fun basicEndpointTest(number: Int, str: String): String = str.rep
 
 actual suspend fun endpointMethodTest(a: Int, b: Int): Int = a + b
 
+actual suspend fun endpointContentTypeTest(a: Int, b: Int): Int = a + b
+
 actual suspend fun emptyGet(): String = "Hello World!"
 
 actual suspend fun paramEndpointNoMinimize(a: Int, b: Int, c: Int, d: Int): Int = a * b * c * d

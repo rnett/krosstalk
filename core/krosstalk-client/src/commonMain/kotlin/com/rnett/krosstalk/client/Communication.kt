@@ -55,6 +55,7 @@ interface ClientHandler<C : ClientScope<*>> {
     suspend fun sendKrosstalkRequest(
         endpoint: String,
         httpMethod: String,
+        contentType: String,
         body: ByteArray?,
         scopes: List<AppliedClientScope<C, *>>,
     ): InternalKrosstalkResponse
@@ -101,13 +102,10 @@ internal suspend inline fun <T, K, reified C : ClientScope<*>> K.call(
             arguments.filter { it.value != null }.keys
         ),
         method.httpMethod,
+        method.contentType ?: serialization.contentType,
         if (!method.hasBodyArguments(arguments)) null else serializedBody,
         scopes
     )
-
-    @Suppress("UNCHECKED_CAST") // checked in compiler plugin
-    if (result.statusCode in method.nullOnResponseCodes)
-        return null as T
 
     return if (method.useExplicitResult) {
         if (result.isSuccess()) {

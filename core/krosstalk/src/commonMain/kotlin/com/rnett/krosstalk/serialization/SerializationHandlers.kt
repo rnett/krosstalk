@@ -3,6 +3,8 @@ package com.rnett.krosstalk.serialization
 import kotlin.reflect.KType
 import kotlin.reflect.typeOf
 
+const val byteArrayContentType = "application/octet-stream"
+const val stringContentType = "text/plain; charset=utf-8"
 
 /**
  * A SerializationHandler capable of getting serializers from [KType]s,
@@ -46,7 +48,15 @@ interface SerializationHandler<S> {
      */
     fun <T> deserializeArgument(key: String, value: S, serializers: ArgumentSerializers<S>): T = serializers.deserializeArgument(key, value)
 
+    /**
+     * Get the format transformer, to turn the serial format into byte arrays and strings
+     */
     val transformer: SerializedFormatTransformer<S>
+
+    /**
+     * Get the default content type fo use for requests.
+     */
+    val contentType: String get() = "application/*"
 }
 
 

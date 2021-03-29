@@ -1,15 +1,12 @@
 package com.rnett.krosstalk.fullstack_test
 
-import com.rnett.krosstalk.fullstack_test.Data
-import com.rnett.krosstalk.fullstack_test.lastBody
-import com.rnett.krosstalk.fullstack_test.lastUrl
 import io.ktor.client.utils.EmptyContent
+import io.ktor.http.HttpMethod
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.promise
 import kotlin.test.Test
 import kotlin.test.assertEquals
 import kotlin.test.assertNotEquals
-import kotlin.test.assertTrue
 
 //TODO full set of tests
 class Tests {
@@ -30,6 +27,13 @@ class Tests {
     fun testEndpointMethod() = GlobalScope.promise {
         assertEquals(10, endpointMethodTest(5, 5))
         assertEquals("/krosstalk/endpointMethodTest", lastUrl)
+        assertEquals(HttpMethod.Put, lastHttpMethod)
+    }
+
+    @Test
+    fun testEndpointContentType() = GlobalScope.promise {
+        assertEquals(10, endpointContentTypeTest(5, 5))
+        assertEquals("/krosstalk/endpointContentTypeTest", lastUrl)
     }
 
     @Test
@@ -37,6 +41,7 @@ class Tests {
         assertEquals("Hello World!", emptyGet())
         assertEquals("/krosstalk/emptyGet", lastUrl)
         assertEquals(EmptyContent, lastBody)
+        assertEquals(HttpMethod.Get, lastHttpMethod)
     }
 
     @Test

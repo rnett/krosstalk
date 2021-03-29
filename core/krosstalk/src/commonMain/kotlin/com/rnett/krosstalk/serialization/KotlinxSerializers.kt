@@ -43,6 +43,7 @@ data class KotlinxBinarySerializationHandler(val format: BinaryFormat) : Argumen
     override fun getSerializer(type: KType) = KotlinxBinarySerializer(serializer(type), format)
 
     val mapSerializer = serializer<Map<String, ByteArray>>()
+    override val contentType: String = byteArrayContentType
 }
 
 
@@ -65,6 +66,7 @@ data class KotlinxStringSerializationHandler(val format: StringFormat) : Argumen
     override fun getSerializer(type: KType) = KotlinxStringSerializer(serializer(type), format)
 
     val mapSerializer = serializer<Map<String, String>>()
+    override val contentType: String = stringContentType
 }
 
 /**
@@ -89,4 +91,5 @@ data class KotlinxJsonObjectSerializationHandler(val format: Json) : BaseSeriali
             Json.decodeFromJsonElement((serializers[key] as KotlinxStringSerializer<Any?>).serializer, data)
         }
     }
+    override val contentType: String = stringContentType
 }

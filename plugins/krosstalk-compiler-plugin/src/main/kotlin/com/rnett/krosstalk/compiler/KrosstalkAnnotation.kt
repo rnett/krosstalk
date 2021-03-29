@@ -2,14 +2,12 @@ package com.rnett.krosstalk.compiler
 
 import com.rnett.krosstalk.defaultEndpoint
 import com.rnett.krosstalk.defaultEndpointMethod
-import com.rnett.krosstalk.exception
 import com.rnett.krosstalk.exceptionMessage
 import org.jetbrains.kotlin.ir.declarations.IrAnnotationContainer
 import org.jetbrains.kotlin.ir.expressions.IrClassReference
 import org.jetbrains.kotlin.ir.expressions.IrConst
 import org.jetbrains.kotlin.ir.expressions.IrConstructorCall
 import org.jetbrains.kotlin.ir.expressions.IrVararg
-import org.jetbrains.kotlin.ir.symbols.IrClassSymbol
 import org.jetbrains.kotlin.ir.util.constructedClass
 import org.jetbrains.kotlin.ir.util.fqNameForIrSerialization
 import org.jetbrains.kotlin.ir.util.getArgumentsWithIr
@@ -61,9 +59,6 @@ data class KrosstalkAnnotations(val annotations: Set<KrosstalkAnnotation>) :
 
     val KrosstalkEndpoint by annotation<KrosstalkAnnotation.KrosstalkEndpoint>()
 
-    //    val RequiredScopes by annotation<KrosstalkAnnotation.RequiredScopes>()
-//    val OptionalScopes by annotation<KrosstalkAnnotation.OptionalScopes>()
-    val NullOn by annotation<KrosstalkAnnotation.NullOn>()
     val MinimizeBody by annotation<KrosstalkAnnotation.MinimizeBody>()
     val EmptyBody by annotation<KrosstalkAnnotation.EmptyBody>()
     val ExplicitResult by annotation<KrosstalkAnnotation.ExplicitResult>()
@@ -174,18 +169,7 @@ sealed class KrosstalkAnnotation(val call: IrConstructorCall, name: String) {
         KrosstalkAnnotation(call, "KrosstalkEndpoint") {
         val endpoint: String by field(defaultEndpoint)
         val httpMethod: String by field(defaultEndpointMethod)
-    }
-
-//    class RequiredScopes(call: IrConstructorCall) : KrosstalkAnnotation(call, "RequiredScopes") {
-//        val scopes by varargSetField<String>()
-//    }
-//
-//    class OptionalScopes(call: IrConstructorCall) : KrosstalkAnnotation(call, "OptionalScopes") {
-//        val scopes by varargSetField<String>()
-//    }
-
-    class NullOn(call: IrConstructorCall) : KrosstalkAnnotation(call, "NullOn") {
-        val responseCodes by varargSetField<Int>()
+        val contentType: String by field("")
     }
 
     class MinimizeBody(call: IrConstructorCall) : KrosstalkAnnotation(call, "MinimizeBody")

@@ -7,6 +7,7 @@ import com.rnett.krosstalk.defaultEndpointMethod
 import com.rnett.krosstalk.exception
 import com.rnett.krosstalk.exceptionMessage
 import com.rnett.krosstalk.exceptionStacktrace
+import com.rnett.krosstalk.prefix
 import com.rnett.krosstalk.serialization.SerializationHandler
 import kotlin.reflect.KClass
 
@@ -35,7 +36,6 @@ internal annotation class TopLevelOnly
 @TopLevelOnly
 annotation class KrosstalkMethod(val klass: KClass<out Krosstalk>)
 
-//TODO option to set content type
 //TODO include param hash in default endpoint
 //TODO update docs
 //TODO optional handling.  Make explicit?  Currently nullables don't get sent if optional in url, defaults aren't required on server
@@ -48,33 +48,30 @@ annotation class KrosstalkMethod(val klass: KClass<out Krosstalk>)
  * Unless you specify [MinimizeBody] or [EmptyBody] the arguments used in the endpoint will still be passed in the body.
  * If you want to include non-trivial functions of the arguments in the endpoint, include them in the function as default arguments and use those.
  *
- * For instance and extension receivers, use `"{\$instance}"` and `"{\$extension}"`, respectively.
- * To include the name of the method, use `"{\$name}"`.
- * To include the preset set in the Krosstalk object, use `"{\$prefix}"` (it is not included automatically if [KrosstalkEndpoint] is present).
+ * For instance and extension receivers, use `"$instance"` and `"$extension"`, respectively.
+ * To include the name of the method, use `"$name"`.
+ * To include the preset set in the Krosstalk object, use `"$prefix` (it is not included automatically if [KrosstalkEndpoint] is present).
  *
- * The default endpoint is thus `"{\$prefix}/{\$name}"`.
+ * The default endpoint is thus `"$prefix/$name"`.
  *
- * **Note:** don't include the `'\'` in the literals, it is there to ensure that the `'$'` doesn't get counted as a string template.
+ * **Note:** The hardcoded constants can have the `'$'` escaped, or not, using string interpolation with the constants, such as [prefix],
+ * whose value is `'$'` and their name.
+ *
+ * [httpMethod] controls the HTTP method used by requests.  If it is `GET`, the function must have no parameters or use [EmptyBody].
+ *
+ * [contentType] controls the content type of the request and response.  If empty (which is default), the Krosstalk object's serialization handler's
+ * [SerializationHandler.contentType] is used.  May not be used for non-success results when used with [ExplicitResult].  **This is a recommendation,
+ * which may be ignored by the client in some cases.**  Servers should almost always use it, but may not in some corner cases.
  */
 @Target(AnnotationTarget.FUNCTION)
 @Retention(AnnotationRetention.BINARY)
 @MustBeDocumented
 @TopLevelOnly
-annotation class KrosstalkEndpoint(val endpoint: String = defaultEndpoint, val httpMethod: String = defaultEndpointMethod)
-
-/**
- * Return null when the listed HTTP response codes are encountered.
- * For example, turning a "404: Item not found" into a null for Map.get like behavior.
- * Note that using this with codes like 404 or 500 can make debugging connection issues much harder.
- *
- * The return type must be nullable.  Only affects the client.
- * TODO get rid of in favor of better KrosstalkResult API
- */
-@Target(AnnotationTarget.FUNCTION)
-@Retention(AnnotationRetention.BINARY)
-@MustBeDocumented
-@TopLevelOnly
-annotation class NullOn(vararg val responseCodes: Int)
+annotation class KrosstalkEndpoint(
+    val endpoint: String = defaultEndpoint,
+    val httpMethod: String = defaultEndpointMethod,
+    val contentType: String = "",
+)
 
 /**
  * Don't include arguments that are part of the [KrosstalkEndpoint] endpoint in the body.
@@ -96,14 +93,9 @@ annotation class MinimizeBody
 @TopLevelOnly
 annotation class EmptyBody
 
-//TODO respond with 500 code for server exceptions
-//TODO option to only catch certain types of exceptions?  What's the point, can use
 //TODO option to only do http errors, or only do exceptions (based on return type?) (should use separate result classes or sealed interfaces) (http error one should be usable wth CatchAsHttpError)
 //TODO post 1.5: a version that uses kotlin.Result.  Would have to limit to http errors, can't serialize exceptions (test, can I have a custom serializable annotation?)
 
-//TODO option (seperate annotation?) to convert some exceptions (by class) to HTTP error codes.  Useful with NullOn or this
-//      want to do server side though, so things still match
-//      big concern with NullOn is server and client stop matching, easy enough to use Result + wrappers where needed.
 /**
  * Return a [KrosstalkResult], wrapping server exceptions or http errors.  Method return type must be [KrosstalkResult].
  * Server side function should return a [KrosstalkResult.Success].
@@ -111,6 +103,7 @@ annotation class EmptyBody
  * The server function will automatically be wrapped in a `try` block, converting thrown exceptions to
  * [KrosstalkResult.ServerException] (note that this applies when calling from server or client).  If
  * [printExceptionStackTraces] is `true`, the stack trace of any caught exceptions will be printed using [Throwable.printStackTrace].
+ * Exceptions converted to HTTP error codes using [CatchAsHttpError] will not be printed using this.
  *
  * If [propagateServerExceptions] is `true`, the server implementation will re-throw or somehow log any server exceptions **after
  * the call completes** (so the client will receive a [KrosstalkResult.ServerException] result).
@@ -118,6 +111,9 @@ annotation class EmptyBody
  *
  * [includeStacktrace] controls whether to include the stack trace of exceptions (via [Throwable.stackTraceToString]) in the
  * [KrosstalkResult.ServerException].  It may expose more information about the server than you want, so it is `false` by default.
+ *
+ * Note that the response will not be a serialized [KrosstalkResult].  If successful, only the data will be serialized.  Server errors will respond
+ * with a 500 status code with the exception data in the body, and http error codes will respond with their error code and message.
  */
 @Target(AnnotationTarget.FUNCTION)
 @Retention(AnnotationRetention.BINARY)
