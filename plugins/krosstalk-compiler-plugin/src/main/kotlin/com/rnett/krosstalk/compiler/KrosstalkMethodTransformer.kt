@@ -20,14 +20,12 @@ import com.rnett.plugin.naming.isClassifierOf
 import com.rnett.plugin.stdlib.Kotlin
 import org.jetbrains.kotlin.backend.common.extensions.IrPluginContext
 import org.jetbrains.kotlin.backend.common.lower.DeclarationIrBuilder
-import org.jetbrains.kotlin.backend.common.lower.irIfThen
 import org.jetbrains.kotlin.backend.common.lower.irThrow
 import org.jetbrains.kotlin.cli.common.messages.MessageCollector
 import org.jetbrains.kotlin.descriptors.CallableDescriptor
 import org.jetbrains.kotlin.descriptors.ClassDescriptor
 import org.jetbrains.kotlin.ir.IrStatement
 import org.jetbrains.kotlin.ir.ObsoleteDescriptorBasedAPI
-import org.jetbrains.kotlin.ir.builders.IrBlockBodyBuilder
 import org.jetbrains.kotlin.ir.builders.IrBuilderWithScope
 import org.jetbrains.kotlin.ir.builders.declarations.addValueParameter
 import org.jetbrains.kotlin.ir.builders.irBlockBody
@@ -38,7 +36,6 @@ import org.jetbrains.kotlin.ir.builders.irGet
 import org.jetbrains.kotlin.ir.builders.irGetObject
 import org.jetbrains.kotlin.ir.builders.irIfNull
 import org.jetbrains.kotlin.ir.builders.irNull
-import org.jetbrains.kotlin.ir.builders.irReturn
 import org.jetbrains.kotlin.ir.declarations.IrAnonymousInitializer
 import org.jetbrains.kotlin.ir.declarations.IrClass
 import org.jetbrains.kotlin.ir.declarations.IrSimpleFunction
@@ -457,11 +454,12 @@ class KrosstalkMethodTransformer(
                 declaration.body = irJsExprBody(irTry(result, declaration.returnType) {
                     irCatch(context.irBuiltIns.throwableType) { t ->
 
-                        irCall(Krosstalk.handleException())
+                        irCall(Krosstalk.Server.handleException())
                             .withValueArguments(
                                 irGet(t),
                                 explicitResult.includeStacktrace.asConst(),
                                 explicitResult.printExceptionStackTraces.asConst(),
+                                irGetObject(krosstalkClass.declaration.symbol),
                                 annotations.CatchAsHttpError.map {
                                     irCallConstructor(KotlinAddons.Triple.new(), tripleTypes).withValueArguments(it.exceptionClass,
                                         it.responseCode.asConst(),
@@ -638,7 +636,13 @@ class KrosstalkMethodTransformer(
                                     0,
                                     stdlib.collections.mapOf(stringType, Kotlin.Reflect.KType().typeWith(), parameterMap)
                                 )
-                                putValueArgument(1, stdlib.reflect.typeOf(declaration.returnType))
+
+                                val returnDataType = if (annotations.ExplicitResult != null)
+                                    declaration.returnType.typeArgument(0)
+                                else
+                                    declaration.returnType
+
+                                putValueArgument(1, stdlib.reflect.typeOf(returnDataType))
                             }
                         )
 

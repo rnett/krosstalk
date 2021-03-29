@@ -2,6 +2,7 @@ package com.rnett.krosstalk.serialization
 
 import com.rnett.krosstalk.InternalKrosstalkApi
 import com.rnett.krosstalk.KrosstalkException
+import com.rnett.krosstalk.annotations.ExplicitResult
 import com.rnett.krosstalk.extensionParameter
 import com.rnett.krosstalk.instanceParameter
 import kotlin.reflect.KType
@@ -11,6 +12,8 @@ import kotlin.reflect.KType
 /**
  * All necessary serializers for a method.
  * Instance and extension receiver serializers are in the [paramSerializers] map with keys [instanceParameter] and [extensionParameter], respectively, but can be accessed through their accessors.
+ *
+ * [resultSerializer] will be `T` is the using `KrosstalkResult<T>` and [ExplicitResult]
  */
 data class MethodSerializers<S> @PublishedApi internal constructor(
     val serialization: SerializationHandler<S>,

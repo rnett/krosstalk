@@ -93,7 +93,7 @@ actual suspend fun withResult(n: Int): KrosstalkResult<Int> {
     return KrosstalkResult(n)
 }
 
-@CatchAsHttpError(MyException::class, 505)
+@CatchAsHttpError(MyException::class, 422)
 actual suspend fun withResultCatching(n: Int): KrosstalkResult<Int> {
     if (n < 0)
         throw MyException("Can't have n < 0")

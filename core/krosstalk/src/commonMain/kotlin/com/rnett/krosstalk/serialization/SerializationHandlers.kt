@@ -48,57 +48,6 @@ interface SerializationHandler<S> {
 
     val transformer: SerializedFormatTransformer<S>
 }
-//
-///**
-// * Serialize a value to a [ByteArray]
-// */
-//fun <S, T> SerializationHandler<S>.serializeBytes(data: T, serializer: Serializer<T, S>) = transformer.toByteArray(serializer.serialize(data))
-//
-//
-///**
-// * Serialize arguments to a [ByteArray] by serializing them to [S] and then using [SerializationHandler.toByteArray].
-// */
-//fun <S> SerializationHandler<S>.serializeByteArguments(arguments: Map<String, *>, serializers: ArgumentSerializers<*>): ByteArray = transformer.toByteArray(serializeArguments(arguments, serializers as ArgumentSerializers<S>))
-//
-///**
-// * Deserialize arguments from a [ByteArray] by using [SerializationHandler.fromByteArray] then deserializing them.
-// */
-//fun <S> SerializationHandler<S>.deserializeByteArguments(arguments: ByteArray, serializers: ArgumentSerializers<*>): Map<String, *> = deserializeArguments(transformer.fromByteArray(arguments), serializers as ArgumentSerializers<S>)
-//
-///**
-// * Serialize arguments to a [ByteArray] by serializing them to [S] and then using [SerializationHandler.toByteArray].
-// */
-//fun <S, T> SerializationHandler<S>.serializeByteArgument(key: String, value: T, serializers: ArgumentSerializers<*>): ByteArray = transformer.toByteArray(serializeArgument(key, value, serializers as ArgumentSerializers<S>))
-//
-///**
-// * Deserialize arguments from a [ByteArray] by using [SerializationHandler.fromByteArray] then deserializing them.
-// */
-//fun <S, T> SerializationHandler<S>.deserializeByteArgument(key: String, value: ByteArray, serializers: ArgumentSerializers<*>): T = deserializeArgument(key, transformer.fromByteArray(value), serializers as ArgumentSerializers<S>)
-//
-//
-//
-//
-///**
-// * Serialize arguments to a [String] by serializing them to [S] and then using [SerializationHandler.toString].
-// */
-//fun <S> SerializationHandler<S>.serializeStringArguments(arguments: Map<String, *>, serializers: ArgumentSerializers<*>): String = transformer.toString(serializeArguments(arguments, serializers as ArgumentSerializers<S>))
-//
-///**
-// * Deserialize arguments from a [String] by using [SerializationHandler.fromString] then deserializing them.
-// */
-//fun <S> SerializationHandler<S>.deserializeStringArguments(arguments: String, serializers: ArgumentSerializers<*>): Map<String, *> = deserializeArguments(transformer.fromString(arguments), serializers as ArgumentSerializers<S>)
-//
-///**
-// * Serialize arguments to a [String] by serializing them to [S] and then using [SerializationHandler.toString].
-// */
-//fun <S, T> SerializationHandler<S>.serializeStringArgument(key: String, value: T, serializers: ArgumentSerializers<*>): String = transformer.toString(serializeArgument(key, value, serializers as ArgumentSerializers<S>))
-//
-///**
-// * Deserialize arguments from a [String] by using [SerializationHandler.fromString] then deserializing them.
-// */
-//fun <S, T> SerializationHandler<S>.deserializeStringArgument(key: String, value: String, serializers: ArgumentSerializers<*>): T = deserializeArgument(key, transformer.fromString(value), serializers as ArgumentSerializers<S>)
-//
-//
 
 
 abstract class BaseSerializationHandler<S>(override val transformer: SerializedFormatTransformer<S>): SerializationHandler<S>
@@ -132,6 +81,15 @@ abstract class ArgumentSerializationHandler<S>(transformer: SerializedFormatTran
  */
 @OptIn(ExperimentalStdlibApi::class)
 inline fun <reified T, S> SerializationHandler<S>.getSerializer() = getSerializer(typeOf<T>()) as Serializer<T, S>
+
+/**
+ * Get a serializer for a type.
+ */
+@OptIn(ExperimentalStdlibApi::class)
+inline fun <reified T> SerializationHandler<*>.getMethodSerializer() = MethodSerializer(
+    transformer as SerializedFormatTransformer<Any?>,
+    getSerializer(typeOf<T>()) as Serializer<T, Any?>
+)
 
 /**
  * Get serializers for a method and check that all were gotten.

@@ -35,6 +35,7 @@ internal annotation class TopLevelOnly
 @TopLevelOnly
 annotation class KrosstalkMethod(val klass: KClass<out Krosstalk>)
 
+//TODO option to set content type
 //TODO include param hash in default endpoint
 //TODO update docs
 //TODO optional handling.  Make explicit?  Currently nullables don't get sent if optional in url, defaults aren't required on server

@@ -6,7 +6,6 @@ import com.rnett.krosstalk.client.ClientHandler
 import com.rnett.krosstalk.client.ClientScope
 import com.rnett.krosstalk.client.InternalKrosstalkResponse
 import com.rnett.krosstalk.client.KrosstalkClient
-import com.rnett.krosstalk.client.callFailedException
 import io.ktor.client.HttpClient
 import io.ktor.client.HttpClientConfig
 import io.ktor.client.call.receive
@@ -16,7 +15,11 @@ import io.ktor.client.request.HttpRequestBuilder
 import io.ktor.client.request.request
 import io.ktor.client.statement.HttpResponse
 import io.ktor.http.HttpMethod
-import io.ktor.http.isSuccess
+import io.ktor.http.HttpStatusCode
+import io.ktor.http.charset
+import io.ktor.http.contentType
+import io.ktor.utils.io.charsets.Charsets
+import io.ktor.utils.io.core.String
 
 /**
  * Helper to apply a scope's client configuration
@@ -92,16 +95,15 @@ open class KtorClient(override val serverUrl: String) : ClientHandler<KtorClient
             }
         }
 
-        val status = response.status
+        response.contentType()
 
-        return if (status.isSuccess())
-            InternalKrosstalkResponse.Success(status.value, response.receive())
-        else
-            InternalKrosstalkResponse.Failure(status.value) {
-                // use a custom message here to use HttpStatusCode.toString() rather than the int
-                callFailedException(it, status.value, "Krosstalk method $it failed with: $status")
-            }
+        val bytes = response.receive<ByteArray>()
+        val charset = response.charset() ?: Charsets.UTF_8
+
+        return InternalKrosstalkResponse(response.status.value, bytes) { String(bytes, charset = charset) }
     }
+
+    override fun getStatusCodeName(httpStatusCode: Int): String? = HttpStatusCode.fromValue(httpStatusCode).description
 }
 
 /**

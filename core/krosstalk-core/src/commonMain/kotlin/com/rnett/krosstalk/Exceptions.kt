@@ -39,7 +39,17 @@ abstract class KrosstalkException
     open class CallFailure @InternalKrosstalkApi constructor(
         val methodName: String,
         val httpStatusCode: Int,
-        message: String = "Krosstalk method $methodName failed with HTTP status code $httpStatusCode",
+        val httpStatusCodeMessage: String?,
+        val responseMessage: String?,
+        message: String = buildString {
+            append("Krosstalk method $methodName failed with HTTP status code $httpStatusCode")
+            if (httpStatusCodeMessage != null)
+                append(": $httpStatusCodeMessage")
+
+            if (responseMessage != null)
+                append(" and response message: $responseMessage")
+
+        },
     ) : KrosstalkException(message)
 
     /**

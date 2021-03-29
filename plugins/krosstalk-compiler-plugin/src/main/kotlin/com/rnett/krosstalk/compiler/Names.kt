@@ -8,7 +8,6 @@ import com.rnett.plugin.naming.constructor
 import com.rnett.plugin.naming.function
 import com.rnett.plugin.naming.primaryConstructor
 import org.jetbrains.kotlin.ir.util.render
-import org.jetbrains.kotlin.name.FqName
 
 const val krosstalkPackage = "com.rnett.krosstalk"
 const val annotationPackage = "${krosstalkPackage}.annotations"
@@ -60,6 +59,8 @@ object Krosstalk : RootPackage(krosstalkPackage) {
         val KrosstalkServer by Class()
         val ServerScope by Class()
 
+        val handleException by function()
+
         val createServerScopeInstance by function("invoke") {
             parameters[0] = {
                 it.name.asString() == "serverData"
@@ -79,8 +80,6 @@ object Krosstalk : RootPackage(krosstalkPackage) {
     }
 
     val ScopeHolder by Class()
-
-    val handleException by function()
     val getValueAsOrError by function()
 
     val Scope by Class()

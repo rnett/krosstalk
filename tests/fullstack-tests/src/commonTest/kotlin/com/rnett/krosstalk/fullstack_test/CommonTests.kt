@@ -17,8 +17,9 @@ suspend fun testKrosstalkResultCatchingMatching() {
     val result = withResultCatching(-2)
 
     assertTrue(result.isHttpError())
-    assertEquals(505, result.httpErrorOrNull!!.responseCode)
-    assertEquals("Can't have n < 0", result.httpErrorOrNull!!.clientMessage)
+    assertEquals(422, result.httpErrorOrNull!!.statusCode)
+    assertEquals("Unprocessable Entity", result.httpErrorOrNull!!.statusCodeName)
+    assertEquals("Can't have n < 0", result.httpErrorOrNull!!.message)
 
     assertEquals(2, withResultCatching(2).valueOrNull)
 }

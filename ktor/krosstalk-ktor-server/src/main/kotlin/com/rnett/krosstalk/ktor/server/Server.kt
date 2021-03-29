@@ -26,7 +26,10 @@ import io.ktor.auth.basic
 import io.ktor.auth.digest
 import io.ktor.auth.form
 import io.ktor.auth.oauth
+import io.ktor.http.BadContentTypeFormatException
+import io.ktor.http.ContentType
 import io.ktor.http.HttpMethod
+import io.ktor.http.HttpStatusCode
 import io.ktor.request.receiveChannel
 import io.ktor.request.uri
 import io.ktor.response.respondBytes
@@ -137,7 +140,19 @@ object KtorServer : ServerHandler<KtorServerScope<*>> {
 
                                     krosstalk.handle(method.name, data, body, scopes.toImmutable(), {
                                         application.log.error("Server exception during ${method.name}, passed on to client", it)
-                                    }) { call.respondBytes(it) }
+                                    }) { status: Int, contentType: String?, bytes: ByteArray ->
+                                        call.respondBytes(
+                                            bytes,
+                                            contentType?.let {
+                                                try {
+                                                    ContentType.parse(it)
+                                                } catch (t: BadContentTypeFormatException) {
+                                                    null
+                                                }
+                                            },
+                                            HttpStatusCode.fromValue(status)
+                                        )
+                                    }
                                     this.finish()
                                 }
                             }
@@ -147,6 +162,8 @@ object KtorServer : ServerHandler<KtorServerScope<*>> {
             }
         }
     }
+
+    override fun getStatusCodeName(httpStatusCode: Int): String? = HttpStatusCode.fromValue(httpStatusCode).description
 }
 
 //TODO use multiple receivers, add one for Application

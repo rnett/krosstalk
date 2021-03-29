@@ -9,7 +9,14 @@ import kotlin.reflect.KClass
 
 @OptIn(InternalKrosstalkApi::class)
 class ResultHttpErrorException(val httpError: KrosstalkResult.HttpError) :
-    KrosstalkException("KrosstalkResult is http error code ${httpError.responseCode}, with message ${httpError.clientMessage}")
+    KrosstalkException(buildString {
+        "KrosstalkResult is http error code ${httpError.statusCode}"
+        if (httpError.statusCodeName != null)
+            append(": ${httpError.statusCodeName}")
+
+        if (httpError.message != null && !httpError.message.isBlank())
+            append(", with message: ${httpError.message}")
+    })
 
 @OptIn(InternalKrosstalkApi::class)
 class ResultServerExceptionException(val exception: KrosstalkResult.ServerException) : KrosstalkException("KrosstalkResult is exception $exception")
@@ -84,11 +91,12 @@ sealed class KrosstalkResult<out T> {
     /**
      * A non-success HTTP response was gotten from the krosstalk call.
      *
-     * @property responseCode The HTTP response code of the erroneous response.
+     * @property statusCode The HTTP response code of the erroneous response.
      * @property clientMessage Any message that the KrosstalkClient associated with the response
      */
     @Serializable
-    data class HttpError @InternalKrosstalkApi constructor(val responseCode: Int, val clientMessage: String? = null) : KrosstalkResult<Nothing>(),
+    data class HttpError @InternalKrosstalkApi constructor(val statusCode: Int, val statusCodeName: String?, val message: String?) :
+        KrosstalkResult<Nothing>(),
         Failure {
         override fun getException() = ResultHttpErrorException(this)
     }
@@ -370,7 +378,7 @@ inline fun <R, T : R> KrosstalkResult<T>.recoverHttpErrorCatching(onHttpError: (
  * the value of [onHttpError] will be used to get the result.
  */
 inline fun <R, T : R> KrosstalkResult<T>.recoverHttpError(responseCode: Int, onError: (KrosstalkResult.HttpError) -> R) = recover {
-    if (it is KrosstalkResult.HttpError && it.responseCode == responseCode)
+    if (it is KrosstalkResult.HttpError && it.statusCode == responseCode)
         KrosstalkResult.success(onError(it))
     else
         it as KrosstalkResult<R>
@@ -381,7 +389,7 @@ inline fun <R, T : R> KrosstalkResult<T>.recoverHttpError(responseCode: Int, onE
  * the value of [onHttpError] will be used.
  */
 inline fun <R, T : R> KrosstalkResult<T>.recoverHttpError(responseCode: Int, onError: R) = recover {
-    if (it is KrosstalkResult.HttpError && it.responseCode == responseCode)
+    if (it is KrosstalkResult.HttpError && it.statusCode == responseCode)
         KrosstalkResult.success(onError)
     else
         it as KrosstalkResult<R>

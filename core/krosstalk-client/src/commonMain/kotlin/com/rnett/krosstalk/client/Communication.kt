@@ -6,56 +6,24 @@ import com.rnett.krosstalk.KrosstalkException
 import com.rnett.krosstalk.KrosstalkPluginApi
 import com.rnett.krosstalk.KrosstalkResult
 import com.rnett.krosstalk.httpEncode
+import com.rnett.krosstalk.serialization.getMethodSerializer
 
 
 /**
  * The response to a Krosstalk request.
  */
 @KrosstalkPluginApi
-sealed class InternalKrosstalkResponse {
-    /**
-     * The HTTP response code.
-     */
-    abstract val responseCode: Int
-
-    /**
-     * A Successful request, returning the serialized return value.
-     */
-    data class Success(override val responseCode: Int, val data: ByteArray) : InternalKrosstalkResponse() {
-        override fun equals(other: Any?): Boolean {
-            if (this === other) return true
-            if (other !is Success) return false
-
-            if (responseCode != other.responseCode) return false
-            if (!data.contentEquals(other.data)) return false
-
-            return true
-        }
-
-        override fun hashCode(): Int {
-            var result = responseCode
-            result = 31 * result + data.contentHashCode()
-            return result
-        }
+class InternalKrosstalkResponse(val statusCode: Int, val data: ByteArray, stringData: () -> String?) {
+    val stringData by lazy {
+        if (data.isEmpty())
+            null
+        else
+            stringData()
     }
 
-    /**
-     * A failed request.  Can throw a custom error using [error], will throw [KrosstalkException.CallFailure] if [error] is null.
-     */
-    data class Failure(override val responseCode: Int, val error: (suspend (methodName: String) -> Nothing)? = null) :
-        InternalKrosstalkResponse()
+    @PublishedApi
+    internal fun isSuccess() = statusCode in 200..299
 }
-
-/**
- * Helper function to throw a [KrosstalkException.CallFailure].
- */
-@OptIn(InternalKrosstalkApi::class)
-@KrosstalkPluginApi
-fun ClientHandler<*>.callFailedException(
-    methodName: String,
-    httpStatusCode: Int,
-    message: String = "Krosstalk method $methodName failed with HTTP status code $httpStatusCode",
-): Nothing = throw KrosstalkException.CallFailure(methodName, httpStatusCode, message)
 
 /**
  * A Krosstalk client handler.  Capable of sending krosstalk requests.
@@ -90,6 +58,8 @@ interface ClientHandler<C : ClientScope<*>> {
         body: ByteArray?,
         scopes: List<AppliedClientScope<C, *>>,
     ): InternalKrosstalkResponse
+
+    fun getStatusCodeName(httpStatusCode: Int): String?
 }
 
 
@@ -103,7 +73,7 @@ suspend fun krosstalkCall(): Nothing =
     throw KrosstalkException.CompilerError("Should have been replaced with a krosstalk call during compilation")
 
 
-@OptIn(InternalKrosstalkApi::class, KrosstalkPluginApi::class)
+@OptIn(InternalKrosstalkApi::class, KrosstalkPluginApi::class, ExperimentalStdlibApi::class)
 @Suppress("unused")
 @PublishedApi
 internal suspend inline fun <T, K, reified C : ClientScope<*>> K.call(
@@ -136,32 +106,32 @@ internal suspend inline fun <T, K, reified C : ClientScope<*>> K.call(
     )
 
     @Suppress("UNCHECKED_CAST") // checked in compiler plugin
-    if (result.responseCode in method.nullOnResponseCodes)
+    if (result.statusCode in method.nullOnResponseCodes)
         return null as T
 
-    if (method.useExplicitResult) {
-        //TODO ensure T is KrosstalkResult (is done in compiler plugin too, but wouldn't hurt)
-        return when (result) {
-            // will be a success or exception
-            is InternalKrosstalkResponse.Success -> method.serializers.transformedResultSerializer.deserializeFromBytes(
+    return if (method.useExplicitResult) {
+        if (result.isSuccess()) {
+            KrosstalkResult.Success(method.serializers.transformedResultSerializer.deserializeFromBytes(
                 result.data
-            ) as T
-            is InternalKrosstalkResponse.Failure -> {
+            )) as T
+        } else {
+            if (result.statusCode == 500) {
                 try {
-                    result.error?.let { it(methodName) }
-                        ?: client.callFailedException(methodName, result.responseCode)
-                } catch (e: Throwable) {
-                    KrosstalkResult.HttpError(result.responseCode, e.message)
-                } as T
+                    serialization.getMethodSerializer<KrosstalkResult.ServerException>().deserializeFromBytes(result.data) as T
+                } catch (t: Throwable) {
+                    KrosstalkResult.HttpError(result.statusCode, client.getStatusCodeName(result.statusCode), result.stringData) as T
+                }
+            } else {
+                KrosstalkResult.HttpError(result.statusCode, client.getStatusCodeName(result.statusCode), result.stringData) as T
             }
         }
     } else {
-        return when (result) {
-            is InternalKrosstalkResponse.Success -> method.serializers.transformedResultSerializer.deserializeFromBytes(
+        if (result.isSuccess()) {
+            method.serializers.transformedResultSerializer.deserializeFromBytes(
                 result.data
             ) as T
-            is InternalKrosstalkResponse.Failure -> result.error?.let { it(methodName) }
-                ?: client.callFailedException(methodName, result.responseCode)
+        } else {
+            throw KrosstalkException.CallFailure(methodName, result.statusCode, client.getStatusCodeName(result.statusCode), result.stringData)
         }
     }
 }
