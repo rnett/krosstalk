@@ -25,8 +25,6 @@ internal inline fun handleException(
     var result: KrosstalkResult<Nothing>? = null
 
     handle.forEach { (cls, responseCode, message) ->
-        println("Message template: $message")
-        println("Exception message: ${t.message}")
         if (cls.isInstance(t)) {
             result = KrosstalkResult.HttpError(
                 responseCode,

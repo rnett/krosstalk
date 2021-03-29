@@ -81,5 +81,5 @@ class MyException(message: String) : RuntimeException(message)
 
 //TODO failing b/c js sealed serialization issue?
 @KrosstalkMethod(MyKrosstalk::class)
-@ExplicitResult(propagateServerExceptions = true)
+@ExplicitResult
 expect suspend fun withResultCatching(n: Int): KrosstalkResult<Int>
