@@ -7,7 +7,8 @@ import com.rnett.krosstalk.defaultEndpointMethod
 import com.rnett.krosstalk.exception
 import com.rnett.krosstalk.exceptionMessage
 import com.rnett.krosstalk.exceptionStacktrace
-import com.rnett.krosstalk.prefix
+import com.rnett.krosstalk.instanceReceiver
+import com.rnett.krosstalk.krosstalkPrefix
 import com.rnett.krosstalk.serialization.SerializationHandler
 import kotlin.reflect.KClass
 
@@ -48,13 +49,13 @@ annotation class KrosstalkMethod(val klass: KClass<out Krosstalk>)
  * Unless you specify [MinimizeBody] or [EmptyBody] the arguments used in the endpoint will still be passed in the body.
  * If you want to include non-trivial functions of the arguments in the endpoint, include them in the function as default arguments and use those.
  *
- * For instance and extension receivers, use `"$instance"` and `"$extension"`, respectively.
- * To include the name of the method, use `"$name"`.
- * To include the preset set in the Krosstalk object, use `"$prefix` (it is not included automatically if [KrosstalkEndpoint] is present).
+ * For instance and extension receivers, use `"$instanceReceiver"` and `"$extensionReceiver"`, respectively.
+ * To include the name of the method, use `"$methodName"`.
+ * To include the prefix set in the Krosstalk object, use `"$krosstalkPrefix` (it is not included automatically if [KrosstalkEndpoint] is present).
  *
- * The default endpoint is thus `"$prefix/$name"`.
+ * The default endpoint is thus `"$krosstalkPrefix/$methodName"`.
  *
- * **Note:** The hardcoded constants can have the `'$'` escaped, or not, using string interpolation with the constants, such as [prefix],
+ * **Note:** The hardcoded constants can have the `'$'` escaped, or not, using string interpolation with the constants, such as [krosstalkPrefix] or [instanceReceiver],
  * whose value is `'$'` and their name.
  *
  * [httpMethod] controls the HTTP method used by requests.  If it is `GET`, the function must have no parameters or use [EmptyBody].

@@ -8,8 +8,8 @@ import com.rnett.krosstalk.annotations.ExplicitResult
 import com.rnett.krosstalk.annotations.KrosstalkEndpoint
 import com.rnett.krosstalk.annotations.KrosstalkMethod
 import com.rnett.krosstalk.annotations.MinimizeBody
+import com.rnett.krosstalk.krosstalkPrefix
 import com.rnett.krosstalk.methodName
-import com.rnett.krosstalk.prefix
 import com.rnett.krosstalk.serialization.KotlinxBinarySerializationHandler
 import kotlinx.serialization.Serializable
 
@@ -45,34 +45,34 @@ expect suspend fun endpointContentTypeTest(a: Int, b: Int): Int
 expect suspend fun emptyGet(): String
 
 @KrosstalkMethod(MyKrosstalk::class)
-@KrosstalkEndpoint("$prefix/$methodName/a/{a}/{{b}}?c={c}&{{d}}")
+@KrosstalkEndpoint("$krosstalkPrefix/$methodName/a/{a}/{{b}}?c={c}&{{d}}")
 expect suspend fun paramEndpointNoMinimize(a: Int, b: Int, c: Int, d: Int): Int
 
 @KrosstalkMethod(MyKrosstalk::class)
-@KrosstalkEndpoint("$prefix/$methodName/{{n}}/{{?s}}")
+@KrosstalkEndpoint("$krosstalkPrefix/$methodName/{{n}}/{{?s}}")
 expect suspend fun optionalEndpointNoMinimize(n: Int, s: String?): String?
 
 @KrosstalkMethod(MyKrosstalk::class)
-@KrosstalkEndpoint("$prefix/$methodName/?{{n}}&{{?s}}")
+@KrosstalkEndpoint("$krosstalkPrefix/$methodName/?{{n}}&{{?s}}")
 expect suspend fun optionalEndpointQueryParamsNoMinimize(n: Int, s: String?): String?
 
 @KrosstalkMethod(MyKrosstalk::class)
-@KrosstalkEndpoint("$prefix/$methodName/a/{a}/{{b}}?c={c}&{{d}}", httpMethod = "GET")
+@KrosstalkEndpoint("$krosstalkPrefix/$methodName/a/{a}/{{b}}?c={c}&{{d}}", httpMethod = "GET")
 @EmptyBody
 expect suspend fun paramEndpointMinimize(a: Int, b: Int, c: Int, d: Int): Int
 
 @KrosstalkMethod(MyKrosstalk::class)
-@KrosstalkEndpoint("$prefix/$methodName/{{n}}/{{?s}}", httpMethod = "GET")
+@KrosstalkEndpoint("$krosstalkPrefix/$methodName/{{n}}/{{?s}}", httpMethod = "GET")
 @EmptyBody
 expect suspend fun optionalEndpointMinimize(n: Int, s: String?): String?
 
 @KrosstalkMethod(MyKrosstalk::class)
-@KrosstalkEndpoint("$prefix/$methodName/?{{n}}&{{?s}}", httpMethod = "GET")
+@KrosstalkEndpoint("$krosstalkPrefix/$methodName/?{{n}}&{{?s}}", httpMethod = "GET")
 @EmptyBody
 expect suspend fun optionalEndpointQueryParamsMinimize(n: Int, s: String?): String?
 
 @KrosstalkMethod(MyKrosstalk::class)
-@KrosstalkEndpoint("$prefix/$methodName/?{{n}}")
+@KrosstalkEndpoint("$krosstalkPrefix/$methodName/?{{n}}")
 @MinimizeBody
 expect suspend fun partialMinimize(n: Int, s: String?): String?
 

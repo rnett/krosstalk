@@ -1,5 +1,6 @@
 package com.rnett.krosstalk.endpoint
 
+import kotlin.math.pow
 import kotlin.test.Test
 import kotlin.test.assertEquals
 
@@ -96,4 +97,28 @@ class EndpointTest {
         val endpointOptions = endpoint.enumerateOptionals().values.map { ResolveEndpoint(it) }.toSet()
         assertEquals(endpointOptions, treeOptions)
     }
+}
+
+
+/**
+ * List endpoints for all possible combinations of null or not null arguments
+ */
+private fun Endpoint.enumerateOptionals(): Map<Set<String>, Endpoint> {
+    val paramSet = mutableSetOf<String>()
+    forEachPart {
+        if (it is EndpointPart.Optional)
+            paramSet += it.key
+    }
+    val params = paramSet.toList()
+    val max = 2f.pow(params.size).toInt()
+    return (0 until max).map { filter ->
+        params.mapIndexedNotNull { idx: Int, v: String ->
+            if ((1 shl idx) and filter != 0)
+                v
+            else
+                null
+        }.toSet()
+    }.map {
+        it to resolveOptionals(it)
+    }.toMap()
 }

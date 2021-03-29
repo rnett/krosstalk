@@ -1,7 +1,6 @@
 package com.rnett.krosstalk.endpoint
 
 import com.rnett.krosstalk.*
-import kotlin.math.pow
 
 internal val valueRegex = Regex("\\{([^}]+?)\\}")
 internal val optionalRegex = Regex("\\[(\\w+):([^\\]]+?)\\]")
@@ -54,10 +53,10 @@ data class Endpoint(
 
         private fun parseApparentStatic(value: String): EndpointPart<EndpointRegion> =
             when (value) {
-                extensionParameter -> EndpointPart.Parameter(extensionParameter)
-                instanceParameter -> EndpointPart.Parameter(instanceParameter)
+                extensionReceiver -> EndpointPart.Parameter(extensionReceiver)
+                instanceReceiver -> EndpointPart.Parameter(instanceReceiver)
                 methodName -> EndpointPart.Parameter(methodName)
-                prefix -> EndpointPart.Parameter(prefix)
+                krosstalkPrefix -> EndpointPart.Parameter(krosstalkPrefix)
                 else -> EndpointPart.Static(value)
             }
 
@@ -93,19 +92,6 @@ data class Endpoint(
                         ?: parseApparentStatic(part)
                 }
             }
-
-
-//            template
-//                .trim('/')
-//                .split('/')
-//                .flatMap {
-//                    valueRegex.matchEntire(it)?.let { listOf(EndpointPart.Parameter(it.groupValues[1])) }
-//                        ?: optionalRegex.matchEntire(it)?.let {
-//                            val param = it.groupValues[1]
-//                            parseUrlParts(it.groupValues[2]).map { EndpointPart.Optional(param, it) }
-//                        }
-//                        ?: listOf(EndpointPart.Static(it))
-//                }
 
             return EndpointRegion(parts)
         }
@@ -147,23 +133,6 @@ data class Endpoint(
                         ?: parseApparentStatic(value)
                 }
             }
-
-//            template
-//                .split('&')
-//                .flatMap {
-//                    optionalRegex.matchEntire(it)?.let {
-//                        val param = it.groupValues[1]
-//                        parseQueryParameters(it.groupValues[2]).map {
-//                            it.key to EndpointPart.Optional(param, it.value)
-//                        }
-//                    } ?: listOf(kotlin.run {
-//                        val key = it.substringBefore("=")
-//                        val value = it.substringAfter("=")
-//                        key to (valueRegex.matchEntire(value)?.let { EndpointPart.Parameter(it.groupValues[1]) }
-//                            ?: EndpointPart.Static(value))
-//                    })
-//
-//                }.toMap()
 
             return EndpointRegion(parts)
         }
@@ -238,7 +207,7 @@ data class Endpoint(
     }
 
     /**
-     * Substitute parameters in this endpoint
+     * Substitute parameters in this endpoint, without resolving optionals
      */
     inline fun fillParameters(crossinline transform: (EndpointPart.Parameter) -> String?) =
         mapParts {
@@ -276,29 +245,6 @@ data class Endpoint(
         return false
     }
 
-    /**
-     * List endpoints for all possible combinations of null or not null arguments
-     */
-    fun enumerateOptionals(): Map<Set<String>, Endpoint> {
-        val paramSet = mutableSetOf<String>()
-        forEachPart {
-            if (it is EndpointPart.Optional)
-                paramSet += it.key
-        }
-        val params = paramSet.toList()
-        val max = 2f.pow(params.size).toInt()
-        return (0 until max).map { filter ->
-            params.mapIndexedNotNull { idx: Int, v: String ->
-                if ((1 shl idx) and filter != 0)
-                    v
-                else
-                    null
-            }.toSet()
-        }.map {
-            it to resolveOptionals(it)
-        }.toMap()
-    }
-
     fun fill(nonNullArguments: Set<String>, fillParameter: (key: String) -> String): String {
         return resolveOptionals(nonNullArguments).fillParameters { fillParameter(it.param) }.toString()
     }
@@ -320,7 +266,7 @@ data class Endpoint(
     ) = fillParameters {
         when (it.param) {
             com.rnett.krosstalk.methodName -> methodName
-            com.rnett.krosstalk.prefix -> prefix
+            com.rnett.krosstalk.krosstalkPrefix -> prefix
             else -> null
         }
     }
@@ -341,7 +287,7 @@ data class Endpoint(
         return fill(nonNullArguments) {
             when (it) {
                 com.rnett.krosstalk.methodName -> error("Unresolved method name parameter")
-                prefix -> error("Unresolved method name parameter")
+                krosstalkPrefix -> error("Unresolved method name parameter")
                 in arguments -> arguments.getValue(it)
                 else -> throw KrosstalkException.EndpointUnknownArgument(methodName, this, it, arguments.keys)
             }
@@ -369,7 +315,7 @@ data class Endpoint(
         }
 
         return if (excludeStatic)
-            used - setOf(methodName, prefix)
+            used - setOf(methodName, krosstalkPrefix)
         else
             used
     }
@@ -421,9 +367,9 @@ sealed class EndpointPart<in L : EndpointRegion> {
 
     data class Parameter(val param: String) : EndpointPart<EndpointRegion>() {
         val isMethodName = param == methodName
-        val isPrefix = param == prefix
-        val isExtensionReceiver = param == extensionParameter
-        val isInstanceReceiver = param == instanceParameter
+        val isPrefix = param == krosstalkPrefix
+        val isExtensionReceiver = param == extensionReceiver
+        val isInstanceReceiver = param == instanceReceiver
 
         override fun toString(): String = "{$param}"
         override fun resolveOptionals(taken: Set<String>, untaken: Set<String>): EndpointPart<EndpointRegion> = this
