@@ -2,10 +2,14 @@ package com.rnett.krosstalk.compiler
 
 import com.rnett.krosstalk.defaultEndpoint
 import com.rnett.krosstalk.defaultEndpointMethod
+import com.rnett.krosstalk.exception
+import com.rnett.krosstalk.exceptionMessage
 import org.jetbrains.kotlin.ir.declarations.IrAnnotationContainer
+import org.jetbrains.kotlin.ir.expressions.IrClassReference
 import org.jetbrains.kotlin.ir.expressions.IrConst
 import org.jetbrains.kotlin.ir.expressions.IrConstructorCall
 import org.jetbrains.kotlin.ir.expressions.IrVararg
+import org.jetbrains.kotlin.ir.symbols.IrClassSymbol
 import org.jetbrains.kotlin.ir.util.constructedClass
 import org.jetbrains.kotlin.ir.util.fqNameForIrSerialization
 import org.jetbrains.kotlin.ir.util.getArgumentsWithIr
@@ -35,6 +39,10 @@ data class KrosstalkAnnotations(val annotations: Set<KrosstalkAnnotation>) :
 
     inline fun <reified A : KrosstalkAnnotation> get(): A? = get(A::class)
 
+    fun <A: KrosstalkAnnotation> repeatable(klass: KClass<A>): List<A> = annotations.filter { it::class == klass }.map { it as A }
+
+    inline fun <reified A: KrosstalkAnnotation> repeatable() = repeatable(A::class)
+
     inner class AnnotationDelegate<A : KrosstalkAnnotation>(val klass: KClass<A>) :
         ReadOnlyProperty<Any?, A?> {
         val annotation = get(klass)
@@ -42,6 +50,14 @@ data class KrosstalkAnnotations(val annotations: Set<KrosstalkAnnotation>) :
     }
 
     private inline fun <reified A : KrosstalkAnnotation> annotation() = AnnotationDelegate(A::class)
+
+    inner class RepeatableAnnotationDelegate<A : KrosstalkAnnotation>(val klass: KClass<A>) :
+        ReadOnlyProperty<Any?, List<A>> {
+        val annotations = repeatable(klass)
+        override fun getValue(thisRef: Any?, property: KProperty<*>): List<A> = annotations
+    }
+
+    private inline fun <reified A : KrosstalkAnnotation> repeatableAnnotation() = RepeatableAnnotationDelegate(A::class)
 
     val KrosstalkEndpoint by annotation<KrosstalkAnnotation.KrosstalkEndpoint>()
 
@@ -52,6 +68,7 @@ data class KrosstalkAnnotations(val annotations: Set<KrosstalkAnnotation>) :
     val EmptyBody by annotation<KrosstalkAnnotation.EmptyBody>()
     val ExplicitResult by annotation<KrosstalkAnnotation.ExplicitResult>()
 
+    val CatchAsHttpError by repeatableAnnotation<KrosstalkAnnotation.CatchAsHttpError>()
 }
 
 data class WrapperDelegate<T>(val value: T) {
@@ -70,6 +87,17 @@ sealed class KrosstalkAnnotation(val call: IrConstructorCall, name: String) {
     }
 
     override fun toString(): String = annotationName.toString()
+
+    inner class ClassFieldDelegate :
+        PropertyDelegateProvider<Any?, WrapperDelegate<IrClassReference>> {
+        override fun provideDelegate(thisRef: Any?, property: KProperty<*>): WrapperDelegate<IrClassReference> {
+            val name = property.name
+            val expr = arguments[name]
+                ?: error("Required field $name missing")
+
+            return WrapperDelegate(expr as IrClassReference)
+        }
+    }
 
     inner class FieldDelegate<T>(val default: T?) :
         PropertyDelegateProvider<Any?, WrapperDelegate<T>> {
@@ -118,6 +146,7 @@ sealed class KrosstalkAnnotation(val call: IrConstructorCall, name: String) {
     }
 
     protected fun <T> field(default: T? = null) = FieldDelegate(default)
+    protected fun classField() = ClassFieldDelegate()
     protected fun <T> optionalField() = OptionalFieldDelegate<T>()
     protected fun <T> varargField() = VarargFieldDelegate<T>()
     protected fun <T> varargSetField() = SetVarargFieldDelegate<T>()
@@ -165,6 +194,13 @@ sealed class KrosstalkAnnotation(val call: IrConstructorCall, name: String) {
 
     class ExplicitResult(call: IrConstructorCall) : KrosstalkAnnotation(call, "ExplicitResult") {
         val includeStacktrace by field(false)
-        val throwAfterResponse by field(false)
+        val propagateServerExceptions by field(false)
+        val printExceptionStackTraces by field(true)
+    }
+
+    class CatchAsHttpError(call: IrConstructorCall) : KrosstalkAnnotation(call, "CatchAsHttpError") {
+        val exceptionClass by classField()
+        val responseCode: Int by field()
+        val message by field(exceptionMessage)
     }
 }

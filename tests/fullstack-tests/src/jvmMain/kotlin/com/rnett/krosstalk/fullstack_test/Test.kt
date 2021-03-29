@@ -3,6 +3,7 @@ package com.rnett.krosstalk.fullstack_test
 import com.rnett.krosstalk.Krosstalk
 import com.rnett.krosstalk.KrosstalkResult
 import com.rnett.krosstalk.Scope
+import com.rnett.krosstalk.annotations.CatchAsHttpError
 import com.rnett.krosstalk.ktor.server.KtorServer
 import com.rnett.krosstalk.ktor.server.KtorServerAuth
 import com.rnett.krosstalk.ktor.server.KtorServerScope
@@ -88,6 +89,14 @@ actual suspend fun partialMinimize(n: Int, s: String?): String? = s?.repeat(n)
 actual suspend fun withResult(n: Int): KrosstalkResult<Int> {
     if (n < 0)
         error("Can't have n < 0")
+
+    return KrosstalkResult(n)
+}
+
+@CatchAsHttpError(MyException::class, 505)
+actual suspend fun withResultCatching(n: Int): KrosstalkResult<Int> {
+    if (n < 0)
+        throw MyException("Can't have n < 0")
 
     return KrosstalkResult(n)
 }

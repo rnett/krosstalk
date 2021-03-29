@@ -5,7 +5,12 @@ import kotlin.test.Test
 
 class JvmTests {
     @Test
-    fun testServerExplicitResultMapping() = runBlocking {
+    fun testServerExplicitResultMatching() = runBlocking {
         testKrosstalkResultMatching()
+    }
+
+    @Test
+    fun testServerExplicitResultCatchingMatching() = runBlocking {
+        testKrosstalkResultCatchingMatching()
     }
 }

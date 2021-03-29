@@ -79,6 +79,8 @@ class Tests {
         assertEquals("bb", optionalEndpointMinimize(2, "b"))
         assertEquals("/krosstalk/optionalEndpointMinimize/n/02/s/6162", lastUrl)
         assertEquals(EmptyContent, lastBody)
+
+        Throwable::class.isInstance(2)
     }
 
     @Test
@@ -106,6 +108,11 @@ class Tests {
     @Test
     fun testWithResult() = GlobalScope.promise {
         testKrosstalkResultMatching()
+    }
+
+    @Test
+    fun testWithResultCatching() = GlobalScope.promise {
+        testKrosstalkResultCatchingMatching()
     }
 
 

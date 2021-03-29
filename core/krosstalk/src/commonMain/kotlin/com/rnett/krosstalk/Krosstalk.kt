@@ -23,6 +23,7 @@ data class MethodDefinition<T>(
     val nullOnResponseCodes: Set<Int>,
     val useExplicitResult: Boolean,
     val includeStacktrace: Boolean,
+    val propagateServerExceptions: Boolean,
     val serializers: MethodSerializers<*>,
     val call: MethodCaller<T>,
 ) {
@@ -92,6 +93,7 @@ abstract class Krosstalk {
         nullOnResponses: Set<Int>,
         useExplicitResult: Boolean,
         includeStacktrace: Boolean,
+        rethrowServerExceptions: Boolean,
 //        annotations: Map<KClass<Annotation>, Map<String, Any?>>,
         call: MethodCaller<T>,
     ) {
@@ -116,6 +118,7 @@ abstract class Krosstalk {
             nullOnResponses,
             useExplicitResult,
             includeStacktrace,
+            rethrowServerExceptions,
             serializers,
             call
         )

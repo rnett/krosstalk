@@ -12,8 +12,10 @@ import com.rnett.krosstalk.server.scopesAsType
 import com.rnett.krosstalk.server.serverScopes
 import io.ktor.application.Application
 import io.ktor.application.ApplicationCall
+import io.ktor.application.application
 import io.ktor.application.call
 import io.ktor.application.install
+import io.ktor.application.log
 import io.ktor.auth.Authentication
 import io.ktor.auth.BasicAuthenticationProvider
 import io.ktor.auth.DigestAuthenticationProvider
@@ -133,8 +135,9 @@ object KtorServer : ServerHandler<KtorServerScope<*>> {
                                         scope.getData(call)?.let { scopes[scope as KtorServerScope<Any?>] = it }
                                     }
 
-                                    val response = krosstalk.handle(method.name, data, body, scopes.toImmutable())
-                                    call.respondBytes(response)
+                                    krosstalk.handle(method.name, data, body, scopes.toImmutable(), {
+                                        application.log.error("Server exception during ${method.name}, passed on to client", it)
+                                    }) { call.respondBytes(it) }
                                     this.finish()
                                 }
                             }

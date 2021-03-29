@@ -63,7 +63,7 @@ sealed class KrosstalkResult<out T> {
         val suppressed: List<ServerException>,
         val asString: String,
         val asStringWithStacktrace: String?,
-        @Transient @PublishedApi internal val throwable: Throwable? = null,
+        @Transient @InternalKrosstalkApi val throwable: Throwable? = null,
     ) : KrosstalkResult<Nothing>(), Failure {
 
         @InternalKrosstalkApi

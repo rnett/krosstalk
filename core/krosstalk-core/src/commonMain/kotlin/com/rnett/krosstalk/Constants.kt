@@ -24,3 +24,6 @@ const val prefix = "\$prefix"
 const val defaultEndpoint = "$prefix/$methodName"
 const val defaultEndpointMethod = "POST"
 
+const val exception = "\$exception"
+const val exceptionMessage = "\$exceptionMessage"
+const val exceptionStacktrace = "\$exceptionStacktrace"

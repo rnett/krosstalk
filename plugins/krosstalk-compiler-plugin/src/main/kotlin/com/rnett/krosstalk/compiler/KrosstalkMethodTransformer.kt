@@ -20,13 +20,14 @@ import com.rnett.plugin.naming.isClassifierOf
 import com.rnett.plugin.stdlib.Kotlin
 import org.jetbrains.kotlin.backend.common.extensions.IrPluginContext
 import org.jetbrains.kotlin.backend.common.lower.DeclarationIrBuilder
-import org.jetbrains.kotlin.backend.common.lower.irCatch
+import org.jetbrains.kotlin.backend.common.lower.irIfThen
 import org.jetbrains.kotlin.backend.common.lower.irThrow
 import org.jetbrains.kotlin.cli.common.messages.MessageCollector
 import org.jetbrains.kotlin.descriptors.CallableDescriptor
 import org.jetbrains.kotlin.descriptors.ClassDescriptor
 import org.jetbrains.kotlin.ir.IrStatement
 import org.jetbrains.kotlin.ir.ObsoleteDescriptorBasedAPI
+import org.jetbrains.kotlin.ir.builders.IrBlockBodyBuilder
 import org.jetbrains.kotlin.ir.builders.IrBuilderWithScope
 import org.jetbrains.kotlin.ir.builders.declarations.addValueParameter
 import org.jetbrains.kotlin.ir.builders.irBlockBody
@@ -37,18 +38,16 @@ import org.jetbrains.kotlin.ir.builders.irGet
 import org.jetbrains.kotlin.ir.builders.irGetObject
 import org.jetbrains.kotlin.ir.builders.irIfNull
 import org.jetbrains.kotlin.ir.builders.irNull
-import org.jetbrains.kotlin.ir.builders.irTemporary
+import org.jetbrains.kotlin.ir.builders.irReturn
 import org.jetbrains.kotlin.ir.declarations.IrAnonymousInitializer
 import org.jetbrains.kotlin.ir.declarations.IrClass
 import org.jetbrains.kotlin.ir.declarations.IrSimpleFunction
 import org.jetbrains.kotlin.ir.declarations.IrValueParameter
-import org.jetbrains.kotlin.ir.declarations.IrVariable
 import org.jetbrains.kotlin.ir.expressions.IrBlockBody
 import org.jetbrains.kotlin.ir.expressions.IrCall
 import org.jetbrains.kotlin.ir.expressions.IrClassReference
 import org.jetbrains.kotlin.ir.expressions.IrExpression
 import org.jetbrains.kotlin.ir.expressions.IrExpressionBody
-import org.jetbrains.kotlin.ir.expressions.impl.IrCompositeImpl
 import org.jetbrains.kotlin.ir.symbols.IrClassSymbol
 import org.jetbrains.kotlin.ir.types.IrType
 import org.jetbrains.kotlin.ir.types.classOrNull
@@ -76,6 +75,14 @@ class KrosstalkMethodTransformer(
     val stringType = context.irBuiltIns.stringType
 
     val addedInitalizers = mutableMapOf<IrClassSymbol, IrAnonymousInitializer>()
+
+    val tripleTypes by lazy {
+        listOf(
+            KotlinAddons.Reflect.KClass.resolveTypeWith(),
+            context.irBuiltIns.intType,
+            context.irBuiltIns.stringType
+        )
+    }
 
     fun IrBuilderWithScope.getValueOrError(
         methodName: String,
@@ -448,9 +455,21 @@ class KrosstalkMethodTransformer(
                     }
                 }
                 declaration.body = irJsExprBody(irTry(result, declaration.returnType) {
-                    irCatch(context.irBuiltIns.throwableType) {
-                        irCallConstructor(Krosstalk.KrosstalkResult.ServerException.throwableConstructor(), emptyList())
-                            .withValueArguments(irGet(it), explicitResult.includeStacktrace.asConst())
+                    irCatch(context.irBuiltIns.throwableType) { t ->
+
+                        irCall(Krosstalk.handleException())
+                            .withValueArguments(
+                                irGet(t),
+                                explicitResult.includeStacktrace.asConst(),
+                                explicitResult.printExceptionStackTraces.asConst(),
+                                annotations.CatchAsHttpError.map {
+                                    irCallConstructor(KotlinAddons.Triple.new(), tripleTypes).withValueArguments(it.exceptionClass,
+                                        it.responseCode.asConst(),
+                                        it.message.asConst())
+                                }.let {
+                                    stdlib.collections.listOf(KotlinAddons.Triple.resolveTypeWith(*tripleTypes.toTypedArray()), it)
+                                }
+                            )
                     }
                 })
             }
@@ -659,6 +678,9 @@ class KrosstalkMethodTransformer(
                         addValueArgument(
                             (annotations.ExplicitResult?.includeStacktrace == true).asConst()
                         )
+
+                        // rethrowServerException
+                        addValueArgument((annotations.ExplicitResult?.propagateServerExceptions == true).asConst())
 
                         // call function
                         // signature is (Map<String, *>, ImmutableWantedScopes)

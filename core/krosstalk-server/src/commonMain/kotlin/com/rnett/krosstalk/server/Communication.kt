@@ -3,7 +3,10 @@ package com.rnett.krosstalk.server
 import com.rnett.krosstalk.InternalKrosstalkApi
 import com.rnett.krosstalk.Krosstalk
 import com.rnett.krosstalk.KrosstalkPluginApi
+import com.rnett.krosstalk.KrosstalkResult
 import com.rnett.krosstalk.httpDecode
+import kotlin.contracts.InvocationKind
+import kotlin.contracts.contract
 
 
 /**
@@ -16,6 +19,36 @@ import com.rnett.krosstalk.httpDecode
 @KrosstalkPluginApi
 interface ServerHandler<S : ServerScope<*>>
 
+data class KrosstalkResponse(val data: ByteArray, val exception: Throwable?) {
+    fun throwException(): Nothing? {
+        if (exception != null)
+            throw exception
+        return null
+    }
+}
+
+@OptIn(InternalKrosstalkApi::class)
+@KrosstalkPluginApi
+suspend inline fun <K> K.handle(
+    methodName: String,
+    urlArguments: Map<String, String>,
+    data: ByteArray,
+    scopes: WantedScopes,
+    handleException: (Throwable) -> Unit = { throw it },
+    respond: (ByteArray) -> Unit,
+): Unit where K : Krosstalk, K : KrosstalkServer<*> {
+    contract {
+        callsInPlace(respond, InvocationKind.EXACTLY_ONCE)
+        callsInPlace(handleException, InvocationKind.AT_MOST_ONCE)
+    }
+
+    val response = handle(methodName, urlArguments, data, scopes)
+    respond(response.data)
+    if (response.exception != null) {
+        response.exception.printStackTrace()
+        handleException(response.exception)
+    }
+}
 
 /**
  * Helper method for server side to handle a method [methodName] with the body data [data].
@@ -29,7 +62,7 @@ suspend fun <K> K.handle(
     urlArguments: Map<String, String>,
     data: ByteArray,
     scopes: WantedScopes,
-): ByteArray where K : Krosstalk, K : KrosstalkServer<*> {
+): KrosstalkResponse where K : Krosstalk, K : KrosstalkServer<*> {
     val wantedScopes = scopes.toImmutable()
     val method = requiredMethod(methodName)
 
@@ -48,5 +81,10 @@ suspend fun <K> K.handle(
 
     val result = method.call(arguments, wantedScopes)
 
-    return method.serializers.transformedResultSerializer.serializeToBytes(result)
+    val exception = if (method.propagateServerExceptions && result is KrosstalkResult.ServerException) {
+        result.throwable
+    } else
+        null
+
+    return KrosstalkResponse(method.serializers.transformedResultSerializer.serializeToBytes(result), exception)
 }

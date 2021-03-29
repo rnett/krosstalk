@@ -4,6 +4,9 @@ import com.rnett.krosstalk.Krosstalk
 import com.rnett.krosstalk.KrosstalkResult
 import com.rnett.krosstalk.defaultEndpoint
 import com.rnett.krosstalk.defaultEndpointMethod
+import com.rnett.krosstalk.exception
+import com.rnett.krosstalk.exceptionMessage
+import com.rnett.krosstalk.exceptionStacktrace
 import com.rnett.krosstalk.serialization.SerializationHandler
 import kotlin.reflect.KClass
 
@@ -92,21 +95,57 @@ annotation class MinimizeBody
 @TopLevelOnly
 annotation class EmptyBody
 
-//TODO option to re-throw caught exceptions on the server (use throwAfterResponse, need to do it after response though, how?)
-//TODO option to only catch certain types of exceptions?  What's the point
-//TODO option to only do http errors, or only do exceptions
-//TODO post 1.5: a version that uses kotlin.Result.  Would have to limit to http errors, can't serialize exceptions (test)
+//TODO respond with 500 code for server exceptions
+//TODO option to only catch certain types of exceptions?  What's the point, can use
+//TODO option to only do http errors, or only do exceptions (based on return type?) (should use separate result classes or sealed interfaces) (http error one should be usable wth CatchAsHttpError)
+//TODO post 1.5: a version that uses kotlin.Result.  Would have to limit to http errors, can't serialize exceptions (test, can I have a custom serializable annotation?)
 
 //TODO option (seperate annotation?) to convert some exceptions (by class) to HTTP error codes.  Useful with NullOn or this
 //      want to do server side though, so things still match
 //      big concern with NullOn is server and client stop matching, easy enough to use Result + wrappers where needed.
 /**
- * Return [KrosstalkResult].  Method return type must be [KrosstalkResult].
+ * Return a [KrosstalkResult], wrapping server exceptions or http errors.  Method return type must be [KrosstalkResult].
  * Server side function should return a [KrosstalkResult.Success].
- * [KrosstalkResult.HttpError] and [KrosstalkResult.Exception] will be used depending on the call result.
+ *
+ * The server function will automatically be wrapped in a `try` block, converting thrown exceptions to
+ * [KrosstalkResult.ServerException] (note that this applies when calling from server or client).  If
+ * [printExceptionStackTraces] is `true`, the stack trace of any caught exceptions will be printed using [Throwable.printStackTrace].
+ *
+ * If [propagateServerExceptions] is `true`, the server implementation will re-throw or somehow log any server exceptions **after
+ * the call completes** (so the client will receive a [KrosstalkResult.ServerException] result).
+ * Exactly what is done depends on the server implementation used, but at a minimum it should show up in logs.
+ *
+ * [includeStacktrace] controls whether to include the stack trace of exceptions (via [Throwable.stackTraceToString]) in the
+ * [KrosstalkResult.ServerException].  It may expose more information about the server than you want, so it is `false` by default.
  */
 @Target(AnnotationTarget.FUNCTION)
 @Retention(AnnotationRetention.BINARY)
 @MustBeDocumented
 @TopLevelOnly
-annotation class ExplicitResult(val includeStacktrace: Boolean = false, val throwAfterResponse: Boolean = false)
+annotation class ExplicitResult(
+    val includeStacktrace: Boolean = false,
+    val propagateServerExceptions: Boolean = false,
+    val printExceptionStackTraces: Boolean = true,
+)
+
+//TODO option to log
+/**
+ * Only usable with [@ExplicitResult][ExplicitResult].  Converts any caught exceptions of type [exceptionClass] (or a subtype) to a
+ * [KrosstalkResult.HttpError] response, with the given [responseCode] and [message].
+ *
+ * [exception], [exceptionMessage], and [exceptionStacktrace] can be used in [message], and will be replaced by
+ * [Throwable.toString] (normally `"$class: $message"`), [Throwable.message] (`?: "N/A"`), and [Throwable.stackTraceToString], respectively.
+ *
+ * Note that this annotation may be used on the server side `actual` function, since this conversion is done entirely on the server side.
+ *
+ * Instance checking (i.e. `exceptionClass.isInstance(t)`) will be done in order, so put any high level [CatchAsHttpError]s last.
+ */
+@Target(AnnotationTarget.FUNCTION)
+@Retention(AnnotationRetention.BINARY)
+@MustBeDocumented
+@Repeatable
+annotation class CatchAsHttpError(
+    val exceptionClass: KClass<out Throwable>,
+    val responseCode: Int,
+    val message: String = exceptionMessage,
+)
