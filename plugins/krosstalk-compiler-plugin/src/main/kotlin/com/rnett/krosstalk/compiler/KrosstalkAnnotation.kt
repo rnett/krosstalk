@@ -57,6 +57,8 @@ data class KrosstalkAnnotations(val annotations: Set<KrosstalkAnnotation>) :
 
     private inline fun <reified A : KrosstalkAnnotation> repeatableAnnotation() = RepeatableAnnotationDelegate(A::class)
 
+    val KrosstalkMethod by annotation<KrosstalkAnnotation.KrosstalkMethod>()
+
     val KrosstalkEndpoint by annotation<KrosstalkAnnotation.KrosstalkEndpoint>()
 
     val MinimizeBody by annotation<KrosstalkAnnotation.MinimizeBody>()
@@ -163,6 +165,11 @@ sealed class KrosstalkAnnotation(val call: IrConstructorCall, name: String) {
                 ?: error("No krosstalk annotation with name $constructedName")
             return constructor(call)
         }
+    }
+
+    class KrosstalkMethod(call: IrConstructorCall) : KrosstalkAnnotation(call, "KrosstalkMethod") {
+        val klass by classField()
+        val noParamHash by field(false)
     }
 
     class KrosstalkEndpoint(call: IrConstructorCall) :

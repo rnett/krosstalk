@@ -87,3 +87,9 @@ class MyException(message: String) : RuntimeException(message)
 @KrosstalkMethod(MyKrosstalk::class)
 @ExplicitResult
 expect suspend fun withResultCatching(n: Int): KrosstalkResult<Int>
+
+@KrosstalkMethod(MyKrosstalk::class)
+expect suspend fun testOverload(n: Int): String
+
+@KrosstalkMethod(MyKrosstalk::class)
+expect suspend fun testOverload(s: String): Int

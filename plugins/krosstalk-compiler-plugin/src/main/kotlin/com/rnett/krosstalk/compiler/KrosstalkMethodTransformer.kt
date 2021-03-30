@@ -19,6 +19,7 @@ import com.rnett.plugin.ir.withValueArguments
 import com.rnett.plugin.naming.isClassifierOf
 import com.rnett.plugin.stdlib.Kotlin
 import org.jetbrains.kotlin.backend.common.extensions.IrPluginContext
+import org.jetbrains.kotlin.backend.common.ir.allParameters
 import org.jetbrains.kotlin.backend.common.lower.DeclarationIrBuilder
 import org.jetbrains.kotlin.backend.common.lower.irThrow
 import org.jetbrains.kotlin.cli.common.messages.MessageCollector
@@ -38,11 +39,11 @@ import org.jetbrains.kotlin.ir.builders.irIfNull
 import org.jetbrains.kotlin.ir.builders.irNull
 import org.jetbrains.kotlin.ir.declarations.IrAnonymousInitializer
 import org.jetbrains.kotlin.ir.declarations.IrClass
+import org.jetbrains.kotlin.ir.declarations.IrFunction
 import org.jetbrains.kotlin.ir.declarations.IrSimpleFunction
 import org.jetbrains.kotlin.ir.declarations.IrValueParameter
 import org.jetbrains.kotlin.ir.expressions.IrBlockBody
 import org.jetbrains.kotlin.ir.expressions.IrCall
-import org.jetbrains.kotlin.ir.expressions.IrClassReference
 import org.jetbrains.kotlin.ir.expressions.IrExpression
 import org.jetbrains.kotlin.ir.expressions.IrExpressionBody
 import org.jetbrains.kotlin.ir.symbols.IrClassSymbol
@@ -62,7 +63,11 @@ import org.jetbrains.kotlin.resolve.multiplatform.findExpects
 import kotlin.collections.component1
 import kotlin.collections.component2
 import kotlin.collections.set
+import kotlin.math.absoluteValue
 
+
+fun IrFunction.paramHash() =
+    allParameters.map { it.name to it.type }.toSet().hashCode().absoluteValue.toString(36)
 
 class KrosstalkMethodTransformer(
     context: IrPluginContext,
@@ -72,6 +77,7 @@ class KrosstalkMethodTransformer(
     val stringType = context.irBuiltIns.stringType
 
     val addedInitalizers = mutableMapOf<IrClassSymbol, IrAnonymousInitializer>()
+    val seenNames = mutableMapOf<IrClassSymbol, MutableSet<String>>()
 
     val tripleTypes by lazy {
         listOf(
@@ -209,10 +215,7 @@ class KrosstalkMethodTransformer(
         }
 
         val actualKrosstalkClass: IrClass by lazy {
-            val methodAnnotation = declaration.annotations.getAnnotation(Krosstalk.Annotations.KrosstalkMethod.fqName)
-                ?: expectDeclaration?.annotations?.getAnnotation(Krosstalk.Annotations.KrosstalkMethod.fqName)
-                ?: error("Function is not a krosstalk method, this should not have been called.")
-            (methodAnnotation.getValueArgument(0) as IrClassReference).symbol.owner as IrClass
+            annotations.KrosstalkMethod!!.klass.symbol.owner as IrClass
         }
 
         @OptIn(ObsoleteDescriptorBasedAPI::class)
@@ -249,6 +252,20 @@ class KrosstalkMethodTransformer(
                     "Krosstalk methods must be suspend",
                     declaration
                 )
+
+            if (expectDeclaration != null) {
+//                val expectAnnotations = expectDeclaration!!.annotations.associateBy { it.symbol.owner.constructedClass }
+                declaration.annotations.forEach {
+                    //TODO support annotations on the actual declaration if they match the expect
+                    val annotationClass = it.symbol.owner.constructedClass
+                    if (annotationClass.hasAnnotation(Krosstalk.Annotations.TopLevelOnly())) {
+                        messageCollector.reportError(
+                            "Krosstalk annotation ${annotationClass.name} must only be specified at the top level expect function.",
+                            it
+                        )
+                    }
+                }
+            }
 
             krosstalkClass.check()
 
@@ -300,20 +317,6 @@ class KrosstalkMethodTransformer(
                         params.first()
                     )
                 }
-
-            if (expectDeclaration != null) {
-//                val expectAnnotations = expectDeclaration!!.annotations.associateBy { it.symbol.owner.constructedClass }
-                declaration.annotations.forEach {
-                    //TODO support annotations on the actual declaration if they match the expect
-                    val annotationClass = it.symbol.owner.constructedClass
-                    if (annotationClass.hasAnnotation(Krosstalk.Annotations.TopLevelOnly())) {
-                        messageCollector.reportError(
-                            "Krosstalk annotation ${annotationClass.name} must only be specified at the top level expect function.",
-                            it
-                        )
-                    }
-                }
-            }
 
             if (minimizeBody && !setEndpoint && hasArgs) {
                 if (requireEmptyBody)
@@ -577,6 +580,24 @@ class KrosstalkMethodTransformer(
             }
         }
 
+        private fun calculateName(): String {
+            val paramHash = declaration.paramHash()
+            val name = if (annotations.KrosstalkMethod?.noParamHash == true) {
+                if (declaration.name.asString() in seenNames.getOrDefault(krosstalkClass.declaration.symbol, mutableSetOf())) {
+                    messageCollector.reportError(
+                        "Multiple methods for krosstalk object ${krosstalkClass.declaration.kotlinFqName} with name " +
+                                "${declaration.name.asString()}.  All but one must use `noParamHash = false` in their @KrosstalkMethod annotations.",
+                        declaration
+                    )
+                }
+                declaration.name.asString()
+            } else {
+                declaration.name.asString() + "_$paramHash"
+            }
+            seenNames.getOrPut(krosstalkClass.declaration.symbol) { mutableSetOf() } += name
+            return name
+        }
+
         fun addToKrosstalkClass() {
             val initializer = addedInitalizers.getOrPut(krosstalkClass.declaration.symbol) {
                 krosstalkClass.declaration.addAnonymousInitializer {
@@ -595,7 +616,7 @@ class KrosstalkMethodTransformer(
                         fun addValueArgument(argument: IrExpression) = putValueArgument(valueArguments++, argument)
 
                         // Name
-                        addValueArgument(declaration.name.asString().asConst())
+                        addValueArgument(calculateName().asConst())
 
                         // endpoint
 
@@ -731,7 +752,7 @@ class KrosstalkMethodTransformer(
                         )
                     }
 
-                    putValueArgument(0, declaration.name.asString().asConst())
+                    putValueArgument(0, calculateName().asConst())
                     putValueArgument(
                         1, stdlib.collections.mapOf(
                             stringType,

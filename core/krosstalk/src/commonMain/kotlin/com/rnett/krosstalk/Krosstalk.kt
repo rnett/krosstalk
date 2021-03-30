@@ -99,7 +99,9 @@ abstract class Krosstalk {
         //TODO check endpoint exclusivity
 
         if (methodName in methods)
-            throw KrosstalkException.CompilerError("Already registered method with name $methodName.")
+            throw KrosstalkException.CompilerError("Already registered method with name $methodName, " +
+                    "all but one must use `noParamHash = false` in their @KrosstalkMethod annotations.  " +
+                    "If you've done this already you may have had a hash collision.")
 
         optionalScopes.forEach {
             if (!it.canBeOptional)

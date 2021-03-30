@@ -102,3 +102,7 @@ actual suspend fun withResultCatching(n: Int): KrosstalkResult<Int> {
 
     return KrosstalkResult(n)
 }
+
+actual suspend fun testOverload(n: Int): String = n.toString()
+
+actual suspend fun testOverload(s: String): Int = s.toInt()

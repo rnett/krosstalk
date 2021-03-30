@@ -89,3 +89,7 @@ actual suspend fun partialMinimize(n: Int, s: String?): String? = krosstalkCall(
 actual suspend fun withResult(n: Int): KrosstalkResult<Int> = krosstalkCall()
 
 actual suspend fun withResultCatching(n: Int): KrosstalkResult<Int> = krosstalkCall()
+
+actual suspend fun testOverload(n: Int): String = krosstalkCall()
+
+actual suspend fun testOverload(s: String): Int = krosstalkCall()

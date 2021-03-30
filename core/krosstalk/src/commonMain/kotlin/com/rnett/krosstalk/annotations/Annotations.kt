@@ -30,27 +30,31 @@ internal annotation class TopLevelOnly
  * Makes a method a krosstalk method.   Should only be on the `expect` declaration.
  *
  * By default, the endpoint will be "/krosstalk/$methodName" although the prefix can be overridden in Krosstalk.
+ *
+ * Ordinarily, a hash of the parameters will be included in the method name to support overloads.  This can be disabled
+ * by setting [noParamHash] to true, but an compile time error will happen if this is set on a method with overloads that
+ * are also krosstalk methods on the same class.
  */
 @Target(AnnotationTarget.FUNCTION)
 @Retention(AnnotationRetention.BINARY)
 @MustBeDocumented
 @TopLevelOnly
-annotation class KrosstalkMethod(val klass: KClass<out Krosstalk>)
+annotation class KrosstalkMethod(val klass: KClass<out Krosstalk>, val noParamHash: Boolean = false)
 
 //TODO include param hash in default endpoint
 //TODO update docs
 //TODO optional handling.  Make explicit?  Currently nullables don't get sent if optional in url, defaults aren't required on server
 /**
  * Specifies an endpoint for the krosstalk method to use.
- * Should be a http-formatted string of the pathname and query string, i.e. `"/items/?id={id}"`.
- * Can include arguments in the endpoint using `"{parameterName}"`.
+ * Should be a http-formatted string of the (relative) pathname and query string, i.e. `"/items/?id={id}"`.
+ * Can include arguments in the endpoint using `"{parameterName}"`, **except scope parameters**.
  * This will be evaluated by serializing the argument using the Krosstalk's serialization.
  * I highly recommend you use a string serialization method ([SerializationHandler] with [String]) when using this.
  * Unless you specify [MinimizeBody] or [EmptyBody] the arguments used in the endpoint will still be passed in the body.
  * If you want to include non-trivial functions of the arguments in the endpoint, include them in the function as default arguments and use those.
  *
  * For instance and extension receivers, use `"$instanceReceiver"` and `"$extensionReceiver"`, respectively.
- * To include the name of the method, use `"$methodName"`.
+ * To include the name of the method, use `"$methodName"` (this includes the parameter hash if used).
  * To include the prefix set in the Krosstalk object, use `"$krosstalkPrefix` (it is not included automatically if [KrosstalkEndpoint] is present).
  *
  * The default endpoint is thus `"$krosstalkPrefix/$methodName"`.
