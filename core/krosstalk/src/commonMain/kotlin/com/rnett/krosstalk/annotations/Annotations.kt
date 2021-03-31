@@ -41,7 +41,6 @@ internal annotation class TopLevelOnly
 @TopLevelOnly
 annotation class KrosstalkMethod(val klass: KClass<out Krosstalk>, val noParamHash: Boolean = false)
 
-//TODO include param hash in default endpoint
 //TODO update docs
 //TODO optional handling.  Make explicit?  Currently nullables don't get sent if optional in url, defaults aren't required on server
 /**
@@ -130,7 +129,7 @@ annotation class ExplicitResult(
     val printExceptionStackTraces: Boolean = true,
 )
 
-//TODO option to log
+//TODO option to log?
 /**
  * Only usable with [@ExplicitResult][ExplicitResult].  Converts any caught exceptions of type [exceptionClass] (or a subtype) to a
  * [KrosstalkResult.HttpError] response, with the given [responseCode] and [message].

@@ -2,11 +2,12 @@ package com.rnett.krosstalk.server
 
 import com.rnett.krosstalk.InternalKrosstalkApi
 import com.rnett.krosstalk.Krosstalk
+import com.rnett.krosstalk.KrosstalkPluginApi
 import com.rnett.krosstalk.Scope
 import com.rnett.krosstalk.ScopeInstance
 import kotlin.jvm.JvmName
 
-@OptIn(InternalKrosstalkApi::class)
+@OptIn(InternalKrosstalkApi::class, KrosstalkPluginApi::class)
 @Suppress("UNCHECKED_CAST")
 val <T : ServerScope<S>, S> ScopeInstance<T>.value
     get() =
@@ -16,15 +17,17 @@ val <T : ServerScope<S>, S> ScopeInstance<T>.value
             _data as S
 
 
-@OptIn(InternalKrosstalkApi::class)
+@OptIn(InternalKrosstalkApi::class, KrosstalkPluginApi::class)
 operator fun <T : ServerScope<S>, S> T.invoke(serverData: S): ScopeInstance<T> = ScopeInstance.Server(serverData, this)
 
+@KrosstalkPluginApi
 val <S : ServerScope<*>, K> K.serverScopes: List<S> where K : Krosstalk, K : KrosstalkServer<S>
     get() = scopes.map {
         (it as? ServerScope<*> ?: error("Somehow had a client scope on the server side."))
                 as? S ?: error("Scope $it is not of correct server scope type for krosstalk $this")
     }
 
+@KrosstalkPluginApi
 @JvmName("serverScopesAsType")
 fun <S : ServerScope<*>, K> K.scopesAsType(scopes: Iterable<Scope>): List<S> where K : Krosstalk, K : KrosstalkServer<S> =
     scopes.map {

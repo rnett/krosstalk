@@ -3,6 +3,7 @@ package com.rnett.krosstalk.fullstack_test
 import com.rnett.krosstalk.Krosstalk
 import com.rnett.krosstalk.KrosstalkResult
 import com.rnett.krosstalk.Scope
+import com.rnett.krosstalk.ScopeInstance
 import com.rnett.krosstalk.annotations.EmptyBody
 import com.rnett.krosstalk.annotations.ExplicitResult
 import com.rnett.krosstalk.annotations.KrosstalkEndpoint
@@ -89,7 +90,13 @@ class MyException(message: String) : RuntimeException(message)
 expect suspend fun withResultCatching(n: Int): KrosstalkResult<Int>
 
 @KrosstalkMethod(MyKrosstalk::class)
-expect suspend fun testOverload(n: Int): String
+expect suspend fun withOverload(n: Int): String
 
 @KrosstalkMethod(MyKrosstalk::class)
-expect suspend fun testOverload(s: String): Int
+expect suspend fun withOverload(s: String): Int
+
+@KrosstalkMethod(MyKrosstalk::class)
+expect suspend fun withAuth(n: Int, auth: ScopeInstance<MyKrosstalk.Auth>): String
+
+@KrosstalkMethod(MyKrosstalk::class)
+expect suspend fun withOptionalAuth(auth: ScopeInstance<MyKrosstalk.Auth>?): String?

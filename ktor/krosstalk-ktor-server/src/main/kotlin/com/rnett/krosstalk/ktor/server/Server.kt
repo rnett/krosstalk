@@ -2,43 +2,31 @@ package com.rnett.krosstalk.ktor.server
 
 import com.rnett.krosstalk.Krosstalk
 import com.rnett.krosstalk.KrosstalkPluginApi
+import com.rnett.krosstalk.MethodDefinition
 import com.rnett.krosstalk.ktor.server.KtorServer.define
 import com.rnett.krosstalk.server.KrosstalkServer
 import com.rnett.krosstalk.server.MutableWantedScopes
 import com.rnett.krosstalk.server.ServerHandler
-import com.rnett.krosstalk.server.ServerScope
 import com.rnett.krosstalk.server.handle
 import com.rnett.krosstalk.server.scopesAsType
 import com.rnett.krosstalk.server.serverScopes
-import io.ktor.application.Application
-import io.ktor.application.ApplicationCall
 import io.ktor.application.application
 import io.ktor.application.call
-import io.ktor.application.install
 import io.ktor.application.log
-import io.ktor.auth.Authentication
-import io.ktor.auth.BasicAuthenticationProvider
-import io.ktor.auth.DigestAuthenticationProvider
-import io.ktor.auth.FormAuthenticationProvider
-import io.ktor.auth.OAuthAuthenticationProvider
-import io.ktor.auth.authenticate
-import io.ktor.auth.basic
-import io.ktor.auth.digest
-import io.ktor.auth.form
-import io.ktor.auth.oauth
 import io.ktor.http.BadContentTypeFormatException
 import io.ktor.http.ContentType
-import io.ktor.http.HttpMethod
 import io.ktor.http.HttpStatusCode
+import io.ktor.request.httpMethod
 import io.ktor.request.receiveChannel
 import io.ktor.request.uri
 import io.ktor.response.respondBytes
 import io.ktor.routing.Route
+import io.ktor.routing.RouteSelector
+import io.ktor.routing.RouteSelectorEvaluation
+import io.ktor.routing.RoutingResolveContext
 import io.ktor.routing.application
-import io.ktor.routing.method
-import io.ktor.routing.route
+import io.ktor.util.AttributeKey
 import io.ktor.util.toByteArray
-import kotlin.random.Random
 
 /**
  * Applies [remaining] scopes in reverse order, recursively, with [final] inside all of them.
@@ -108,53 +96,49 @@ object KtorServer : ServerHandler<KtorServerScope<*>> {
 
         base.apply {
 
+
             // add each method
             krosstalk.methods.values.forEach { method ->
-                // wrap the endpoint in the needed scopes
-                wrapScopes(
-                    this,
-                    true,
-                    method.requiredScopes.let(krosstalk::scopesAsType)
-                ) {
-
+                this.createChild(KrosstalkRouteSelector(method)).apply {
+                    // wrap the endpoint in the needed scopes
                     wrapScopes(
                         this,
                         false,
-                        method.optionalScopes.let(krosstalk::scopesAsType)
+                        method.requiredScopes.let(krosstalk::scopesAsType)
                     ) {
 
-                        method(HttpMethod(method.httpMethod)) {
-                            route("{...}") {
-                                handle {
-                                    val data = method.endpoint.resolve(call.request.uri) ?: return@handle
-                                    val body = call.receiveChannel().toByteArray()
+                        wrapScopes(
+                            this,
+                            true,
+                            method.optionalScopes.let(krosstalk::scopesAsType)
+                        ) {
 
-                                    val scopes = MutableWantedScopes()
-                                    method.requiredScopes.let(krosstalk::scopesAsType).forEach {
-                                        scopes[it as KtorServerScope<Any?>] =
-                                            it.getData(call) ?: error("Required scope $it didn't get any data")
-                                    }
-                                    method.optionalScopes.let(krosstalk::scopesAsType).forEach { scope ->
-                                        scope.getData(call)?.let { scopes[scope as KtorServerScope<Any?>] = it }
-                                    }
+                            handle {
+                                val data = call.attributes[KrosstalkMethodAttribute]
+                                val body = call.receiveChannel().toByteArray()
 
-                                    krosstalk.handle(method, data, body, scopes.toImmutable(), {
-                                        application.log.error("Server exception during ${method.name}, passed on to client", it)
-                                    }) { status: Int, contentType: String?, bytes: ByteArray ->
-                                        call.respondBytes(
-                                            bytes,
-                                            contentType?.let {
-                                                try {
-                                                    ContentType.parse(it)
-                                                } catch (t: BadContentTypeFormatException) {
-                                                    null
-                                                }
-                                            },
-                                            HttpStatusCode.fromValue(status)
-                                        )
-                                    }
-                                    this.finish()
+                                val scopes = MutableWantedScopes()
+
+                                method.allScopes.let(krosstalk::scopesAsType).forEach { scope ->
+                                    scope.getData(call)?.let { scopes[scope as KtorServerScope<Any?>] = it }
                                 }
+
+                                krosstalk.handle(method, data, body, scopes.toImmutable(), {
+                                    application.log.error("Server exception during ${method.name}, passed on to client", it)
+                                }) { status: Int, contentType: String?, bytes: ByteArray ->
+                                    call.respondBytes(
+                                        bytes,
+                                        contentType?.let {
+                                            try {
+                                                ContentType.parse(it)
+                                            } catch (t: BadContentTypeFormatException) {
+                                                null
+                                            }
+                                        },
+                                        HttpStatusCode.fromValue(status)
+                                    )
+                                }
+                                this.finish()
                             }
                         }
                     }
@@ -164,6 +148,27 @@ object KtorServer : ServerHandler<KtorServerScope<*>> {
     }
 
     override fun getStatusCodeName(httpStatusCode: Int): String? = HttpStatusCode.fromValue(httpStatusCode).description
+}
+
+private val KrosstalkMethodAttribute = AttributeKey<Map<String, String>>("KrosstalkMethodData")
+
+class KrosstalkRouteSelector(val method: MethodDefinition<*>) : RouteSelector(2.0) {
+    override fun evaluate(context: RoutingResolveContext, segmentIndex: Int): RouteSelectorEvaluation {
+        with(context) {
+            if (call.request.httpMethod.value.toLowerCase() != method.httpMethod.toLowerCase()) {
+                return RouteSelectorEvaluation.Failed
+            }
+
+            val data = method.endpoint.resolve(call.request.uri) ?: return RouteSelectorEvaluation.Failed
+            call.attributes.put(KrosstalkMethodAttribute, data)
+            return RouteSelectorEvaluation(true, 2.0, segmentIncrement = segments.size - segmentIndex)
+        }
+    }
+
+    override fun toString(): String {
+        return "(Krosstalk method: ${method.name})"
+    }
+
 }
 
 //TODO use multiple receivers, add one for Application
@@ -186,106 +191,4 @@ object KtorServer : ServerHandler<KtorServerScope<*>> {
  */
 fun <K> K.defineKtor(route: Route) where K : Krosstalk, K : KrosstalkServer<KtorServerScope<*>> {
     KtorServer.define(route, this)
-}
-
-/**
- * A Ktor server scope.  Supports configuring the application and wrapping endpoints.
- */
-interface KtorServerScope<S> : ServerScope<S> {
-    /**
-     * Configure the Ktor application.
-     */
-    fun Application.configureApplication() {}
-
-    /**
-     * Wrap the endpoint.  **[endpoint] must be called at some point, it will build the rest of the endpoint.**
-     *
-     * @param optional Whether the scope is a optional scope for the method it is being applied to.
-     * @param endpoint Builder for the rest of the endpoint.
-     */
-    fun Route.wrapEndpoint(optional: Boolean, endpoint: Route.() -> Unit) {}
-
-    /**
-     * Will throw an error if it returns null but the scope is non-optional
-     */
-    fun getData(call: ApplicationCall): S?
-
-    // can just use handle in buildEndpoint, I think
-//    fun PipelineContext<Unit, ApplicationCall>.handleRequest() {}
-}
-
-
-abstract class KtorServerAuth(val authName: String? = randomAuthName()) : KtorServerScope<Unit> {
-    companion object {
-        private val usedNames = mutableSetOf<String>()
-        fun randomAuthName(): String {
-            while (true) {
-                val name = "auth-${Random.nextInt(0, Int.MAX_VALUE)}"
-                if (name !in usedNames) {
-                    usedNames += name
-                    return name
-                }
-            }
-        }
-    }
-
-    abstract fun Authentication.Configuration.configureAuth()
-
-    override fun Application.configureApplication() {
-        install(Authentication) {
-            configureAuth()
-        }
-    }
-
-    override fun Route.wrapEndpoint(optional: Boolean, endpoint: Route.() -> Unit) {
-        authenticate(authName, optional = optional) {
-            endpoint()
-        }
-    }
-
-    override fun getData(call: ApplicationCall) = Unit
-}
-
-class KtorServerBasicAuth(
-    authName: String? = randomAuthName(),
-    val configure: BasicAuthenticationProvider.Configuration.() -> Unit,
-) : KtorServerAuth(authName) {
-    override fun Authentication.Configuration.configureAuth() {
-        basic(authName) {
-            configure()
-        }
-    }
-}
-
-class KtorServerSessionAuth(
-    authName: String? = randomAuthName(),
-    val configure: FormAuthenticationProvider.Configuration.() -> Unit,
-) : KtorServerAuth(authName) {
-    override fun Authentication.Configuration.configureAuth() {
-        form(authName) {
-            configure()
-        }
-    }
-}
-
-class KtorServerDigestAuth(
-    authName: String? = randomAuthName(),
-    val configure: DigestAuthenticationProvider.Configuration.() -> Unit,
-) : KtorServerAuth(authName) {
-    override fun Authentication.Configuration.configureAuth() {
-        digest(authName) {
-            configure()
-        }
-    }
-}
-
-class KtorServerOAuthAuth(
-    authName: String? = randomAuthName(),
-    val configure: OAuthAuthenticationProvider.Configuration.() -> Unit,
-) : KtorServerAuth(authName) {
-    override fun Authentication.Configuration.configureAuth() {
-        oauth(authName) {
-            configure
-        }
-    }
 }

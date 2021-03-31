@@ -3,16 +3,14 @@ package com.rnett.krosstalk.fullstack_test
 import com.rnett.krosstalk.Krosstalk
 import com.rnett.krosstalk.KrosstalkResult
 import com.rnett.krosstalk.Scope
+import com.rnett.krosstalk.ScopeInstance
 import com.rnett.krosstalk.client.KrosstalkClient
 import com.rnett.krosstalk.client.krosstalkCall
-import com.rnett.krosstalk.ktor.client.BasicCredentials
 import com.rnett.krosstalk.ktor.client.KtorClient
-import com.rnett.krosstalk.ktor.client.KtorClientAuth
+import com.rnett.krosstalk.ktor.client.KtorClientBasicAuth
 import com.rnett.krosstalk.ktor.client.KtorClientScope
 import com.rnett.krosstalk.serialization.KotlinxBinarySerializationHandler
 import io.ktor.client.HttpClient
-import io.ktor.client.features.auth.providers.basic
-import io.ktor.client.features.defaultRequest
 import io.ktor.client.features.logging.LogLevel
 import io.ktor.client.features.logging.Logging
 import io.ktor.http.ContentType
@@ -36,30 +34,21 @@ internal var lastContentType: ContentType? = null
 
 actual object MyKrosstalk : Krosstalk(), KrosstalkClient<KtorClientScope<*>> {
     actual override val serialization = KotlinxBinarySerializationHandler(Cbor { })
-    override val client = object : KtorClient("http://localhost:8080") {
-        override val baseClient: HttpClient = super.baseClient.config {
+    override val client = KtorClient(
+        "http://localhost:8080",
+        baseClient = HttpClient().config {
             Logging {
                 level = LogLevel.BODY
             }
-            this.defaultRequest {
-                lastUrl = url.buildString().removePrefix(url.protocol.name).removePrefix("://").removePrefix(url.authority)
-                lastBody = body
-                lastHttpMethod = this.method
-                lastContentType = this.contentType()
-            }
+        },
+        baseRequest = {
+            lastUrl = url.buildString().removePrefix(url.protocol.name).removePrefix("://").removePrefix(url.authority)
+            lastBody = body
+            lastHttpMethod = this.method
+            lastContentType = this.contentType()
+        })
 
-        }
-    }
-
-    actual object Auth : Scope, KtorClientAuth<BasicCredentials>() {
-        override fun io.ktor.client.features.auth.Auth.configureClientAuth(data: BasicCredentials) {
-            basic {
-                sendWithoutRequest = true
-                username = data.username
-                password = data.password
-            }
-        }
-    }
+    actual object Auth : Scope, KtorClientBasicAuth()
 }
 
 actual suspend fun basicTest(data: Data): List<String> = krosstalkCall()
@@ -90,6 +79,13 @@ actual suspend fun withResult(n: Int): KrosstalkResult<Int> = krosstalkCall()
 
 actual suspend fun withResultCatching(n: Int): KrosstalkResult<Int> = krosstalkCall()
 
-actual suspend fun testOverload(n: Int): String = krosstalkCall()
+actual suspend fun withOverload(n: Int): String = krosstalkCall()
 
-actual suspend fun testOverload(s: String): Int = krosstalkCall()
+actual suspend fun withOverload(s: String): Int = krosstalkCall()
+
+actual suspend fun withAuth(
+    n: Int,
+    auth: ScopeInstance<MyKrosstalk.Auth>,
+): String = krosstalkCall()
+
+actual suspend fun withOptionalAuth(auth: ScopeInstance<MyKrosstalk.Auth>?): String? = krosstalkCall()

@@ -20,31 +20,27 @@ import kotlin.contracts.contract
  */
 @KrosstalkPluginApi
 interface ServerHandler<S : ServerScope<*>> {
-
     fun getStatusCodeName(httpStatusCode: Int): String?
-}
-
-data class KrosstalkResponse(val data: ByteArray, val exception: Throwable?) {
-    fun throwException(): Nothing? {
-        if (exception != null)
-            throw exception
-        return null
-    }
 }
 
 typealias Responder = suspend (statusCode: Int, contentType: String?, data: ByteArray) -> Unit
 
 /**
- * Helper method for server side to handle a method [methodName] with the body data [data].
+ * Helper method for server side to handle a method [methodName] with the body data [body].
  *
- * @return The data that should be sent as a response.
+ * @param method method to call
+ * @param urlArguments the arguments gotten from the URL (probably using the endpoint's resolver)
+ * @param body the body
+ * @param scopes the scopes gotten from the request.  Missing required scopes will be handled here.
+ * @param handleException how to handle a server exception, if requested.  Should log if possible, throw if not.
+ * @param responder a lambda to respond to the request.
  */
 @OptIn(InternalKrosstalkApi::class)
 @KrosstalkPluginApi
 suspend fun <K> K.handle(
     method: MethodDefinition<*>,
     urlArguments: Map<String, String>,
-    data: ByteArray,
+    body: ByteArray,
     scopes: WantedScopes,
     handleException: (Throwable) -> Unit = { throw it },
     responder: Responder,
@@ -56,8 +52,8 @@ suspend fun <K> K.handle(
     val wantedScopes = scopes.toImmutable()
     val contentType = method.contentType ?: serialization.contentType
 
-    val arguments = if (data.isNotEmpty())
-        method.serializers.transformedParamSerializers.deserializeArgumentsFromBytes(data).toMutableMap()
+    val arguments = if (body.isNotEmpty())
+        method.serializers.transformedParamSerializers.deserializeArgumentsFromBytes(body).toMutableMap()
     else
         mutableMapOf()
 

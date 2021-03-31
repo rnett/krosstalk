@@ -3,19 +3,21 @@ package com.rnett.krosstalk.fullstack_test
 import com.rnett.krosstalk.Krosstalk
 import com.rnett.krosstalk.KrosstalkResult
 import com.rnett.krosstalk.Scope
+import com.rnett.krosstalk.ScopeInstance
 import com.rnett.krosstalk.annotations.CatchAsHttpError
 import com.rnett.krosstalk.ktor.server.KtorServer
-import com.rnett.krosstalk.ktor.server.KtorServerAuth
+import com.rnett.krosstalk.ktor.server.KtorServerBasicAuth
 import com.rnett.krosstalk.ktor.server.KtorServerScope
 import com.rnett.krosstalk.ktor.server.defineKtor
 import com.rnett.krosstalk.serialization.KotlinxBinarySerializationHandler
 import com.rnett.krosstalk.server.KrosstalkServer
+import com.rnett.krosstalk.server.value
 import io.ktor.application.install
-import io.ktor.auth.Authentication
+import io.ktor.application.log
 import io.ktor.auth.Principal
-import io.ktor.auth.basic
 import io.ktor.features.CORS
 import io.ktor.features.CallLogging
+import io.ktor.routing.get
 import io.ktor.routing.routing
 import io.ktor.server.cio.CIO
 import io.ktor.server.engine.embeddedServer
@@ -34,6 +36,8 @@ fun main() {
         }
 
         routing {
+            trace { application.log.info(it.buildText()) }
+            get { }
             MyKrosstalk.defineKtor(this)
         }
 
@@ -48,18 +52,14 @@ actual object MyKrosstalk : Krosstalk(), KrosstalkServer<KtorServerScope<*>> {
     actual override val serialization = KotlinxBinarySerializationHandler(Cbor { })
     override val server = KtorServer
 
-    actual object Auth : Scope, KtorServerAuth("auth") {
-        override fun Authentication.Configuration.configureAuth() {
-            basic("auth") {
-                validate {
-                    if (validUsers[it.name] == it.password)
-                        User(it.name)
-                    else
-                        null
-                }
-            }
+    actual object Auth : Scope, KtorServerBasicAuth<User>("auth", {
+        validate {
+            if (validUsers[it.name] == it.password)
+                User(it.name)
+            else
+                null
         }
-    }
+    })
 }
 
 actual suspend fun basicTest(data: Data): List<String> {
@@ -103,6 +103,17 @@ actual suspend fun withResultCatching(n: Int): KrosstalkResult<Int> {
     return KrosstalkResult(n)
 }
 
-actual suspend fun testOverload(n: Int): String = n.toString()
+actual suspend fun withOverload(n: Int): String = n.toString()
 
-actual suspend fun testOverload(s: String): Int = s.toInt()
+actual suspend fun withOverload(s: String): Int = s.toInt()
+
+actual suspend fun withAuth(
+    n: Int,
+    auth: ScopeInstance<MyKrosstalk.Auth>,
+): String {
+    return auth.value.username
+}
+
+actual suspend fun withOptionalAuth(auth: ScopeInstance<MyKrosstalk.Auth>?): String? {
+    return auth?.value?.username
+}

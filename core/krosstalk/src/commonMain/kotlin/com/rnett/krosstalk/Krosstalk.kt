@@ -28,6 +28,8 @@ data class MethodDefinition<T>(
     val call: MethodCaller<T>,
 ) {
 
+    val allScopes = requiredScopes + optionalScopes
+
     val hasInstanceParameter = serializers.instanceReceiverSerializer != null
     val hasExtensionParameter = serializers.extensionReceiverSerializer != null
 

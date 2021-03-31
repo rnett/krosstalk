@@ -14,11 +14,13 @@ import io.ktor.client.features.auth.providers.basic
 import io.ktor.client.request.HttpRequestBuilder
 import io.ktor.client.request.request
 import io.ktor.client.statement.HttpResponse
+import io.ktor.http.HeadersBuilder
 import io.ktor.http.HttpMethod
 import io.ktor.http.HttpStatusCode
 import io.ktor.http.charset
 import io.ktor.utils.io.charsets.Charsets
 import io.ktor.utils.io.core.String
+import io.ktor.utils.io.core.use
 
 /**
  * Helper to apply a scope's client configuration
@@ -47,22 +49,18 @@ interface KtorKrosstalkClient : KrosstalkClient<KtorClientScope<*>> {
 //TODO baseClient/configureRequest as parameters?
 /**
  * A Krosstalk client using a Ktor HttpClient to make requests.
- * Note that a new client is used for each request.
+ *
+ * A new client is used for each request, created by calling [HttpClient.config] on [baseClient].
+ *
+ * [baseRequest] is applied to each request before scopes.
+ *
  */
 @OptIn(KrosstalkPluginApi::class)
-open class KtorClient(override val serverUrl: String) : ClientHandler<KtorClientScope<*>> {
-
-    /**
-     * The base client.  Used with [HttpClient.config] (which makes a new client) each request.
-     */
-    protected open val baseClient: HttpClient = HttpClient()
-
-    /**
-     * Default request configuration, applied to every request.  Applied before scopes are.
-     */
-    protected open fun HttpRequestBuilder.configureRequest() {
-
-    }
+class KtorClient(
+    override val serverUrl: String,
+    val baseClient: HttpClient = HttpClient(),
+    val baseRequest: HttpRequestBuilder.() -> Unit,
+) : ClientHandler<KtorClientScope<*>> {
 
     private val realBaseClient by lazy {
         baseClient.config {
@@ -82,17 +80,19 @@ open class KtorClient(override val serverUrl: String) : ClientHandler<KtorClient
             scopes.forEach {
                 it.configureClient(this)
             }
-        }.request<HttpResponse>(urlString = requestUrl(endpoint)) {
-            if (body != null)
-                this.body = body
-            this.method = HttpMethod(httpMethod.toUpperCase())
+        }.use {
+            it.request<HttpResponse>(urlString = requestUrl(endpoint)) {
+                if (body != null)
+                    this.body = body
+                this.method = HttpMethod(httpMethod.toUpperCase())
 
-            // base request configuration
-            configureRequest()
+                // base request configuration
+                baseRequest()
 
-            // configure scopes
-            scopes.forEach {
-                it.configureRequest(this)
+                // configure scopes
+                scopes.forEach {
+                    it.configureRequest(this)
+                }
             }
         }
 
@@ -110,6 +110,7 @@ open class KtorClient(override val serverUrl: String) : ClientHandler<KtorClient
  * Allows configuration of the client and of the request.
  * Note that a new client is used for each request.
  */
+@OptIn(KrosstalkPluginApi::class)
 interface KtorClientScope<in D> : ClientScope<D> {
     fun HttpClientConfig<*>.configureClient(data: D) {}
     fun HttpRequestBuilder.configureRequest(data: D) {}
@@ -120,6 +121,17 @@ interface KtorClientScope<in D> : ClientScope<D> {
  */
 fun interface KtorClientRequestScope<D> : KtorClientScope<D> {
     override fun HttpRequestBuilder.configureRequest(data: D)
+}
+
+/**
+ * A Ktor client scope that only adds headers.
+ */
+fun interface KtorClientHeaderScope<D> : KtorClientRequestScope<D> {
+    override fun HttpRequestBuilder.configureRequest(data: D) {
+        this.headers.headers(data)
+    }
+
+    fun HeadersBuilder.headers(data: D): Unit
 }
 
 /**
@@ -145,7 +157,7 @@ abstract class KtorClientAuth<D> : KtorClientScope<D> {
     }
 }
 
-class KtorClientBasicAuth(val sendWithoutRequest: Boolean = true, val realm: String? = null) :
+open class KtorClientBasicAuth(val sendWithoutRequest: Boolean = true, val realm: String? = null) :
     KtorClientAuth<BasicCredentials>() {
     override fun Auth.configureClientAuth(data: BasicCredentials) {
         basic {

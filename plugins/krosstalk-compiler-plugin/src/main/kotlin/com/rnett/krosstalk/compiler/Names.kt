@@ -68,8 +68,8 @@ object Krosstalk : RootPackage(krosstalkPackage) {
         }
 
         object ImmutableWantedScopes : ClassRef() {
-            val get by function()
-            val getOptional by function()
+            val getRequiredInstance by function()
+            val getOptionalInstance by function()
         }
     }
 

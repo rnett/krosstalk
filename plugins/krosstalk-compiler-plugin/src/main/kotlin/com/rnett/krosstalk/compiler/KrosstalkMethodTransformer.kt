@@ -19,7 +19,6 @@ import com.rnett.plugin.ir.withValueArguments
 import com.rnett.plugin.naming.isClassifierOf
 import com.rnett.plugin.stdlib.Kotlin
 import org.jetbrains.kotlin.backend.common.extensions.IrPluginContext
-import org.jetbrains.kotlin.backend.common.ir.allParameters
 import org.jetbrains.kotlin.backend.common.lower.DeclarationIrBuilder
 import org.jetbrains.kotlin.backend.common.lower.irThrow
 import org.jetbrains.kotlin.cli.common.messages.MessageCollector
@@ -35,8 +34,6 @@ import org.jetbrains.kotlin.ir.builders.irCallConstructor
 import org.jetbrains.kotlin.ir.builders.irComposite
 import org.jetbrains.kotlin.ir.builders.irGet
 import org.jetbrains.kotlin.ir.builders.irGetObject
-import org.jetbrains.kotlin.ir.builders.irIfNull
-import org.jetbrains.kotlin.ir.builders.irNull
 import org.jetbrains.kotlin.ir.declarations.IrAnonymousInitializer
 import org.jetbrains.kotlin.ir.declarations.IrClass
 import org.jetbrains.kotlin.ir.declarations.IrFunction
@@ -66,9 +63,6 @@ import kotlin.collections.set
 import kotlin.math.absoluteValue
 
 
-fun IrFunction.paramHash() =
-    allParameters.map { it.name to it.type }.toSet().hashCode().absoluteValue.toString(36)
-
 class KrosstalkMethodTransformer(
     context: IrPluginContext,
     messageCollector: MessageCollector,
@@ -78,6 +72,8 @@ class KrosstalkMethodTransformer(
 
     val addedInitalizers = mutableMapOf<IrClassSymbol, IrAnonymousInitializer>()
     val seenNames = mutableMapOf<IrClassSymbol, MutableSet<String>>()
+
+    fun IrFunction.paramHash() = this.symbol.signature!!.hashCode().absoluteValue.toString(36)
 
     val tripleTypes by lazy {
         listOf(
@@ -515,36 +511,23 @@ class KrosstalkMethodTransformer(
 
                         requiredScopes.forEach { (param, cls) ->
                             val dataType = cls.defaultType.raiseTo(Krosstalk.Server.ServerScope()).typeArgument(0)
-                            val data = irCall(Krosstalk.Server.ImmutableWantedScopes.get)
-                                .withDispatchReceiver(irGet(scopes))
-                                .withTypeArguments(cls.defaultType, dataType)
-                                .withValueArguments(irGetObject(cls.symbol))
                             putValueArgument(param.index,
-                                irCall(Krosstalk.Server.createServerScopeInstance)
-                                    .withExtensionReceiver(irGetObject(cls.symbol))
+                                irCall(Krosstalk.Server.ImmutableWantedScopes.getRequiredInstance)
+                                    .withDispatchReceiver(irGet(scopes))
                                     .withTypeArguments(cls.defaultType, dataType)
-                                    .withValueArguments(data)
+                                    .withValueArguments(irGetObject(cls.symbol), calculateName().asConst())
                             )
                         }
 
                         optionalScopes.forEach { (param, cls) ->
                             val dataType = cls.defaultType.raiseTo(Krosstalk.Server.ServerScope()).typeArgument(0)
-                            val data = irCall(Krosstalk.Server.ImmutableWantedScopes.get)
-                                .withDispatchReceiver(irGet(scopes))
-                                .withTypeArguments(cls.defaultType, dataType)
-                                .withValueArguments(irGetObject(cls.symbol))
 
-                            val value = stdlib.letExpr(data) {
-                                irIfNull(param.type, irGet(it),
-                                    irNull(),
-                                    irCall(Krosstalk.Server.createServerScopeInstance)
-                                        .withDispatchReceiver(irGetObject(cls.symbol))
-                                        .withTypeArguments(cls.defaultType, dataType)
-                                        .withValueArguments(data)
-                                )
-                            }
-
-                            putValueArgument(param.index, value)
+                            putValueArgument(param.index,
+                                irCall(Krosstalk.Server.ImmutableWantedScopes.getOptionalInstance)
+                                    .withDispatchReceiver(irGet(scopes))
+                                    .withTypeArguments(cls.defaultType, dataType)
+                                    .withValueArguments(irGetObject(cls.symbol))
+                            )
                         }
 
                         declaration.extensionReceiverParameter?.let {
@@ -581,7 +564,8 @@ class KrosstalkMethodTransformer(
         }
 
         private fun calculateName(): String {
-            val paramHash = declaration.paramHash()
+            log("Trying to get name for: ${expectDeclaration?.dump(true)}")
+            val paramHash = expectDeclaration?.paramHash() ?: declaration.paramHash()
             val name = if (annotations.KrosstalkMethod?.noParamHash == true) {
                 if (declaration.name.asString() in seenNames.getOrDefault(krosstalkClass.declaration.symbol, mutableSetOf())) {
                     messageCollector.reportError(
