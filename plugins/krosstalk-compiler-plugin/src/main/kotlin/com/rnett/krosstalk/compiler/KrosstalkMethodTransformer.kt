@@ -564,7 +564,6 @@ class KrosstalkMethodTransformer(
         }
 
         private fun calculateName(): String {
-            log("Trying to get name for: ${expectDeclaration?.dump(true)}")
             val paramHash = expectDeclaration?.paramHash() ?: declaration.paramHash()
             val name = if (annotations.KrosstalkMethod?.noParamHash == true) {
                 if (declaration.name.asString() in seenNames.getOrDefault(krosstalkClass.declaration.symbol, mutableSetOf())) {
