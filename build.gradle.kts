@@ -20,8 +20,6 @@ allprojects {
         mavenCentral()
         maven("https://oss.jfrog.org/artifactory/oss-snapshot-local/")
         google()
-        jcenter()
-        mavenLocal()
         maven("https://oss.sonatype.org/content/repositories/snapshots") {
             mavenContent { snapshotsOnly() }
         }

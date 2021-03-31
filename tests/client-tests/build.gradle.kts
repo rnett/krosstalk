@@ -120,17 +120,3 @@ tasks.getByName<JavaExec>("run") {
     dependsOn(tasks.getByName<Jar>("jvmJar"))
     classpath(tasks.getByName<Jar>("jvmJar"))
 }
-
-tasks.getByName("compileKotlinJvm") {
-    dependsOn(
-        ":krosstalk-compiler-plugin:publishToMavenLocal",
-        ":krosstalk-gradle-plugin:publishToMavenLocal"
-    )
-}
-
-tasks.getByName("compileKotlinJs") {
-    dependsOn(
-        ":krosstalk-compiler-plugin:publishToMavenLocal",
-        ":krosstalk-gradle-plugin:publishToMavenLocal"
-    )
-}

@@ -52,6 +52,13 @@
             </Attribute>
           </value>
         </entry>
+        <entry key="\plugins\krosstalk-compiler-plugin\build.gradle.kts">
+          <value>
+            <Attribute>
+              <option name="separator" value=":" />
+            </Attribute>
+          </value>
+        </entry>
         <entry key="\plugins\krosstalk-compiler-plugin\src\main\kotlin\com\rnett\krosstalk\compiler\KrosstalkAnnotation.kt">
           <value>
             <Attribute>
