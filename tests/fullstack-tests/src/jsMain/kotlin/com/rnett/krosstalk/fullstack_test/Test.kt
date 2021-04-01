@@ -61,17 +61,17 @@ actual suspend fun endpointContentTypeTest(a: Int, b: Int): Int = krosstalkCall(
 
 actual suspend fun emptyGet(): String = krosstalkCall()
 
-actual suspend fun paramEndpointNoMinimize(a: Int, b: Int, c: Int, d: Int): Int = krosstalkCall()
+actual suspend fun paramEndpoint(a: Int, b: Int, c: Int, d: Int): Int = krosstalkCall()
 
-actual suspend fun optionalEndpointNoMinimize(n: Int, s: String?): String? = krosstalkCall()
+actual suspend fun optionalEndpoint(n: Int, s: String?): String? = krosstalkCall()
 
-actual suspend fun optionalEndpointQueryParamsNoMinimize(n: Int, s: String?): String? = krosstalkCall()
+actual suspend fun optionalEndpointQueryParams(n: Int, s: String?): String? = krosstalkCall()
 
-actual suspend fun paramEndpointMinimize(a: Int, b: Int, c: Int, d: Int): Int = krosstalkCall()
+actual suspend fun paramEndpointGet(a: Int, b: Int, c: Int, d: Int): Int = krosstalkCall()
 
-actual suspend fun optionalEndpointMinimize(n: Int, s: String?): String? = krosstalkCall()
+actual suspend fun optionalEndpointGet(n: Int, s: String?): String? = krosstalkCall()
 
-actual suspend fun optionalEndpointQueryParamsMinimize(n: Int, s: String?): String? = krosstalkCall()
+actual suspend fun optionalEndpointQueryParamsGet(n: Int, s: String?): String? = krosstalkCall()
 
 actual suspend fun partialMinimize(n: Int, s: String?): String? = krosstalkCall()
 
@@ -89,3 +89,5 @@ actual suspend fun withAuth(
 ): String = krosstalkCall()
 
 actual suspend fun withOptionalAuth(auth: ScopeInstance<MyKrosstalk.Auth>?): String? = krosstalkCall()
+
+actual suspend fun Int?.withOptionalReceiver(s: String?): String = krosstalkCall()

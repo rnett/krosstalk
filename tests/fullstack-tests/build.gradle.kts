@@ -122,7 +122,7 @@ tasks.create<com.github.psxpaul.task.JavaExecFork>("startTestServer") {
 
     dependsOn("jvmJar")
 
-    stopAfter = tasks["jsBrowserTest"]
+    stopAfter = tasks["jsTest"]
 
-    tasks["jsBrowserTest"].dependsOn(this)
+    tasks["jsTest"].dependsOn(this)
 }

@@ -5,6 +5,7 @@ import com.rnett.krosstalk.endpoint.Endpoint
 abstract class KrosstalkException
 @InternalKrosstalkApi constructor(message: String, cause: Throwable? = null) : RuntimeException(message, cause) {
 
+    //TODO catch/convert to http status code
     /**
      * An argument that should have been passed was not.
      */
@@ -12,6 +13,7 @@ abstract class KrosstalkException
     class MissingArgument @InternalKrosstalkApi constructor(val methodName: String, val subMessage: String) : KrosstalkException(
         "Method $methodName: $subMessage")
 
+    //TODO catch/convert to http status code
     /**
      * An argument was passed as the wrong type.
      */

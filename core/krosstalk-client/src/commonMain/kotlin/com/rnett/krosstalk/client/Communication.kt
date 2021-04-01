@@ -81,29 +81,23 @@ internal suspend inline fun <T, K, reified C : ClientScope<*>> K.call(
     methodName: String,
     arguments: Map<String, *>,
     scopes: List<AppliedClientScope<C, *>>,
-): T
-        where K : KrosstalkClient<C>, K : Krosstalk {
+): T where K : KrosstalkClient<C>, K : Krosstalk {
+
     val method = requiredMethod(methodName)
 
-    val bodyArguments = method.bodyArguments(arguments)
-    println("Body Arguments: ${bodyArguments.keys}")
-    val serializedBody = method.serializers.transformedParamSerializers.serializeArgumentsToBytes(bodyArguments)
+    val (url, usedInUrl) = method.endpoint.fillWithArgs(methodName, arguments.keys, arguments.filter { it.value != null }.keys) {
+        method.serializers.transformedParamSerializers.serializeArgumentToString(it, arguments[it]).httpEncode()
+    }
 
-    val serializedUrlArgs = method.urlArguments(arguments)
-        .mapValues {
-            method.serializers.transformedParamSerializers.serializeArgumentToString(it.key, it.value).httpEncode()
-        }
+    val bodyArguments = arguments.filterNot { it.value == null && it.key in method.optionalParameters } - usedInUrl
+    val serializedBody = method.serializers.transformedParamSerializers.serializeArgumentsToBytes(bodyArguments)
 
 
     val result = client.sendKrosstalkRequest(
-        method.endpoint.fillWithArgs(
-            methodName,
-            serializedUrlArgs,
-            arguments.filter { it.value != null }.keys
-        ),
+        url,
         method.httpMethod,
         method.contentType ?: serialization.contentType,
-        if (!method.hasBodyArguments(arguments)) null else serializedBody,
+        if (bodyArguments.isEmpty()) null else serializedBody,
         scopes
     )
 

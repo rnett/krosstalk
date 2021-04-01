@@ -74,17 +74,17 @@ actual suspend fun endpointContentTypeTest(a: Int, b: Int): Int = a + b
 
 actual suspend fun emptyGet(): String = "Hello World!"
 
-actual suspend fun paramEndpointNoMinimize(a: Int, b: Int, c: Int, d: Int): Int = a * b * c * d
+actual suspend fun paramEndpoint(a: Int, b: Int, c: Int, d: Int): Int = a * b * c * d
 
-actual suspend fun optionalEndpointNoMinimize(n: Int, s: String?): String? = s?.repeat(n)
+actual suspend fun optionalEndpoint(n: Int, s: String?): String? = s?.repeat(n)
 
-actual suspend fun optionalEndpointQueryParamsNoMinimize(n: Int, s: String?): String? = s?.repeat(n)
+actual suspend fun optionalEndpointQueryParams(n: Int, s: String?): String? = s?.repeat(n)
 
-actual suspend fun paramEndpointMinimize(a: Int, b: Int, c: Int, d: Int): Int = a * b * c * d
+actual suspend fun paramEndpointGet(a: Int, b: Int, c: Int, d: Int): Int = a * b * c * d
 
-actual suspend fun optionalEndpointMinimize(n: Int, s: String?): String? = s?.repeat(n)
+actual suspend fun optionalEndpointGet(n: Int, s: String?): String? = s?.repeat(n)
 
-actual suspend fun optionalEndpointQueryParamsMinimize(n: Int, s: String?): String? = s?.repeat(n)
+actual suspend fun optionalEndpointQueryParamsGet(n: Int, s: String?): String? = s?.repeat(n)
 
 actual suspend fun partialMinimize(n: Int, s: String?): String? = s?.repeat(n)
 
@@ -116,4 +116,8 @@ actual suspend fun withAuth(
 
 actual suspend fun withOptionalAuth(auth: ScopeInstance<MyKrosstalk.Auth>?): String? {
     return auth?.value?.username
+}
+
+actual suspend fun Int?.withOptionalReceiver(s: String?): String {
+    return (s ?: "a").repeat(this ?: 2)
 }

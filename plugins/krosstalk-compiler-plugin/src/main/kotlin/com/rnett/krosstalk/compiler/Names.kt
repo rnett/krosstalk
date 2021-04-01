@@ -38,6 +38,7 @@ object Krosstalk : RootPackage(krosstalkPackage) {
         val KrosstalkMethod by Class()
         val ClientOnly by Class()
         val TopLevelOnly by Class()
+        val Optional by Class()
     }
 
     object Serialization : PackageRef() {

@@ -61,11 +61,12 @@ data class KrosstalkAnnotations(val annotations: Set<KrosstalkAnnotation>) :
 
     val KrosstalkEndpoint by annotation<KrosstalkAnnotation.KrosstalkEndpoint>()
 
-    val MinimizeBody by annotation<KrosstalkAnnotation.MinimizeBody>()
     val EmptyBody by annotation<KrosstalkAnnotation.EmptyBody>()
     val ExplicitResult by annotation<KrosstalkAnnotation.ExplicitResult>()
 
     val CatchAsHttpError by repeatableAnnotation<KrosstalkAnnotation.CatchAsHttpError>()
+
+    val Optional by annotation<KrosstalkAnnotation.Optional>()
 }
 
 data class WrapperDelegate<T>(val value: T) {
@@ -179,8 +180,6 @@ sealed class KrosstalkAnnotation(val call: IrConstructorCall, name: String) {
         val contentType: String by field("")
     }
 
-    class MinimizeBody(call: IrConstructorCall) : KrosstalkAnnotation(call, "MinimizeBody")
-
     class EmptyBody(call: IrConstructorCall) : KrosstalkAnnotation(call, "EmptyBody")
 
     class ExplicitResult(call: IrConstructorCall) : KrosstalkAnnotation(call, "ExplicitResult") {
@@ -193,5 +192,9 @@ sealed class KrosstalkAnnotation(val call: IrConstructorCall, name: String) {
         val exceptionClass by classField()
         val responseCode: Int by field()
         val message by field(exceptionMessage)
+    }
+
+    class Optional(call: IrConstructorCall) : KrosstalkAnnotation(call, "Optional") {
+        val serverDefault by field(true)
     }
 }

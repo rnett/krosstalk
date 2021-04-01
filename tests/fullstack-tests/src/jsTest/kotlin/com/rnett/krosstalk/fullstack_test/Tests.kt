@@ -48,43 +48,43 @@ class Tests {
 
     @Test
     fun testParamEndpointNoMinimize() = GlobalScope.promise {
-        assertEquals(4 * 2 * 3 * 5, paramEndpointNoMinimize(4, 2, 3, 5))
-        assertEquals("/krosstalk/paramEndpointNoMinimize_45pvl2/a/04/b/02?c=03&d=05", lastUrl)
+        assertEquals(4 * 2 * 3 * 5, paramEndpoint(4, 2, 3, 5))
+        assertEquals("/krosstalk/paramEndpoint_nxd1nq/a/04/b/02?c=03&d=05", lastUrl)
     }
 
     @Test
     fun testOptionalEndpointNoMinimize() = GlobalScope.promise {
-        assertEquals(null, optionalEndpointNoMinimize(2, null))
-        assertEquals("/krosstalk/optionalEndpointNoMinimize_a7ntdk/n/02", lastUrl)
+        assertEquals(null, optionalEndpoint(2, null))
+        assertEquals("/krosstalk/optionalEndpoint_h9r8ve/n/02", lastUrl)
 
-        assertEquals("bb", optionalEndpointNoMinimize(2, "b"))
-        assertEquals("/krosstalk/optionalEndpointNoMinimize_a7ntdk/n/02/s/6162", lastUrl)
+        assertEquals("bb", optionalEndpoint(2, "b"))
+        assertEquals("/krosstalk/optionalEndpoint_h9r8ve/n/02/s/6162", lastUrl)
     }
 
     @Test
     fun testOptionalEndpointQueryParamsNoMinimize() = GlobalScope.promise {
-        assertEquals(null, optionalEndpointQueryParamsNoMinimize(2, null))
-        assertEquals("/krosstalk/optionalEndpointQueryParamsNoMinimize_ar4rh2?n=02", lastUrl)
+        assertEquals(null, optionalEndpointQueryParams(2, null))
+        assertEquals("/krosstalk/optionalEndpointQueryParams_krs4ra?n=02", lastUrl)
 
-        assertEquals("bb", optionalEndpointQueryParamsNoMinimize(2, "b"))
-        assertEquals("/krosstalk/optionalEndpointQueryParamsNoMinimize_ar4rh2?n=02&s=6162", lastUrl)
+        assertEquals("bb", optionalEndpointQueryParams(2, "b"))
+        assertEquals("/krosstalk/optionalEndpointQueryParams_krs4ra?n=02&s=6162", lastUrl)
     }
 
     @Test
     fun testParamEndpointMinimize() = GlobalScope.promise {
-        assertEquals(4 * 2 * 3 * 5, paramEndpointMinimize(4, 2, 3, 5))
-        assertEquals("/krosstalk/paramEndpointMinimize_r03fwr/a/04/b/02?c=03&d=05", lastUrl)
+        assertEquals(4 * 2 * 3 * 5, paramEndpointGet(4, 2, 3, 5))
+        assertEquals("/krosstalk/paramEndpointGet_wwiikt/a/04/b/02?c=03&d=05", lastUrl)
         assertEquals(EmptyContent, lastBody)
     }
 
     @Test
     fun testOptionalEndpointMinimize() = GlobalScope.promise {
-        assertEquals(null, optionalEndpointMinimize(2, null))
-        assertEquals("/krosstalk/optionalEndpointMinimize_wrk2cn/n/02", lastUrl)
+        assertEquals(null, optionalEndpointGet(2, null))
+        assertEquals("/krosstalk/optionalEndpointGet_imq958/n/02", lastUrl)
         assertEquals(EmptyContent, lastBody)
 
-        assertEquals("bb", optionalEndpointMinimize(2, "b"))
-        assertEquals("/krosstalk/optionalEndpointMinimize_wrk2cn/n/02/s/6162", lastUrl)
+        assertEquals("bb", optionalEndpointGet(2, "b"))
+        assertEquals("/krosstalk/optionalEndpointGet_imq958/n/02/s/6162", lastUrl)
         assertEquals(EmptyContent, lastBody)
 
         Throwable::class.isInstance(2)
@@ -92,12 +92,12 @@ class Tests {
 
     @Test
     fun testOptionalEndpointQueryParamsMinimize() = GlobalScope.promise {
-        assertEquals(null, optionalEndpointQueryParamsMinimize(2, null))
-        assertEquals("/krosstalk/optionalEndpointQueryParamsMinimize_crypeu?n=02", lastUrl)
+        assertEquals(null, optionalEndpointQueryParamsGet(2, null))
+        assertEquals("/krosstalk/optionalEndpointQueryParamsGet_34mu26?n=02", lastUrl)
         assertEquals(EmptyContent, lastBody)
 
-        assertEquals("bb", optionalEndpointQueryParamsMinimize(2, "b"))
-        assertEquals("/krosstalk/optionalEndpointQueryParamsMinimize_crypeu?n=02&s=6162", lastUrl)
+        assertEquals("bb", optionalEndpointQueryParamsGet(2, "b"))
+        assertEquals("/krosstalk/optionalEndpointQueryParamsGet_34mu26?n=02&s=6162", lastUrl)
         assertEquals(EmptyContent, lastBody)
     }
 
@@ -137,6 +137,14 @@ class Tests {
     fun testOptionalAuth() = GlobalScope.promise {
         assertEquals("username", withOptionalAuth(MyKrosstalk.Auth(BasicCredentials("username", "password"))))
         assertEquals(null, withOptionalAuth(null))
+    }
+
+    @Test
+    fun testOptionalReceiver() = GlobalScope.promise {
+        assertEquals("ddd", 3.withOptionalReceiver("d"))
+        assertEquals("dd", null.withOptionalReceiver("d"))
+        assertEquals("aaa", 3.withOptionalReceiver(null))
+        assertEquals("aa", null.withOptionalReceiver(null))
     }
 
 }

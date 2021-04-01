@@ -78,16 +78,6 @@ annotation class KrosstalkEndpoint(
 )
 
 /**
- * Don't include arguments that are part of the [KrosstalkEndpoint] endpoint in the body.
- * Those arguments will be passed in the endpoint.
- */
-@Target(AnnotationTarget.FUNCTION)
-@Retention(AnnotationRetention.BINARY)
-@MustBeDocumented
-@TopLevelOnly
-annotation class MinimizeBody
-
-/**
  * Don't include arguments that are part of the [KrosstalkEndpoint] endpoint in the body, and error if all arguments aren't in the endpoint.
  * Those arguments will be passed in the endpoint.
  */
@@ -150,3 +140,14 @@ annotation class CatchAsHttpError(
     val responseCode: Int,
     val message: String = exceptionMessage,
 )
+
+/**
+ * Must be used on a nullable parameter (for now).  If that parameter is null, it will not be sent.
+ * If [serverDefault] is `true` (which it is by default), any default value will only be evaluated on the server side; `null` will be used on the client.
+ *
+ * Optional parameters may be used in optional blocks in an endpoint (see [KrosstalkEndpoint]).
+ */
+@Target(AnnotationTarget.VALUE_PARAMETER)
+@Retention(AnnotationRetention.BINARY)
+@MustBeDocumented
+annotation class Optional(val serverDefault: Boolean = true)

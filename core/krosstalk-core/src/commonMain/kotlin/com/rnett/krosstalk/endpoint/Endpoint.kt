@@ -209,7 +209,7 @@ data class Endpoint(
     /**
      * Substitute parameters in this endpoint, without resolving optionals
      */
-    inline fun fillParameters(crossinline transform: (EndpointPart.Parameter) -> String?) =
+    inline fun fillParameters(transform: (EndpointPart.Parameter) -> String?) =
         mapParts {
             it.mapInOptional {
                 if (it is EndpointPart.Parameter)
@@ -220,12 +220,12 @@ data class Endpoint(
         }
 
     /**
-     * Include or exclude any optionals depending on if their key is in [nonNullArguments]
+     * Include or exclude any optionals depending on if their key is in [usedOptionals]
      */
-    fun resolveOptionals(nonNullArguments: Set<String>) =
+    fun resolveOptionals(usedOptionals: Set<String>) =
         mapParts {
             var part = it
-            while (part is EndpointPart.Optional && part.key in nonNullArguments)
+            while (part is EndpointPart.Optional && part.key in usedOptionals)
                 part = part.part
 
             if (part is EndpointPart.Optional)
@@ -245,8 +245,8 @@ data class Endpoint(
         return false
     }
 
-    fun fill(nonNullArguments: Set<String>, fillParameter: (key: String) -> String): String {
-        return resolveOptionals(nonNullArguments).fillParameters { fillParameter(it.param) }.toString()
+    inline fun fill(usedOptionals: Set<String>, fillParameter: (key: String) -> String): String {
+        return resolveOptionals(usedOptionals).fillParameters { fillParameter(it.param) }.toString()
     }
 
     /**
@@ -294,6 +294,31 @@ data class Endpoint(
         }
     }
 
+    /**
+     * Substitute argument values into an endpoint template.  Requires all keys in the template to be used.
+     *
+     * @see [fill]
+     *
+     * @return The filled endpoint, and the parameters used to fill it (not including the method name or prefix).
+     */
+    @OptIn(InternalKrosstalkApi::class)
+    inline fun fillWithArgs(
+        methodName: String,
+        knownArguments: Set<String>,
+        usedOptionals: Set<String>,
+        getValue: (String) -> String,
+    ): Pair<String, Set<String>> {
+        val cache = mutableMapOf<String, String>()
+        return fill(usedOptionals) {
+            when (it) {
+                com.rnett.krosstalk.methodName -> error("Unresolved method name parameter")
+                krosstalkPrefix -> error("Unresolved method name parameter")
+                in knownArguments -> cache.getOrPut(it) { getValue(it) }
+                else -> throw KrosstalkException.EndpointUnknownArgument(methodName, this, it, knownArguments)
+            }
+        } to cache.keys
+    }
+
     fun allReferencedParameters(): Set<String> {
         val params = mutableSetOf<String>()
         forEachPart {
@@ -301,6 +326,24 @@ data class Endpoint(
                 params += it.param
             if (it is EndpointPart.Optional)
                 params += it.key
+        }
+        return params
+    }
+
+    fun usedOptionals(): Set<String> {
+        val opts = mutableSetOf<String>()
+        forEachPart {
+            if (it is EndpointPart.Optional)
+                opts += it.key
+        }
+        return opts
+    }
+
+    fun topLevelParameters(): Set<String> {
+        val params = mutableSetOf<String>()
+        forEachPart(false) {
+            if (it is EndpointPart.Parameter)
+                params += it.param
         }
         return params
     }
@@ -399,7 +442,7 @@ sealed class EndpointPart<in L : EndpointRegion> {
         }
 }
 
-fun <L : EndpointRegion> EndpointPart<L>.mapInOptional(transform: (EndpointPart<L>) -> EndpointPart<L>): EndpointPart<L> = when (this) {
+inline fun <L : EndpointRegion> EndpointPart<L>.mapInOptional(transform: (EndpointPart<L>) -> EndpointPart<L>): EndpointPart<L> = when (this) {
     is EndpointPart.Parameter -> transform(this)
     is EndpointPart.Static -> transform(this)
     is EndpointPart.Optional -> copy(part = transform(part))

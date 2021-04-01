@@ -52,18 +52,12 @@ suspend fun <K> K.handle(
     val wantedScopes = scopes.toImmutable()
     val contentType = method.contentType ?: serialization.contentType
 
-    val arguments = if (body.isNotEmpty())
-        method.serializers.transformedParamSerializers.deserializeArgumentsFromBytes(body).toMutableMap()
-    else
-        mutableMapOf()
+    val arguments: MutableMap<String, Any?> = urlArguments.mapValues {
+        method.serializers.transformedParamSerializers.deserializeArgumentFromString<Any?>(it.key, it.value.httpDecode())
+    }.toMutableMap()
 
-    if (method.minimizeBody) {
-        val endpointArguments: Map<String, Any?> = urlArguments.mapValues {
-            method.serializers.transformedParamSerializers.deserializeArgumentFromString(it.key, it.value.httpDecode())
-        }
-
-        arguments += endpointArguments
-    }
+    if (body.isNotEmpty())
+        arguments += method.serializers.transformedParamSerializers.deserializeArgumentsFromBytes(body)
 
     val result = method.call(arguments, wantedScopes)
 

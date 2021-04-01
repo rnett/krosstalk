@@ -20,10 +20,10 @@ data class MethodDefinition<T>(
     val contentType: String?,
     val requiredScopes: Set<Scope>,
     val optionalScopes: Set<Scope>,
-    val minimizeBody: Boolean,
     val useExplicitResult: Boolean,
     val includeStacktrace: Boolean,
     val propagateServerExceptions: Boolean,
+    val optionalParameters: Set<String>,
     val serializers: MethodSerializers<*>,
     val call: MethodCaller<T>,
 ) {
@@ -32,16 +32,6 @@ data class MethodDefinition<T>(
 
     val hasInstanceParameter = serializers.instanceReceiverSerializer != null
     val hasExtensionParameter = serializers.extensionReceiverSerializer != null
-
-    //TODO clarify optionals, where things live.  Nulls shouldn't be put in body if they will be infered from url, but when is this.  Always?  Depends on optional support
-    fun bodyArguments(arguments: Map<String, *>) =
-        if (minimizeBody) arguments.filterValues { it != null }
-            .filterKeys { it !in endpoint.usedParameters(arguments.filter { it.value != null }.keys) } else arguments
-
-    fun urlArguments(arguments: Map<String, *>) =
-        arguments.filterKeys { it in endpoint.usedParameters(arguments.filter { it.value != null }.keys) }
-
-    fun hasBodyArguments(arguments: Map<String, *>) = bodyArguments(arguments).isNotEmpty()
 }
 
 // Unit and Nothing? scopes will be handled in the method
@@ -92,10 +82,10 @@ abstract class Krosstalk {
         types: MethodTypes,
         requiredScopes: Set<Scope>,
         optionalScopes: Set<Scope>,
-        leaveOutArguments: Boolean,
         useExplicitResult: Boolean,
         includeStacktrace: Boolean,
-        rethrowServerExceptions: Boolean,
+        propagateServerExceptions: Boolean,
+        optionalParameters: Set<String>,
         call: MethodCaller<T>,
     ) {
         //TODO check endpoint exclusivity
@@ -118,10 +108,10 @@ abstract class Krosstalk {
             contentType.ifBlank { null },
             requiredScopes,
             optionalScopes,
-            leaveOutArguments,
             useExplicitResult,
             includeStacktrace,
-            rethrowServerExceptions,
+            propagateServerExceptions,
+            optionalParameters,
             serializers,
             call
         )
