@@ -552,22 +552,23 @@ class KrosstalkMethodTransformer(
                     }
 
                     body = irJsExprBody(irCall(declaration.symbol).apply {
-                        nonScopeValueParameters.forEach {
+                        nonScopeValueParameters.forEach { param ->
                             putValueArgument(
-                                it.index,
+                                param.index,
                                 getValueOrError(
                                     declaration.name.asString(),
                                     irGet(args),
-                                    it.type,
-                                    it.name.asString(),
-                                    if (it in optionalValueParameters) {
-                                        buildLambda(it.type) {
-                                            body = it.defaultValue?.deepCopyWithSymbols()
-                                                ?: irJsExprBody(irNull(it.type))
+                                    param.type,
+                                    param.name.asString(),
+                                    if (param in optionalValueParameters) {
+                                        buildLambda(param.type) {
+                                            body = param.defaultValue?.deepCopyWithSymbols()
+                                                ?: expectDeclaration?.valueParameters?.single { it.name == param.name }?.defaultValue?.deepCopyWithSymbols()
+                                                        ?: irJsExprBody(irNull(param.type))
                                         }
                                     } else null,
-                                    "No argument for ${it.name}, but it was required",
-                                    "Argument for ${it.name} was type \$type, but the parameter is of type \$required"
+                                    "No argument for ${param.name}, but it was required",
+                                    "Argument for ${param.name} was type \$type, but the parameter is of type \$required"
                                 )
                             )
                         }
@@ -624,7 +625,7 @@ class KrosstalkMethodTransformer(
 
                     })
                 }
-            }
+            }.also { log(declaration.name.asString(), it.dumpKotlinLike()) }
         }
 
         private fun calculateName(): String {

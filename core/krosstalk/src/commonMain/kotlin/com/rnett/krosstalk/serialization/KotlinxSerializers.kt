@@ -1,5 +1,6 @@
 package com.rnett.krosstalk.serialization
 
+import com.rnett.krosstalk.KrosstalkPluginApi
 import kotlinx.serialization.BinaryFormat
 import kotlinx.serialization.KSerializer
 import kotlinx.serialization.StringFormat
@@ -12,6 +13,7 @@ import kotlin.reflect.KType
 /**
  * A serializer that uses a kotlinx [KSerializer] with a [BinaryFormat].
  */
+@OptIn(KrosstalkPluginApi::class)
 data class KotlinxBinarySerializer<T>(val serializer: KSerializer<T>, val format: BinaryFormat) : BinarySerializer<T> {
     override fun deserialize(data: ByteArray): T = format.decodeFromByteArray(serializer, data)
 
@@ -22,6 +24,7 @@ data class KotlinxBinarySerializer<T>(val serializer: KSerializer<T>, val format
 /**
  * A serializer that uses a kotlinx [KSerializer] with a [StringFormat].
  */
+@OptIn(KrosstalkPluginApi::class)
 data class KotlinxStringSerializer<T>(val serializer: KSerializer<T>, val format: StringFormat) : StringSerializer<T> {
     override fun deserialize(data: String): T = format.decodeFromString(serializer, data)
 
@@ -31,6 +34,7 @@ data class KotlinxStringSerializer<T>(val serializer: KSerializer<T>, val format
 /**
  * Kotlinx serialization handler that uses a [BinaryFormat].  Combines arguments into a `Map<String, ByteArray>`, then serializes the map.
  */
+@OptIn(KrosstalkPluginApi::class)
 data class KotlinxBinarySerializationHandler(val format: BinaryFormat) : ArgumentSerializationHandler<ByteArray>(ByteTransformer) {
     override fun serializeArguments(serializedArguments: Map<String, ByteArray>): ByteArray {
         return format.encodeToByteArray(mapSerializer, serializedArguments)
@@ -54,6 +58,7 @@ data class KotlinxBinarySerializationHandler(val format: BinaryFormat) : Argumen
  * If you want the arguments to be objects, which you probably do, use [KotlinxJsonObjectSerializationHandler].
  * This is necessary for using non-krosstalk apis.
  */
+@OptIn(KrosstalkPluginApi::class)
 data class KotlinxStringSerializationHandler(val format: StringFormat) : ArgumentSerializationHandler<String>(StringTransformer) {
     override fun serializeArguments(serializedArguments: Map<String, String>): String {
         return format.encodeToString(mapSerializer, serializedArguments)
@@ -73,6 +78,7 @@ data class KotlinxStringSerializationHandler(val format: StringFormat) : Argumen
  * Kotlinx json serialization handler that, instead of combining arguments into a `Map<String, String>`, uses them as fields in a json object.
  * If you are interacting with a non-krosstalk api, this is almost certainly what you want to use.
  */
+@OptIn(KrosstalkPluginApi::class)
 data class KotlinxJsonObjectSerializationHandler(val format: Json) : BaseSerializationHandler<String>(StringTransformer) {
     override fun getSerializer(type: KType) = KotlinxStringSerializer(serializer(type), format)
 

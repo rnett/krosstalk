@@ -1,6 +1,8 @@
 package com.rnett.krosstalk.serialization
 
+import com.rnett.krosstalk.KrosstalkPluginApi
 
+@KrosstalkPluginApi
 interface SerializedFormatTransformer<S>{
     /**
      * Transform [S] to a [ByteArray].
@@ -23,6 +25,7 @@ interface SerializedFormatTransformer<S>{
     fun fromString(data: String): S
 }
 
+@KrosstalkPluginApi
 object StringTransformer: SerializedFormatTransformer<String>{
     override fun toByteArray(data: String): ByteArray = data.encodeToByteArray()
 
@@ -47,6 +50,7 @@ fun ByteArray.toHexString() = toUByteArray().joinToString("") { it.toHex() }
 @OptIn(ExperimentalUnsignedTypes::class)
 fun String.hexToBytes() = chunked(2){ it.toString().toInt(16).toUByte() }.toUByteArray().toByteArray()
 
+@KrosstalkPluginApi
 object ByteTransformer : SerializedFormatTransformer<ByteArray>{
     override fun toByteArray(data: ByteArray): ByteArray = data
 

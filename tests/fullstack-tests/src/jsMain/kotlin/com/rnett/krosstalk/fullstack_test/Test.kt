@@ -91,3 +91,8 @@ actual suspend fun withAuth(
 actual suspend fun withOptionalAuth(auth: ScopeInstance<MyKrosstalk.Auth>?): String? = krosstalkCall()
 
 actual suspend fun Int?.withOptionalReceiver(s: String?): String = krosstalkCall()
+
+actual suspend fun withOptionalDefault(a: Int, b: Int?): Int = krosstalkCall()
+
+actual fun serverOnlyDefault(): Int = error("Called on client side")
+actual suspend fun withOptionalServerDefault(a: Int, b: Int?): Int = krosstalkCall()

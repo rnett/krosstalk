@@ -1,10 +1,11 @@
 package com.rnett.krosstalk
 
 import com.rnett.krosstalk.endpoint.Endpoint
-import com.rnett.krosstalk.serialization.MethodSerializers
+import com.rnett.krosstalk.serialization.MethodSerialization
 import com.rnett.krosstalk.serialization.MethodTypes
 import com.rnett.krosstalk.serialization.SerializationHandler
-import com.rnett.krosstalk.serialization.getAndCheckSerializers
+import com.rnett.krosstalk.serialization.getArgumentSerializers
+import com.rnett.krosstalk.serialization.getMethodSerializer
 import com.rnett.krosstalk.server.ImmutableWantedScopes
 
 
@@ -12,7 +13,7 @@ import com.rnett.krosstalk.server.ImmutableWantedScopes
 /**
  * All the Krosstalk metedata associated with a krosstalk method.
  */
-data class MethodDefinition<T>(
+data class MethodDefinition<T> @InternalKrosstalkApi constructor(
 //        val method: KCallable<T>,
     val name: String,
     val endpoint: Endpoint,
@@ -24,14 +25,11 @@ data class MethodDefinition<T>(
     val includeStacktrace: Boolean,
     val propagateServerExceptions: Boolean,
     val optionalParameters: Set<String>,
-    val serializers: MethodSerializers<*>,
+    @InternalKrosstalkApi val serialization: MethodSerialization,
     val call: MethodCaller<T>,
 ) {
 
     val allScopes = requiredScopes + optionalScopes
-
-    val hasInstanceParameter = serializers.instanceReceiverSerializer != null
-    val hasExtensionParameter = serializers.extensionReceiverSerializer != null
 }
 
 // Unit and Nothing? scopes will be handled in the method
@@ -43,8 +41,10 @@ typealias MethodCaller<T> = suspend (arguments: Map<String, *>, scopes: Immutabl
 /**
  * The Krosstalk coordinator.  Krosstalk objects extend this.  Contains a listing of defined methods, the serialization handler, and optionally the client or server.
  */
+@OptIn(KrosstalkPluginApi::class)
 abstract class Krosstalk {
     abstract val serialization: SerializationHandler<*>
+    open val urlSerialization: SerializationHandler<*> by lazy { serialization }
     open val prefix: String = "krosstalk"
 
     @PublishedApi
@@ -71,6 +71,15 @@ abstract class Krosstalk {
     internal fun addScope(scope: Scope) {
         _scopes.add(scope)
     }
+
+    @OptIn(InternalKrosstalkApi::class)
+    private val serverExceptionSerializer by lazy { urlSerialization.getMethodSerializer<KrosstalkResult.ServerException>() }
+
+    @InternalKrosstalkApi
+    fun serializeServerException(exception: KrosstalkResult.ServerException) = serverExceptionSerializer.serializeToBytes(exception)
+
+    @InternalKrosstalkApi
+    fun deserializeServerException(exception: ByteArray) = serverExceptionSerializer.deserializeFromBytes(exception)
 
     @OptIn(InternalKrosstalkApi::class)
     @PublishedApi
@@ -100,10 +109,10 @@ abstract class Krosstalk {
                 error("Scope $it was specified as optional, but is not allowed to be.  Scope.canBeOptional was overridden at some point and set to false.")
         }
 
-        val serializers = serialization.getAndCheckSerializers(types)
+        val endpoint = Endpoint(endpoint, methodName, prefix)
         _methods[methodName] = MethodDefinition(
             methodName,
-            Endpoint(endpoint, methodName, prefix),
+            endpoint,
             method,
             contentType.ifBlank { null },
             requiredScopes,
@@ -112,7 +121,11 @@ abstract class Krosstalk {
             includeStacktrace,
             propagateServerExceptions,
             optionalParameters,
-            serializers,
+            MethodSerialization(
+                serialization.getArgumentSerializers(types),
+                endpoint.allReferencedParameters().associateWith { urlSerialization.getMethodSerializer<Any?>(types.paramTypes.getValue(it)) },
+                serialization.getMethodSerializer(types.resultType)
+            ),
             call
         )
     }

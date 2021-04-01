@@ -2,62 +2,52 @@ package com.rnett.krosstalk.serialization
 
 import com.rnett.krosstalk.InternalKrosstalkApi
 import com.rnett.krosstalk.KrosstalkException
-import com.rnett.krosstalk.annotations.ExplicitResult
+import com.rnett.krosstalk.KrosstalkPluginApi
 import com.rnett.krosstalk.extensionReceiver
+import com.rnett.krosstalk.httpDecode
+import com.rnett.krosstalk.httpEncode
 import com.rnett.krosstalk.instanceReceiver
 import kotlin.reflect.KType
-
-//TODO MethodSerializer class of Serializer + SerializationHandler?  could have direct serializeBytes/serializeString
-
-/**
- * All necessary serializers for a method.
- * Instance and extension receiver serializers are in the [paramSerializers] map with keys [instanceReceiver] and [extensionReceiver], respectively, but can be accessed through their accessors.
- *
- * [resultSerializer] will be `T` is the using `KrosstalkResult<T>` and [ExplicitResult]
- */
-data class MethodSerializers<S> @PublishedApi internal constructor(
-    val serialization: SerializationHandler<S>,
-    val paramSerializers: ArgumentSerializers<S>,
-    val resultSerializer: Serializer<*, S>
-) {
-    val instanceReceiverSerializer by lazy { paramSerializers.map[instanceReceiver] }
-    val extensionReceiverSerializer by lazy { paramSerializers.map[extensionReceiver] }
-
-    val transformedResultSerializer by lazy { MethodSerializer(serialization.transformer, resultSerializer) as MethodSerializer<S, Any?> }
-    val transformedParamSerializers by lazy { MethodArgumentSerializers(serialization, paramSerializers) }
-
-}
 
 /**
  * All necessary types for a method.
  * Instance and extension receiver serializers are in the [paramTypes] map with keys [instanceReceiver] and [extensionReceiver], respectively, but can be accessed through their accessors.
  */
-class MethodTypes(
+data class MethodTypes(
     val paramTypes: Map<String, KType>,
-    val resultType: KType
+    val resultType: KType,
 ) {
-    inline fun <S> toSerializers(serialization: SerializationHandler<S>, getSerializer: (KType) -> Serializer<*, S>) = MethodSerializers(
-        serialization,
-        ArgumentSerializers(paramTypes.mapValues { getSerializer(it.value) }),
-        getSerializer(resultType)
-    )
 
     val instanceReceiverType by lazy { paramTypes[instanceReceiver] }
     val extensionReceiverSerializer by lazy { paramTypes[extensionReceiver] }
+}
 
-    /**
-     * Ensure that a [MethodSerializers] has all nessecary serializers for this method.
-     */
-    fun checkSerializers(serializers: MethodSerializers<*>) {
-        paramTypes.keys.forEach {
-            check(it in serializers.paramSerializers) { "Missing serializer for $it" }
-        }
-    }
+
+@InternalKrosstalkApi
+data class MethodSerialization(
+    private val bodySerializers: MethodArgumentSerializers<*>,
+    private val urlArgSerializers: Map<String, MethodSerializer<*, Any?>>,
+    private val returnValueSerializer: MethodSerializer<*, Any?>,
+) {
+    fun serializeReturnValue(value: Any?): ByteArray = returnValueSerializer.serializeToBytes(value)
+    fun deserializeReturnValue(value: ByteArray): Any? = returnValueSerializer.deserializeFromBytes(value)
+
+    fun serializeUrlArg(arg: String, value: Any?): String =
+        urlArgSerializers.getOrElse(arg) { throw KrosstalkException.MissingSerializer(arg, urlArgSerializers.keys, true) }.serializeToString(value)
+            .httpEncode()
+
+    fun deserializeUrlArg(arg: String, value: String): Any? =
+        urlArgSerializers.getOrElse(arg) { throw KrosstalkException.MissingSerializer(arg, urlArgSerializers.keys, true) }
+            .deserializeFromString(value.httpDecode())
+
+    fun serializeBodyArguments(arguments: Map<String, *>): ByteArray = bodySerializers.serializeArgumentsToBytes(arguments)
+    fun deserializeBodyArguments(arguments: ByteArray): Map<String, *> = bodySerializers.deserializeArgumentsFromBytes(arguments)
 }
 
 /**
  * A `{Argument -> Serializer}` map, with helper functions to get the needed serializer as `Serializer<Any?, S>` rather than `Serializer<*, S>` and to serialize/deserialize all arguments.
  */
+@KrosstalkPluginApi
 class ArgumentSerializers<S>(val map: Map<String, Serializer<*, S>>) {
     operator fun contains(argument: String) = argument in map
 
@@ -66,7 +56,7 @@ class ArgumentSerializers<S>(val map: Map<String, Serializer<*, S>>) {
      */
     @OptIn(InternalKrosstalkApi::class)
     operator fun get(argument: String) = (map[argument]
-        ?: throw KrosstalkException.MissingSerializer(argument, map.keys)) as Serializer<Any?, S>
+        ?: throw KrosstalkException.MissingSerializer(argument, map.keys, false)) as Serializer<Any?, S>
 
     /**
      * Serialize all arguments, throwing [KrosstalkException.MissingSerializer] if a serializer is missing.
@@ -89,6 +79,8 @@ class ArgumentSerializers<S>(val map: Map<String, Serializer<*, S>>) {
     fun <T> deserializeArgument(key: String, value: S): T = this[key].deserialize(value) as T
 }
 
+@InternalKrosstalkApi
+@OptIn(KrosstalkPluginApi::class)
 data class MethodSerializer<S, T>(val transformer: SerializedFormatTransformer<S>, val serializer: Serializer<T, S>){
     fun serializeToBytes(data: T): ByteArray = transformer.toByteArray(serializer.serialize(data))
     fun serializeToString(data: T): String = transformer.toString(serializer.serialize(data))
@@ -97,6 +89,8 @@ data class MethodSerializer<S, T>(val transformer: SerializedFormatTransformer<S
     fun deserializeFromString(data: String): T = serializer.deserialize(transformer.fromString(data))
 }
 
+@InternalKrosstalkApi
+@OptIn(KrosstalkPluginApi::class)
 data class MethodArgumentSerializers<S>(val serialization: SerializationHandler<S>, val argumentSerializers: ArgumentSerializers<S>){
     fun serializeArgumentsToBytes(arguments: Map<String, *>): ByteArray = serialization.transformer.toByteArray(serialization.serializeArguments(arguments, argumentSerializers))
     fun serializeArgumentsToString(arguments: Map<String, *>): String = serialization.transformer.toString(serialization.serializeArguments(arguments, argumentSerializers))

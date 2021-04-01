@@ -5,8 +5,6 @@ import com.rnett.krosstalk.Krosstalk
 import com.rnett.krosstalk.KrosstalkException
 import com.rnett.krosstalk.KrosstalkPluginApi
 import com.rnett.krosstalk.KrosstalkResult
-import com.rnett.krosstalk.httpEncode
-import com.rnett.krosstalk.serialization.getMethodSerializer
 
 
 /**
@@ -73,7 +71,6 @@ interface ClientHandler<C : ClientScope<*>> {
 suspend fun krosstalkCall(): Nothing =
     throw KrosstalkException.CompilerError("Should have been replaced with a krosstalk call during compilation")
 
-
 @OptIn(InternalKrosstalkApi::class, KrosstalkPluginApi::class, ExperimentalStdlibApi::class)
 @Suppress("unused")
 @PublishedApi
@@ -86,11 +83,11 @@ internal suspend inline fun <T, K, reified C : ClientScope<*>> K.call(
     val method = requiredMethod(methodName)
 
     val (url, usedInUrl) = method.endpoint.fillWithArgs(methodName, arguments.keys, arguments.filter { it.value != null }.keys) {
-        method.serializers.transformedParamSerializers.serializeArgumentToString(it, arguments[it]).httpEncode()
+        method.serialization.serializeUrlArg(it, arguments[it])
     }
 
     val bodyArguments = arguments.filterNot { it.value == null && it.key in method.optionalParameters } - usedInUrl
-    val serializedBody = method.serializers.transformedParamSerializers.serializeArgumentsToBytes(bodyArguments)
+    val serializedBody = method.serialization.serializeBodyArguments(bodyArguments)
 
 
     val result = client.sendKrosstalkRequest(
@@ -103,13 +100,13 @@ internal suspend inline fun <T, K, reified C : ClientScope<*>> K.call(
 
     return if (method.useExplicitResult) {
         if (result.isSuccess()) {
-            KrosstalkResult.Success(method.serializers.transformedResultSerializer.deserializeFromBytes(
+            KrosstalkResult.Success(method.serialization.deserializeReturnValue(
                 result.data
             )) as T
         } else {
             if (result.statusCode == 500) {
                 try {
-                    serialization.getMethodSerializer<KrosstalkResult.ServerException>().deserializeFromBytes(result.data) as T
+                    deserializeServerException(result.data) as T
                 } catch (t: Throwable) {
                     KrosstalkResult.HttpError(result.statusCode, client.getStatusCodeName(result.statusCode), result.stringData) as T
                 }
@@ -119,7 +116,7 @@ internal suspend inline fun <T, K, reified C : ClientScope<*>> K.call(
         }
     } else {
         if (result.isSuccess()) {
-            method.serializers.transformedResultSerializer.deserializeFromBytes(
+            method.serialization.deserializeReturnValue(
                 result.data
             ) as T
         } else {

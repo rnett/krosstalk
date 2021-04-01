@@ -87,7 +87,6 @@ sealed class KrosstalkResult<out T> {
         override fun getException() = ResultServerExceptionException(this)
     }
 
-    //TODO look at message, do I want it to be the returned body?
     /**
      * A non-success HTTP response was gotten from the krosstalk call.
      *

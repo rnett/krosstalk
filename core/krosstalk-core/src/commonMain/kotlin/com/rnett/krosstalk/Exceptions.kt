@@ -79,9 +79,9 @@ abstract class KrosstalkException
      * A serializer was missing for an argument.
      */
     @OptIn(InternalKrosstalkApi::class)
-    class MissingSerializer @InternalKrosstalkApi constructor(val argument: String, val known: Set<String>) :
+    class MissingSerializer @InternalKrosstalkApi constructor(val argument: String, val known: Set<String>, val url: Boolean) :
         CompilerError(
-            "Missing serializer for argument $argument.  Known: $known."
+            "Missing ${if (url) "url" else "body"} serializer for argument $argument.  Known: $known."
         )
 
 }

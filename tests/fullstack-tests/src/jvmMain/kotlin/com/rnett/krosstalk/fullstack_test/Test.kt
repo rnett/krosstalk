@@ -121,3 +121,8 @@ actual suspend fun withOptionalAuth(auth: ScopeInstance<MyKrosstalk.Auth>?): Str
 actual suspend fun Int?.withOptionalReceiver(s: String?): String {
     return (s ?: "a").repeat(this ?: 2)
 }
+
+actual suspend fun withOptionalDefault(a: Int, b: Int?): Int = a * (b ?: 0)
+
+actual fun serverOnlyDefault(): Int = 4
+actual suspend fun withOptionalServerDefault(a: Int, b: Int?): Int = a * (b ?: 0)

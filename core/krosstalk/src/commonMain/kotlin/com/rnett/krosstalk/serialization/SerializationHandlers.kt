@@ -1,5 +1,7 @@
 package com.rnett.krosstalk.serialization
 
+import com.rnett.krosstalk.InternalKrosstalkApi
+import com.rnett.krosstalk.KrosstalkPluginApi
 import kotlin.reflect.KType
 import kotlin.reflect.typeOf
 
@@ -15,13 +17,8 @@ const val stringContentType = "text/plain; charset=utf-8"
  * To have each argument automatically serialized use [StringArgumentSerializationHandler] or [BinaryArgumentSerializationHandler].
  *
  */
+@OptIn(KrosstalkPluginApi::class)
 interface SerializationHandler<S> {
-    /**
-     * Get a [MethodSerializers] from a [MethodTypes].  By default uses [MethodTypes.toSerializers] with [getSerializer].
-     */
-    fun getSerializers(types: MethodTypes): MethodSerializers<S> = types.toSerializers(this) {
-        getSerializer(it)
-    }
 
     /**
      * Get a serializer for a [KType].
@@ -60,11 +57,13 @@ interface SerializationHandler<S> {
 }
 
 
+@KrosstalkPluginApi
 abstract class BaseSerializationHandler<S>(override val transformer: SerializedFormatTransformer<S>): SerializationHandler<S>
 
 /**
  * A [StringSerializationHandler] that automatically serializes/deserializes each argument before calling [serializeArguments]/[deserializeArguments].
  */
+@KrosstalkPluginApi
 abstract class ArgumentSerializationHandler<S>(transformer: SerializedFormatTransformer<S>) : BaseSerializationHandler<S>(transformer) {
     /**
      * Combine serialized arguments into a final serialized form.
@@ -89,20 +88,31 @@ abstract class ArgumentSerializationHandler<S>(transformer: SerializedFormatTran
 /**
  * Get a serializer for a type.
  */
-@OptIn(ExperimentalStdlibApi::class)
+@InternalKrosstalkApi
+@OptIn(ExperimentalStdlibApi::class, KrosstalkPluginApi::class)
 inline fun <reified T, S> SerializationHandler<S>.getSerializer() = getSerializer(typeOf<T>()) as Serializer<T, S>
 
 /**
  * Get a serializer for a type.
  */
-@OptIn(ExperimentalStdlibApi::class)
+@InternalKrosstalkApi
+@OptIn(ExperimentalStdlibApi::class, KrosstalkPluginApi::class)
 inline fun <reified T> SerializationHandler<*>.getMethodSerializer() = MethodSerializer(
     transformer as SerializedFormatTransformer<Any?>,
     getSerializer(typeOf<T>()) as Serializer<T, Any?>
 )
 
 /**
- * Get serializers for a method and check that all were gotten.
+ * Get a serializer for a type.
  */
-fun <S> SerializationHandler<S>.getAndCheckSerializers(types: MethodTypes) =
-    getSerializers(types).also { types.checkSerializers(it) }
+@InternalKrosstalkApi
+@OptIn(ExperimentalStdlibApi::class, KrosstalkPluginApi::class)
+fun <T> SerializationHandler<*>.getMethodSerializer(type: KType) = MethodSerializer(
+    transformer as SerializedFormatTransformer<Any?>,
+    getSerializer(type) as Serializer<T, Any?>
+)
+
+@OptIn(KrosstalkPluginApi::class)
+@InternalKrosstalkApi
+fun <S> SerializationHandler<S>.getArgumentSerializers(types: MethodTypes) =
+    MethodArgumentSerializers(this, ArgumentSerializers(types.paramTypes.mapValues { this.getSerializer(it.value) }))

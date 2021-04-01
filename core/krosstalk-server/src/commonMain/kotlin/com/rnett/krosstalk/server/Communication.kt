@@ -5,8 +5,6 @@ import com.rnett.krosstalk.Krosstalk
 import com.rnett.krosstalk.KrosstalkPluginApi
 import com.rnett.krosstalk.KrosstalkResult
 import com.rnett.krosstalk.MethodDefinition
-import com.rnett.krosstalk.httpDecode
-import com.rnett.krosstalk.serialization.getMethodSerializer
 import kotlin.contracts.InvocationKind
 import kotlin.contracts.contract
 
@@ -53,11 +51,11 @@ suspend fun <K> K.handle(
     val contentType = method.contentType ?: serialization.contentType
 
     val arguments: MutableMap<String, Any?> = urlArguments.mapValues {
-        method.serializers.transformedParamSerializers.deserializeArgumentFromString<Any?>(it.key, it.value.httpDecode())
+        method.serialization.deserializeUrlArg(it.key, it.value)
     }.toMutableMap()
 
     if (body.isNotEmpty())
-        arguments += method.serializers.transformedParamSerializers.deserializeArgumentsFromBytes(body)
+        arguments += method.serialization.deserializeBodyArguments(body)
 
     val result = method.call(arguments, wantedScopes)
 
@@ -69,18 +67,18 @@ suspend fun <K> K.handle(
     if (method.useExplicitResult) {
         when (val kr = result as KrosstalkResult<*>) {
             is KrosstalkResult.Success -> {
-                responder(200, contentType, method.serializers.transformedResultSerializer.serializeToBytes(kr.value))
+                responder(200, contentType, method.serialization.serializeReturnValue(kr.value))
             }
             is KrosstalkResult.ServerException -> {
                 //TODO something in plaintext for non-krosstalk servers?  JSON serialize the exception maybe.  I can just use Kotlinx here too, rather than getting the serializer
-                responder(500, "application/octet-stream", serialization.getMethodSerializer<KrosstalkResult.ServerException>().serializeToBytes(kr))
+                responder(500, "application/octet-stream", serializeServerException(kr))
             }
             is KrosstalkResult.HttpError -> {
                 responder(kr.statusCode, "text/plain; charset=utf-8", (kr.message ?: "").encodeToByteArray())
             }
         }
     } else {
-        responder(200, contentType, method.serializers.transformedResultSerializer.serializeToBytes(result))
+        responder(200, contentType, method.serialization.serializeReturnValue(result))
     }
 
     if (exception != null) {

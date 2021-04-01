@@ -147,4 +147,26 @@ class Tests {
         assertEquals("aa", null.withOptionalReceiver(null))
     }
 
+    @Test
+    fun testOptionalWithClientSideDefault() = GlobalScope.promise {
+        assertEquals(6, withOptionalDefault(2, 3))
+        assertEquals(8, withOptionalDefault())
+        assertEquals(40, withOptionalDefault(10))
+        assertEquals(20, withOptionalDefault(b = 10))
+        //TODO null client -> not passed (since it is optional) -> default server.  Need a way to pass null.
+        // Don't want to do a full restructure though.  Don't do server default when @Optional(false) && value is passed?
+
+        //TODO test non-optional nullables, defaults
+        assertEquals(0, withOptionalDefault(b = null))
+    }
+
+    @Test
+    fun testOptionalWithServerSideDefault() = GlobalScope.promise {
+        assertEquals(6, withOptionalServerDefault(2, 3))
+        assertEquals(8, withOptionalServerDefault())
+        assertEquals(40, withOptionalServerDefault(10))
+        assertEquals(20, withOptionalServerDefault(b = 10))
+        assertEquals(0, withOptionalServerDefault(b = null))
+    }
+
 }
