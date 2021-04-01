@@ -143,11 +143,15 @@ annotation class CatchAsHttpError(
 
 /**
  * Must be used on a nullable parameter (for now).  If that parameter is null, it will not be sent.
- * If [serverDefault] is `true` (which it is by default), any default value will only be evaluated on the server side; `null` will be used on the client.
+ * **If it is not present in a call to the server, `null` will be used, not any default.**
+ * Defaults will be evaluated at the call side, i.e. on client side if called from the client, or server side if called from the server.
+ * Defaults are ignored for direct HTTP requests.
+ *
+ * If you want to use a default value when the parameter is not specified, make the parameter default to null and use `?:` in the server method body.
  *
  * Optional parameters may be used in optional blocks in an endpoint (see [KrosstalkEndpoint]).
  */
 @Target(AnnotationTarget.VALUE_PARAMETER)
 @Retention(AnnotationRetention.BINARY)
 @MustBeDocumented
-annotation class Optional(val serverDefault: Boolean = true)
+annotation class Optional()

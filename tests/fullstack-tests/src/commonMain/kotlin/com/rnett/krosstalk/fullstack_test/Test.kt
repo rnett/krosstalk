@@ -104,7 +104,7 @@ expect suspend fun withOptionalAuth(auth: ScopeInstance<MyKrosstalk.Auth>?): Str
 expect suspend fun @receiver:Optional Int?.withOptionalReceiver(s: String?): String
 
 @KrosstalkMethod(MyKrosstalk::class)
-expect suspend fun withOptionalDefault(a: Int = 2, @Optional(serverDefault = false) b: Int? = 4): Int
+expect suspend fun withOptionalDefault(a: Int = 2, @Optional b: Int? = 4): Int
 
 expect fun serverOnlyDefault(): Int
 

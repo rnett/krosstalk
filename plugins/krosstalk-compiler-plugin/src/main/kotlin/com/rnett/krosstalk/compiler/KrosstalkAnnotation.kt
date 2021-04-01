@@ -195,6 +195,5 @@ sealed class KrosstalkAnnotation(val call: IrConstructorCall, name: String) {
     }
 
     class Optional(call: IrConstructorCall) : KrosstalkAnnotation(call, "Optional") {
-        val serverDefault by field(true)
     }
 }

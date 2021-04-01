@@ -159,14 +159,4 @@ class Tests {
         //TODO test non-optional nullables, defaults
         assertEquals(0, withOptionalDefault(b = null))
     }
-
-    @Test
-    fun testOptionalWithServerSideDefault() = GlobalScope.promise {
-        assertEquals(6, withOptionalServerDefault(2, 3))
-        assertEquals(8, withOptionalServerDefault())
-        assertEquals(40, withOptionalServerDefault(10))
-        assertEquals(20, withOptionalServerDefault(b = 10))
-        assertEquals(0, withOptionalServerDefault(b = null))
-    }
-
 }

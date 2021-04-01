@@ -33,7 +33,6 @@ import org.jetbrains.kotlin.ir.builders.irBlockBody
 import org.jetbrains.kotlin.ir.builders.irCall
 import org.jetbrains.kotlin.ir.builders.irCallConstructor
 import org.jetbrains.kotlin.ir.builders.irComposite
-import org.jetbrains.kotlin.ir.builders.irExprBody
 import org.jetbrains.kotlin.ir.builders.irGet
 import org.jetbrains.kotlin.ir.builders.irGetObject
 import org.jetbrains.kotlin.ir.builders.irNull
@@ -562,9 +561,7 @@ class KrosstalkMethodTransformer(
                                     param.name.asString(),
                                     if (param in optionalValueParameters) {
                                         buildLambda(param.type) {
-                                            body = param.defaultValue?.deepCopyWithSymbols()
-                                                ?: expectDeclaration?.valueParameters?.single { it.name == param.name }?.defaultValue?.deepCopyWithSymbols()
-                                                        ?: irJsExprBody(irNull(param.type))
+                                            body = irJsExprBody(irNull(param.type))
                                         }
                                     } else null,
                                     "No argument for ${param.name}, but it was required",
@@ -760,12 +757,6 @@ class KrosstalkMethodTransformer(
                 return
 
             declaration.withBuilder {
-
-                optionalValueParameters.forEach { (param, opt) ->
-                    if (opt.serverDefault) {
-                        param.defaultValue = irExprBody(irNull(param.type))
-                    }
-                }
 
                 declaration.body = irJsExprBody(irCall(Krosstalk.Client.call(), declaration.returnType).apply {
 
