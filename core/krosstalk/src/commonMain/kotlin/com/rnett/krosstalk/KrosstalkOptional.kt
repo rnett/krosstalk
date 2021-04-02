@@ -2,10 +2,7 @@ package com.rnett.krosstalk
 
 import kotlin.contracts.contract
 
-//TODO what to do with nullable arguments
-//TODO forbid @Optional KrosstalkOptional?
-//TODO support as return type?
-//TODO use in KrosstalkResult API?
+//TODO separate classes for server default, hide None for it?  Only use this for server default?
 sealed class KrosstalkOptional<out T> {
     data class Some<out T>(val value: T) : KrosstalkOptional<T>()
     object None : KrosstalkOptional<Nothing>()

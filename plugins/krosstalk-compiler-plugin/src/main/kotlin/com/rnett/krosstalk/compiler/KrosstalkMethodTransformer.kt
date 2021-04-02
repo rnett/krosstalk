@@ -8,12 +8,9 @@ import com.rnett.krosstalk.instanceReceiver
 import com.rnett.krosstalk.krosstalkPrefix
 import com.rnett.krosstalk.methodName
 import com.rnett.plugin.ir.IrTransformer
-import com.rnett.plugin.ir.addAnonymousInitializer
 import com.rnett.plugin.ir.irJsExprBody
-import com.rnett.plugin.ir.raiseTo
 import com.rnett.plugin.ir.typeArgument
 import com.rnett.plugin.ir.withDispatchReceiver
-import com.rnett.plugin.ir.withExtensionReceiver
 import com.rnett.plugin.ir.withTypeArguments
 import com.rnett.plugin.ir.withValueArguments
 import com.rnett.plugin.naming.isClassifierOf
@@ -61,10 +58,7 @@ import org.jetbrains.kotlin.ir.types.typeWith
 import org.jetbrains.kotlin.ir.util.*
 import org.jetbrains.kotlin.name.Name
 import org.jetbrains.kotlin.resolve.multiplatform.findExpects
-import kotlin.collections.component1
-import kotlin.collections.component2
 import kotlin.collections.set
-import kotlin.math.absoluteValue
 
 
 @OptIn(ExperimentalStdlibApi::class)
@@ -407,6 +401,10 @@ class KrosstalkMethodTransformer(
                 }
             }
 
+            if (declaration.returnType.isClassifierOf(Krosstalk.KrosstalkOptional)) {
+                messageCollector.reportError("Can't use KrosstalkOptional as a return type, it is only allowed as a parameter type.", declaration)
+            }
+
             rawOptionalValueParameters.plus(listOfNotNull(rawOptionalExtensionReceiver)).keys.forEach {
                 if (!it.type.isNullable()) {
                     messageCollector.reportError("@Optional parameters must be nullable, ${it.name.asString()} was not.", it)
@@ -448,7 +446,7 @@ class KrosstalkMethodTransformer(
             }
 
             endpoint.usedOptionals().forEach {
-                if (it !in rawOptionalParamNames) {
+                if (it !in rawOptionalParamNames && it !in krosstalkOptionalParameters) {
                     messageCollector.reportError("Used parameter $it as an optional in the endpoint template, but parameter is not" +
                             " an optional parameter (i.e. having @Optional).", declaration)
                 }

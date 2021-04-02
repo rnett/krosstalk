@@ -16,18 +16,14 @@ allprojects {
     group = "com.github.rnett.krosstalk"
 
     repositories {
-        maven("https://dl.bintray.com/kotlin/kotlin-eap")
         mavenCentral()
-        maven("https://oss.jfrog.org/artifactory/oss-snapshot-local/")
-        google()
-        maven("https://oss.sonatype.org/content/repositories/snapshots") {
-            mavenContent { snapshotsOnly() }
-        }
+        maven("https://oss.sonatype.org/content/repositories/snapshots")
     }
 
     apply(plugin = "org.jetbrains.dokka")
 
     tasks.withType<org.jetbrains.kotlin.gradle.tasks.KotlinCompile> {
         kotlinOptions.useIR = true
+        kotlinOptions.jvmTarget = "1.8"
     }
 }

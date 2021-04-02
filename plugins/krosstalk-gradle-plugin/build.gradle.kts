@@ -37,6 +37,11 @@ gradlePlugin {
     }
 }
 
+java {
+    sourceCompatibility = JavaVersion.VERSION_1_8
+    targetCompatibility = JavaVersion.VERSION_1_8
+}
+
 pluginBundle {
     website = "https://github.com/rnett/krosstalk"
     vcsUrl = "https://github.com/rnett/krosstalk.git"

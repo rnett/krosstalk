@@ -6,9 +6,9 @@ import com.rnett.krosstalk.KrosstalkOptional
 import com.rnett.krosstalk.KrosstalkPluginApi
 import com.rnett.krosstalk.KrosstalkResult
 import com.rnett.krosstalk.extensionReceiver
-import com.rnett.krosstalk.httpDecode
-import com.rnett.krosstalk.httpEncode
 import com.rnett.krosstalk.instanceReceiver
+import com.rnett.krosstalk.urlDecode
+import com.rnett.krosstalk.urlEncode
 import kotlin.reflect.KType
 
 /**
@@ -38,11 +38,11 @@ data class MethodSerialization(
 
     fun serializeUrlArg(arg: String, value: Any?): String =
         urlArgSerializers.getOrElse(arg) { throw KrosstalkException.MissingSerializer(arg, urlArgSerializers.keys, true) }.serializeToString(value)
-            .httpEncode()
+            .urlEncode()
 
     fun deserializeUrlArg(arg: String, value: String): Any? =
         urlArgSerializers.getOrElse(arg) { throw KrosstalkException.MissingSerializer(arg, urlArgSerializers.keys, true) }
-            .deserializeFromString(value.httpDecode())
+            .deserializeFromString(value.urlDecode())
 
     fun serializeBodyArguments(arguments: Map<String, *>): ByteArray = bodySerializers.serializeArgumentsToBytes(arguments)
     fun deserializeBodyArguments(arguments: ByteArray): Map<String, *> = bodySerializers.deserializeArgumentsFromBytes(arguments)

@@ -160,20 +160,33 @@ class Tests {
     @Test
     fun testKrosstalkOptional() = GlobalScope.promise {
         assertEquals(6, withKrosstalkOptional(3, KrosstalkOptional(2)))
+        assertEquals("/krosstalk/withKrosstalkOptional_7qj69a/a/03/b/02", lastUrl)
+
         assertEquals(0, withKrosstalkOptional(3, KrosstalkOptional.None))
+        assertEquals("/krosstalk/withKrosstalkOptional_7qj69a/a/03", lastUrl)
     }
 
     @Test
     fun testKrosstalkOptionalDefault() = GlobalScope.promise {
         assertEquals(6, withKrosstalkOptionalDefault(3, KrosstalkOptional(2)))
+        assertEquals("/krosstalk/withKrosstalkOptionalDefault_e29p33/a/03/b/02", lastUrl)
+
         assertEquals(0, withKrosstalkOptionalDefault(3, KrosstalkOptional.None))
+        assertEquals("/krosstalk/withKrosstalkOptionalDefault_e29p33/a/03", lastUrl)
+
         assertEquals(12, withKrosstalkOptionalDefault(3))
+        assertEquals("/krosstalk/withKrosstalkOptionalDefault_e29p33/a/03/b/04", lastUrl)
     }
 
     @Test
     fun testKrosstalkOptionalServerDefault() = GlobalScope.promise {
         assertEquals(6, withKrosstalkOptionalServerDefault(3, KrosstalkOptional(2)))
+        assertEquals("/krosstalk/withKrosstalkOptionalServerDefault_h4eys6/a/03/b/02", lastUrl)
+
         assertEquals(12, withKrosstalkOptionalServerDefault(3, KrosstalkOptional.None))
+        assertEquals("/krosstalk/withKrosstalkOptionalServerDefault_h4eys6/a/03", lastUrl)
+
         assertEquals(12, withKrosstalkOptionalServerDefault(3))
+        assertEquals("/krosstalk/withKrosstalkOptionalServerDefault_h4eys6/a/03", lastUrl)
     }
 }

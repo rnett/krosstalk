@@ -106,13 +106,16 @@ expect suspend fun @receiver:Optional Int?.withOptionalReceiver(s: String?): Str
 @KrosstalkMethod(MyKrosstalk::class)
 expect suspend fun withOptionalDefault(a: Int = 2, @Optional b: Int? = 4): Int
 
+@KrosstalkEndpoint("$krosstalkPrefix/$methodName/{{a}}/{{?b}}")
 @KrosstalkMethod(MyKrosstalk::class)
 expect suspend fun withKrosstalkOptional(a: Int, b: KrosstalkOptional<Int>): Int
 
+@KrosstalkEndpoint("$krosstalkPrefix/$methodName/{{a}}/{{?b}}")
 @KrosstalkMethod(MyKrosstalk::class)
 expect suspend fun withKrosstalkOptionalDefault(a: Int, b: KrosstalkOptional<Int> = KrosstalkOptional(4)): Int
 
 expect fun serverOnlyDefault(): KrosstalkOptional<Int>
 
+@KrosstalkEndpoint("$krosstalkPrefix/$methodName/{{a}}/{{?b}}")
 @KrosstalkMethod(MyKrosstalk::class)
 expect suspend fun withKrosstalkOptionalServerDefault(a: Int = 2, @ServerDefault b: KrosstalkOptional<Int> = serverOnlyDefault()): Int
