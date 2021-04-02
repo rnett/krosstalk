@@ -1,6 +1,7 @@
 package com.rnett.krosstalk.fullstack_test
 
 import com.rnett.krosstalk.Krosstalk
+import com.rnett.krosstalk.KrosstalkOptional
 import com.rnett.krosstalk.KrosstalkResult
 import com.rnett.krosstalk.Scope
 import com.rnett.krosstalk.ScopeInstance
@@ -9,6 +10,7 @@ import com.rnett.krosstalk.ktor.server.KtorServer
 import com.rnett.krosstalk.ktor.server.KtorServerBasicAuth
 import com.rnett.krosstalk.ktor.server.KtorServerScope
 import com.rnett.krosstalk.ktor.server.defineKtor
+import com.rnett.krosstalk.orDefault
 import com.rnett.krosstalk.serialization.KotlinxBinarySerializationHandler
 import com.rnett.krosstalk.server.KrosstalkServer
 import com.rnett.krosstalk.server.value
@@ -124,5 +126,9 @@ actual suspend fun Int?.withOptionalReceiver(s: String?): String {
 
 actual suspend fun withOptionalDefault(a: Int, b: Int?): Int = a * (b ?: 0)
 
-actual fun serverOnlyDefault(): Int = 4
-actual suspend fun withOptionalServerDefault(a: Int, b: Int?): Int = a * (b ?: 0)
+actual suspend fun withKrosstalkOptional(a: Int, b: KrosstalkOptional<Int>): Int = a * (b orDefault 0)
+
+actual suspend fun withKrosstalkOptionalDefault(a: Int, b: KrosstalkOptional<Int>): Int = a * (b orDefault 0)
+
+actual fun serverOnlyDefault(): KrosstalkOptional<Int> = KrosstalkOptional(4)
+actual suspend fun withKrosstalkOptionalServerDefault(a: Int, b: KrosstalkOptional<Int>): Int = a * (b orDefault 0)

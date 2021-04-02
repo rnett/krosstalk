@@ -230,6 +230,8 @@ sealed class KrosstalkResult<out T> {
         is ServerException -> onServerException(this)
     }
 
+    fun toKrosstalkOptional(): KrosstalkOptional<T> = KrosstalkOptional.ifNotNull(valueOrNull)
+
     //TODO once we can use result
     //fun toResult(): Result<T> = fold({ Result.success(it) }, { Result.failure(it.getException()) })
 

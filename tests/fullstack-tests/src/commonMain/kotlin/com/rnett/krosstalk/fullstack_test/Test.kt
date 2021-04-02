@@ -1,6 +1,7 @@
 package com.rnett.krosstalk.fullstack_test
 
 import com.rnett.krosstalk.Krosstalk
+import com.rnett.krosstalk.KrosstalkOptional
 import com.rnett.krosstalk.KrosstalkResult
 import com.rnett.krosstalk.Scope
 import com.rnett.krosstalk.ScopeInstance
@@ -9,6 +10,7 @@ import com.rnett.krosstalk.annotations.ExplicitResult
 import com.rnett.krosstalk.annotations.KrosstalkEndpoint
 import com.rnett.krosstalk.annotations.KrosstalkMethod
 import com.rnett.krosstalk.annotations.Optional
+import com.rnett.krosstalk.annotations.ServerDefault
 import com.rnett.krosstalk.krosstalkPrefix
 import com.rnett.krosstalk.methodName
 import com.rnett.krosstalk.serialization.KotlinxBinarySerializationHandler
@@ -76,14 +78,12 @@ expect suspend fun optionalEndpointQueryParamsGet(n: Int, @Optional s: String?):
 @KrosstalkEndpoint("$krosstalkPrefix/$methodName/?{{n}}")
 expect suspend fun partialMinimize(n: Int, @Optional s: String?): String?
 
-//TODO failing b/c js sealed serialization issue?
 @KrosstalkMethod(MyKrosstalk::class)
 @ExplicitResult(propagateServerExceptions = true)
 expect suspend fun withResult(n: Int): KrosstalkResult<Int>
 
 class MyException(message: String) : RuntimeException(message)
 
-//TODO failing b/c js sealed serialization issue?
 @KrosstalkMethod(MyKrosstalk::class)
 @ExplicitResult
 expect suspend fun withResultCatching(n: Int): KrosstalkResult<Int>
@@ -106,7 +106,13 @@ expect suspend fun @receiver:Optional Int?.withOptionalReceiver(s: String?): Str
 @KrosstalkMethod(MyKrosstalk::class)
 expect suspend fun withOptionalDefault(a: Int = 2, @Optional b: Int? = 4): Int
 
-expect fun serverOnlyDefault(): Int
+@KrosstalkMethod(MyKrosstalk::class)
+expect suspend fun withKrosstalkOptional(a: Int, b: KrosstalkOptional<Int>): Int
 
 @KrosstalkMethod(MyKrosstalk::class)
-expect suspend fun withOptionalServerDefault(a: Int = 2, @Optional b: Int? = serverOnlyDefault()): Int
+expect suspend fun withKrosstalkOptionalDefault(a: Int, b: KrosstalkOptional<Int> = KrosstalkOptional(4)): Int
+
+expect fun serverOnlyDefault(): KrosstalkOptional<Int>
+
+@KrosstalkMethod(MyKrosstalk::class)
+expect suspend fun withKrosstalkOptionalServerDefault(a: Int = 2, @ServerDefault b: KrosstalkOptional<Int> = serverOnlyDefault()): Int

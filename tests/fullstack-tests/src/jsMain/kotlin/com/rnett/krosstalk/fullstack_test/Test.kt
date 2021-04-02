@@ -1,6 +1,7 @@
 package com.rnett.krosstalk.fullstack_test
 
 import com.rnett.krosstalk.Krosstalk
+import com.rnett.krosstalk.KrosstalkOptional
 import com.rnett.krosstalk.KrosstalkResult
 import com.rnett.krosstalk.Scope
 import com.rnett.krosstalk.ScopeInstance
@@ -94,5 +95,9 @@ actual suspend fun Int?.withOptionalReceiver(s: String?): String = krosstalkCall
 
 actual suspend fun withOptionalDefault(a: Int, b: Int?): Int = krosstalkCall()
 
-actual fun serverOnlyDefault(): Int = error("Called on client side")
-actual suspend fun withOptionalServerDefault(a: Int, b: Int?): Int = krosstalkCall()
+actual suspend fun withKrosstalkOptional(a: Int, b: KrosstalkOptional<Int>): Int = krosstalkCall()
+
+actual suspend fun withKrosstalkOptionalDefault(a: Int, b: KrosstalkOptional<Int>): Int = krosstalkCall()
+
+actual fun serverOnlyDefault(): KrosstalkOptional<Int> = error("Called on client side")
+actual suspend fun withKrosstalkOptionalServerDefault(a: Int, b: KrosstalkOptional<Int>): Int = krosstalkCall()

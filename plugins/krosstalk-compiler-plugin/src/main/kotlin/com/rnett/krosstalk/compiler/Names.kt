@@ -80,6 +80,10 @@ object Krosstalk : RootPackage(krosstalkPackage) {
         }
     }
 
+    object KrosstalkOptional : ClassRef() {
+        val None by Class()
+    }
+
     val ScopeHolder by Class()
     val getValueAsOrError by function()
 

@@ -1,6 +1,7 @@
 package com.rnett.krosstalk.annotations
 
 import com.rnett.krosstalk.Krosstalk
+import com.rnett.krosstalk.KrosstalkOptional
 import com.rnett.krosstalk.KrosstalkResult
 import com.rnett.krosstalk.defaultEndpoint
 import com.rnett.krosstalk.defaultEndpointMethod
@@ -128,6 +129,7 @@ annotation class ExplicitResult(
  * [Throwable.toString] (normally `"$class: $message"`), [Throwable.message] (`?: "N/A"`), and [Throwable.stackTraceToString], respectively.
  *
  * Note that this annotation may be used on the server side `actual` function, since this conversion is done entirely on the server side.
+ * However, for documentation purposes, we recomend putting all annotations on the `expect` function.
  *
  * Instance checking (i.e. `exceptionClass.isInstance(t)`) will be done in order, so put any high level [CatchAsHttpError]s last.
  */
@@ -154,4 +156,19 @@ annotation class CatchAsHttpError(
 @Target(AnnotationTarget.VALUE_PARAMETER)
 @Retention(AnnotationRetention.BINARY)
 @MustBeDocumented
+@TopLevelOnly
 annotation class Optional()
+
+
+/**
+ * Only usable on parameters of type [KrosstalkOptional] that have a default value.
+ * Replaces the default value with `None` on the client side, and uses the default value instead of `None` if the
+ * argument is not present on the server.
+ *
+ * **Note that this means that explicitly passing `None` does not work, it will be replaced with the default on the server!**
+ */
+@Target(AnnotationTarget.VALUE_PARAMETER)
+@Retention(AnnotationRetention.BINARY)
+@MustBeDocumented
+@TopLevelOnly
+annotation class ServerDefault()

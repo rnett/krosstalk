@@ -1,5 +1,6 @@
 package com.rnett.krosstalk.fullstack_test
 
+import com.rnett.krosstalk.KrosstalkOptional
 import com.rnett.krosstalk.client.invoke
 import com.rnett.krosstalk.ktor.client.BasicCredentials
 import io.ktor.client.utils.EmptyContent
@@ -153,10 +154,26 @@ class Tests {
         assertEquals(8, withOptionalDefault())
         assertEquals(40, withOptionalDefault(10))
         assertEquals(20, withOptionalDefault(b = 10))
-        //TODO null client -> not passed (since it is optional) -> default server.  Need a way to pass null.
-        // Don't want to do a full restructure though.  Don't do server default when @Optional(false) && value is passed?
-
-        //TODO test non-optional nullables, defaults
         assertEquals(0, withOptionalDefault(b = null))
+    }
+
+    @Test
+    fun testKrosstalkOptional() = GlobalScope.promise {
+        assertEquals(6, withKrosstalkOptional(3, KrosstalkOptional(2)))
+        assertEquals(0, withKrosstalkOptional(3, KrosstalkOptional.None))
+    }
+
+    @Test
+    fun testKrosstalkOptionalDefault() = GlobalScope.promise {
+        assertEquals(6, withKrosstalkOptionalDefault(3, KrosstalkOptional(2)))
+        assertEquals(0, withKrosstalkOptionalDefault(3, KrosstalkOptional.None))
+        assertEquals(12, withKrosstalkOptionalDefault(3))
+    }
+
+    @Test
+    fun testKrosstalkOptionalServerDefault() = GlobalScope.promise {
+        assertEquals(6, withKrosstalkOptionalServerDefault(3, KrosstalkOptional(2)))
+        assertEquals(12, withKrosstalkOptionalServerDefault(3, KrosstalkOptional.None))
+        assertEquals(12, withKrosstalkOptionalServerDefault(3))
     }
 }

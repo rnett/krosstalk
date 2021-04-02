@@ -33,6 +33,7 @@ import org.jetbrains.kotlin.ir.builders.irBlockBody
 import org.jetbrains.kotlin.ir.builders.irCall
 import org.jetbrains.kotlin.ir.builders.irCallConstructor
 import org.jetbrains.kotlin.ir.builders.irComposite
+import org.jetbrains.kotlin.ir.builders.irExprBody
 import org.jetbrains.kotlin.ir.builders.irGet
 import org.jetbrains.kotlin.ir.builders.irGetObject
 import org.jetbrains.kotlin.ir.builders.irNull
@@ -66,6 +67,7 @@ import kotlin.collections.set
 import kotlin.math.absoluteValue
 
 
+@OptIn(ExperimentalStdlibApi::class)
 class KrosstalkMethodTransformer(
     context: IrPluginContext,
     messageCollector: MessageCollector,
@@ -188,39 +190,42 @@ class KrosstalkMethodTransformer(
             declaration.valueParameters.filter { it !in scopes }
         }
 
-        private fun paramAnnotations(param: IrValueParameter): KrosstalkAnnotations {
-            if (expectDeclaration == null) {
-                return KrosstalkAnnotations(param.annotations)
-            } else {
-                val actualParam = declaration.allParameters.single { it.name == param.name }
-                val expectParam = expectDeclaration!!.allParameters.single { it.name == param.name }
-                return KrosstalkAnnotations(expectParam.annotations + actualParam.annotations)
-            }
-        }
-
-        @OptIn(ExperimentalStdlibApi::class)
-        val optionalValueParameters by lazy {
+        val rawOptionalValueParameters by lazy {
             buildMap<IrValueParameter, KrosstalkAnnotation.Optional> {
                 declaration.valueParameters.forEach { param ->
-                    paramAnnotations(param).Optional?.let {
+                    param.paramAnnotations().Optional?.let {
                         put(param, it)
                     }
                 }
             }
         }
 
-        val optionalExtensionReceiver by lazy {
+        val rawOptionalExtensionReceiver by lazy {
             declaration.extensionReceiverParameter?.let { param ->
-                paramAnnotations(param).Optional?.let { param to it }
+                param.paramAnnotations().Optional?.let { param to it }
             }
         }
 
-        @OptIn(ExperimentalStdlibApi::class)
-        val optionalParamNames by lazy {
+        val rawOptionalParamNames by lazy {
             buildSet {
-                addAll(optionalValueParameters.map { it.key.name.asString() })
-                if (optionalExtensionReceiver != null)
+                addAll(rawOptionalValueParameters.map { it.key.name.asString() })
+                if (rawOptionalExtensionReceiver != null)
                     add(extensionReceiver)
+            }
+        }
+
+        val krosstalkOptionalParameters by lazy {
+            buildMap<String, IrValueParameter> {
+                declaration.valueParameters.forEach {
+                    if (it.type.isClassifierOf(Krosstalk.KrosstalkOptional)) {
+                        put(it.name.asString(), it)
+                    }
+                }
+                declaration.extensionReceiverParameter?.let {
+                    if (it.type.isClassifierOf(Krosstalk.KrosstalkOptional)) {
+                        put(extensionReceiver, it)
+                    }
+                }
             }
         }
 
@@ -246,6 +251,20 @@ class KrosstalkMethodTransformer(
                     null
             } else
                 null
+        }
+
+        private val expectParameters by lazy {
+            expectDeclaration?.allParameters?.associateBy { it.name }
+        }
+
+        private fun IrValueParameter.expect() = expectParameters?.getValue(name)
+
+        private fun IrValueParameter.paramAnnotations(): KrosstalkAnnotations {
+            if (expectDeclaration == null) {
+                return KrosstalkAnnotations(annotations)
+            } else {
+                return KrosstalkAnnotations(expect()!!.annotations + annotations)
+            }
         }
 
         val annotations by lazy {
@@ -280,7 +299,6 @@ class KrosstalkMethodTransformer(
 
         @OptIn(ExperimentalStdlibApi::class)
         fun check() {
-
             if (checked)
                 return
 
@@ -300,6 +318,18 @@ class KrosstalkMethodTransformer(
                             "Krosstalk annotation ${annotationClass.name} must only be specified at the top level expect function.",
                             it
                         )
+                    }
+                }
+
+                declaration.allParameters.forEach { parm ->
+                    parm.annotations.forEach {
+                        val annotationClass = it.symbol.owner.constructedClass
+                        if (annotationClass.hasAnnotation(Krosstalk.Annotations.TopLevelOnly())) {
+                            messageCollector.reportError(
+                                "Krosstalk annotation ${annotationClass.name} must only be specified at the top level expect function.",
+                                it
+                            )
+                        }
                     }
                 }
             }
@@ -355,7 +385,29 @@ class KrosstalkMethodTransformer(
                     )
                 }
 
-            optionalValueParameters.plus(listOfNotNull(optionalExtensionReceiver)).keys.forEach {
+            krosstalkOptionalParameters.forEach { (name, it) ->
+                if (it.type.isNullable()) {
+                    messageCollector.reportError("Nullable KrosstalkOptional parameters are not supported.", it)
+                }
+
+                if (name in rawOptionalParamNames) {
+                    messageCollector.reportError("Parameter ${it.name} is a KrosstalkOptional, but is also marked with @Optional.  " +
+                            "This is not supported, the @Optional is unnecessary.", it)
+                }
+            }
+
+            declaration.allParameters.forEach {
+                if (it.paramAnnotations().ServerDefault != null) {
+                    if (it.name.asString() !in krosstalkOptionalParameters) {
+                        messageCollector.reportError("Can only use @ServerDefault on parameters of type KrosstalkOptional.", it)
+                    }
+                    if (!it.hasDefaultValue() && it.expect()?.hasDefaultValue() != true) {
+                        messageCollector.reportError("Parameter ${it.name} with @ServerDefault must have a default value.", it)
+                    }
+                }
+            }
+
+            rawOptionalValueParameters.plus(listOfNotNull(rawOptionalExtensionReceiver)).keys.forEach {
                 if (!it.type.isNullable()) {
                     messageCollector.reportError("@Optional parameters must be nullable, ${it.name.asString()} was not.", it)
                 }
@@ -396,7 +448,7 @@ class KrosstalkMethodTransformer(
             }
 
             endpoint.usedOptionals().forEach {
-                if (it !in optionalParamNames) {
+                if (it !in rawOptionalParamNames) {
                     messageCollector.reportError("Used parameter $it as an optional in the endpoint template, but parameter is not" +
                             " an optional parameter (i.e. having @Optional).", declaration)
                 }
@@ -413,7 +465,7 @@ class KrosstalkMethodTransformer(
                     if (declaration.dispatchReceiverParameter != null)
                         add(instanceReceiver)
                 }.forEach {
-                    if (it in optionalParamNames) {
+                    if (it in rawOptionalParamNames) {
                         if (!endpoint.hasWhenNotNull(it)) {
                             messageCollector.reportError(
                                 "Required an empty body with @EmptyBody, but optional parameter $it is not guaranteed to be in the endpoint when it is non-null.",
@@ -559,9 +611,19 @@ class KrosstalkMethodTransformer(
                                     irGet(args),
                                     param.type,
                                     param.name.asString(),
-                                    if (param in optionalValueParameters) {
+                                    if (param in rawOptionalValueParameters) {
                                         buildLambda(param.type) {
                                             body = irJsExprBody(irNull(param.type))
+                                        }
+                                    } else if (param.name.asString() in krosstalkOptionalParameters) {
+                                        buildLambda(param.type) {
+                                            body =
+                                                if (param.paramAnnotations().ServerDefault != null) {
+                                                    (param.defaultValue?.deepCopyWithSymbols()
+                                                        ?: expectDeclaration?.valueParameters?.single { it.name == param.name }?.defaultValue?.deepCopyWithSymbols())!!
+                                                } else {
+                                                    irJsExprBody(irGetObject(Krosstalk.KrosstalkOptional.None()))
+                                                }
                                         }
                                     } else null,
                                     "No argument for ${param.name}, but it was required",
@@ -597,10 +659,14 @@ class KrosstalkMethodTransformer(
                                 irGet(args),
                                 it.type,
                                 com.rnett.krosstalk.extensionReceiver,
-                                if (optionalExtensionReceiver != null) {
+                                if (rawOptionalExtensionReceiver != null) {
                                     buildLambda(it.type) {
                                         body =
                                             irJsExprBody(irNull(it.type))
+                                    }
+                                } else if (com.rnett.krosstalk.extensionReceiver in krosstalkOptionalParameters) {
+                                    buildLambda(it.type) {
+                                        body = irJsExprBody(irGetObject(Krosstalk.KrosstalkOptional.None()))
                                     }
                                 } else null,
                                 "No extension receiver argument, but it was required",
@@ -643,6 +709,11 @@ class KrosstalkMethodTransformer(
             return name
         }
 
+        private fun IrType.typeArgIfOptional() = if (isClassifierOf(Krosstalk.KrosstalkOptional))
+            typeArgument(0)
+        else
+            this
+
         fun addToKrosstalkClass() {
             val initializer = addedInitalizers.getOrPut(krosstalkClass.declaration.symbol) {
                 krosstalkClass.declaration.addAnonymousInitializer {
@@ -681,11 +752,11 @@ class KrosstalkMethodTransformer(
                                 val parameterMap: MutableMap<IrExpression, IrExpression> =
                                     nonScopeValueParameters
                                         .associate {
-                                            it.name.asString().asConst() to stdlib.reflect.typeOf(it.type)
+                                            it.name.asString().asConst() to stdlib.reflect.typeOf(it.type.typeArgIfOptional())
                                         }.toMutableMap()
 
                                 declaration.extensionReceiverParameter?.let {
-                                    parameterMap[com.rnett.krosstalk.extensionReceiver.asConst()] = stdlib.reflect.typeOf(it.type)
+                                    parameterMap[com.rnett.krosstalk.extensionReceiver.asConst()] = stdlib.reflect.typeOf(it.type.typeArgIfOptional())
                                 }
 
                                 declaration.dispatchReceiverParameter?.let {
@@ -697,6 +768,7 @@ class KrosstalkMethodTransformer(
                                     stdlib.collections.mapOf(stringType, Kotlin.Reflect.KType().typeWith(), parameterMap)
                                 )
 
+                                //TODO handle optional return types
                                 val returnDataType = if (annotations.ExplicitResult != null)
                                     declaration.returnType.typeArgument(0)
                                 else
@@ -733,9 +805,15 @@ class KrosstalkMethodTransformer(
                         // rethrowServerException
                         addValueArgument((annotations.ExplicitResult?.propagateServerExceptions == true).asConst())
 
-                        // optionalParameters
+                        // rawOptionalParameters
                         addValueArgument(
-                            optionalValueParameters.keys.plus(listOfNotNull(optionalExtensionReceiver?.first)).map { it.name.asString().asConst() }
+                            rawOptionalParamNames.map { it.asConst() }
+                                .let { stdlib.collections.setOf(stringType, it) }
+                        )
+
+                        // krosstalkOptionalParameters
+                        addValueArgument(
+                            krosstalkOptionalParameters.keys.map { it.asConst() }
                                 .let { stdlib.collections.setOf(stringType, it) }
                         )
 
@@ -757,6 +835,15 @@ class KrosstalkMethodTransformer(
                 return
 
             declaration.withBuilder {
+
+                krosstalkOptionalParameters.values.forEach {
+                    val hasDefault = it.hasDefaultValue() || (it.expect()?.hasDefaultValue() == true)
+                    if (hasDefault) {
+                        if (it.paramAnnotations().ServerDefault != null) {
+                            it.defaultValue = irExprBody(irGetObject(Krosstalk.KrosstalkOptional.None()))
+                        }
+                    }
+                }
 
                 declaration.body = irJsExprBody(irCall(Krosstalk.Client.call(), declaration.returnType).apply {
 

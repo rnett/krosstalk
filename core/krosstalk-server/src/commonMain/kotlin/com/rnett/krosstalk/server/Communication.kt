@@ -2,6 +2,7 @@ package com.rnett.krosstalk.server
 
 import com.rnett.krosstalk.InternalKrosstalkApi
 import com.rnett.krosstalk.Krosstalk
+import com.rnett.krosstalk.KrosstalkOptional
 import com.rnett.krosstalk.KrosstalkPluginApi
 import com.rnett.krosstalk.KrosstalkResult
 import com.rnett.krosstalk.MethodDefinition
@@ -57,7 +58,12 @@ suspend fun <K> K.handle(
     if (body.isNotEmpty())
         arguments += method.serialization.deserializeBodyArguments(body)
 
-    val result = method.call(arguments, wantedScopes)
+    val result = method.call(arguments.mapValues {
+        if (it.key in method.krosstalkOptionalParameters)
+            KrosstalkOptional(it.value)
+        else
+            it.value
+    }, wantedScopes)
 
     val exception = if (method.propagateServerExceptions && result is KrosstalkResult.ServerException) {
         result.throwable

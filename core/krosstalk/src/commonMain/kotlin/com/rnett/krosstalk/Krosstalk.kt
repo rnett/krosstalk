@@ -24,7 +24,10 @@ data class MethodDefinition<T> @InternalKrosstalkApi constructor(
     val useExplicitResult: Boolean,
     val includeStacktrace: Boolean,
     val propagateServerExceptions: Boolean,
-    val optionalParameters: Set<String>,
+    val rawOptionalParameters: Set<String>,
+    val krosstalkOptionalParameters: Set<String>,
+    @InternalKrosstalkApi
+    val types: MethodTypes,
     @InternalKrosstalkApi val serialization: MethodSerialization,
     val call: MethodCaller<T>,
 ) {
@@ -94,7 +97,8 @@ abstract class Krosstalk {
         useExplicitResult: Boolean,
         includeStacktrace: Boolean,
         propagateServerExceptions: Boolean,
-        optionalParameters: Set<String>,
+        rawOptionalParameters: Set<String>,
+        krosstalkOptionalParameters: Set<String>,
         call: MethodCaller<T>,
     ) {
         //TODO check endpoint exclusivity
@@ -120,7 +124,9 @@ abstract class Krosstalk {
             useExplicitResult,
             includeStacktrace,
             propagateServerExceptions,
-            optionalParameters,
+            rawOptionalParameters,
+            krosstalkOptionalParameters,
+            types,
             MethodSerialization(
                 serialization.getArgumentSerializers(types),
                 endpoint.allReferencedParameters().associateWith { urlSerialization.getMethodSerializer<Any?>(types.paramTypes.getValue(it)) },

@@ -2,7 +2,9 @@ package com.rnett.krosstalk.serialization
 
 import com.rnett.krosstalk.InternalKrosstalkApi
 import com.rnett.krosstalk.KrosstalkException
+import com.rnett.krosstalk.KrosstalkOptional
 import com.rnett.krosstalk.KrosstalkPluginApi
+import com.rnett.krosstalk.KrosstalkResult
 import com.rnett.krosstalk.extensionReceiver
 import com.rnett.krosstalk.httpDecode
 import com.rnett.krosstalk.httpEncode
@@ -12,12 +14,14 @@ import kotlin.reflect.KType
 /**
  * All necessary types for a method.
  * Instance and extension receiver serializers are in the [paramTypes] map with keys [instanceReceiver] and [extensionReceiver], respectively, but can be accessed through their accessors.
+ *
+ * [KrosstalkResult] return types and [KrosstalkOptional] parameters will be stored as their type params.
  */
+@InternalKrosstalkApi
 data class MethodTypes(
     val paramTypes: Map<String, KType>,
     val resultType: KType,
 ) {
-
     val instanceReceiverType by lazy { paramTypes[instanceReceiver] }
     val extensionReceiverSerializer by lazy { paramTypes[extensionReceiver] }
 }
