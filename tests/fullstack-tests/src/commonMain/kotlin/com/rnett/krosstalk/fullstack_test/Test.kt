@@ -109,6 +109,7 @@ expect fun serverOnlyDefault(): Int
 
 @KrosstalkEndpoint("$krosstalkPrefix/$methodName/{{a}}/{{?b}}")
 @KrosstalkMethod(MyKrosstalk::class)
+@EmptyBody
 expect suspend fun withServerDefault(a: Int = 2, b: ServerDefault<Int> = ServerDefault { serverOnlyDefault() }): Int
 
 //TODO withOptionalServerDefault

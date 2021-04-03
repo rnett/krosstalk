@@ -7,6 +7,19 @@ internal val optionalRegex = Regex("\\[(\\w+):([^\\]]+?)\\]")
 internal val paramRegex = Regex("\\{\\{(\\??)([^}]+?)\\}\\}")
 
 
+/**
+ * An unknown parameter was used in an `@KrosstalkEndpoint` template.
+ */
+@OptIn(InternalKrosstalkApi::class)
+class EndpointUnknownArgumentException @InternalKrosstalkApi constructor(
+    val methodName: String,
+    val endpointTemplate: Endpoint,
+    val missingParam: String,
+    val knownParams: Set<String>,
+) : KrosstalkException(
+    "Endpoint template \"$endpointTemplate\" for method $methodName used parameter $missingParam, but it is not a known parameter.  Known parameters: $knownParams."
+)
+
 sealed class EndpointPreprocessor {
     fun preProcessUrlParts(text: String): String = preProcess(text, false)
     fun preProcessQueryParams(text: String): String = preProcess(text, true)
@@ -298,7 +311,7 @@ data class Endpoint(
                 com.rnett.krosstalk.methodName -> error("Unresolved method name parameter")
                 krosstalkPrefix -> error("Unresolved method name parameter")
                 in arguments -> arguments.getValue(it)
-                else -> throw KrosstalkException.EndpointUnknownArgument(methodName, this, it, arguments.keys)
+                else -> throw EndpointUnknownArgumentException(methodName, this, it, arguments.keys)
             }
         }
     }
@@ -323,7 +336,7 @@ data class Endpoint(
                 com.rnett.krosstalk.methodName -> error("Unresolved method name parameter")
                 krosstalkPrefix -> error("Unresolved method name parameter")
                 in knownArguments -> cache.getOrPut(it) { getValue(it) }
-                else -> throw KrosstalkException.EndpointUnknownArgument(methodName, this, it, knownArguments)
+                else -> throw EndpointUnknownArgumentException(methodName, this, it, knownArguments)
             }
         } to cache.keys
     }

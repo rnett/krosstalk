@@ -6,6 +6,7 @@ import com.rnett.krosstalk.KrosstalkException
 import com.rnett.krosstalk.KrosstalkPluginApi
 import com.rnett.krosstalk.KrosstalkResult
 import com.rnett.krosstalk.ServerDefault
+import com.rnett.krosstalk.isNone
 
 
 /**
@@ -76,6 +77,27 @@ suspend fun krosstalkCall(): Nothing =
 class NoneInUrlException(val methodName: String, val parameter: String) :
     KrosstalkException("Parameter \"$parameter\" for method \"$methodName\" was an unrealized ServerDefault, but was used in URL.")
 
+
+/**
+ * A Krosstalk call failed.
+ */
+@OptIn(InternalKrosstalkApi::class)
+open class CallFailureException @InternalKrosstalkApi constructor(
+    val methodName: String,
+    val httpStatusCode: Int,
+    val httpStatusCodeMessage: String?,
+    val responseMessage: String?,
+    message: String = buildString {
+        append("Krosstalk method $methodName failed with HTTP status code $httpStatusCode")
+        if (httpStatusCodeMessage != null)
+            append(": $httpStatusCodeMessage")
+
+        if (responseMessage != null)
+            append(" and response message: $responseMessage")
+
+    },
+) : KrosstalkException(message)
+
 @OptIn(InternalKrosstalkApi::class, KrosstalkPluginApi::class, ExperimentalStdlibApi::class)
 @Suppress("unused")
 @PublishedApi
@@ -143,7 +165,7 @@ internal suspend inline fun <T, K, reified C : ClientScope<*>> K.call(
                 result.data
             ) as T
         } else {
-            throw KrosstalkException.CallFailure(methodName, result.statusCode, client.getStatusCodeName(result.statusCode), result.stringData)
+            throw CallFailureException(methodName, result.statusCode, client.getStatusCodeName(result.statusCode), result.stringData)
         }
     }
 }

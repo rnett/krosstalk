@@ -97,9 +97,8 @@ object Krosstalk : RootPackage(krosstalkPackage) {
 
     }
 
-    object KrosstalkException : ClassRef() {
-        val CallFromClientSide by Class()
-    }
+    val CallFromClientSideException by Class()
+    val KrosstalkException by Class()
 
     val AnnotationSpec by Class()
     val KrosstalkAnnotations by Class()

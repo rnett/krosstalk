@@ -1,6 +1,12 @@
 package com.rnett.krosstalk
 
 
+@Suppress("unused")
+@OptIn(InternalKrosstalkApi::class)
+class CallFromClientSideException @PublishedApi internal constructor(methodName: String) :
+    KrosstalkException.CompilerError("Somehow, method $methodName had it's call lambda called on the client side.  This should be impossible, please report as a bug.")
+
+
 const val baseUrlLegalRegex = "-a-zA-Z0-9._*~'()!"
 
 @OptIn(ExperimentalUnsignedTypes::class)

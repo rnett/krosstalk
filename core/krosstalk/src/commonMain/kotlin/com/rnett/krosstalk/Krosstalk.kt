@@ -39,6 +39,19 @@ data class MethodDefinition<T> @InternalKrosstalkApi constructor(
 @OptIn(KrosstalkPluginApi::class)
 typealias MethodCaller<T> = suspend (arguments: Map<String, *>, scopes: ImmutableWantedScopes) -> T
 
+@OptIn(InternalKrosstalkApi::class)
+class MissingCompilerPluginException internal constructor() :
+    KrosstalkException.CompilerError("The Krosstalk compiler plugin was not used when this module was compiled!")
+
+
+/**
+ * A method was not registered with it's Krosstalk object.
+ */
+@OptIn(InternalKrosstalkApi::class)
+class MissingMethodException @PublishedApi internal constructor(val krosstalkObject: Krosstalk, val methodName: String) :
+    KrosstalkException.CompilerError(
+        "Krosstalk $krosstalkObject does not have a registered method named $methodName.  Known methods: ${krosstalkObject.methods}."
+    )
 //TODO import from other
 //TODO maybe add serializer type?
 /**
@@ -57,10 +70,6 @@ abstract class Krosstalk {
      * Methods known to this Krosstalk instance.
      */
     val methods: Map<String, MethodDefinition<*>> = _methods
-
-    init {
-        //TODO detect compiler plugin by replacement, error if not
-    }
 
     @InternalKrosstalkApi
     fun requiredMethod(name: String) = methods[name]

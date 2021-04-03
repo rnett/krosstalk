@@ -149,7 +149,7 @@ class Tests {
     }
 
     @Test
-    fun testOptionalWithClientSideDefault() = GlobalScope.promise {
+    fun testOptionalWithDefault() = GlobalScope.promise {
         assertEquals(6, withOptionalDefault(2, 3))
         assertEquals(8, withOptionalDefault())
         assertEquals(40, withOptionalDefault(10))
@@ -158,7 +158,7 @@ class Tests {
     }
 
     @Test
-    fun testKrosstalkOptionalServerDefault() = GlobalScope.promise {
+    fun testServerDefault() = GlobalScope.promise {
         assertEquals(6, withServerDefault(3, ServerDefault { 2 }))
         assertEquals("/krosstalk/withServerDefault_y1hr3w/a/03/b/02", lastUrl)
 
