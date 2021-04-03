@@ -206,6 +206,15 @@ data class Endpoint(
         }
     }
 
+    inline fun forEachPart(noinline traverseOptionals: (String) -> Boolean, block: (EndpointPart<*>) -> Unit) {
+        urlParts.forEach {
+            it.parts(traverseOptionals).forEach(block)
+        }
+        queryParameters.values.forEach {
+            it.parts(traverseOptionals).forEach(block)
+        }
+    }
+
     /**
      * Substitute parameters in this endpoint, without resolving optionals
      */
@@ -330,6 +339,15 @@ data class Endpoint(
         return params
     }
 
+    fun referencedParametersWhenOptionalFalse(falseOptionals: Set<String>): Set<String> {
+        val params = mutableSetOf<String>()
+        forEachPart({ it !in falseOptionals }) {
+            if (it is EndpointPart.Parameter)
+                params += it.param
+        }
+        return params
+    }
+
     fun usedOptionals(): Set<String> {
         val opts = mutableSetOf<String>()
         forEachPart {
@@ -440,6 +458,15 @@ sealed class EndpointPart<in L : EndpointRegion> {
             is Static -> listOf(this)
             is Optional -> listOf(this) + part.allParts
         }
+
+    fun parts(traverseOptionals: (String) -> Boolean): List<EndpointPart<L>> =
+        if (this is Optional) {
+            listOf(this) + if (traverseOptionals(key))
+                part.parts(traverseOptionals)
+            else
+                emptyList()
+        } else
+            allParts
 }
 
 inline fun <L : EndpointRegion> EndpointPart<L>.mapInOptional(transform: (EndpointPart<L>) -> EndpointPart<L>): EndpointPart<L> = when (this) {

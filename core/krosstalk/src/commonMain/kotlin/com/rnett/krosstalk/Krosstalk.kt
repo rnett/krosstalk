@@ -24,7 +24,7 @@ data class MethodDefinition<T> @InternalKrosstalkApi constructor(
     val useExplicitResult: Boolean,
     val includeStacktrace: Boolean,
     val propagateServerExceptions: Boolean,
-    val rawOptionalParameters: Set<String>,
+    val optionalParameters: Set<String>,
     val krosstalkOptionalParameters: Set<String>,
     @InternalKrosstalkApi
     val types: MethodTypes,

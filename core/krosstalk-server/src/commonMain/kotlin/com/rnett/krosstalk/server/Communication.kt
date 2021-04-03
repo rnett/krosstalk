@@ -2,10 +2,10 @@ package com.rnett.krosstalk.server
 
 import com.rnett.krosstalk.InternalKrosstalkApi
 import com.rnett.krosstalk.Krosstalk
-import com.rnett.krosstalk.KrosstalkOptional
 import com.rnett.krosstalk.KrosstalkPluginApi
 import com.rnett.krosstalk.KrosstalkResult
 import com.rnett.krosstalk.MethodDefinition
+import com.rnett.krosstalk.ServerDefault
 import kotlin.contracts.InvocationKind
 import kotlin.contracts.contract
 
@@ -60,7 +60,7 @@ suspend fun <K> K.handle(
 
     val result = method.call(arguments.mapValues {
         if (it.key in method.krosstalkOptionalParameters)
-            KrosstalkOptional(it.value)
+            ServerDefault { it.value }
         else
             it.value
     }, wantedScopes)

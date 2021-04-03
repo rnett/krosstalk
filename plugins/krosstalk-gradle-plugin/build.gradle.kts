@@ -10,9 +10,9 @@ plugins {
 description = "Krosstalk gradle plugin, for serving the compiler plugin"
 
 dependencies {
-    implementation("org.jetbrains.kotlin:kotlin-gradle-plugin-api:1.4.31")
+    implementation("org.jetbrains.kotlin:kotlin-gradle-plugin-api:1.4.32")
 
-    compileOnly("org.jetbrains.kotlin:kotlin-gradle-plugin:1.4.31")
+    compileOnly("org.jetbrains.kotlin:kotlin-gradle-plugin:1.4.32")
 
     compileOnly("com.google.auto.service:auto-service-annotations:1.0-rc6")
     kapt("com.google.auto.service:auto-service:1.0-rc6")

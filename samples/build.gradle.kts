@@ -2,9 +2,9 @@
 //import org.gradle.api.publish.maven.internal.artifact.FileBasedMavenArtifact
 
 plugins {
-    kotlin("multiplatform") version "1.4.31" apply false
-    kotlin("jvm") version "1.4.31" apply false
-    id("org.jetbrains.kotlin.plugin.serialization") version "1.4.31" apply false
+    kotlin("multiplatform") version "1.4.32" apply false
+    kotlin("jvm") version "1.4.32" apply false
+    id("org.jetbrains.kotlin.plugin.serialization") version "1.4.32" apply false
     id("com.rnett.krosstalk")
     id("com.github.hesch.execfork") version "0.1.15"
 }

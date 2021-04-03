@@ -3,9 +3,9 @@ package com.rnett.krosstalk.client
 import com.rnett.krosstalk.InternalKrosstalkApi
 import com.rnett.krosstalk.Krosstalk
 import com.rnett.krosstalk.KrosstalkException
-import com.rnett.krosstalk.KrosstalkOptional
 import com.rnett.krosstalk.KrosstalkPluginApi
 import com.rnett.krosstalk.KrosstalkResult
+import com.rnett.krosstalk.ServerDefault
 
 
 /**
@@ -74,7 +74,7 @@ suspend fun krosstalkCall(): Nothing =
 
 @InternalKrosstalkApi
 class NoneInUrlException(val methodName: String, val parameter: String) :
-    KrosstalkException("Parameter \"$parameter\" for method \"$methodName\" was KrosstalkOptional.None, but was used in URL.")
+    KrosstalkException("Parameter \"$parameter\" for method \"$methodName\" was an unrealized ServerDefault, but was used in URL.")
 
 @OptIn(InternalKrosstalkApi::class, KrosstalkPluginApi::class, ExperimentalStdlibApi::class)
 @Suppress("unused")
@@ -88,10 +88,10 @@ internal suspend inline fun <T, K, reified C : ClientScope<*>> K.call(
     val method = requiredMethod(methodName)
 
     val arguments = rawArguments.filterValues {
-        it != KrosstalkOptional.None
+        !(it is ServerDefault<*> && it.isNone())
     }.mapValues {
-        if (it.value is KrosstalkOptional<*>)
-            (it.value as KrosstalkOptional<*>).valueOrThrow
+        if (it.value is ServerDefault<*>)
+            (it.value as ServerDefault<*>).value
         else
             it.value
     }
@@ -99,16 +99,17 @@ internal suspend inline fun <T, K, reified C : ClientScope<*>> K.call(
     val (url, usedInUrl) = method.endpoint.fillWithArgs(
         methodName,
         rawArguments.keys,
-        arguments.filter { it.value != null && it.value != KrosstalkOptional.None }.keys
+        arguments.filter { it.value != null }.keys
     ) {
-        if (rawArguments[it] == KrosstalkOptional.None)
+        if (rawArguments[it].let { it is ServerDefault<*> && it.isNone() })
             throw NoneInUrlException(methodName, it)
 
         method.serialization.serializeUrlArg(it, arguments[it])
     }
 
     val bodyArguments = arguments
-        .filterNot { it.value == null && it.key in method.rawOptionalParameters } - usedInUrl
+        .filterNot { it.value == null && it.key in method.optionalParameters } - usedInUrl
+
     val serializedBody = method.serialization.serializeBodyArguments(bodyArguments)
 
 

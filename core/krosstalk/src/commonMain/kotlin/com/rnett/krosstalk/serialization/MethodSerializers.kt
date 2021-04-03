@@ -2,7 +2,6 @@ package com.rnett.krosstalk.serialization
 
 import com.rnett.krosstalk.InternalKrosstalkApi
 import com.rnett.krosstalk.KrosstalkException
-import com.rnett.krosstalk.KrosstalkOptional
 import com.rnett.krosstalk.KrosstalkPluginApi
 import com.rnett.krosstalk.KrosstalkResult
 import com.rnett.krosstalk.extensionReceiver

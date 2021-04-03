@@ -10,6 +10,13 @@
             </Attribute>
           </value>
         </entry>
+        <entry key="C:\Users\jimne\Desktop\OtherStuff\kotlin\compiler\ir\ir.tree\src\org\jetbrains\kotlin\ir\util\PatchDeclarationParents.kt">
+          <value>
+            <Attribute>
+              <option name="separator" value=":" />
+            </Attribute>
+          </value>
+        </entry>
         <entry key="\core\krosstalk-server\src\commonMain\kotlin\com\rnett\krosstalk\server\Communication.kt">
           <value>
             <Attribute>

@@ -1,16 +1,15 @@
 package com.rnett.krosstalk.fullstack_test
 
 import com.rnett.krosstalk.Krosstalk
-import com.rnett.krosstalk.KrosstalkOptional
 import com.rnett.krosstalk.KrosstalkResult
 import com.rnett.krosstalk.Scope
 import com.rnett.krosstalk.ScopeInstance
+import com.rnett.krosstalk.ServerDefault
 import com.rnett.krosstalk.annotations.EmptyBody
 import com.rnett.krosstalk.annotations.ExplicitResult
 import com.rnett.krosstalk.annotations.KrosstalkEndpoint
 import com.rnett.krosstalk.annotations.KrosstalkMethod
 import com.rnett.krosstalk.annotations.Optional
-import com.rnett.krosstalk.annotations.ServerDefault
 import com.rnett.krosstalk.krosstalkPrefix
 import com.rnett.krosstalk.methodName
 import com.rnett.krosstalk.serialization.KotlinxBinarySerializationHandler
@@ -106,16 +105,10 @@ expect suspend fun @receiver:Optional Int?.withOptionalReceiver(s: String?): Str
 @KrosstalkMethod(MyKrosstalk::class)
 expect suspend fun withOptionalDefault(a: Int = 2, @Optional b: Int? = 4): Int
 
-@KrosstalkEndpoint("$krosstalkPrefix/$methodName/{{a}}/{{?b}}")
-@KrosstalkMethod(MyKrosstalk::class)
-expect suspend fun withKrosstalkOptional(a: Int, b: KrosstalkOptional<Int>): Int
+expect fun serverOnlyDefault(): Int
 
 @KrosstalkEndpoint("$krosstalkPrefix/$methodName/{{a}}/{{?b}}")
 @KrosstalkMethod(MyKrosstalk::class)
-expect suspend fun withKrosstalkOptionalDefault(a: Int, b: KrosstalkOptional<Int> = KrosstalkOptional(4)): Int
+expect suspend fun withServerDefault(a: Int = 2, b: ServerDefault<Int> = ServerDefault { serverOnlyDefault() }): Int
 
-expect fun serverOnlyDefault(): KrosstalkOptional<Int>
-
-@KrosstalkEndpoint("$krosstalkPrefix/$methodName/{{a}}/{{?b}}")
-@KrosstalkMethod(MyKrosstalk::class)
-expect suspend fun withKrosstalkOptionalServerDefault(a: Int = 2, @ServerDefault b: KrosstalkOptional<Int> = serverOnlyDefault()): Int
+//TODO withOptionalServerDefault
