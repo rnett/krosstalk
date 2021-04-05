@@ -67,6 +67,7 @@ data class KrosstalkAnnotations(val annotations: Set<KrosstalkAnnotation>) :
     val CatchAsHttpError by repeatableAnnotation<KrosstalkAnnotation.CatchAsHttpError>()
 
     val Optional by annotation<KrosstalkAnnotation.Optional>()
+    val PassObjects by annotation<KrosstalkAnnotation.PassObjects>()
 }
 
 data class WrapperDelegate<T>(val value: T) {
@@ -195,4 +196,6 @@ sealed class KrosstalkAnnotation(val call: IrConstructorCall, name: String) {
     }
 
     class Optional(call: IrConstructorCall) : KrosstalkAnnotation(call, "Optional")
+
+    class PassObjects(call: IrConstructorCall) : KrosstalkAnnotation(call, "PassObjects")
 }

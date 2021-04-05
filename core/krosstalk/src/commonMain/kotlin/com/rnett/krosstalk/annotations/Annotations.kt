@@ -87,6 +87,17 @@ annotation class KrosstalkEndpoint(
 @TopLevelOnly
 annotation class EmptyBody
 
+
+/**
+ * By default, arguments that are objects at the common level will not be passed (except for as URL parameters).
+ * This annotation causes them to be passed like normal parameters.
+ */
+@Target(AnnotationTarget.FUNCTION)
+@Retention(AnnotationRetention.BINARY)
+@MustBeDocumented
+@TopLevelOnly
+annotation class PassObjects
+
 //TODO option to only do http errors, or only do exceptions (based on return type?) (should use separate result classes or sealed interfaces) (http error one should be usable wth CatchAsHttpError)
 //TODO post 1.5: a version that uses kotlin.Result.  Would have to limit to http errors, can't serialize exceptions (test, can I have a custom serializable annotation?)
 
@@ -119,7 +130,6 @@ annotation class ExplicitResult(
     val printExceptionStackTraces: Boolean = true,
 )
 
-//TODO option to log?
 /**
  * Only usable with [@ExplicitResult][ExplicitResult].  Converts any caught exceptions of type [exceptionClass] (or a subtype) to a
  * [KrosstalkResult.HttpError] response, with the given [responseCode] and [message].

@@ -127,3 +127,14 @@ actual suspend fun withOptionalDefault(a: Int, b: Int?): Int = a * (b ?: 0)
 
 actual fun serverOnlyDefault(): Int = 4
 actual suspend fun withServerDefault(a: Int, b: ServerDefault<Int>): Int = a * b.value
+
+actual object ExpectObject {
+    actual fun value(): Int = 10
+
+    actual suspend fun withExpectObjectParam(): Int = value()
+
+}
+
+actual suspend fun withExpectObjectValueParam(p: ExpectObject): Int = p.value()
+
+actual suspend fun withPassedExpectObjectValueParam(p: ExpectObject): Int = p.value()

@@ -130,10 +130,9 @@ internal suspend inline fun <T, K, reified C : ClientScope<*>> K.call(
     }
 
     val bodyArguments = arguments
-        .filterNot { it.value == null && it.key in method.optionalParameters } - usedInUrl
+        .filterNot { it.value == null && it.key in method.optionalParameters }.minus(method.objectParameters.keys).minus(usedInUrl)
 
     val serializedBody = method.serialization.serializeBodyArguments(bodyArguments)
-
 
     val result = client.sendKrosstalkRequest(
         url,

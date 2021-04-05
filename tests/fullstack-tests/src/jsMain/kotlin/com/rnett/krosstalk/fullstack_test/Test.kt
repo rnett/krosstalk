@@ -97,3 +97,13 @@ actual suspend fun withOptionalDefault(a: Int, b: Int?): Int = krosstalkCall()
 
 actual fun serverOnlyDefault(): Int = error("Called on client side")
 actual suspend fun withServerDefault(a: Int, b: ServerDefault<Int>): Int = krosstalkCall()
+
+actual object ExpectObject {
+    actual fun value(): Int = 4
+
+    actual suspend fun withExpectObjectParam(): Int = krosstalkCall()
+}
+
+actual suspend fun withExpectObjectValueParam(p: ExpectObject): Int = krosstalkCall()
+
+actual suspend fun withPassedExpectObjectValueParam(p: ExpectObject): Int = krosstalkCall()

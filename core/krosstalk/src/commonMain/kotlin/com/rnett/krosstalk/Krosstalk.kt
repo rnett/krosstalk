@@ -25,7 +25,8 @@ data class MethodDefinition<T> @InternalKrosstalkApi constructor(
     val includeStacktrace: Boolean,
     val propagateServerExceptions: Boolean,
     val optionalParameters: Set<String>,
-    val krosstalkOptionalParameters: Set<String>,
+    val serverDefaultParameters: Set<String>,
+    val objectParameters: Map<String, *>,
     @InternalKrosstalkApi
     val types: MethodTypes,
     @InternalKrosstalkApi val serialization: MethodSerialization,
@@ -108,6 +109,7 @@ abstract class Krosstalk {
         propagateServerExceptions: Boolean,
         rawOptionalParameters: Set<String>,
         krosstalkOptionalParameters: Set<String>,
+        objectParameters: Map<String, *>,
         call: MethodCaller<T>,
     ) {
         //TODO check endpoint exclusivity
@@ -122,6 +124,8 @@ abstract class Krosstalk {
                 error("Scope $it was specified as optional, but is not allowed to be.  Scope.canBeOptional was overridden at some point and set to false.")
         }
 
+        println("Method: $methodName, Types: $types")
+
         val endpoint = Endpoint(endpoint, methodName, prefix)
         _methods[methodName] = MethodDefinition(
             methodName,
@@ -135,6 +139,7 @@ abstract class Krosstalk {
             propagateServerExceptions,
             rawOptionalParameters,
             krosstalkOptionalParameters,
+            objectParameters,
             types,
             MethodSerialization(
                 serialization.getArgumentSerializers(types),

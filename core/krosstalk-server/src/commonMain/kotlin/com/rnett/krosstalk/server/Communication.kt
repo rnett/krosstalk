@@ -34,7 +34,7 @@ typealias Responder = suspend (statusCode: Int, contentType: String?, data: Byte
  * @param handleException how to handle a server exception, if requested.  Should log if possible, throw if not.
  * @param responder a lambda to respond to the request.
  */
-@OptIn(InternalKrosstalkApi::class)
+@OptIn(InternalKrosstalkApi::class, ExperimentalStdlibApi::class)
 @KrosstalkPluginApi
 suspend fun <K> K.handle(
     method: MethodDefinition<*>,
@@ -51,15 +51,19 @@ suspend fun <K> K.handle(
     val wantedScopes = scopes.toImmutable()
     val contentType = method.contentType ?: serialization.contentType
 
-    val arguments: MutableMap<String, Any?> = urlArguments.mapValues {
-        method.serialization.deserializeUrlArg(it.key, it.value)
-    }.toMutableMap()
+    val arguments: Map<String, Any?> = buildMap() {
+        putAll(method.objectParameters)
 
-    if (body.isNotEmpty())
-        arguments += method.serialization.deserializeBodyArguments(body)
+        urlArguments.forEach { (key, value) ->
+            put(key, method.serialization.deserializeUrlArg(key, value))
+        }
+
+        if (body.isNotEmpty())
+            putAll(method.serialization.deserializeBodyArguments(body))
+    }
 
     val result = method.call(arguments.mapValues {
-        if (it.key in method.krosstalkOptionalParameters)
+        if (it.key in method.serverDefaultParameters)
             ServerDefault { it.value }
         else
             it.value

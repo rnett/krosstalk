@@ -112,4 +112,24 @@ expect fun serverOnlyDefault(): Int
 @EmptyBody
 expect suspend fun withServerDefault(a: Int = 2, b: ServerDefault<Int> = ServerDefault { serverOnlyDefault() }): Int
 
-//TODO withOptionalServerDefault
+expect object ExpectObject {
+    fun value(): Int
+
+    @KrosstalkMethod(MyKrosstalk::class)
+    suspend fun withExpectObjectParam(): Int
+}
+
+@KrosstalkMethod(MyKrosstalk::class)
+expect suspend fun withExpectObjectValueParam(p: ExpectObject): Int
+
+@KrosstalkMethod(MyKrosstalk::class)
+//TODO test with passing a serializable object
+//@PassObjects
+expect suspend fun withPassedExpectObjectValueParam(p: ExpectObject): Int
+
+
+//TODO test not passing objects, and annotation
+//TODO don't pass objects for return type
+
+
+

@@ -36,6 +36,7 @@ import org.jetbrains.kotlin.ir.builders.irComposite
 import org.jetbrains.kotlin.ir.builders.irExprBody
 import org.jetbrains.kotlin.ir.builders.irGet
 import org.jetbrains.kotlin.ir.builders.irGetObject
+import org.jetbrains.kotlin.ir.builders.irGetObjectValue
 import org.jetbrains.kotlin.ir.builders.irNull
 import org.jetbrains.kotlin.ir.builders.irReturn
 import org.jetbrains.kotlin.ir.builders.parent
@@ -171,6 +172,16 @@ class KrosstalkMethodTransformer(
         }
     }
 
+    @OptIn(ObsoleteDescriptorBasedAPI::class)
+    fun IrClass.expect(): IrClass? {
+        if (!this.descriptor.isActual)
+            return null
+        else
+            return context.symbolTable.referenceClass(
+                this.descriptor.findExpects().single() as ClassDescriptor
+            ).owner
+    }
+
     inner class KrosstalkFunction(val declaration: IrSimpleFunction) {
 
         val hasArgs by lazy { allNonScopeParameters.isNotEmpty() }
@@ -276,6 +287,17 @@ class KrosstalkMethodTransformer(
                     type = type.typeArgument(0)
 
                 type
+            }
+
+            val constantObject: IrClass? by lazy {
+                if (rawType.isNullable())
+                    return@lazy null
+
+                val cls = (expectDeclaration ?: declaration).type.classOrNull?.owner?.let { it.expect() ?: it } ?: return@lazy null
+                if ((cls.isObject || cls.isCompanion) && !cls.isAnonymousObject)
+                    declaration.type.classOrNull?.owner
+                else
+                    null
             }
 
             private fun reportError(error: String) {
@@ -395,6 +417,13 @@ class KrosstalkMethodTransformer(
                 declaration.extensionReceiverParameter,
                 declaration.dispatchReceiverParameter
             )
+        }
+
+        val objectParameters by lazy {
+            if (annotations.PassObjects != null)
+                emptySet()
+            else
+                parameters.filter { it.constantObject != null && it.krosstalkName !in endpoint.allReferencedParameters() }.toSet()
         }
 
         @OptIn(ExperimentalStdlibApi::class)
@@ -777,18 +806,22 @@ class KrosstalkMethodTransformer(
                         addValueArgument(
                             irCall(Krosstalk.Serialization.MethodTypes().owner.primaryConstructor!!).apply {
                                 val parameterMap: MutableMap<IrExpression, IrExpression> =
-                                    nonScopeValueParameters
+                                    nonScopeValueParameters.filter { it !in objectParameters }
                                         .associate {
                                             it.krosstalkName.asConst() to stdlib.reflect.typeOf(it.dataType)
                                         }.toMutableMap()
 
                                 declaration.extensionReceiverParameter?.param?.let {
-                                    parameterMap[it.krosstalkName.asConst()] =
-                                        stdlib.reflect.typeOf(it.dataType)
+                                    if (it !in objectParameters) {
+                                        parameterMap[it.krosstalkName.asConst()] =
+                                            stdlib.reflect.typeOf(it.dataType)
+                                    }
                                 }
 
-                                declaration.dispatchReceiverParameter?.let {
-                                    parameterMap[it.param.krosstalkName.asConst()] = stdlib.reflect.typeOf(it.type)
+                                declaration.dispatchReceiverParameter?.param?.let {
+                                    if (it !in objectParameters) {
+                                        parameterMap[it.krosstalkName.asConst()] = stdlib.reflect.typeOf(it.dataType)
+                                    }
                                 }
 
                                 putValueArgument(
@@ -843,6 +876,15 @@ class KrosstalkMethodTransformer(
                         addValueArgument(
                             serverDefaultParameters.map { it.krosstalkName.asConst() }
                                 .let { stdlib.collections.setOf(stringType, it) }
+                        )
+
+                        // objects
+                        addValueArgument(
+                            objectParameters.associate {
+                                (it.krosstalkName.asConst() as IrExpression) to irGetObjectValue(context.irBuiltIns.anyNType,
+                                    it.constantObject!!.symbol)
+                            }
+                                .let { stdlib.collections.mapOf(stringType, context.irBuiltIns.anyNType, it) }
                         )
 
                         // call function

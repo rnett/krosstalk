@@ -165,4 +165,19 @@ class Tests {
         assertEquals(12, withServerDefault(3))
         assertEquals("/krosstalk/withServerDefault_y1hr3w/a/03", lastUrl)
     }
+
+    @Test
+    fun testObjectNoPassingReceiver() = GlobalScope.promise {
+        assertEquals(10, ExpectObject.withExpectObjectParam())
+    }
+
+    @Test
+    fun testObjectNoPassing() = GlobalScope.promise {
+        assertEquals(10, withExpectObjectValueParam(ExpectObject))
+    }
+
+    @Test
+    fun testObjectPassing() = GlobalScope.promise {
+        assertEquals(10, withPassedExpectObjectValueParam(ExpectObject))
+    }
 }
