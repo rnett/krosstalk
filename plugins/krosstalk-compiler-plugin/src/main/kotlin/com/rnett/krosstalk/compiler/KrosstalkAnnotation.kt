@@ -197,5 +197,7 @@ sealed class KrosstalkAnnotation(val call: IrConstructorCall, name: String) {
 
     class Optional(call: IrConstructorCall) : KrosstalkAnnotation(call, "Optional")
 
-    class PassObjects(call: IrConstructorCall) : KrosstalkAnnotation(call, "PassObjects")
+    class PassObjects(call: IrConstructorCall) : KrosstalkAnnotation(call, "PassObjects") {
+        val returnToo by field(false)
+    }
 }

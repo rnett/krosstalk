@@ -91,12 +91,14 @@ annotation class EmptyBody
 /**
  * By default, arguments that are objects at the common level will not be passed (except for as URL parameters).
  * This annotation causes them to be passed like normal parameters.
+ *
+ * This doesn't apply to the return type unless [returnToo] is true (which it is not by default).
  */
 @Target(AnnotationTarget.FUNCTION)
 @Retention(AnnotationRetention.BINARY)
 @MustBeDocumented
 @TopLevelOnly
-annotation class PassObjects
+annotation class PassObjects(val returnToo: Boolean = false)
 
 //TODO option to only do http errors, or only do exceptions (based on return type?) (should use separate result classes or sealed interfaces) (http error one should be usable wth CatchAsHttpError)
 //TODO post 1.5: a version that uses kotlin.Result.  Would have to limit to http errors, can't serialize exceptions (test, can I have a custom serializable annotation?)

@@ -24,6 +24,12 @@ interface ServerHandler<S : ServerScope<*>> {
 
 typealias Responder = suspend (statusCode: Int, contentType: String?, data: ByteArray) -> Unit
 
+@InternalKrosstalkApi
+fun MethodDefinition<*>.getReturnBody(data: Any?): ByteArray = if (returnObject != null)
+    ByteArray(0)
+else
+    serialization.serializeReturnValue(data)
+
 /**
  * Helper method for server side to handle a method [methodName] with the body data [body].
  *
@@ -77,7 +83,7 @@ suspend fun <K> K.handle(
     if (method.useExplicitResult) {
         when (val kr = result as KrosstalkResult<*>) {
             is KrosstalkResult.Success -> {
-                responder(200, contentType, method.serialization.serializeReturnValue(kr.value))
+                responder(200, contentType, method.getReturnBody(kr.value))
             }
             is KrosstalkResult.ServerException -> {
                 //TODO something in plaintext for non-krosstalk servers?  JSON serialize the exception maybe.  I can just use Kotlinx here too, rather than getting the serializer
@@ -88,7 +94,7 @@ suspend fun <K> K.handle(
             }
         }
     } else {
-        responder(200, contentType, method.serialization.serializeReturnValue(result))
+        responder(200, contentType, method.getReturnBody(result))
     }
 
     if (exception != null) {

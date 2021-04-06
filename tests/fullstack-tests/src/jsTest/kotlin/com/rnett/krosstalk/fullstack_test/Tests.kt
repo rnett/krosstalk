@@ -178,6 +178,27 @@ class Tests {
 
     @Test
     fun testObjectPassing() = GlobalScope.promise {
-        assertEquals(10, withPassedExpectObjectValueParam(ExpectObject))
+        assertEquals(3, withPassedExpectObjectValueParam(SerializableObject))
+    }
+
+    @Test
+    fun testUnitReturn() = GlobalScope.promise {
+        //TODO test response is actually empty
+        assertEquals(Unit, withUnitReturn("s"))
+    }
+
+    @Test
+    fun testObjectReturn() = GlobalScope.promise {
+        assertEquals(ExpectObject, withObjectReturn("s"))
+    }
+
+    @Test
+    fun testPassedObjectReturn() = GlobalScope.promise {
+        assertEquals(SerializableObject, withPassedObjectReturn("s"))
+    }
+
+    @Test
+    fun testDifferentObjectPassing() = GlobalScope.promise {
+        assertEquals(ExpectObject, withDifferentPassing(SerializableObject))
     }
 }

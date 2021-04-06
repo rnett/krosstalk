@@ -22,6 +22,7 @@ import io.ktor.routing.get
 import io.ktor.routing.routing
 import io.ktor.server.cio.CIO
 import io.ktor.server.engine.embeddedServer
+import kotlinx.serialization.Serializable
 import kotlinx.serialization.cbor.Cbor
 import org.slf4j.event.Level
 
@@ -137,4 +138,18 @@ actual object ExpectObject {
 
 actual suspend fun withExpectObjectValueParam(p: ExpectObject): Int = p.value()
 
-actual suspend fun withPassedExpectObjectValueParam(p: ExpectObject): Int = p.value()
+@Serializable
+actual object SerializableObject {
+    actual val value: Int = 3
+}
+
+actual suspend fun withPassedExpectObjectValueParam(p: SerializableObject): Int = p.value
+
+actual suspend fun withUnitReturn(s: String) {
+}
+
+actual suspend fun withObjectReturn(s: String): ExpectObject = ExpectObject
+
+actual suspend fun withPassedObjectReturn(s: String): SerializableObject = SerializableObject
+
+actual suspend fun withDifferentPassing(arg: SerializableObject): ExpectObject = ExpectObject

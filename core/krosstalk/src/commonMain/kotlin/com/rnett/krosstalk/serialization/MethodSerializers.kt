@@ -29,7 +29,7 @@ class MissingSerializerException @InternalKrosstalkApi constructor(val argument:
 @InternalKrosstalkApi
 data class MethodTypes(
     val paramTypes: Map<String, KType>,
-    val resultType: KType,
+    val resultType: KType?,
 ) {
     val instanceReceiverType by lazy { paramTypes[instanceReceiver] }
     val extensionReceiverSerializer by lazy { paramTypes[extensionReceiver] }
@@ -40,10 +40,15 @@ data class MethodTypes(
 data class MethodSerialization(
     private val bodySerializers: MethodArgumentSerializers<*>,
     private val urlArgSerializers: Map<String, MethodSerializer<*, Any?>>,
-    private val returnValueSerializer: MethodSerializer<*, Any?>,
+    private val returnValueSerializer: MethodSerializer<*, Any?>?,
 ) {
-    fun serializeReturnValue(value: Any?): ByteArray = returnValueSerializer.serializeToBytes(value)
-    fun deserializeReturnValue(value: ByteArray): Any? = returnValueSerializer.deserializeFromBytes(value)
+    fun serializeReturnValue(value: Any?): ByteArray =
+        (returnValueSerializer ?: error("No return value serializer, is the method returning an object?"))
+            .serializeToBytes(value)
+
+    fun deserializeReturnValue(value: ByteArray): Any? =
+        (returnValueSerializer ?: error("No return value serializer, is the method returning an object?"))
+            .deserializeFromBytes(value)
 
     fun serializeUrlArg(arg: String, value: Any?): String =
         urlArgSerializers.getOrElse(arg) { throw MissingSerializerException(arg, urlArgSerializers.keys, true) }.serializeToString(value)

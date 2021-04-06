@@ -18,6 +18,7 @@ import io.ktor.http.ContentType
 import io.ktor.http.HttpMethod
 import io.ktor.http.authority
 import io.ktor.http.contentType
+import kotlinx.serialization.Serializable
 import kotlinx.serialization.cbor.Cbor
 import kotlin.properties.Delegates
 
@@ -106,4 +107,17 @@ actual object ExpectObject {
 
 actual suspend fun withExpectObjectValueParam(p: ExpectObject): Int = krosstalkCall()
 
-actual suspend fun withPassedExpectObjectValueParam(p: ExpectObject): Int = krosstalkCall()
+@Serializable
+actual object SerializableObject {
+    actual val value: Int = 10
+}
+
+actual suspend fun withPassedExpectObjectValueParam(p: SerializableObject): Int = krosstalkCall()
+
+actual suspend fun withUnitReturn(s: String): Unit = krosstalkCall()
+
+actual suspend fun withObjectReturn(s: String): ExpectObject = krosstalkCall()
+
+actual suspend fun withPassedObjectReturn(s: String): SerializableObject = krosstalkCall()
+
+actual suspend fun withDifferentPassing(arg: SerializableObject): ExpectObject = krosstalkCall()

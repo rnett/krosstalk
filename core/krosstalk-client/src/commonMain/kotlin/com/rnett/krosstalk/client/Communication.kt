@@ -5,6 +5,7 @@ import com.rnett.krosstalk.Krosstalk
 import com.rnett.krosstalk.KrosstalkException
 import com.rnett.krosstalk.KrosstalkPluginApi
 import com.rnett.krosstalk.KrosstalkResult
+import com.rnett.krosstalk.MethodDefinition
 import com.rnett.krosstalk.ServerDefault
 import com.rnett.krosstalk.isNone
 
@@ -98,6 +99,14 @@ open class CallFailureException @InternalKrosstalkApi constructor(
     },
 ) : KrosstalkException(message)
 
+@InternalKrosstalkApi
+@PublishedApi
+internal fun <T> MethodDefinition<T>.getReturnValue(data: ByteArray): T = if (returnObject != null) {
+    returnObject as T
+} else {
+    serialization.deserializeReturnValue(data) as T
+}
+
 @OptIn(InternalKrosstalkApi::class, KrosstalkPluginApi::class, ExperimentalStdlibApi::class)
 @Suppress("unused")
 @PublishedApi
@@ -144,9 +153,7 @@ internal suspend inline fun <T, K, reified C : ClientScope<*>> K.call(
 
     return if (method.useExplicitResult) {
         if (result.isSuccess()) {
-            KrosstalkResult.Success(method.serialization.deserializeReturnValue(
-                result.data
-            )) as T
+            KrosstalkResult.Success(method.getReturnValue(result.data)) as T
         } else {
             if (result.statusCode == 500) {
                 try {
@@ -160,9 +167,7 @@ internal suspend inline fun <T, K, reified C : ClientScope<*>> K.call(
         }
     } else {
         if (result.isSuccess()) {
-            method.serialization.deserializeReturnValue(
-                result.data
-            ) as T
+            method.getReturnValue(result.data) as T
         } else {
             throw CallFailureException(methodName, result.statusCode, client.getStatusCodeName(result.statusCode), result.stringData)
         }

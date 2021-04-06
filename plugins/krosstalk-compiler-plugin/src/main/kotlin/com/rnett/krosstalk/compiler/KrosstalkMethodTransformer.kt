@@ -10,6 +10,7 @@ import com.rnett.krosstalk.methodName
 import com.rnett.plugin.ir.IrTransformer
 import com.rnett.plugin.ir.addAnonymousInitializer
 import com.rnett.plugin.ir.irJsExprBody
+import com.rnett.plugin.ir.irTypeOf
 import com.rnett.plugin.ir.raiseTo
 import com.rnett.plugin.ir.typeArgument
 import com.rnett.plugin.ir.withDispatchReceiver
@@ -66,6 +67,7 @@ import org.jetbrains.kotlin.name.Name
 import org.jetbrains.kotlin.resolve.multiplatform.findExpects
 import kotlin.collections.set
 import kotlin.math.absoluteValue
+import kotlin.reflect.KType
 
 @OptIn(ExperimentalStdlibApi::class)
 class KrosstalkMethodTransformer(
@@ -237,6 +239,17 @@ class KrosstalkMethodTransformer(
 
         private fun IrValueParameter.expect() = expectParameters?.getValue(name)
 
+        private fun IrType.expectableObject(): IrClass? {
+            if (isNullable())
+                return null
+
+            val cls = classOrNull?.owner?.let { it.expect() ?: it } ?: return null
+            return if ((cls.isObject || cls.isCompanion) && !cls.isAnonymousObject)
+                classOrNull?.owner
+            else
+                null
+        }
+
         inner class KrosstalkParameter(val declaration: IrValueParameter, val expectDeclaration: IrValueParameter? = declaration.expect()) {
             override fun equals(other: Any?): Boolean {
                 if (this === other) return true
@@ -290,14 +303,9 @@ class KrosstalkMethodTransformer(
             }
 
             val constantObject: IrClass? by lazy {
-                if (rawType.isNullable())
-                    return@lazy null
+                if (isServerDefault) return@lazy null
 
-                val cls = (expectDeclaration ?: declaration).type.classOrNull?.owner?.let { it.expect() ?: it } ?: return@lazy null
-                if ((cls.isObject || cls.isCompanion) && !cls.isAnonymousObject)
-                    declaration.type.classOrNull?.owner
-                else
-                    null
+                dataType.expectableObject()
             }
 
             private fun reportError(error: String) {
@@ -424,6 +432,21 @@ class KrosstalkMethodTransformer(
                 emptySet()
             else
                 parameters.filter { it.constantObject != null && it.krosstalkName !in endpoint.allReferencedParameters() }.toSet()
+        }
+
+        val returnDataType by lazy {
+            declaration.returnType.let {
+                if (it.isClassifierOf(Krosstalk.KrosstalkResult))
+                    it.typeArgument(0)
+                else
+                    it
+            }
+        }
+
+        val returnObject by lazy {
+            if (annotations.PassObjects?.returnToo == true)
+                return@lazy null
+            returnDataType.expectableObject()
         }
 
         @OptIn(ExperimentalStdlibApi::class)
@@ -829,13 +852,12 @@ class KrosstalkMethodTransformer(
                                     stdlib.collections.mapOf(stringType, Kotlin.Reflect.KType().typeWith(), parameterMap)
                                 )
 
-                                //TODO handle optional return types
-                                val returnDataType = if (annotations.ExplicitResult != null)
-                                    declaration.returnType.typeArgument(0)
-                                else
-                                    declaration.returnType
-
-                                putValueArgument(1, stdlib.reflect.typeOf(returnDataType))
+                                putValueArgument(1, if (returnObject != null) {
+                                    irNull(irTypeOf<KType>())
+                                } else {
+                                    stdlib.reflect.typeOf(returnDataType)
+                                }
+                                )
                             }
                         )
 
@@ -878,7 +900,7 @@ class KrosstalkMethodTransformer(
                                 .let { stdlib.collections.setOf(stringType, it) }
                         )
 
-                        // objects
+                        // object params
                         addValueArgument(
                             objectParameters.associate {
                                 (it.krosstalkName.asConst() as IrExpression) to irGetObjectValue(context.irBuiltIns.anyNType,
@@ -886,6 +908,9 @@ class KrosstalkMethodTransformer(
                             }
                                 .let { stdlib.collections.mapOf(stringType, context.irBuiltIns.anyNType, it) }
                         )
+
+                        // object return
+                        addValueArgument(returnObject?.let { irGetObject(it.symbol) } ?: irNull())
 
                         // call function
                         // signature is (Map<String, *>, ImmutableWantedScopes)
