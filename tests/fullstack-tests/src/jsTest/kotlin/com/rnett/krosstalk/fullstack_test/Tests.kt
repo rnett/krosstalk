@@ -201,4 +201,41 @@ class Tests {
     fun testDifferentObjectPassing() = GlobalScope.promise {
         assertEquals(ExpectObject, withDifferentPassing(SerializableObject))
     }
+
+    @Test
+    fun testWithHeaders() = GlobalScope.promise {
+        val result = withHeadersBasic(4)
+        assertEquals("4", result.value)
+        assertEquals(listOf("value"), result.headers["test"])
+    }
+
+    @Test
+    fun testWithHeadersOutsideResult() = GlobalScope.promise {
+        val result = withHeadersOutsideResult(4)
+
+        assertEquals("4", result.value.valueOrNull)
+        assertEquals(listOf("value"), result.headers["test"])
+
+        val failure = withHeadersOutsideResult(-4)
+        assertEquals(422, failure.value.httpErrorOrNull?.statusCode)
+    }
+
+    @Test
+    fun testWithHeadersInsideResult() = GlobalScope.promise {
+        val result = withHeadersInsideResult(4)
+
+        assertEquals("4", result.valueOrNull!!.value)
+        assertEquals(listOf("value"), result.valueOrNull!!.headers["test"])
+
+        val failure = withHeadersInsideResult(-4)
+        assertEquals(422, failure.httpErrorOrNull?.statusCode)
+    }
+
+    @Test
+    fun testWithHeadersReturnObject() = GlobalScope.promise {
+        val result = withHeadersReturnObject(10)
+
+        assertEquals(ExpectObject, result.value)
+        assertEquals("10", result.headers["value"]!![0])
+    }
 }

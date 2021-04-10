@@ -1,5 +1,6 @@
 package com.rnett.krosstalk
 
+import com.rnett.krosstalk.annotations.ExplicitResult
 import com.rnett.krosstalk.endpoint.Endpoint
 import com.rnett.krosstalk.serialization.MethodSerialization
 import com.rnett.krosstalk.serialization.MethodTypes
@@ -12,6 +13,25 @@ import com.rnett.krosstalk.server.ImmutableWantedScopes
 //TODO track empty body, throw if not empty?
 /**
  * All the Krosstalk metedata associated with a krosstalk method.
+ *
+ * @property name the method name
+ * @property endpoint the method endpoint
+ * @property httpMethod the http method to use
+ * @property contentType the content type to use for bodies, or null to use the serialization handler's
+ * @property requiredScopes scopes required by the method
+ * @property optionalParameters scopes optionally used by the method
+ * @property useExplicitResult whether the result is wrapped in a [KrosstalkResult]
+ * @property includeStacktrace whether any [KrosstalkResult.ServerException]s should include the exception stack trace
+ * @property propagateServerExceptions whether [ExplicitResult.propagateServerExceptions] is set
+ * @property optionalParameters parameters marked as optional
+ * @property serverDefaultParameters parameters using [ServerDefault]
+ * @property objectParameters parameters that are objects and shouldn't be transfered
+ * @property returnObject the object to use as the return value, if there is one
+ * @property outerWithHeaders whether to wrap the final result (including KrosstalkResult handling) in [WithHeaders]
+ * @property innerWithHeaders whether to wrap the initial result (not including KrosstalkResult handling) in [WithHeaders]
+ * @property types the method's parameter and return types
+ * @property call a lambda to call the method
+ * @property allScopes all scopes used by the method
  */
 data class MethodDefinition<T> @InternalKrosstalkApi constructor(
 //        val method: KCallable<T>,
@@ -28,6 +48,8 @@ data class MethodDefinition<T> @InternalKrosstalkApi constructor(
     val serverDefaultParameters: Set<String>,
     val objectParameters: Map<String, *>,
     val returnObject: Any?,
+    val outerWithHeaders: Boolean,
+    val innerWithHeaders: Boolean,
     @InternalKrosstalkApi
     val types: MethodTypes,
     @InternalKrosstalkApi val serialization: MethodSerialization,
@@ -112,6 +134,8 @@ abstract class Krosstalk {
         krosstalkOptionalParameters: Set<String>,
         objectParameters: Map<String, *>,
         returnObject: Any?,
+        outerWithHeaders: Boolean,
+        innerWithHeaders: Boolean,
         call: MethodCaller<T>,
     ) {
         //TODO check endpoint exclusivity
@@ -142,6 +166,8 @@ abstract class Krosstalk {
             krosstalkOptionalParameters,
             objectParameters,
             returnObject,
+            outerWithHeaders,
+            innerWithHeaders,
             types,
             MethodSerialization(
                 serialization.getArgumentSerializers(types),

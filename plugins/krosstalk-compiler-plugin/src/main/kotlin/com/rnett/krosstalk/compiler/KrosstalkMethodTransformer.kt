@@ -17,6 +17,7 @@ import com.rnett.plugin.ir.withDispatchReceiver
 import com.rnett.plugin.ir.withExtensionReceiver
 import com.rnett.plugin.ir.withTypeArguments
 import com.rnett.plugin.ir.withValueArguments
+import com.rnett.plugin.naming.ClassRef
 import com.rnett.plugin.naming.isClassifierOf
 import com.rnett.plugin.stdlib.Kotlin
 import org.jetbrains.kotlin.backend.common.extensions.IrPluginContext
@@ -434,13 +435,37 @@ class KrosstalkMethodTransformer(
                 parameters.filter { it.constantObject != null && it.krosstalkName !in endpoint.allReferencedParameters() }.toSet()
         }
 
+        private fun IrType.unwrapClassifier(klass: ClassRef) = if (this.isClassifierOf(klass)) typeArgument(0) else this
+
         val returnDataType by lazy {
-            declaration.returnType.let {
-                if (it.isClassifierOf(Krosstalk.KrosstalkResult))
-                    it.typeArgument(0)
-                else
-                    it
-            }
+            val type = declaration.returnType
+
+            if (type.isClassifierOf(Krosstalk.KrosstalkResult)) {
+                type.typeArgument(0).unwrapClassifier(Krosstalk.WithHeaders)
+            } else if (type.isClassifierOf(Krosstalk.WithHeaders)) {
+                type.typeArgument(0).unwrapClassifier(Krosstalk.KrosstalkResult)
+            } else
+                type
+        }
+
+        val isWithHeaders by lazy {
+            val type = declaration.returnType
+            type.isClassifierOf(Krosstalk.WithHeaders) ||
+                    (type.isClassifierOf(Krosstalk.KrosstalkResult) && type.typeArgument(0).isClassifierOf(Krosstalk.WithHeaders))
+        }
+
+        val isOuterWithHeaders by lazy {
+            isWithHeaders && declaration.returnType.isClassifierOf(Krosstalk.WithHeaders)
+        }
+
+        val isInnerWithHeaders by lazy {
+            isWithHeaders && !declaration.returnType.isClassifierOf(Krosstalk.WithHeaders)
+        }
+
+        val isKrosstalkResult by lazy {
+            val type = declaration.returnType
+            type.isClassifierOf(Krosstalk.KrosstalkResult) ||
+                    (type.isClassifierOf(Krosstalk.WithHeaders) && type.typeArgument(0).isClassifierOf(Krosstalk.KrosstalkResult))
         }
 
         val returnObject by lazy {
@@ -493,6 +518,16 @@ class KrosstalkMethodTransformer(
                         params.first().declaration
                     )
                 }
+
+            val allReturnTypeArgs = returnDataType.allTypes().groupBy { it.classOrNull }.mapValues { it.value.size }
+            if (Krosstalk.WithHeaders() in allReturnTypeArgs) {
+                messageCollector.reportError("Can't use WithHeaders in return type except for top level or second level " +
+                        "when used with KrosstalkResult (either order is valid).", declaration)
+            }
+            if (Krosstalk.KrosstalkResult() in allReturnTypeArgs) {
+                messageCollector.reportError("Can't use KrosstalkResult in return type except for top level or second level " +
+                        "when used with WithHeaders (either order is valid).", declaration)
+            }
 
             if (declaration.returnType.isClassifierOf(Krosstalk.ServerDefault)) {
                 messageCollector.reportError("Can't use ServerDefault as a return type", declaration)
@@ -588,12 +623,32 @@ class KrosstalkMethodTransformer(
                 }
             }
 
-            if (annotations.ExplicitResult != null) {
-                if (declaration.returnType.classOrNull != Krosstalk.KrosstalkResult())
-                    messageCollector.reportError(
-                        "Must have a return type of KrosstalkResult to use @ExplicitResult.",
-                        declaration
-                    )
+            if (annotations.ExplicitResult != null && !isKrosstalkResult) {
+                messageCollector.reportError(
+                    "Must have a return type of KrosstalkResult<T> or WithHeaders<KrosstalkResult<T>> to use @ExplicitResult.",
+                    declaration
+                )
+            }
+
+            if (annotations.ExplicitResult == null && isKrosstalkResult) {
+                messageCollector.reportError(
+                    "Must use @ExplicitResult to use KrosstalkResult in return type.",
+                    declaration
+                )
+            }
+
+            if (annotations.RespondWithHeaders != null && !isWithHeaders) {
+                messageCollector.reportError(
+                    "Must have a return type of WithHeaders<T> or KrosstalkResult<WithHeaders<T>> to use @RespondWithHeaders.",
+                    declaration
+                )
+            }
+
+            if (annotations.RespondWithHeaders == null && isWithHeaders) {
+                messageCollector.reportError(
+                    "Must use @RespondWithHeaders to use WithHeaders in return type.",
+                    declaration
+                )
             }
 
             val isPlaceholderBody = when (val body = declaration.body) {
@@ -645,12 +700,15 @@ class KrosstalkMethodTransformer(
             if (declaration.body == null) return
 
             declaration.withBuilder {
+
+                val resultType = if (isOuterWithHeaders) declaration.returnType.typeArgument(0) else declaration.returnType
+
                 val result = declaration.body!!.let { body ->
                     if (body is IrExpressionBody) {
                         body.expression
                     } else {
                         body as IrBlockBody
-                        irComposite(resultType = declaration.returnType) {
+                        irComposite(resultType = resultType) {
                             declaration.body!!.statements.forEach {
                                 +it
                             }
@@ -658,7 +716,7 @@ class KrosstalkMethodTransformer(
                     }
                 }
                 declaration.body = irBlockBody {
-                    +irReturn(irTry(result, declaration.returnType) {
+                    val tryExpr = irTry(result, resultType) {
                         irCatch(context.irBuiltIns.throwableType) { t ->
                             irCall(Krosstalk.Server.handleException())
                                 .withValueArguments(
@@ -675,7 +733,14 @@ class KrosstalkMethodTransformer(
                                     }
                                 )
                         }
-                    })
+                    }
+
+                    +irReturn(
+                        if (isOuterWithHeaders)
+                            irCallConstructor(Krosstalk.WithHeaders.new(), listOf(resultType)).withValueArguments(tryExpr)
+                        else
+                            tryExpr
+                    )
                 }
             }
             declaration.body!!.patchDeclarationParents(declaration)
@@ -878,7 +943,7 @@ class KrosstalkMethodTransformer(
                         )
 
                         // useExplicitResult
-                        addValueArgument((annotations.ExplicitResult != null).asConst())
+                        addValueArgument(isKrosstalkResult.asConst())
 
                         // includeStacktrace
                         addValueArgument(
@@ -911,6 +976,12 @@ class KrosstalkMethodTransformer(
 
                         // object return
                         addValueArgument(returnObject?.let { irGetObject(it.symbol) } ?: irNull())
+
+                        // outerWithHeaders
+                        addValueArgument(isOuterWithHeaders.asConst())
+
+                        // innerWithHeaders
+                        addValueArgument(isInnerWithHeaders.asConst())
 
                         // call function
                         // signature is (Map<String, *>, ImmutableWantedScopes)

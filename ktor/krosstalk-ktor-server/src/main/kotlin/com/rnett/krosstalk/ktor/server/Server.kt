@@ -1,5 +1,6 @@
 package com.rnett.krosstalk.ktor.server
 
+import com.rnett.krosstalk.Headers
 import com.rnett.krosstalk.Krosstalk
 import com.rnett.krosstalk.KrosstalkPluginApi
 import com.rnett.krosstalk.MethodDefinition
@@ -125,7 +126,14 @@ object KtorServer : ServerHandler<KtorServerScope<*>> {
 
                                 krosstalk.handle(method, data, body, scopes.toImmutable(), {
                                     application.log.error("Server exception during ${method.name}, passed on to client", it)
-                                }) { status: Int, contentType: String?, bytes: ByteArray ->
+                                }) { status: Int, contentType: String?, headers: Headers, bytes: ByteArray ->
+
+                                    headers.forEach { (k, v) ->
+                                        v.forEach {
+                                            call.response.headers.append(k, it, false)
+                                        }
+                                    }
+
                                     call.respondBytes(
                                         bytes,
                                         contentType?.let {
@@ -137,8 +145,8 @@ object KtorServer : ServerHandler<KtorServerScope<*>> {
                                         },
                                         HttpStatusCode.fromValue(status)
                                     )
+                                    this.finish()
                                 }
-                                this.finish()
                             }
                         }
                     }

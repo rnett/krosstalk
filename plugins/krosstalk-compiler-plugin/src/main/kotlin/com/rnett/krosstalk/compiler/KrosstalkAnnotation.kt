@@ -68,6 +68,7 @@ data class KrosstalkAnnotations(val annotations: Set<KrosstalkAnnotation>) :
 
     val Optional by annotation<KrosstalkAnnotation.Optional>()
     val PassObjects by annotation<KrosstalkAnnotation.PassObjects>()
+    val RespondWithHeaders by annotation<KrosstalkAnnotation.RespondWithHeaders>()
 }
 
 data class WrapperDelegate<T>(val value: T) {
@@ -200,4 +201,6 @@ sealed class KrosstalkAnnotation(val call: IrConstructorCall, name: String) {
     class PassObjects(call: IrConstructorCall) : KrosstalkAnnotation(call, "PassObjects") {
         val returnToo by field(false)
     }
+
+    class RespondWithHeaders(call: IrConstructorCall) : KrosstalkAnnotation(call, "RespondWithHeaders")
 }

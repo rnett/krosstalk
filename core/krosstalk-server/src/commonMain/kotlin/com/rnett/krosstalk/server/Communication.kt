@@ -1,11 +1,14 @@
 package com.rnett.krosstalk.server
 
+import com.rnett.krosstalk.Headers
 import com.rnett.krosstalk.InternalKrosstalkApi
 import com.rnett.krosstalk.Krosstalk
 import com.rnett.krosstalk.KrosstalkPluginApi
 import com.rnett.krosstalk.KrosstalkResult
 import com.rnett.krosstalk.MethodDefinition
 import com.rnett.krosstalk.ServerDefault
+import com.rnett.krosstalk.WithHeaders
+import com.rnett.krosstalk.addHeadersFrom
 import kotlin.contracts.InvocationKind
 import kotlin.contracts.contract
 
@@ -22,7 +25,7 @@ interface ServerHandler<S : ServerScope<*>> {
     fun getStatusCodeName(httpStatusCode: Int): String?
 }
 
-typealias Responder = suspend (statusCode: Int, contentType: String?, data: ByteArray) -> Unit
+typealias Responder = suspend (statusCode: Int, contentType: String?, headers: Headers, data: ByteArray) -> Unit
 
 @InternalKrosstalkApi
 fun MethodDefinition<*>.getReturnBody(data: Any?): ByteArray = if (returnObject != null)
@@ -68,33 +71,52 @@ suspend fun <K> K.handle(
             putAll(method.serialization.deserializeBodyArguments(body))
     }
 
-    val result = method.call(arguments.mapValues {
+    val givenHeaders = mutableMapOf<String, List<String>>()
+
+    var result = method.call(arguments.mapValues {
         if (it.key in method.serverDefaultParameters)
             ServerDefault { it.value }
         else
             it.value
     }, wantedScopes)
 
+    if (method.outerWithHeaders) {
+        result as WithHeaders<Any?>
+        givenHeaders addHeadersFrom result.headers
+        result = result.value
+    }
+
     val exception = if (method.propagateServerExceptions && result is KrosstalkResult.ServerException) {
         result.throwable
     } else
         null
 
+    fun Any?.unwrapHeaders(): Any? =
+        if (method.innerWithHeaders) {
+            this as WithHeaders<Any?>
+            givenHeaders addHeadersFrom this.headers
+            this.value
+        } else {
+            this
+        }
+
     if (method.useExplicitResult) {
         when (val kr = result as KrosstalkResult<*>) {
             is KrosstalkResult.Success -> {
-                responder(200, contentType, method.getReturnBody(kr.value))
+                val responseBody = method.getReturnBody(kr.value.unwrapHeaders())
+                responder(200, contentType, givenHeaders, responseBody)
             }
             is KrosstalkResult.ServerException -> {
                 //TODO something in plaintext for non-krosstalk servers?  JSON serialize the exception maybe.  I can just use Kotlinx here too, rather than getting the serializer
-                responder(500, "application/octet-stream", serializeServerException(kr))
+                responder(500, "application/octet-stream", emptyMap(), serializeServerException(kr))
             }
             is KrosstalkResult.HttpError -> {
-                responder(kr.statusCode, "text/plain; charset=utf-8", (kr.message ?: "").encodeToByteArray())
+                responder(kr.statusCode, "text/plain; charset=utf-8", emptyMap(), (kr.message ?: "").encodeToByteArray())
             }
         }
     } else {
-        responder(200, contentType, method.getReturnBody(result))
+        val responseBody = method.getReturnBody(result.unwrapHeaders())
+        responder(200, contentType, givenHeaders, responseBody)
     }
 
     if (exception != null) {

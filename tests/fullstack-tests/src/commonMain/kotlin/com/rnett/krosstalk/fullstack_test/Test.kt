@@ -5,12 +5,14 @@ import com.rnett.krosstalk.KrosstalkResult
 import com.rnett.krosstalk.Scope
 import com.rnett.krosstalk.ScopeInstance
 import com.rnett.krosstalk.ServerDefault
+import com.rnett.krosstalk.WithHeaders
 import com.rnett.krosstalk.annotations.EmptyBody
 import com.rnett.krosstalk.annotations.ExplicitResult
 import com.rnett.krosstalk.annotations.KrosstalkEndpoint
 import com.rnett.krosstalk.annotations.KrosstalkMethod
 import com.rnett.krosstalk.annotations.Optional
 import com.rnett.krosstalk.annotations.PassObjects
+import com.rnett.krosstalk.annotations.RespondWithHeaders
 import com.rnett.krosstalk.krosstalkPrefix
 import com.rnett.krosstalk.methodName
 import com.rnett.krosstalk.serialization.KotlinxBinarySerializationHandler
@@ -148,7 +150,22 @@ expect suspend fun withPassedObjectReturn(s: String): SerializableObject
 @PassObjects
 expect suspend fun withDifferentPassing(arg: SerializableObject): ExpectObject
 
-//TODO don't pass objects for return type
+@RespondWithHeaders
+@KrosstalkMethod(MyKrosstalk::class)
+expect suspend fun withHeadersBasic(n: Int): WithHeaders<String>
 
+@RespondWithHeaders
+@ExplicitResult
+@KrosstalkMethod(MyKrosstalk::class)
+expect suspend fun withHeadersOutsideResult(n: Int): WithHeaders<KrosstalkResult<String>>
 
+@RespondWithHeaders
+@ExplicitResult
+@KrosstalkMethod(MyKrosstalk::class)
+expect suspend fun withHeadersInsideResult(n: Int): KrosstalkResult<WithHeaders<String>>
 
+@RespondWithHeaders
+@KrosstalkMethod(MyKrosstalk::class)
+expect suspend fun withHeadersReturnObject(n: Int): WithHeaders<ExpectObject>
+
+//TODO check comments, I think we're good though

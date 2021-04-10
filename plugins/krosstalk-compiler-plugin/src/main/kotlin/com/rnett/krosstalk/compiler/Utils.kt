@@ -10,9 +10,10 @@ import org.jetbrains.kotlin.ir.expressions.IrConstructorCall
 import org.jetbrains.kotlin.ir.expressions.IrExpression
 import org.jetbrains.kotlin.ir.expressions.IrTry
 import org.jetbrains.kotlin.ir.expressions.impl.IrTryImpl
-import org.jetbrains.kotlin.ir.symbols.IrVariableSymbol
+import org.jetbrains.kotlin.ir.types.IrSimpleType
 import org.jetbrains.kotlin.ir.types.IrType
 import org.jetbrains.kotlin.ir.types.isSubtypeOf
+import org.jetbrains.kotlin.ir.types.typeOrNull
 import org.jetbrains.kotlin.ir.util.fqNameWhenAvailable
 import org.jetbrains.kotlin.ir.util.parentAsClass
 import org.jetbrains.kotlin.name.FqName
@@ -20,6 +21,11 @@ import org.jetbrains.kotlin.name.Name
 import kotlin.contracts.ExperimentalContracts
 import kotlin.contracts.InvocationKind
 import kotlin.contracts.contract
+
+fun IrType.allTypes(): List<IrType> {
+    if (this !is IrSimpleType) return emptyList()
+    return listOf(this) + arguments.flatMap { it.typeOrNull?.allTypes().orEmpty() }
+}
 
 fun Iterable<IrConstructorCall>.getAnnotation(name: FqName): IrConstructorCall? =
     firstOrNull { it.symbol.owner.parentAsClass.fqNameWhenAvailable == name }

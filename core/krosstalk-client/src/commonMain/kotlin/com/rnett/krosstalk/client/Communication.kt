@@ -1,5 +1,6 @@
 package com.rnett.krosstalk.client
 
+import com.rnett.krosstalk.Headers
 import com.rnett.krosstalk.InternalKrosstalkApi
 import com.rnett.krosstalk.Krosstalk
 import com.rnett.krosstalk.KrosstalkException
@@ -7,6 +8,7 @@ import com.rnett.krosstalk.KrosstalkPluginApi
 import com.rnett.krosstalk.KrosstalkResult
 import com.rnett.krosstalk.MethodDefinition
 import com.rnett.krosstalk.ServerDefault
+import com.rnett.krosstalk.WithHeaders
 import com.rnett.krosstalk.isNone
 
 
@@ -14,7 +16,7 @@ import com.rnett.krosstalk.isNone
  * The response to a Krosstalk request.
  */
 @KrosstalkPluginApi
-class InternalKrosstalkResponse(val statusCode: Int, val data: ByteArray, stringData: () -> String?) {
+class InternalKrosstalkResponse(val statusCode: Int, val headers: Headers, val data: ByteArray, stringData: () -> String?) {
     val stringData by lazy {
         if (data.isEmpty())
             null
@@ -107,6 +109,9 @@ internal fun <T> MethodDefinition<T>.getReturnValue(data: ByteArray): T = if (re
     serialization.deserializeReturnValue(data) as T
 }
 
+@PublishedApi
+internal fun Any?.withHeadersIf(withHeaders: Boolean, headers: Headers) = if (withHeaders) WithHeaders(this, headers) else this
+
 @OptIn(InternalKrosstalkApi::class, KrosstalkPluginApi::class, ExperimentalStdlibApi::class)
 @Suppress("unused")
 @PublishedApi
@@ -153,23 +158,23 @@ internal suspend inline fun <T, K, reified C : ClientScope<*>> K.call(
 
     return if (method.useExplicitResult) {
         if (result.isSuccess()) {
-            KrosstalkResult.Success(method.getReturnValue(result.data)) as T
+            KrosstalkResult.Success(method.getReturnValue(result.data).withHeadersIf(method.innerWithHeaders, result.headers))
         } else {
             if (result.statusCode == 500) {
                 try {
-                    deserializeServerException(result.data) as T
+                    deserializeServerException(result.data)
                 } catch (t: Throwable) {
-                    KrosstalkResult.HttpError(result.statusCode, client.getStatusCodeName(result.statusCode), result.stringData) as T
+                    KrosstalkResult.HttpError(result.statusCode, client.getStatusCodeName(result.statusCode), result.stringData)
                 }
             } else {
-                KrosstalkResult.HttpError(result.statusCode, client.getStatusCodeName(result.statusCode), result.stringData) as T
+                KrosstalkResult.HttpError(result.statusCode, client.getStatusCodeName(result.statusCode), result.stringData)
             }
         }
     } else {
         if (result.isSuccess()) {
-            method.getReturnValue(result.data) as T
+            method.getReturnValue(result.data).withHeadersIf(method.innerWithHeaders, result.headers)
         } else {
             throw CallFailureException(methodName, result.statusCode, client.getStatusCodeName(result.statusCode), result.stringData)
         }
-    }
+    }.withHeadersIf(method.outerWithHeaders, result.headers) as T
 }

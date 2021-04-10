@@ -5,6 +5,7 @@ import com.rnett.krosstalk.KrosstalkResult
 import com.rnett.krosstalk.Scope
 import com.rnett.krosstalk.ScopeInstance
 import com.rnett.krosstalk.ServerDefault
+import com.rnett.krosstalk.WithHeaders
 import com.rnett.krosstalk.client.KrosstalkClient
 import com.rnett.krosstalk.client.krosstalkCall
 import com.rnett.krosstalk.ktor.client.KtorClient
@@ -40,7 +41,7 @@ actual object MyKrosstalk : Krosstalk(), KrosstalkClient<KtorClientScope<*>> {
         "http://localhost:8080",
         baseClient = HttpClient().config {
             Logging {
-                level = LogLevel.BODY
+                level = LogLevel.ALL
             }
         },
         baseRequest = {
@@ -121,3 +122,11 @@ actual suspend fun withObjectReturn(s: String): ExpectObject = krosstalkCall()
 actual suspend fun withPassedObjectReturn(s: String): SerializableObject = krosstalkCall()
 
 actual suspend fun withDifferentPassing(arg: SerializableObject): ExpectObject = krosstalkCall()
+
+actual suspend fun withHeadersBasic(n: Int): WithHeaders<String> = krosstalkCall()
+
+actual suspend fun withHeadersOutsideResult(n: Int): WithHeaders<KrosstalkResult<String>> = krosstalkCall()
+
+actual suspend fun withHeadersInsideResult(n: Int): KrosstalkResult<WithHeaders<String>> = krosstalkCall()
+
+actual suspend fun withHeadersReturnObject(n: Int): WithHeaders<ExpectObject> = krosstalkCall()

@@ -80,6 +80,10 @@ object Krosstalk : RootPackage(krosstalkPackage) {
         }
     }
 
+    object WithHeaders : ClassRef() {
+        val new by primaryConstructor()
+    }
+
     object ServerDefault : ClassRef() {
     }
 

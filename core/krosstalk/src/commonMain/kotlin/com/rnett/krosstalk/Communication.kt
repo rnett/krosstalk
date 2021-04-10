@@ -1,5 +1,15 @@
 package com.rnett.krosstalk
 
+//TODO make own class so I can use proper merge w/ plus, etc.  Case-insensitivity, too
+typealias Headers = Map<String, List<String>>
+typealias MutableHeaders = MutableMap<String, List<String>>
+
+@OptIn(ExperimentalStdlibApi::class)
+infix fun MutableHeaders.addHeadersFrom(other: Headers) {
+    other.forEach { (k, v) ->
+        this[k] = this[k].orEmpty() + v
+    }
+}
 
 @Suppress("unused")
 @OptIn(InternalKrosstalkApi::class)

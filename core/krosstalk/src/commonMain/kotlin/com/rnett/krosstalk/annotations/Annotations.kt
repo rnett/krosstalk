@@ -2,6 +2,7 @@ package com.rnett.krosstalk.annotations
 
 import com.rnett.krosstalk.Krosstalk
 import com.rnett.krosstalk.KrosstalkResult
+import com.rnett.krosstalk.WithHeaders
 import com.rnett.krosstalk.defaultEndpoint
 import com.rnett.krosstalk.defaultEndpointMethod
 import com.rnett.krosstalk.exception
@@ -103,6 +104,7 @@ annotation class PassObjects(val returnToo: Boolean = false)
 //TODO option to only do http errors, or only do exceptions (based on return type?) (should use separate result classes or sealed interfaces) (http error one should be usable wth CatchAsHttpError)
 //TODO post 1.5: a version that uses kotlin.Result.  Would have to limit to http errors, can't serialize exceptions (test, can I have a custom serializable annotation?)
 
+//TODO revisit propogate vs print, interaction with CatchAsHttpError
 /**
  * Return a [KrosstalkResult], wrapping server exceptions or http errors.  Method return type must be [KrosstalkResult].
  * Server side function should return a [KrosstalkResult.Success].
@@ -132,6 +134,10 @@ annotation class ExplicitResult(
     val printExceptionStackTraces: Boolean = true,
 )
 
+//TODO I want to be able to use this on non-krosstalk methods that return KrosstalkResult.  I'd like a decorator to do it as well.
+// Works better w/ things like WithHeaders
+// ideally I'd use this and get rid of the compiler plugin wrapping.  Something like runCatching
+//TODO fine grained propagation settings
 /**
  * Only usable with [@ExplicitResult][ExplicitResult].  Converts any caught exceptions of type [exceptionClass] (or a subtype) to a
  * [KrosstalkResult.HttpError] response, with the given [responseCode] and [message].
@@ -153,6 +159,24 @@ annotation class CatchAsHttpError(
     val responseCode: Int,
     val message: String = exceptionMessage,
 )
+
+/**
+ * Allows the use of [WithHeaders] in the return type.
+ * Must be the top level type, unless used with [KrosstalkResult], in which case it may be on the second level.
+ *
+ * Headers returned in the [WithHeaders] object on the server side will be added to the HTTP response.
+ * On the client side, the returned [WithHeaders] object will have the headers from the HTTP response, (usually) including those set
+ * in the server's returned [WithHeaders].  Note that most header sending implementations use case-insensitive names, so if you
+ * return `{"My-Header": "Value"}` you may get `"my-header": "Value"` on the client.
+ *
+ * If your return type is `WithHeaders<KrosstalkResult<>>`, the response headers you return in the server function will only be set on success.
+ * However, the return value on the client will still have the headers of any error responses.
+ */
+@Target(AnnotationTarget.FUNCTION)
+@Retention(AnnotationRetention.BINARY)
+@MustBeDocumented
+@Repeatable
+annotation class RespondWithHeaders()
 
 /**
  * Must be used on a nullable parameter (for now).  If that parameter is null, it will not be sent.

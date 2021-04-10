@@ -5,6 +5,7 @@ import com.rnett.krosstalk.KrosstalkResult
 import com.rnett.krosstalk.Scope
 import com.rnett.krosstalk.ScopeInstance
 import com.rnett.krosstalk.ServerDefault
+import com.rnett.krosstalk.WithHeaders
 import com.rnett.krosstalk.annotations.CatchAsHttpError
 import com.rnett.krosstalk.ktor.server.KtorServer
 import com.rnett.krosstalk.ktor.server.KtorServerBasicAuth
@@ -153,3 +154,25 @@ actual suspend fun withObjectReturn(s: String): ExpectObject = ExpectObject
 actual suspend fun withPassedObjectReturn(s: String): SerializableObject = SerializableObject
 
 actual suspend fun withDifferentPassing(arg: SerializableObject): ExpectObject = ExpectObject
+
+actual suspend fun withHeadersBasic(n: Int): WithHeaders<String> = WithHeaders(n.toString(), mapOf("test" to listOf("value")))
+
+@CatchAsHttpError(MyException::class, 422)
+actual suspend fun withHeadersOutsideResult(n: Int): WithHeaders<KrosstalkResult<String>> = WithHeaders(run {
+    if (n < 0)
+        throw MyException("Can't have n < 0")
+
+    KrosstalkResult(n.toString())
+}, mapOf("test" to listOf("value")))
+
+@CatchAsHttpError(MyException::class, 422)
+actual suspend fun withHeadersInsideResult(n: Int): KrosstalkResult<WithHeaders<String>> {
+    if (n < 0)
+        throw MyException("Can't have n < 0")
+
+    return KrosstalkResult(WithHeaders(n.toString(), mapOf("test" to listOf("value"))))
+}
+
+actual suspend fun withHeadersReturnObject(n: Int): WithHeaders<ExpectObject> {
+    return WithHeaders(ExpectObject, mapOf("value" to listOf(n.toString())))
+}
