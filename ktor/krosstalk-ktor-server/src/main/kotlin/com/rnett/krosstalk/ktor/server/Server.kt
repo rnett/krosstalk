@@ -28,6 +28,7 @@ import io.ktor.routing.RoutingResolveContext
 import io.ktor.routing.application
 import io.ktor.util.AttributeKey
 import io.ktor.util.toByteArray
+import io.ktor.util.toMap
 
 /**
  * Applies [remaining] scopes in reverse order, recursively, with [final] inside all of them.
@@ -124,7 +125,8 @@ object KtorServer : ServerHandler<KtorServerScope<*>> {
                                     scope.getData(call)?.let { scopes[scope as KtorServerScope<Any?>] = it }
                                 }
 
-                                krosstalk.handle(method, data, body, scopes.toImmutable(), {
+                                //TODO get the server url, see todos in KrosstalkRouteSelector
+                                krosstalk.handle("", method, call.request.headers.toMap(), data, body, scopes.toImmutable(), {
                                     application.log.error("Server exception during ${method.name}, passed on to client", it)
                                 }) { status: Int, contentType: String?, headers: Headers, bytes: ByteArray ->
 
@@ -167,6 +169,8 @@ class KrosstalkRouteSelector(val method: MethodDefinition<*>) : RouteSelector(2.
                 return RouteSelectorEvaluation.Failed
             }
 
+            //TODO allow prefixes, don't resolve on the whole url
+            //TODO then set the prefix somewhere for use as the server url
             val data = method.endpoint.resolve(call.request.uri) ?: return RouteSelectorEvaluation.Failed
             call.attributes.put(KrosstalkMethodAttribute, data)
             return RouteSelectorEvaluation(true, 2.0, segmentIncrement = segments.size - segmentIndex)

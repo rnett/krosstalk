@@ -1,5 +1,6 @@
 package com.rnett.krosstalk.fullstack_test
 
+import com.rnett.krosstalk.Headers
 import com.rnett.krosstalk.Krosstalk
 import com.rnett.krosstalk.KrosstalkResult
 import com.rnett.krosstalk.Scope
@@ -12,6 +13,7 @@ import com.rnett.krosstalk.annotations.KrosstalkEndpoint
 import com.rnett.krosstalk.annotations.KrosstalkMethod
 import com.rnett.krosstalk.annotations.Optional
 import com.rnett.krosstalk.annotations.PassObjects
+import com.rnett.krosstalk.annotations.RequestHeaders
 import com.rnett.krosstalk.annotations.RespondWithHeaders
 import com.rnett.krosstalk.krosstalkPrefix
 import com.rnett.krosstalk.methodName
@@ -168,4 +170,7 @@ expect suspend fun withHeadersInsideResult(n: Int): KrosstalkResult<WithHeaders<
 @KrosstalkMethod(MyKrosstalk::class)
 expect suspend fun withHeadersReturnObject(n: Int): WithHeaders<ExpectObject>
 
-//TODO check comments, I think we're good though
+//TODO need to test serverurl, but can't do that here
+
+@KrosstalkMethod(MyKrosstalk::class)
+expect suspend fun withRequestHeaders(n: Int, @RequestHeaders h: Headers): Int

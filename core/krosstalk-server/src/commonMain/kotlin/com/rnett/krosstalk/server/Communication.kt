@@ -25,7 +25,7 @@ interface ServerHandler<S : ServerScope<*>> {
     fun getStatusCodeName(httpStatusCode: Int): String?
 }
 
-typealias Responder = suspend (statusCode: Int, contentType: String?, headers: Headers, data: ByteArray) -> Unit
+typealias Responder = suspend (statusCode: Int, contentType: String?, responseHeaders: Headers, data: ByteArray) -> Unit
 
 @InternalKrosstalkApi
 fun MethodDefinition<*>.getReturnBody(data: Any?): ByteArray = if (returnObject != null)
@@ -36,7 +36,9 @@ else
 /**
  * Helper method for server side to handle a method [methodName] with the body data [body].
  *
+ * @param serverUrl the base url of the server, **not including the method's endpoint**.
  * @param method method to call
+ * @param requestHeaders the headers of the request
  * @param urlArguments the arguments gotten from the URL (probably using the endpoint's resolver)
  * @param body the body
  * @param scopes the scopes gotten from the request.  Missing required scopes will be handled here.
@@ -46,7 +48,9 @@ else
 @OptIn(InternalKrosstalkApi::class, ExperimentalStdlibApi::class)
 @KrosstalkPluginApi
 suspend fun <K> K.handle(
+    serverUrl: String,
     method: MethodDefinition<*>,
+    requestHeaders: Headers,
     urlArguments: Map<String, String>,
     body: ByteArray,
     scopes: WantedScopes,
@@ -69,6 +73,12 @@ suspend fun <K> K.handle(
 
         if (body.isNotEmpty())
             putAll(method.serialization.deserializeBodyArguments(body))
+        println("Request headers param: ${method.requestHeadersParam}")
+        if (method.requestHeadersParam != null)
+            put(method.requestHeadersParam!!, requestHeaders)
+
+        if (method.serverUrlParam != null)
+            put(method.serverUrlParam!!, serverUrl)
     }
 
     val givenHeaders = mutableMapOf<String, List<String>>()

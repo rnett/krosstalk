@@ -1,5 +1,6 @@
 package com.rnett.krosstalk.fullstack_test
 
+import com.rnett.krosstalk.Headers
 import com.rnett.krosstalk.Krosstalk
 import com.rnett.krosstalk.KrosstalkResult
 import com.rnett.krosstalk.Scope
@@ -175,4 +176,8 @@ actual suspend fun withHeadersInsideResult(n: Int): KrosstalkResult<WithHeaders<
 
 actual suspend fun withHeadersReturnObject(n: Int): WithHeaders<ExpectObject> {
     return WithHeaders(ExpectObject, mapOf("value" to listOf(n.toString())))
+}
+
+actual suspend fun withRequestHeaders(n: Int, h: Headers): Int {
+    return n * h["value"]!!.first().toInt()
 }

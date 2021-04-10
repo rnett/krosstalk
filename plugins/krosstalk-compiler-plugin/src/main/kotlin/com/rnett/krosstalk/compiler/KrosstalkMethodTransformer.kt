@@ -64,6 +64,7 @@ import org.jetbrains.kotlin.ir.types.makeNotNull
 import org.jetbrains.kotlin.ir.types.makeNullable
 import org.jetbrains.kotlin.ir.types.typeWith
 import org.jetbrains.kotlin.ir.util.*
+import org.jetbrains.kotlin.name.FqName
 import org.jetbrains.kotlin.name.Name
 import org.jetbrains.kotlin.resolve.multiplatform.findExpects
 import kotlin.collections.set
@@ -77,6 +78,8 @@ class KrosstalkMethodTransformer(
 ) : IrTransformer(context, messageCollector) {
 
     val stringType = context.irBuiltIns.stringType
+
+    val Headers = context.referenceTypeAlias(FqName("com.rnett.krosstalk.Headers"))!!.owner.expandedType
 
     val addedInitalizers = mutableMapOf<IrClassSymbol, IrAnonymousInitializer>()
     val seenNames = mutableMapOf<IrClassSymbol, MutableSet<String>>()
@@ -286,6 +289,18 @@ class KrosstalkMethodTransformer(
             val isOptionalParam by lazy { annotations.Optional != null }
             val isServerDefault by lazy { declaration.type.isClassifierOf(Krosstalk.ServerDefault) }
 
+            val isRequestHeaders by lazy { annotations.RequestHeaders != null }
+            val isServerURL by lazy { annotations.ServerURL != null }
+
+            /**
+             * Is this a parameter that will be specially handled in call/handle methods?
+             *
+             * If so, it will still be extracted from the argument map server-side (in the call lambda),
+             * and added to the argument map client side, but will not be registered in MethodTypes and thus
+             * should not be passed via serialization.
+             */
+            val isSpecialParameter by lazy { isRequestHeaders || isServerURL }
+
             val realName get() = declaration.name.asString()
             val krosstalkName: String by lazy {
                 when {
@@ -334,6 +349,18 @@ class KrosstalkMethodTransformer(
                     reportError("Can't use @Optional on ServerDefault parameter.")
                 }
 
+                if (isServerURL && isRequestHeaders) {
+                    reportError("Can't have a parameter be both @ServerURL and @RequestHeaders")
+                }
+
+                if (isOptionalParam && isServerURL) {
+                    reportError("@ServerURL parameters can't be @Optional")
+                }
+
+                if (isOptionalParam && isRequestHeaders) {
+                    reportError("@RequestHeaders parameters can't be @Optional")
+                }
+
                 if (expectDeclaration != null) {
                     declaration.annotations.forEach {
                         val annotationClass = it.symbol.owner.constructedClass
@@ -377,6 +404,14 @@ class KrosstalkMethodTransformer(
                     reportError("@Optional parameters must be nullable.")
                 }
 
+                if (isServerURL && !(dataType == context.irBuiltIns.stringType || dataType == context.irBuiltIns.stringType.makeNullable())) {
+                    reportError("Type of @ServerURL parameter must be String or String?")
+                }
+
+                if (isRequestHeaders && dataType != Headers) {
+                    reportError("Type of @RequestHeaders parameter must be Headers (com.rnett.krosstalk.Headers)")
+                }
+
                 checked = true
             }
 
@@ -409,6 +444,14 @@ class KrosstalkMethodTransformer(
             scopes.filterKeys { it.isOptionalScope }
         }
 
+        val serverUrlParameter by lazy {
+            parameters.firstOrNull { it.isServerURL }
+        }
+
+        val requestHeadersParameter by lazy {
+            parameters.firstOrNull { it.isRequestHeaders }
+        }
+
         val nonScopeValueParameters by lazy {
             valueParameters.filter { !it.isScope }
         }
@@ -423,9 +466,9 @@ class KrosstalkMethodTransformer(
 
         val allNonScopeParameters by lazy {
             nonScopeValueParameters + listOfNotNull(
-                declaration.extensionReceiverParameter,
-                declaration.dispatchReceiverParameter
-            )
+                declaration.extensionReceiverParameter?.param,
+                declaration.dispatchReceiverParameter?.param
+            ).filterNot { it.isScope }
         }
 
         val objectParameters by lazy {
@@ -507,6 +550,14 @@ class KrosstalkMethodTransformer(
                     krosstalkClass.declaration)
             }
 
+            if (parameters.count { it.annotations.ServerURL != null } > 1) {
+                messageCollector.reportError("Can only have one parameter marked with @ServerURL", declaration)
+            }
+
+            if (parameters.count { it.annotations.RequestHeaders != null } > 1) {
+                messageCollector.reportError("Can only have one parameter marked with @RequestHeaders", declaration)
+            }
+
             parameters.forEach { it.check() }
 
             (requiredScopes.toList() + optionalScopes.toList())
@@ -565,6 +616,14 @@ class KrosstalkMethodTransformer(
                             "Used parameter \"$it\" in endpoint template, but method does not have a non-scope value parameter named \"$it\"",
                             declaration
                         )
+                    }
+                }
+                neededParams.mapNotNull { n -> parameters.firstOrNull { it.krosstalkName == n } }.forEach {
+                    if (it.isServerURL) {
+                        messageCollector.reportError("Can't use @ServerURL parameter in endpoint, it will be prepended automatically", declaration)
+                    }
+                    if (it.isRequestHeaders) {
+                        messageCollector.reportError("Can't use @RequestHeaders parameter in endpoint", declaration)
                     }
                 }
             }
@@ -894,7 +953,7 @@ class KrosstalkMethodTransformer(
                         addValueArgument(
                             irCall(Krosstalk.Serialization.MethodTypes().owner.primaryConstructor!!).apply {
                                 val parameterMap: MutableMap<IrExpression, IrExpression> =
-                                    nonScopeValueParameters.filter { it !in objectParameters }
+                                    nonScopeValueParameters.filter { it !in objectParameters && !it.isSpecialParameter }
                                         .associate {
                                             it.krosstalkName.asConst() to stdlib.reflect.typeOf(it.dataType)
                                         }.toMutableMap()
@@ -983,6 +1042,12 @@ class KrosstalkMethodTransformer(
                         // innerWithHeaders
                         addValueArgument(isInnerWithHeaders.asConst())
 
+                        // requestHeadersParam
+                        addValueArgument(requestHeadersParameter?.krosstalkName?.asConst() ?: irNull())
+
+                        // serverUrlParam
+                        addValueArgument(serverUrlParameter?.krosstalkName?.asConst() ?: irNull())
+
                         // call function
                         // signature is (Map<String, *>, ImmutableWantedScopes)
                         val lambda = buildCallLambda()
@@ -1064,15 +1129,11 @@ class KrosstalkMethodTransformer(
                 })
             }
 
-            messageCollector.reportInfo("New body for ${declaration.name}:\n" + declaration.dump(true), null)
-            messageCollector.reportInfo("New body for ${declaration.name}:\n" + declaration.dumpKotlinLike(), null)
-
         }
     }
 
     @OptIn(ObsoleteDescriptorBasedAPI::class)
     override fun visitSimpleFunction(declaration: IrSimpleFunction): IrStatement {
-//        log("Function", declaration.dump(true))
 
         if (declaration.isExpect) {
             if (declaration.annotations.hasAnnotation(Krosstalk.Annotations.KrosstalkMethod.fqName))

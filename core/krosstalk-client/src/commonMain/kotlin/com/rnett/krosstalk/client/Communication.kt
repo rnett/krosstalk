@@ -10,6 +10,7 @@ import com.rnett.krosstalk.MethodDefinition
 import com.rnett.krosstalk.ServerDefault
 import com.rnett.krosstalk.WithHeaders
 import com.rnett.krosstalk.isNone
+import kotlin.reflect.KClass
 
 
 /**
@@ -35,30 +36,21 @@ class InternalKrosstalkResponse(val statusCode: Int, val headers: Headers, val d
 interface ClientHandler<C : ClientScope<*>> {
 
     /**
-     * The url of the server to send requests to.
-     */
-    val serverUrl: String
-
-
-    /**
-     * Helper function to concatenate the server url and the endpoint
-     */
-    fun requestUrl(endpoint: String) = "${serverUrl.trimEnd('/')}/${endpoint.trimStart('/')}"
-
-    /**
      * Send a krosstalk request to the server.
-     * Should generally make a [httpMethod] request to `$serverUrl/$endpoint` (which can be gotten using [requestUrl]), but can change this if necessary.
      *
-     * @param endpoint The endpoint to send it to.
+     * @param url The endpoint to send it to.
      * @param httpMethod The HTTP method (i.e. GET, POST) to use.
+     * @param contentType the content type of the body
+     * @param additionalHeaders additional headers to set on the request
      * @param body The body to send, or null if a body shouldn't be sent.
      * @param scopes The scopes to apply to the request.
      * @return The result of the request.
      */
     suspend fun sendKrosstalkRequest(
-        endpoint: String,
+        url: String,
         httpMethod: String,
         contentType: String,
+        additionalHeaders: Headers,
         body: ByteArray?,
         scopes: List<AppliedClientScope<C, *>>,
     ): InternalKrosstalkResponse
@@ -101,6 +93,11 @@ open class CallFailureException @InternalKrosstalkApi constructor(
     },
 ) : KrosstalkException(message)
 
+@OptIn(InternalKrosstalkApi::class)
+class WrongHeadersTypeException @InternalKrosstalkApi constructor(val methodName: String, val type: KClass<*>) : KrosstalkException(
+    "Invalid type for request headers param: Map<String, List<String>> is required, got $type."
+)
+
 @InternalKrosstalkApi
 @PublishedApi
 internal fun <T> MethodDefinition<T>.getReturnValue(data: ByteArray): T = if (returnObject != null) {
@@ -123,8 +120,16 @@ internal suspend inline fun <T, K, reified C : ClientScope<*>> K.call(
 
     val method = requiredMethod(methodName)
 
+    val requestHeaders = if (method.requestHeadersParam != null) {
+        rawArguments.getValue(method.requestHeadersParam!!)!!.let { it as? Headers ?: throw WrongHeadersTypeException(methodName, it::class) }
+    } else null
+
+    val serverUrl = method.serverUrlParam?.let { rawArguments.getValue(it) as String? } ?: this.serverUrl
+
     val arguments = rawArguments.filterValues {
         !(it is ServerDefault<*> && it.isNone())
+    }.filterKeys {
+        it != method.requestHeadersParam && it != method.serverUrlParam
     }.mapValues {
         if (it.value is ServerDefault<*>)
             (it.value as ServerDefault<*>).value
@@ -132,7 +137,7 @@ internal suspend inline fun <T, K, reified C : ClientScope<*>> K.call(
             it.value
     }
 
-    val (url, usedInUrl) = method.endpoint.fillWithArgs(
+    val (endpoint, usedInUrl) = method.endpoint.fillWithArgs(
         methodName,
         rawArguments.keys,
         arguments.filter { it.value != null }.keys
@@ -149,9 +154,10 @@ internal suspend inline fun <T, K, reified C : ClientScope<*>> K.call(
     val serializedBody = method.serialization.serializeBodyArguments(bodyArguments)
 
     val result = client.sendKrosstalkRequest(
-        url,
+        serverUrl.trimEnd('/') + "/" + endpoint.trimStart('/'),
         method.httpMethod,
         method.contentType ?: serialization.contentType,
+        requestHeaders ?: emptyMap(),
         if (bodyArguments.isEmpty()) null else serializedBody,
         scopes
     )

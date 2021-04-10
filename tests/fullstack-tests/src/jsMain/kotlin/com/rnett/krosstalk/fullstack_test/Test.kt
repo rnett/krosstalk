@@ -1,5 +1,6 @@
 package com.rnett.krosstalk.fullstack_test
 
+import com.rnett.krosstalk.Headers
 import com.rnett.krosstalk.Krosstalk
 import com.rnett.krosstalk.KrosstalkResult
 import com.rnett.krosstalk.Scope
@@ -37,8 +38,9 @@ internal var lastContentType: ContentType? = null
 
 actual object MyKrosstalk : Krosstalk(), KrosstalkClient<KtorClientScope<*>> {
     actual override val serialization = KotlinxBinarySerializationHandler(Cbor { })
+    override val serverUrl: String = "http://localhost:8080"
+
     override val client = KtorClient(
-        "http://localhost:8080",
         baseClient = HttpClient().config {
             Logging {
                 level = LogLevel.ALL
@@ -130,3 +132,5 @@ actual suspend fun withHeadersOutsideResult(n: Int): WithHeaders<KrosstalkResult
 actual suspend fun withHeadersInsideResult(n: Int): KrosstalkResult<WithHeaders<String>> = krosstalkCall()
 
 actual suspend fun withHeadersReturnObject(n: Int): WithHeaders<ExpectObject> = krosstalkCall()
+
+actual suspend fun withRequestHeaders(n: Int, h: Headers): Int = krosstalkCall()

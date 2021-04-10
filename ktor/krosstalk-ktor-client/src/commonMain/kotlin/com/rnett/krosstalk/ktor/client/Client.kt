@@ -47,7 +47,6 @@ interface KtorKrosstalkClient : KrosstalkClient<KtorClientScope<*>> {
     override val client: KtorClient
 }
 
-//TODO baseClient/configureRequest as parameters?
 /**
  * A Krosstalk client using a Ktor HttpClient to make requests.
  *
@@ -58,7 +57,6 @@ interface KtorKrosstalkClient : KrosstalkClient<KtorClientScope<*>> {
  */
 @OptIn(KrosstalkPluginApi::class)
 class KtorClient(
-    override val serverUrl: String,
     val baseClient: HttpClient = HttpClient(),
     val baseRequest: HttpRequestBuilder.() -> Unit,
 ) : ClientHandler<KtorClientScope<*>> {
@@ -70,9 +68,10 @@ class KtorClient(
     }
 
     override suspend fun sendKrosstalkRequest(
-        endpoint: String,
+        url: String,
         httpMethod: String,
         contentType: String,
+        additionalHeaders: com.rnett.krosstalk.Headers,
         body: ByteArray?,
         scopes: List<AppliedClientScope<KtorClientScope<*>, *>>,
     ): InternalKrosstalkResponse {
@@ -81,8 +80,8 @@ class KtorClient(
             scopes.forEach {
                 it.configureClient(this)
             }
-        }.use {
-            it.request<HttpResponse>(urlString = requestUrl(endpoint)) {
+        }.use { client ->
+            client.request<HttpResponse>(urlString = url) {
                 if (body != null)
                     this.body = body
                 this.method = HttpMethod(httpMethod.toUpperCase())
@@ -93,6 +92,11 @@ class KtorClient(
                 // configure scopes
                 scopes.forEach {
                     it.configureRequest(this)
+                }
+
+                // add any set headers
+                additionalHeaders.forEach { (key, list) ->
+                    this.headers.appendAll(key, list)
                 }
             }
         }

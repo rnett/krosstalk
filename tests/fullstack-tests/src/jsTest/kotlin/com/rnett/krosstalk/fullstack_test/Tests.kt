@@ -238,4 +238,9 @@ class Tests {
         assertEquals(ExpectObject, result.value)
         assertEquals("10", result.headers["value"]!![0])
     }
+
+    @Test
+    fun testRequestHeaders() = GlobalScope.promise {
+        assertEquals(4, withRequestHeaders(2, mapOf("value" to listOf("2"))))
+    }
 }

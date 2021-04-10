@@ -1,5 +1,6 @@
 package com.rnett.krosstalk.annotations
 
+import com.rnett.krosstalk.Headers
 import com.rnett.krosstalk.Krosstalk
 import com.rnett.krosstalk.KrosstalkResult
 import com.rnett.krosstalk.WithHeaders
@@ -176,6 +177,7 @@ annotation class CatchAsHttpError(
 @Retention(AnnotationRetention.BINARY)
 @MustBeDocumented
 @Repeatable
+@TopLevelOnly
 annotation class RespondWithHeaders()
 
 /**
@@ -193,3 +195,26 @@ annotation class RespondWithHeaders()
 @MustBeDocumented
 @TopLevelOnly
 annotation class Optional()
+
+//TODO see if I can replace this with passing the server url to krosstalkCall().  Would need an @Ignore or similar
+/**
+ * Marks a `String` or `String?` parameter as the server url.  This will override the server url set in the krosstalk client if it is non null.
+ */
+@Target(AnnotationTarget.VALUE_PARAMETER)
+@Retention(AnnotationRetention.BINARY)
+@MustBeDocumented
+@TopLevelOnly
+annotation class ServerURL
+
+/**
+ * Marks a [Headers] parameter as the request headers.  The values passed to the client method will be
+ * set as request headers when the request is made.  The value received on the server side is the headers
+ * from the HTTP request.
+ *
+ * These headers will be set after scopes are applied, although most HTTP clients add headers rather than replacing them.
+ */
+@Target(AnnotationTarget.VALUE_PARAMETER)
+@Retention(AnnotationRetention.BINARY)
+@MustBeDocumented
+@TopLevelOnly
+annotation class RequestHeaders

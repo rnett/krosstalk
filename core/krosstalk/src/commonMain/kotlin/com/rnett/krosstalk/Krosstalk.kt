@@ -29,6 +29,8 @@ import com.rnett.krosstalk.server.ImmutableWantedScopes
  * @property returnObject the object to use as the return value, if there is one
  * @property outerWithHeaders whether to wrap the final result (including KrosstalkResult handling) in [WithHeaders]
  * @property innerWithHeaders whether to wrap the initial result (not including KrosstalkResult handling) in [WithHeaders]
+ * @property requestHeadersParam the name of the parameter that contains the request headers, if there is one
+ * @property serverUrlParam the name of the parameter that contains the server url, if there is one
  * @property types the method's parameter and return types
  * @property call a lambda to call the method
  * @property allScopes all scopes used by the method
@@ -50,6 +52,8 @@ data class MethodDefinition<T> @InternalKrosstalkApi constructor(
     val returnObject: Any?,
     val outerWithHeaders: Boolean,
     val innerWithHeaders: Boolean,
+    val requestHeadersParam: String?,
+    val serverUrlParam: String?,
     @InternalKrosstalkApi
     val types: MethodTypes,
     @InternalKrosstalkApi val serialization: MethodSerialization,
@@ -136,6 +140,8 @@ abstract class Krosstalk {
         returnObject: Any?,
         outerWithHeaders: Boolean,
         innerWithHeaders: Boolean,
+        requestHeadersParam: String?,
+        serverUrlParam: String?,
         call: MethodCaller<T>,
     ) {
         //TODO check endpoint exclusivity
@@ -168,6 +174,8 @@ abstract class Krosstalk {
             returnObject,
             outerWithHeaders,
             innerWithHeaders,
+            requestHeadersParam,
+            serverUrlParam,
             types,
             MethodSerialization(
                 serialization.getArgumentSerializers(types),

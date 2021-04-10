@@ -9,4 +9,6 @@ import com.rnett.krosstalk.KrosstalkPluginApi
 interface KrosstalkClient<C : ClientScope<*>> {
     @OptIn(KrosstalkPluginApi::class)
     val client: ClientHandler<C>
+
+    val serverUrl: String
 }
