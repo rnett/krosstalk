@@ -73,7 +73,7 @@ suspend fun <K> K.handle(
 
         if (body.isNotEmpty())
             putAll(method.serialization.deserializeBodyArguments(body))
-        println("Request headers param: ${method.requestHeadersParam}")
+
         if (method.requestHeadersParam != null)
             put(method.requestHeadersParam!!, requestHeaders)
 

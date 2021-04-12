@@ -128,7 +128,6 @@ object KtorServer : ServerHandler<KtorServerScope<*>> {
                                     scope.getData(call)?.let { scopes[scope as KtorServerScope<Any?>] = it }
                                 }
 
-                                //TODO get the server url, see todos in KrosstalkRouteSelector
                                 krosstalk.handle(call.attributes[KrosstalkMethodBaseUrlAttribute],
                                     method,
                                     call.request.headers.toMap(),
@@ -185,8 +184,6 @@ class KrosstalkRouteSelector(val method: MethodDefinition<*>) : RouteSelector(2.
 
             val baseUrl = URLBuilder.createFromCall(call).buildString().substringBefore(localUrl.urlParts.joinToString("/"))
 
-            //TODO allow prefixes, don't resolve on the whole url
-            //TODO then set the prefix somewhere for use as the server url
             val data = method.endpoint.resolve(localUrl) ?: return RouteSelectorEvaluation.Failed
             call.attributes.put(KrosstalkMethodAttribute, data)
             call.attributes.put(KrosstalkMethodBaseUrlAttribute, baseUrl)
