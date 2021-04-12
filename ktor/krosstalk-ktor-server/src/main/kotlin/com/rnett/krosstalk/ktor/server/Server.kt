@@ -4,6 +4,7 @@ import com.rnett.krosstalk.Headers
 import com.rnett.krosstalk.Krosstalk
 import com.rnett.krosstalk.KrosstalkPluginApi
 import com.rnett.krosstalk.MethodDefinition
+import com.rnett.krosstalk.endpoint.UrlRequest
 import com.rnett.krosstalk.ktor.server.KtorServer.define
 import com.rnett.krosstalk.server.KrosstalkServer
 import com.rnett.krosstalk.server.MutableWantedScopes
@@ -17,6 +18,7 @@ import io.ktor.application.log
 import io.ktor.http.BadContentTypeFormatException
 import io.ktor.http.ContentType
 import io.ktor.http.HttpStatusCode
+import io.ktor.http.URLBuilder
 import io.ktor.request.httpMethod
 import io.ktor.request.receiveChannel
 import io.ktor.request.uri
@@ -27,6 +29,7 @@ import io.ktor.routing.RouteSelectorEvaluation
 import io.ktor.routing.RoutingResolveContext
 import io.ktor.routing.application
 import io.ktor.util.AttributeKey
+import io.ktor.util.createFromCall
 import io.ktor.util.toByteArray
 import io.ktor.util.toMap
 
@@ -126,9 +129,15 @@ object KtorServer : ServerHandler<KtorServerScope<*>> {
                                 }
 
                                 //TODO get the server url, see todos in KrosstalkRouteSelector
-                                krosstalk.handle("", method, call.request.headers.toMap(), data, body, scopes.toImmutable(), {
-                                    application.log.error("Server exception during ${method.name}, passed on to client", it)
-                                }) { status: Int, contentType: String?, headers: Headers, bytes: ByteArray ->
+                                krosstalk.handle(call.attributes[KrosstalkMethodBaseUrlAttribute],
+                                    method,
+                                    call.request.headers.toMap(),
+                                    data,
+                                    body,
+                                    scopes.toImmutable(),
+                                    {
+                                        application.log.error("Server exception during ${method.name}, passed on to client", it)
+                                    }) { status: Int, contentType: String?, headers: Headers, bytes: ByteArray ->
 
                                     headers.forEach { (k, v) ->
                                         v.forEach {
@@ -161,6 +170,7 @@ object KtorServer : ServerHandler<KtorServerScope<*>> {
 }
 
 private val KrosstalkMethodAttribute = AttributeKey<Map<String, String>>("KrosstalkMethodData")
+private val KrosstalkMethodBaseUrlAttribute = AttributeKey<String>("KrosstalkMethodBaseUrl")
 
 class KrosstalkRouteSelector(val method: MethodDefinition<*>) : RouteSelector(2.0) {
     override fun evaluate(context: RoutingResolveContext, segmentIndex: Int): RouteSelectorEvaluation {
@@ -169,10 +179,17 @@ class KrosstalkRouteSelector(val method: MethodDefinition<*>) : RouteSelector(2.
                 return RouteSelectorEvaluation.Failed
             }
 
+            val prefix = segments.take(segmentIndex)
+
+            val localUrl = UrlRequest(call.request.uri).withoutPrefixParts(prefix)
+
+            val baseUrl = URLBuilder.createFromCall(call).buildString().substringBefore(localUrl.urlParts.joinToString("/"))
+
             //TODO allow prefixes, don't resolve on the whole url
             //TODO then set the prefix somewhere for use as the server url
-            val data = method.endpoint.resolve(call.request.uri) ?: return RouteSelectorEvaluation.Failed
+            val data = method.endpoint.resolve(localUrl) ?: return RouteSelectorEvaluation.Failed
             call.attributes.put(KrosstalkMethodAttribute, data)
+            call.attributes.put(KrosstalkMethodBaseUrlAttribute, baseUrl)
             return RouteSelectorEvaluation(true, 2.0, segmentIncrement = segments.size - segmentIndex)
         }
     }

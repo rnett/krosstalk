@@ -22,6 +22,32 @@ data class UrlRequest(val urlParts: List<String>, val queryParams: Map<String, S
             it.substringBefore('=') to it.substringAfter('=')
         }
     )
+
+
+    fun withoutPrefixParts(prefix: List<String>): UrlRequest {
+        val newParts = urlParts.toMutableList()
+        prefix.forEach {
+            if (newParts.firstOrNull() == it)
+                newParts.removeFirst()
+            else
+                return UrlRequest(newParts, queryParams)
+        }
+        return UrlRequest(newParts, queryParams)
+    }
+
+    fun withoutPrefix(prefix: String): UrlRequest = withoutPrefixParts(prefix.split('/').filter { it.isNotBlank() })
+
+    fun withoutQueryParams(params: Set<String>) = UrlRequest(urlParts, queryParams - params)
+
+    override fun toString(): String {
+        return buildString {
+            append(urlParts.joinToString("/"))
+            if (queryParams.isNotEmpty()) {
+                append("?")
+                append(queryParams.entries.joinToString("&") { "${it.key}=${it.value}" })
+            }
+        }
+    }
 }
 
 sealed class ResolveResult {

@@ -16,11 +16,9 @@ import com.rnett.krosstalk.serialization.KotlinxBinarySerializationHandler
 import com.rnett.krosstalk.server.KrosstalkServer
 import com.rnett.krosstalk.server.value
 import io.ktor.application.install
-import io.ktor.application.log
 import io.ktor.auth.Principal
 import io.ktor.features.CORS
 import io.ktor.features.CallLogging
-import io.ktor.routing.get
 import io.ktor.routing.routing
 import io.ktor.server.cio.CIO
 import io.ktor.server.engine.embeddedServer
@@ -40,8 +38,7 @@ fun main() {
         }
 
         routing {
-            trace { application.log.info(it.buildText()) }
-            get { }
+//            trace { application.log.info(it.buildText()) }
             MyKrosstalk.defineKtor(this)
         }
 

@@ -199,6 +199,10 @@ annotation class Optional()
 //TODO see if I can replace this with passing the server url to krosstalkCall().  Would need an @Ignore or similar
 /**
  * Marks a `String` or `String?` parameter as the server url.  This will override the server url set in the krosstalk client if it is non null.
+ *
+ * Note that this is the base URL of the server, not including any set endpoint or the [Krosstalk.prefix].
+ *
+ * Also note that the host seen by the server may not match the url the client sent to the request to, depending on your server configuration.
  */
 @Target(AnnotationTarget.VALUE_PARAMETER)
 @Retention(AnnotationRetention.BINARY)
