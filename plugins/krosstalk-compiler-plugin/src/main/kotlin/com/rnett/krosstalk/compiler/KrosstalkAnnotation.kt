@@ -2,7 +2,6 @@ package com.rnett.krosstalk.compiler
 
 import com.rnett.krosstalk.defaultEndpoint
 import com.rnett.krosstalk.defaultEndpointMethod
-import com.rnett.krosstalk.exceptionMessage
 import org.jetbrains.kotlin.ir.declarations.IrAnnotationContainer
 import org.jetbrains.kotlin.ir.expressions.IrClassReference
 import org.jetbrains.kotlin.ir.expressions.IrConst
@@ -63,8 +62,6 @@ data class KrosstalkAnnotations(val annotations: Set<KrosstalkAnnotation>) :
 
     val EmptyBody by annotation<KrosstalkAnnotation.EmptyBody>()
     val ExplicitResult by annotation<KrosstalkAnnotation.ExplicitResult>()
-
-    val CatchAsHttpError by repeatableAnnotation<KrosstalkAnnotation.CatchAsHttpError>()
 
     val Optional by annotation<KrosstalkAnnotation.Optional>()
 
@@ -192,14 +189,7 @@ sealed class KrosstalkAnnotation(val call: IrConstructorCall, name: String) {
 
     class ExplicitResult(call: IrConstructorCall) : KrosstalkAnnotation(call, "ExplicitResult") {
         val includeStacktrace by field(false)
-        val propagateServerExceptions by field(false)
-        val printExceptionStackTraces by field(true)
-    }
-
-    class CatchAsHttpError(call: IrConstructorCall) : KrosstalkAnnotation(call, "CatchAsHttpError") {
-        val exceptionClass by classField()
-        val responseCode: Int by field()
-        val message by field(exceptionMessage)
+        val propagateServerExceptions by field(true)
     }
 
     class Optional(call: IrConstructorCall) : KrosstalkAnnotation(call, "Optional")

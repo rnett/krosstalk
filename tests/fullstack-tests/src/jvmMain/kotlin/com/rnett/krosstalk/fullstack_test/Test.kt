@@ -7,11 +7,11 @@ import com.rnett.krosstalk.Scope
 import com.rnett.krosstalk.ScopeInstance
 import com.rnett.krosstalk.ServerDefault
 import com.rnett.krosstalk.WithHeaders
-import com.rnett.krosstalk.annotations.CatchAsHttpError
 import com.rnett.krosstalk.ktor.server.KtorServer
 import com.rnett.krosstalk.ktor.server.KtorServerBasicAuth
 import com.rnett.krosstalk.ktor.server.KtorServerScope
 import com.rnett.krosstalk.ktor.server.defineKtor
+import com.rnett.krosstalk.runKrosstalkCatching
 import com.rnett.krosstalk.serialization.KotlinxBinarySerializationHandler
 import com.rnett.krosstalk.server.KrosstalkServer
 import com.rnett.krosstalk.server.value
@@ -96,13 +96,12 @@ actual suspend fun withResult(n: Int): KrosstalkResult<Int> {
     return KrosstalkResult(n)
 }
 
-@CatchAsHttpError(MyException::class, 422)
-actual suspend fun withResultCatching(n: Int): KrosstalkResult<Int> {
+actual suspend fun withResultCatching(n: Int): KrosstalkResult<Int> = runKrosstalkCatching {
     if (n < 0)
         throw MyException("Can't have n < 0")
 
-    return KrosstalkResult(n)
-}
+    n
+}.catchAsHttpStatusCode<MyException> { 422 }
 
 actual suspend fun withOverload(n: Int): String = n.toString()
 
@@ -155,21 +154,20 @@ actual suspend fun withDifferentPassing(arg: SerializableObject): ExpectObject =
 
 actual suspend fun withHeadersBasic(n: Int): WithHeaders<String> = WithHeaders(n.toString(), mapOf("test" to listOf("value")))
 
-@CatchAsHttpError(MyException::class, 422)
-actual suspend fun withHeadersOutsideResult(n: Int): WithHeaders<KrosstalkResult<String>> = WithHeaders(run {
+actual suspend fun withHeadersOutsideResult(n: Int): WithHeaders<KrosstalkResult<String>> = WithHeaders(runKrosstalkCatching {
     if (n < 0)
         throw MyException("Can't have n < 0")
 
-    KrosstalkResult(n.toString())
-}, mapOf("test" to listOf("value")))
+    n.toString()
+}.catchAsHttpStatusCode<MyException> { 422 },
+    mapOf("test" to listOf("value")))
 
-@CatchAsHttpError(MyException::class, 422)
-actual suspend fun withHeadersInsideResult(n: Int): KrosstalkResult<WithHeaders<String>> {
+actual suspend fun withHeadersInsideResult(n: Int): KrosstalkResult<WithHeaders<String>> = runKrosstalkCatching {
     if (n < 0)
         throw MyException("Can't have n < 0")
 
-    return KrosstalkResult(WithHeaders(n.toString(), mapOf("test" to listOf("value"))))
-}
+    WithHeaders(n.toString(), mapOf("test" to listOf("value")))
+}.catchAsHttpStatusCode<MyException> { 422 }
 
 actual suspend fun withHeadersReturnObject(n: Int): WithHeaders<ExpectObject> {
     return WithHeaders(ExpectObject, mapOf("value" to listOf(n.toString())))

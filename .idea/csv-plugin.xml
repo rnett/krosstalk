@@ -24,6 +24,13 @@
             </Attribute>
           </value>
         </entry>
+        <entry key="\core\krosstalk-server\src\commonMain\kotlin\com\rnett\krosstalk\server\Helpers.kt">
+          <value>
+            <Attribute>
+              <option name="separator" value=":" />
+            </Attribute>
+          </value>
+        </entry>
         <entry key="\core\krosstalk\src\commonMain\kotlin\com\rnett\krosstalk\Communication.kt">
           <value>
             <Attribute>

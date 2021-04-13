@@ -1,12 +1,9 @@
 package com.rnett.krosstalk.server
 
 import com.rnett.krosstalk.InternalKrosstalkApi
+import com.rnett.krosstalk.KrosstalkException
 import com.rnett.krosstalk.KrosstalkPluginApi
 import com.rnett.krosstalk.KrosstalkResult
-import com.rnett.krosstalk.exception
-import com.rnett.krosstalk.exceptionMessage
-import com.rnett.krosstalk.exceptionStacktrace
-import kotlin.reflect.KClass
 
 
 @PublishedApi
@@ -15,33 +12,24 @@ internal inline fun String.replace(target: String, value: () -> String) = if (ta
 @OptIn(InternalKrosstalkApi::class, KrosstalkPluginApi::class)
 @PublishedApi
 @Suppress("unused")
-internal inline fun handleException(
+internal inline fun <T> wrapResult(
+    result: KrosstalkResult<T>,
+    includeStackTrace: Boolean,
+    server: KrosstalkServer<*>,
+): KrosstalkResult<T> = when (result) {
+    is KrosstalkResult.Success -> result
+    is KrosstalkResult.ServerException -> result.withIncludeStackTrace(includeStackTrace)
+    is KrosstalkResult.HttpError -> result.copy(statusCodeName = server.server.getStatusCodeName(result.statusCode))
+}
+
+@OptIn(InternalKrosstalkApi::class)
+@PublishedApi
+internal inline fun serverExceptionOrThrowKrosstalk(
     t: Throwable,
     includeStackTrace: Boolean,
-    printStackTrace: Boolean,
-    server: KrosstalkServer<*>,
-    handle: List<Triple<KClass<out Throwable>, Int, String>>,
-): KrosstalkResult<Nothing> {
-    var result: KrosstalkResult<Nothing>? = null
-
-    handle.forEach { (cls, responseCode, message) ->
-        if (cls.isInstance(t)) {
-            result = KrosstalkResult.HttpError(
-                responseCode,
-                server.server.getStatusCodeName(responseCode),
-                message
-                    .replace(exceptionMessage) { t.message ?: "N/A" }
-                    .replace(exceptionStacktrace) { t.stackTraceToString() }
-                    .replace(exception) { t.toString() }
-            )
-        }
-    }
-
-    return result ?: run {
-        if (printStackTrace)
-            t.printStackTrace()
-
-        KrosstalkResult.ServerException(t, includeStackTrace)
-    }
-
+): KrosstalkResult.ServerException {
+    if (t is KrosstalkException)
+        throw t
+    else
+        return KrosstalkResult.ServerException(t, includeStackTrace)
 }

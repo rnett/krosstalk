@@ -777,21 +777,13 @@ class KrosstalkMethodTransformer(
                 declaration.body = irBlockBody {
                     val tryExpr = irTry(result, resultType) {
                         irCatch(context.irBuiltIns.throwableType) { t ->
-                            irCall(Krosstalk.Server.handleException())
-                                .withValueArguments(
-                                    irGet(t),
-                                    explicitResult.includeStacktrace.asConst(),
-                                    explicitResult.printExceptionStackTraces.asConst(),
-                                    irGetObject(krosstalkClass.declaration.symbol),
-                                    annotations.CatchAsHttpError.map {
-                                        irCallConstructor(KotlinAddons.Triple.new(), tripleTypes).withValueArguments(it.exceptionClass,
-                                            it.responseCode.asConst(),
-                                            it.message.asConst())
-                                    }.let {
-                                        stdlib.collections.listOf(KotlinAddons.Triple.resolveTypeWith(*tripleTypes.toTypedArray()), it)
-                                    }
-                                )
+                            irCall(Krosstalk.Server.serverExceptionOrThrowKrosstalk)
+                                .withValueArguments(irGet(t), explicitResult.includeStacktrace.asConst())
                         }
+                    }.let {
+                        irCall(Krosstalk.Server.wrapResult)
+                            .withValueArguments(it, explicitResult.includeStacktrace.asConst(), irGetObject(krosstalkClass.declaration.symbol))
+                            .withTypeArguments(resultType.typeArgument(0))
                     }
 
                     +irReturn(

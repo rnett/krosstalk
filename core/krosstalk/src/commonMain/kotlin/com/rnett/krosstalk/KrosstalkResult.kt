@@ -3,6 +3,7 @@ package com.rnett.krosstalk
 import com.rnett.krosstalk.annotations.ExplicitResult
 import kotlinx.serialization.Serializable
 import kotlinx.serialization.Transient
+import kotlin.contracts.InvocationKind
 import kotlin.contracts.contract
 import kotlin.reflect.KClass
 
@@ -21,9 +22,48 @@ class ResultHttpErrorException(val httpError: KrosstalkResult.HttpError) :
 @OptIn(InternalKrosstalkApi::class)
 class ResultServerExceptionException(val exception: KrosstalkResult.ServerException) : KrosstalkException("KrosstalkResult is exception $exception")
 
+data class HttpErrorMessage(val statusCode: Int, val message: String? = null)
+
 internal expect fun getClassName(klass: KClass<*>): String?
 
-//TODO does not work, https://github.com/Kotlin/kotlinx.serialization/issues/1391
+/**
+ * Runs [block] and wraps the result if it is a success.  If [block] throws,
+ * it wraps the resulting exception in [KrosstalkResult.ServerException].
+ *
+ * If the caught exception is [ResultServerExceptionException] or [ResultHttpErrorException],
+ * they are unwrapped instead of wrapped (i.e. their contained [KrosstalkResult] is returned).
+ *
+ * Note that [includeStackTrace] will be overridden by the vale in any [ExplicitResult] annotations,
+ * and thus defaults to `true`.
+ */
+@OptIn(InternalKrosstalkApi::class)
+inline fun <T> runKrosstalkCatching(includeStackTrace: Boolean = true, block: () -> T): KrosstalkResult<T> {
+    contract { callsInPlace(block, InvocationKind.EXACTLY_ONCE) }
+    return try {
+        KrosstalkResult.success(block())
+    } catch (e: ResultServerExceptionException) {
+        return e.exception
+    } catch (e: ResultHttpErrorException) {
+        return e.httpError
+    } catch (t: Throwable) {
+        KrosstalkResult.ServerException(t, includeStackTrace)
+    }
+}
+
+/**
+ * Convert a [Result] to a [KrosstalkResult], useing [KrosstalkResult.ServerException] to represent a failure.
+ *
+ * Note that [includeStackTrace] will be overridden by the vale in any [ExplicitResult] annotations,
+ * and thus defaults to `true`.
+ */
+@OptIn(InternalKrosstalkApi::class)
+inline fun <T> Result<T>.toKrosstalkResult(includeStackTrace: Boolean = true): KrosstalkResult<T> {
+    return if (this.isSuccess)
+        KrosstalkResult.success(this.getOrThrow())
+    else
+        KrosstalkResult.ServerException(this.exceptionOrNull()!!, includeStackTrace)
+}
+
 /**
  * The result of a krosstalk call.  Can be either an exception in the server method, a Http error, or success.
  *
@@ -82,6 +122,12 @@ sealed class KrosstalkResult<out T> {
             throwable.toString(),
             if (includeStacktrace) throwable.stackTraceToString() else null,
             throwable
+        )
+
+        fun withIncludeStackTrace(includeStacktrace: Boolean): ServerException = copy(
+            cause = cause?.withIncludeStackTrace(includeStacktrace),
+            suppressed = suppressed.map { it.withIncludeStackTrace(includeStacktrace) },
+            asStringWithStacktrace = if (includeStacktrace) asStringWithStacktrace else null
         )
 
         override fun getException() = ResultServerExceptionException(this)
@@ -230,6 +276,63 @@ sealed class KrosstalkResult<out T> {
         is ServerException -> onServerException(this)
     }
 
+    //TODO move both of these, and `catch` to krosstalk-server once we don't have to specify all type parameters
+
+    /**
+     * Re-throw the exception of a [KrosstalkResult.ServerException] if the exception is known, of type [E], and passes [predicate] (which is true by default).
+     *
+     * **Note:** this function will most likely only work on server side, where the exception is known.
+     */
+    inline fun <reified E : Throwable> throwServerException(predicate: (E) -> Boolean = { true }): KrosstalkResult<T> {
+        if (this is ServerException && this.throwable is E && predicate(this.throwable))
+            throw this.throwable
+        else
+            return this
+    }
+
+    /**
+     * Catch a [KrosstalkResult.ServerException] where the exception is known and is of type [E], converting it to a [KrosstalkResult.HttpError].
+     *
+     * If [httpError] returns null, the server exception is not converted.
+     *
+     * **Note:** this function will most likely only work on server side, where the exception is known.
+     */
+    @OptIn(InternalKrosstalkApi::class)
+    inline fun <reified E : Throwable> catchAsHttpError(httpError: (E) -> HttpErrorMessage?): KrosstalkResult<T> = when (this) {
+        is Success -> this
+        is ServerException -> {
+            if (throwable is E)
+                httpError(throwable)?.let {
+                    HttpError(it.statusCode, null, it.message)
+                } ?: this
+            else
+                this
+        }
+        is HttpError -> this
+    }
+
+    /**
+     * Catch a [KrosstalkResult.ServerException] where the exception is known and is of type [E], converting it to a [KrosstalkResult.HttpError].
+     * This uses the status code returned from [statusCode] with the message from the exception.
+     *
+     * If [statusCode] returns null, the server exception is not converted.
+     *
+     * **Note:** this function will most likely only work on server side, where the exception is known.
+     */
+    @OptIn(InternalKrosstalkApi::class)
+    inline fun <reified E : Throwable> catchAsHttpStatusCode(statusCode: (E) -> Int?): KrosstalkResult<T> = when (this) {
+        is Success -> this
+        is ServerException -> {
+            if (throwable is E)
+                statusCode(throwable)?.let {
+                    HttpError(it, null, throwable.message)
+                } ?: this
+            else
+                this
+        }
+        is HttpError -> this
+    }
+
     //TODO once we can use result
     //fun toResult(): Result<T> = fold({ Result.success(it) }, { Result.failure(it.getException()) })
 
@@ -241,6 +344,20 @@ sealed class KrosstalkResult<out T> {
     //TODO new API using sealed interfaces and contracts once 1.5 is out
     //TODO toResult() or similar
 }
+
+/**
+ * Catch a [KrosstalkResult.ServerException] where the exception is known and is of type [E], converting it to a success.
+ *
+ * If [predicate] returns false, the server exception is not converted (it is true by default).
+ *
+ * **Note:** this function will most likely only work on server side, where the exception is known.
+ */
+inline fun <reified E : Throwable, R, T : R> KrosstalkResult<T>.catch(predicate: (E) -> Boolean = { true }, block: (E) -> R): KrosstalkResult<R> =
+    when (this) {
+        is KrosstalkResult.Success -> this
+        is KrosstalkResult.ServerException -> if (throwable is E && predicate(throwable as E)) KrosstalkResult.success(block(throwable as E)) else this
+        is KrosstalkResult.HttpError -> this
+    }
 
 /**
  * Gets the value on success, or the result of [onFailure] otherwise.
