@@ -10,6 +10,7 @@ import com.rnett.krosstalk.instanceReceiver
 import com.rnett.krosstalk.krosstalkPrefix
 import com.rnett.krosstalk.runKrosstalkCatching
 import com.rnett.krosstalk.serialization.SerializationHandler
+import com.rnett.krosstalk.toKrosstalkResult
 import kotlin.reflect.KClass
 
 
@@ -103,16 +104,13 @@ annotation class PassObjects(val returnToo: Boolean = false)
 //TODO option to only do http errors, or only do exceptions (based on return type?) (should use separate result classes or sealed interfaces) (http error one should be usable wth CatchAsHttpError)
 //TODO post 1.5: a version that uses kotlin.Result.  Would have to limit to http errors, can't serialize exceptions (test, can I have a custom serializable annotation?)
 
-//TODO get rid of auto-wrapping with try in favor of forcing runKrosstalkCatching?
-
 /**
  * Return a [KrosstalkResult], wrapping server exceptions or http errors.  Method return type must be [KrosstalkResult].
  * Server side function should return a [KrosstalkResult.Success].
  *
- * The server function will automatically be wrapped in a `try` block, converting thrown exceptions to
- * [KrosstalkResult.ServerException] (note that this applies when calling from server or client).
- * To catch some exceptions as HTTP Errors, use [runKrosstalkCatching] and [KrosstalkResult.catchAsHttpError] on the server.
- * To re-throw some exceptions, use [KrosstalkResult.throwServerException] or [KrosstalkResult.throwOnServerException] to re-throw all.
+ * **The server side function should almost always use [runKrosstalkCatching] or [runCatching] and [Result.toKrosstalkResult]**.
+ * To catch some exceptions as HTTP Errors, use [KrosstalkResult.catchAsHttpError] or [KrosstalkResult.catchAsHttpStatusCode] on the server.
+ * To not catch some exceptions, use [KrosstalkResult.throwServerException] or [KrosstalkResult.throwOnServerException] to re-throw all.
  *
  * If [propagateServerExceptions] is `true`, the server implementation will re-throw or somehow log any server exceptions **after
  * the call completes** (so the client will receive a [KrosstalkResult.ServerException] result).
@@ -121,6 +119,7 @@ annotation class PassObjects(val returnToo: Boolean = false)
  *
  * [includeStacktrace] controls whether to include the stack trace of exceptions (via [Throwable.stackTraceToString]) in the
  * [KrosstalkResult.ServerException].  It may expose more information about the server than you want, so it is `false` by default.
+ * A `false` value here will override any `true` values in [runKrosstalkCatching] or [Result.toKrosstalkResult].
  *
  * Note that the response will not be a serialized [KrosstalkResult].  If successful, only the data will be serialized.  Server errors will respond
  * with a 500 status code with the exception data in the body, and http error codes will respond with their error code and message.

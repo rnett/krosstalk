@@ -13,6 +13,7 @@ import kotlin.contracts.InvocationKind
 import kotlin.contracts.contract
 
 
+//TODO update docs
 /**
  * A Krosstalk server handler.
  * Should help you set up receiver endpoints for all Krosstalk methods.
@@ -21,9 +22,7 @@ import kotlin.contracts.contract
  * Will almost certainly want to use [fillWithStaticAndAdjustParameters], [fillWithStatic], or [splitEndpoint] to handle endpoint templates.
  */
 @KrosstalkPluginApi
-interface ServerHandler<S : ServerScope<*>> {
-    fun getStatusCodeName(httpStatusCode: Int): String?
-}
+interface ServerHandler<S : ServerScope<*>>
 
 typealias Responder = suspend (statusCode: Int, contentType: String?, responseHeaders: Headers, data: ByteArray) -> Unit
 
@@ -118,10 +117,20 @@ suspend fun <K> K.handle(
             }
             is KrosstalkResult.ServerException -> {
                 //TODO something in plaintext for non-krosstalk servers?  JSON serialize the exception maybe.  I can just use Kotlinx here too, rather than getting the serializer
-                responder(500, "application/octet-stream", emptyMap(), serializeServerException(kr))
+                responder(
+                    500,
+                    "application/octet-stream",
+                    emptyMap(),
+                    serializeServerException(kr.withIncludeStackTrace(method.includeStacktrace))
+                )
             }
             is KrosstalkResult.HttpError -> {
-                responder(kr.statusCode, "text/plain; charset=utf-8", emptyMap(), (kr.message ?: "").encodeToByteArray())
+                responder(
+                    kr.statusCode,
+                    "text/plain; charset=utf-8",
+                    emptyMap(),
+                    (kr.message ?: "").encodeToByteArray()
+                )
             }
         }
     } else {

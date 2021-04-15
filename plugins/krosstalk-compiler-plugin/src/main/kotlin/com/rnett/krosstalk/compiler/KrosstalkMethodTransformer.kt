@@ -34,13 +34,11 @@ import org.jetbrains.kotlin.ir.builders.declarations.addValueParameter
 import org.jetbrains.kotlin.ir.builders.irBlockBody
 import org.jetbrains.kotlin.ir.builders.irCall
 import org.jetbrains.kotlin.ir.builders.irCallConstructor
-import org.jetbrains.kotlin.ir.builders.irComposite
 import org.jetbrains.kotlin.ir.builders.irExprBody
 import org.jetbrains.kotlin.ir.builders.irGet
 import org.jetbrains.kotlin.ir.builders.irGetObject
 import org.jetbrains.kotlin.ir.builders.irGetObjectValue
 import org.jetbrains.kotlin.ir.builders.irNull
-import org.jetbrains.kotlin.ir.builders.irReturn
 import org.jetbrains.kotlin.ir.builders.parent
 import org.jetbrains.kotlin.ir.declarations.IrAnonymousInitializer
 import org.jetbrains.kotlin.ir.declarations.IrClass
@@ -743,58 +741,9 @@ class KrosstalkMethodTransformer(
         fun transform() {
             addToKrosstalkClass()
 
-            if (krosstalkClass.isServer) {
-                wrapBodyForExplicitResultIfNeeded()
-            }
-
             if (krosstalkClass.isClient) {
                 addCallMethodBody()
             }
-        }
-
-        fun wrapBodyForExplicitResultIfNeeded() {
-            val explicitResult = annotations.ExplicitResult ?: return
-            if (!krosstalkClass.isServer) return
-            if (declaration.isExpect) return
-            if (declaration.body == null) return
-
-            declaration.withBuilder {
-
-                val resultType = if (isOuterWithHeaders) declaration.returnType.typeArgument(0) else declaration.returnType
-
-                val result = declaration.body!!.let { body ->
-                    if (body is IrExpressionBody) {
-                        body.expression
-                    } else {
-                        body as IrBlockBody
-                        irComposite(resultType = resultType) {
-                            declaration.body!!.statements.forEach {
-                                +it
-                            }
-                        }
-                    }
-                }
-                declaration.body = irBlockBody {
-                    val tryExpr = irTry(result, resultType) {
-                        irCatch(context.irBuiltIns.throwableType) { t ->
-                            irCall(Krosstalk.Server.serverExceptionOrThrowKrosstalk)
-                                .withValueArguments(irGet(t), explicitResult.includeStacktrace.asConst())
-                        }
-                    }.let {
-                        irCall(Krosstalk.Server.wrapResult)
-                            .withValueArguments(it, explicitResult.includeStacktrace.asConst(), irGetObject(krosstalkClass.declaration.symbol))
-                            .withTypeArguments(resultType.typeArgument(0))
-                    }
-
-                    +irReturn(
-                        if (isOuterWithHeaders)
-                            irCallConstructor(Krosstalk.WithHeaders.new(), listOf(resultType)).withValueArguments(tryExpr)
-                        else
-                            tryExpr
-                    )
-                }
-            }
-            declaration.body!!.patchDeclarationParents(declaration)
         }
 
         fun IrBuilderWithScope.buildCallLambda(): IrSimpleFunction {

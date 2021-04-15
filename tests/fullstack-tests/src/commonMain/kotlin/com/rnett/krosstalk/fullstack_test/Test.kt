@@ -170,7 +170,7 @@ expect suspend fun withHeadersInsideResult(n: Int): KrosstalkResult<WithHeaders<
 @KrosstalkMethod(MyKrosstalk::class)
 expect suspend fun withHeadersReturnObject(n: Int): WithHeaders<ExpectObject>
 
-//TODO need to test serverurl, but can't do that here
+//TODO need to test server url, but can't do that here
 
 @KrosstalkMethod(MyKrosstalk::class)
 expect suspend fun withRequestHeaders(n: Int, @RequestHeaders h: Headers): Int

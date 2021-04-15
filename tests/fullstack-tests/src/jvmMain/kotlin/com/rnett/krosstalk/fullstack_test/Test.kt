@@ -15,6 +15,7 @@ import com.rnett.krosstalk.runKrosstalkCatching
 import com.rnett.krosstalk.serialization.KotlinxBinarySerializationHandler
 import com.rnett.krosstalk.server.KrosstalkServer
 import com.rnett.krosstalk.server.value
+import com.rnett.krosstalk.toKrosstalkResult
 import io.ktor.application.install
 import io.ktor.auth.Principal
 import io.ktor.features.CORS
@@ -89,12 +90,12 @@ actual suspend fun optionalEndpointQueryParamsGet(n: Int, s: String?): String? =
 
 actual suspend fun partialMinimize(n: Int, s: String?): String? = s?.repeat(n)
 
-actual suspend fun withResult(n: Int): KrosstalkResult<Int> {
+actual suspend fun withResult(n: Int): KrosstalkResult<Int> = runCatching {
     if (n < 0)
         error("Can't have n < 0")
 
-    return KrosstalkResult(n)
-}
+    return@runCatching n
+}.toKrosstalkResult()
 
 actual suspend fun withResultCatching(n: Int): KrosstalkResult<Int> = runKrosstalkCatching {
     if (n < 0)

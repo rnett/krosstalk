@@ -60,9 +60,6 @@ object Krosstalk : RootPackage(krosstalkPackage) {
         val KrosstalkServer by Class()
         val ServerScope by Class()
 
-        val wrapResult by function()
-        val serverExceptionOrThrowKrosstalk by function()
-
         val createServerScopeInstance by function("invoke") {
             parameters[0] = {
                 it.name.asString() == "serverData"

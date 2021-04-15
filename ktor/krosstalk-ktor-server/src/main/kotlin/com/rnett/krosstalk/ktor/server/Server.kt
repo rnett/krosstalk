@@ -164,8 +164,6 @@ object KtorServer : ServerHandler<KtorServerScope<*>> {
             }
         }
     }
-
-    override fun getStatusCodeName(httpStatusCode: Int): String? = HttpStatusCode.fromValue(httpStatusCode).description
 }
 
 private val KrosstalkMethodAttribute = AttributeKey<Map<String, String>>("KrosstalkMethodData")

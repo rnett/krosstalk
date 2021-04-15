@@ -16,7 +16,6 @@ import io.ktor.client.request.request
 import io.ktor.client.statement.HttpResponse
 import io.ktor.http.HeadersBuilder
 import io.ktor.http.HttpMethod
-import io.ktor.http.HttpStatusCode
 import io.ktor.http.charset
 import io.ktor.util.toMap
 import io.ktor.utils.io.charsets.Charsets
@@ -106,8 +105,6 @@ class KtorClient(
 
         return InternalKrosstalkResponse(response.status.value, response.headers.toMap(), bytes) { String(bytes, charset = charset) }
     }
-
-    override fun getStatusCodeName(httpStatusCode: Int): String? = HttpStatusCode.fromValue(httpStatusCode).description
 }
 
 /**

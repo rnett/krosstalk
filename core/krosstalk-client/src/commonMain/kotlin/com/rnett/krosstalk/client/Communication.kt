@@ -9,6 +9,7 @@ import com.rnett.krosstalk.KrosstalkResult
 import com.rnett.krosstalk.MethodDefinition
 import com.rnett.krosstalk.ServerDefault
 import com.rnett.krosstalk.WithHeaders
+import com.rnett.krosstalk.httpStatusCodes
 import com.rnett.krosstalk.isNone
 import kotlin.reflect.KClass
 
@@ -54,8 +55,6 @@ interface ClientHandler<C : ClientScope<*>> {
         body: ByteArray?,
         scopes: List<AppliedClientScope<C, *>>,
     ): InternalKrosstalkResponse
-
-    fun getStatusCodeName(httpStatusCode: Int): String?
 }
 
 
@@ -80,12 +79,11 @@ class NoneInUrlException(val methodName: String, val parameter: String) :
 open class CallFailureException @InternalKrosstalkApi constructor(
     val methodName: String,
     val httpStatusCode: Int,
-    val httpStatusCodeMessage: String?,
     val responseMessage: String?,
     message: String = buildString {
         append("Krosstalk method $methodName failed with HTTP status code $httpStatusCode")
-        if (httpStatusCodeMessage != null)
-            append(": $httpStatusCodeMessage")
+        if (httpStatusCode in httpStatusCodes)
+            append(": ${httpStatusCodes[httpStatusCode]}")
 
         if (responseMessage != null)
             append(" and response message: $responseMessage")
@@ -170,17 +168,17 @@ internal suspend inline fun <T, K, reified C : ClientScope<*>> K.call(
                 try {
                     deserializeServerException(result.data)
                 } catch (t: Throwable) {
-                    KrosstalkResult.HttpError(result.statusCode, client.getStatusCodeName(result.statusCode), result.stringData)
+                    KrosstalkResult.HttpError(result.statusCode, result.stringData)
                 }
             } else {
-                KrosstalkResult.HttpError(result.statusCode, client.getStatusCodeName(result.statusCode), result.stringData)
+                KrosstalkResult.HttpError(result.statusCode, result.stringData)
             }
         }
     } else {
         if (result.isSuccess()) {
             method.getReturnValue(result.data).withHeadersIf(method.innerWithHeaders, result.headers)
         } else {
-            throw CallFailureException(methodName, result.statusCode, client.getStatusCodeName(result.statusCode), result.stringData)
+            throw CallFailureException(methodName, result.statusCode, result.stringData)
         }
     }.withHeadersIf(method.outerWithHeaders, result.headers) as T
 }
