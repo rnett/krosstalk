@@ -7,7 +7,6 @@ import com.rnett.krosstalk.Scope
 import com.rnett.krosstalk.ScopeInstance
 
 
-//TODO require KrosstalkPluginApi for implementing
 /**
  * Since scopes are declared as objects, all scope classes should be open to allow for use.
  *

@@ -9,17 +9,20 @@ import com.rnett.krosstalk.MethodDefinition
 import com.rnett.krosstalk.ServerDefault
 import com.rnett.krosstalk.WithHeaders
 import com.rnett.krosstalk.addHeadersFrom
+import com.rnett.krosstalk.endpoint.Endpoint
 import kotlin.contracts.InvocationKind
 import kotlin.contracts.contract
 
 
-//TODO update docs
 /**
  * A Krosstalk server handler.
- * Should help you set up receiver endpoints for all Krosstalk methods.
+ * Should help you set up receiver endpoints for all Krosstalk methods ([Krosstalk.methods]), which should each call [handle] for their method.
  * No behavior is defined here as what is necessary to do that, and where and how you will want to call it, will vary widely depending on which server you are using.
  *
- * Will almost certainly want to use [fillWithStaticAndAdjustParameters], [fillWithStatic], or [splitEndpoint] to handle endpoint templates.
+ * You will almost certainly want to use [Endpoint.resolve] to handle endpoint templates.  [Endpoint.allResolvePaths] is available as well, but
+ * is not yet well supported, you would have to write your own resolution code or use your server implementation's.
+ *
+ * See the `krosstalk-ktor-server` artifact for an example server implementation using Ktor.
  */
 @KrosstalkPluginApi
 interface ServerHandler<S : ServerScope<*>>
@@ -27,7 +30,7 @@ interface ServerHandler<S : ServerScope<*>>
 typealias Responder = suspend (statusCode: Int, contentType: String?, responseHeaders: Headers, data: ByteArray) -> Unit
 
 @InternalKrosstalkApi
-fun MethodDefinition<*>.getReturnBody(data: Any?): ByteArray = if (returnObject != null)
+internal fun MethodDefinition<*>.getReturnBody(data: Any?): ByteArray = if (returnObject != null)
     ByteArray(0)
 else
     serialization.serializeReturnValue(data)

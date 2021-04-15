@@ -4,7 +4,8 @@ import kotlin.contracts.InvocationKind
 import kotlin.contracts.contract
 
 @OptIn(InternalKrosstalkApi::class)
-class UnrealizedServerDefaultException @InternalKrosstalkApi constructor() : KrosstalkException("ServerDefault was not realized")
+class UnrealizedServerDefaultException @InternalKrosstalkApi constructor() :
+    KrosstalkException("ServerDefault was not realized on the server side, this should be impossible.")
 
 class ServerDefault<out T> @PublishedApi internal constructor(@PublishedApi internal val _value: Any?) {
 

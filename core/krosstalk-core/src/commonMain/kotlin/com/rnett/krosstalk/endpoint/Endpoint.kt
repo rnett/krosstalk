@@ -20,7 +20,7 @@ class EndpointUnknownArgumentException @InternalKrosstalkApi constructor(
     "Endpoint template \"$endpointTemplate\" for method $methodName used parameter $missingParam, but it is not a known parameter.  Known parameters: $knownParams."
 )
 
-sealed class EndpointPreprocessor {
+internal sealed class EndpointPreprocessor {
     fun preProcessUrlParts(text: String): String = preProcess(text, false)
     fun preProcessQueryParams(text: String): String = preProcess(text, true)
 
@@ -53,10 +53,11 @@ sealed class EndpointPreprocessor {
 /**
  * Class representing an endpoint template.
  * Valid template structures:
- * {var} -> replace w/ value
- * {{var}} -> replace w/ /var/{var} or &var={var}
- * [?var:...] -> if var != null.  Must contain whole segments
- * {{?var}} -> [?var:{{var}}]
+ * * static text
+ * * `{var}` -> replace w/ value
+ * * `{{var}}` -> replace w/ `/var/{var}` or `&var={var}` if in query params
+ * * `[?var:...]` -> body if var != null, else empty.  The body must contain whole segments
+ * * `{{?var}}` -> `[?var:{{var}}]`
  */
 data class Endpoint(
     val urlParts: EndpointRegion.UrlParts,
@@ -150,6 +151,7 @@ data class Endpoint(
             return EndpointRegion(parts)
         }
 
+        @InternalKrosstalkApi
         fun withoutStatic(template: String): Endpoint {
             val splitQuestionmark = Regex("(?<![{\\[])\\?").find(template)?.range?.endInclusive ?: template.length
 
@@ -166,21 +168,32 @@ data class Endpoint(
             return Endpoint(urlParts, queryParameters)
         }
 
+        @OptIn(InternalKrosstalkApi::class)
         operator fun invoke(template: String, methodName: String, prefix: String): Endpoint {
             return withoutStatic(template).withStatic(methodName, prefix)
         }
     }
 
+    /**
+     * The resolve tree for this endpoint.
+     */
     val resolveTree by lazy { EndpointResolveTree(this) }
-    val possibleEndpoints by lazy { resolveTree.enumerate() }
 
+    /**
+     * All possible resolution paths of this endpoint.
+     */
+    val allResolvePaths by lazy { resolveTree.enumerate() }
+
+    /**
+     * Resolve this endpoint.  Returns parameter values if successful, or `null` if not.
+     */
     fun resolve(url: UrlRequest) = resolveTree.resolve(url)
+
+    /**
+     * Resolve this endpoint.  Returns parameter values if successful, or `null` if not.
+     */
     fun resolve(url: String): Map<String, String>? {
         return resolve(UrlRequest(url))
-    }
-
-    fun extractParameters(url: String): Map<String, String>? {
-        return resolveTree.resolve(UrlRequest(url))
     }
 
     override fun toString(): String {
@@ -192,15 +205,18 @@ data class Endpoint(
             urlParts.toString()
     }
 
-    inline fun mapUrlParts(transform: (EndpointUrlPart) -> EndpointUrlPart?) =
+    @PublishedApi
+    internal inline fun mapUrlParts(transform: (EndpointUrlPart) -> EndpointUrlPart?) =
         Endpoint(EndpointRegion(urlParts.mapNotNull(transform)), queryParameters)
 
-    inline fun mapQueryParameters(transform: (String, EndpointQueryParameter) -> EndpointQueryParameter?) =
+    @PublishedApi
+    internal inline fun mapQueryParameters(transform: (String, EndpointQueryParameter) -> EndpointQueryParameter?) =
         Endpoint(urlParts, EndpointRegion(queryParameters.mapValues {
             transform(it.key, it.value)
         }.filterValues { it != null } as Map<String, EndpointQueryParameter>))
 
-    inline fun mapParts(transform: (EndpointPart<*>) -> EndpointPart<*>?) =
+    @PublishedApi
+    internal inline fun mapParts(transform: (EndpointPart<*>) -> EndpointPart<*>?) =
         mapUrlParts { transform(it) as EndpointUrlPart? }
             .mapQueryParameters { _, it -> transform(it) as EndpointQueryParameter? }
 
@@ -244,6 +260,7 @@ data class Endpoint(
     /**
      * Include or exclude any optionals depending on if their key is in [usedOptionals]
      */
+    @InternalKrosstalkApi
     fun resolveOptionals(usedOptionals: Set<String>) =
         mapParts {
             var part = it
@@ -256,18 +273,9 @@ data class Endpoint(
                 part
         }
 
-    /**
-     * Returns true if each param in [requiredParameters] ends up in the endpoint if it is non-null.
-     */
-    fun hasWhenNotNull(param: String): Boolean {
-        resolveOptionals(setOf(param)).forEachPart(false) {
-            if (it is EndpointPart.Parameter && it.param == param)
-                return true
-        }
-        return false
-    }
-
-    inline fun fill(usedOptionals: Set<String>, fillParameter: (key: String) -> String): String {
+    @OptIn(InternalKrosstalkApi::class)
+    @PublishedApi
+    internal inline fun fill(usedOptionals: Set<String>, fillParameter: (key: String) -> String): String {
         return resolveOptionals(usedOptionals).fillParameters { fillParameter(it.param) }.toString()
     }
 
@@ -282,9 +290,9 @@ data class Endpoint(
      *
      * @see [fill]
      */
-    fun withStatic(
+    internal fun withStatic(
         methodName: String,
-        prefix: String
+        prefix: String,
     ) = fillParameters {
         when (it.param) {
             com.rnett.krosstalk.methodName -> methodName
@@ -301,10 +309,10 @@ data class Endpoint(
      * @return The filled endpoint, and the parameters used to fill it (not including the method name or prefix).
      */
     @OptIn(InternalKrosstalkApi::class)
-    fun fillWithArgs(
+    internal fun fillWithArgs(
         methodName: String,
         arguments: Map<String, String>,
-        nonNullArguments: Set<String>
+        nonNullArguments: Set<String>,
     ): String {
         return fill(nonNullArguments) {
             when (it) {
@@ -341,6 +349,7 @@ data class Endpoint(
         } to cache.keys
     }
 
+    @InternalKrosstalkApi
     fun allReferencedParameters(): Set<String> {
         val params = mutableSetOf<String>()
         forEachPart {
@@ -351,60 +360,9 @@ data class Endpoint(
         }
         return params
     }
-
-    fun referencedParametersWhenOptionalFalse(falseOptionals: Set<String>): Set<String> {
-        val params = mutableSetOf<String>()
-        forEachPart({ it !in falseOptionals }) {
-            if (it is EndpointPart.Parameter)
-                params += it.param
-        }
-        return params
-    }
-
-    fun usedOptionals(): Set<String> {
-        val opts = mutableSetOf<String>()
-        forEachPart {
-            if (it is EndpointPart.Optional)
-                opts += it.key
-        }
-        return opts
-    }
-
-    fun topLevelParameters(): Set<String> {
-        val params = mutableSetOf<String>()
-        forEachPart(false) {
-            if (it is EndpointPart.Parameter)
-                params += it.param
-        }
-        return params
-    }
-
-    fun usedParameters(nonNullArguments: Set<String>? = null, excludeStatic: Boolean = true): Set<String> {
-        val endpoint = nonNullArguments?.let { resolveOptionals(it) } ?: this
-        val used = mutableSetOf<String>()
-
-        endpoint.forEachPart {
-            if (it is EndpointPart.Parameter)
-                used += it.param
-        }
-
-        return if (excludeStatic)
-            used - setOf(methodName, krosstalkPrefix)
-        else
-            used
-    }
-
-    val usedArguments by lazy { usedParameters() }
 }
 
 sealed class EndpointRegion {
-    fun fill(fillParameter: (key: String) -> String, nonNullArguments: Set<String>): String = when (this) {
-        is UrlParts -> parts.mapNotNull { it.fill(fillParameter, nonNullArguments) }.joinToString("/")
-        is QueryParameters -> parameters.mapValues { it.value.fill(fillParameter, nonNullArguments) }
-            .filterValues { it != null }
-            .entries.joinToString("&") { (key, value) -> "$key=$value" }
-    }
-
     data class UrlParts(val parts: List<EndpointUrlPart>) : EndpointRegion(), List<EndpointPart<UrlParts>> by parts {
         override fun toString(): String = parts.joinToString("/")
     }
@@ -424,27 +382,9 @@ typealias EndpointUrlPart = EndpointPart<EndpointRegion.UrlParts>
 typealias EndpointQueryParameter = EndpointPart<EndpointRegion.QueryParameters>
 
 sealed class EndpointPart<in L : EndpointRegion> {
-    fun fill(fillParameter: (key: String) -> String, nonNullArguments: Set<String>): String? = when (this) {
-        is Static -> part
-        is Parameter -> fillParameter(param)
-        is Optional -> if (key in nonNullArguments) part.fill(fillParameter, nonNullArguments) else null
-    }
-
-    val paramOrNull: String?
-        get() = when (this) {
-            is Parameter -> param
-            is Static -> null
-            is Optional -> part.paramOrNull
-        }
-
     abstract fun resolveOptionals(taken: Set<String>, untaken: Set<String>): EndpointPart<L>?
 
     data class Parameter(val param: String) : EndpointPart<EndpointRegion>() {
-        val isMethodName = param == methodName
-        val isPrefix = param == krosstalkPrefix
-        val isExtensionReceiver = param == extensionReceiver
-        val isInstanceReceiver = param == instanceReceiver
-
         override fun toString(): String = "{$param}"
         override fun resolveOptionals(taken: Set<String>, untaken: Set<String>): EndpointPart<EndpointRegion> = this
     }
@@ -457,12 +397,11 @@ sealed class EndpointPart<in L : EndpointRegion> {
     data class Optional<L : EndpointRegion>(val key: String, val part: EndpointPart<L>) : EndpointPart<L>() {
         override fun toString() = "[?$key:$part]"
         override fun resolveOptionals(taken: Set<String>, untaken: Set<String>): EndpointPart<L>? =
-            if (key in taken)
-                part.resolveOptionals(taken, untaken)
-            else if (key in untaken)
-                null
-            else
-                part.resolveOptionals(taken, untaken)?.let { copy(key = key, part = it) }
+            when (key) {
+                in taken -> part.resolveOptionals(taken, untaken)
+                in untaken -> null
+                else -> part.resolveOptionals(taken, untaken)?.let { copy(key = key, part = it) }
+            }
     }
 
     val allParts: List<EndpointPart<L>>
@@ -482,8 +421,10 @@ sealed class EndpointPart<in L : EndpointRegion> {
             allParts
 }
 
-inline fun <L : EndpointRegion> EndpointPart<L>.mapInOptional(transform: (EndpointPart<L>) -> EndpointPart<L>): EndpointPart<L> = when (this) {
-    is EndpointPart.Parameter -> transform(this)
-    is EndpointPart.Static -> transform(this)
-    is EndpointPart.Optional -> copy(part = transform(part))
-}
+@PublishedApi
+internal inline fun <L : EndpointRegion> EndpointPart<L>.mapInOptional(transform: (EndpointPart<L>) -> EndpointPart<L>): EndpointPart<L> =
+    when (this) {
+        is EndpointPart.Parameter -> transform(this)
+        is EndpointPart.Static -> transform(this)
+        is EndpointPart.Optional -> copy(part = transform(part))
+    }

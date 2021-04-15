@@ -5,7 +5,7 @@ import com.rnett.krosstalk.Krosstalk
 import com.rnett.krosstalk.KrosstalkResult
 import com.rnett.krosstalk.WithHeaders
 import com.rnett.krosstalk.defaultEndpoint
-import com.rnett.krosstalk.defaultEndpointMethod
+import com.rnett.krosstalk.defaultEndpointHttpMethod
 import com.rnett.krosstalk.instanceReceiver
 import com.rnett.krosstalk.krosstalkPrefix
 import com.rnett.krosstalk.runKrosstalkCatching
@@ -74,7 +74,7 @@ annotation class KrosstalkMethod(val klass: KClass<out Krosstalk>, val noParamHa
 @TopLevelOnly
 annotation class KrosstalkEndpoint(
     val endpoint: String = defaultEndpoint,
-    val httpMethod: String = defaultEndpointMethod,
+    val httpMethod: String = defaultEndpointHttpMethod,
     val contentType: String = "",
 )
 

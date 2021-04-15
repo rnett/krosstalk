@@ -68,8 +68,8 @@ suspend fun krosstalkCall(): Nothing =
     throw KrosstalkException.CompilerError("Should have been replaced with a krosstalk call during compilation")
 
 @InternalKrosstalkApi
-class NoneInUrlException(val methodName: String, val parameter: String) :
-    KrosstalkException("Parameter \"$parameter\" for method \"$methodName\" was an unrealized ServerDefault, but was used in URL.")
+class ServerDefaultInEndpointException(val methodName: String, val parameter: String) :
+    KrosstalkException("Parameter \"$parameter\" for method \"$methodName\" was an unrealized ServerDefault, but was used in the endpoint.")
 
 
 /**
@@ -141,7 +141,7 @@ internal suspend inline fun <T, K, reified C : ClientScope<*>> K.call(
         arguments.filter { it.value != null }.keys
     ) {
         if (rawArguments[it].let { it is ServerDefault<*> && it.isNone() })
-            throw NoneInUrlException(methodName, it)
+            throw ServerDefaultInEndpointException(methodName, it)
 
         method.serialization.serializeUrlArg(it, arguments[it])
     }

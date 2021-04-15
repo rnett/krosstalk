@@ -21,9 +21,12 @@ const val methodName = "\$methodName"
  */
 const val krosstalkPrefix = "\$krosstalkPrefix"
 
+/**
+ * The default endpoint of krosstalk methods.
+ */
 const val defaultEndpoint = "$krosstalkPrefix/$methodName"
-const val defaultEndpointMethod = "POST"
 
-const val exception = "\$exception"
-const val exceptionMessage = "\$exceptionMessage"
-const val exceptionStacktrace = "\$exceptionStacktrace"
+/**
+ * The default HTTP method for krosstalk methods.
+ */
+const val defaultEndpointHttpMethod = "POST"

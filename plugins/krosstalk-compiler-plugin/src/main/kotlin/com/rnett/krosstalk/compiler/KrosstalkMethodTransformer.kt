@@ -1,7 +1,7 @@
 package com.rnett.krosstalk.compiler
 
 import com.rnett.krosstalk.defaultEndpoint
-import com.rnett.krosstalk.defaultEndpointMethod
+import com.rnett.krosstalk.defaultEndpointHttpMethod
 import com.rnett.krosstalk.endpoint.Endpoint
 import com.rnett.krosstalk.extensionReceiver
 import com.rnett.krosstalk.instanceReceiver
@@ -884,7 +884,7 @@ class KrosstalkMethodTransformer(
 
                         // method
                         addValueArgument(
-                            (annotations.KrosstalkEndpoint?.httpMethod ?: defaultEndpointMethod).asConst()
+                            (annotations.KrosstalkEndpoint?.httpMethod ?: defaultEndpointHttpMethod).asConst()
                         )
 
                         // content type

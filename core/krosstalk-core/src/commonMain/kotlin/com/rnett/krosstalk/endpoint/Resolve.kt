@@ -4,7 +4,7 @@ import com.rnett.krosstalk.krosstalkPrefix
 import com.rnett.krosstalk.methodName
 
 
-fun getUrlPath(url: String): String {
+internal fun getUrlPath(url: String): String {
     // something like test/url/part or /test/part/2
     val path = if (url.substringBefore("/", "").matches(Regex("[a-z]*", RegexOption.IGNORE_CASE)))
         url
@@ -50,7 +50,7 @@ data class UrlRequest(val urlParts: List<String>, val queryParams: Map<String, S
     }
 }
 
-sealed class ResolveResult {
+internal sealed class ResolveResult {
     object Pass : ResolveResult()
     object Fail : ResolveResult()
     data class AddParam(val param: String, val value: String) : ResolveResult()
@@ -94,7 +94,7 @@ sealed class ResolveQueryParam {
 
 sealed class ResolveUrlPart {
 
-    abstract fun resolve(urlPart: String): ResolveResult
+    internal abstract fun resolve(urlPart: String): ResolveResult
 
     data class Static(val value: String) : ResolveUrlPart() {
         override fun resolve(urlPart: String): ResolveResult =
@@ -134,6 +134,8 @@ data class ResolveEndpoint(val urlParts: List<ResolveUrlPart>, val queryParams: 
         endpoint.urlParts.map { ResolveUrlPart(it) },
         endpoint.queryParameters.mapValues { ResolveQueryParam(it.value) })
 
+    //TODO(low priority) add a resolve method for use with Endpoint.allResolvePaths
+
     override fun toString(): String {
         return buildString {
             append(urlParts.joinToString("/"))
@@ -145,7 +147,6 @@ data class ResolveEndpoint(val urlParts: List<ResolveUrlPart>, val queryParams: 
     }
 }
 
-//TODO I'd like to be able to turn multiple endpoints into one tree
 sealed class EndpointResolveTree {
     abstract fun enumerate(): Set<ResolveEndpoint>
 

@@ -26,7 +26,7 @@ import io.ktor.utils.io.core.use
  * Helper to apply a scope's client configuration
  */
 @KrosstalkPluginApi
-fun <D> AppliedClientScope<KtorClientScope<D>, *>.configureClient(client: HttpClientConfig<*>) {
+internal fun <D> AppliedClientScope<KtorClientScope<D>, *>.configureClient(client: HttpClientConfig<*>) {
     client.apply {
         scope.apply { configureClient(data as D) }
     }
@@ -36,7 +36,7 @@ fun <D> AppliedClientScope<KtorClientScope<D>, *>.configureClient(client: HttpCl
  * Helper to apply a scope's request configuration
  */
 @KrosstalkPluginApi
-fun <D> AppliedClientScope<KtorClientScope<D>, *>.configureRequest(request: HttpRequestBuilder) {
+internal fun <D> AppliedClientScope<KtorClientScope<D>, *>.configureRequest(request: HttpRequestBuilder) {
     request.apply {
         scope.apply { configureRequest(data as D) }
     }
