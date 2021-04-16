@@ -23,9 +23,9 @@ kotlin {
     sourceSets {
         val commonMain by getting {
             dependencies {
-                api(project(":core:krosstalk-client"))
                 api("io.ktor:ktor-client-core:$ktor_version")
                 api("io.ktor:ktor-client-auth:$ktor_version")
+                api(project(":core:krosstalk-client"))
             }
         }
 
@@ -35,16 +35,6 @@ kotlin {
         }
         val jvmMain by getting {
             dependencies {
-            }
-        }
-
-        all {
-            languageSettings.apply {
-                enableLanguageFeature("InlineClasses")
-                enableLanguageFeature("NewInference")
-                useExperimentalAnnotation("kotlin.contracts.ExperimentalContracts")
-                useExperimentalAnnotation("kotlin.RequiresOptIn")
-                useExperimentalAnnotation("kotlin.time.ExperimentalTime")
             }
         }
     }

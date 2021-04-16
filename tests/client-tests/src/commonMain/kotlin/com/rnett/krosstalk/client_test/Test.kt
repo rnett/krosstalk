@@ -1,4 +1,4 @@
-package com.rnett.krosstalk.client_sample
+package com.rnett.krosstalk.client_test
 
 import kotlinx.serialization.Serializable
 

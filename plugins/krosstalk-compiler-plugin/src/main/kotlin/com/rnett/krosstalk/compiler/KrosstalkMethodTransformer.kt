@@ -1,5 +1,6 @@
 package com.rnett.krosstalk.compiler
 
+import com.rnett.krosstalk.InternalKrosstalkApi
 import com.rnett.krosstalk.defaultEndpoint
 import com.rnett.krosstalk.defaultEndpointHttpMethod
 import com.rnett.krosstalk.endpoint.Endpoint
@@ -69,7 +70,7 @@ import kotlin.collections.set
 import kotlin.math.absoluteValue
 import kotlin.reflect.KType
 
-@OptIn(ExperimentalStdlibApi::class)
+@OptIn(ExperimentalStdlibApi::class, InternalKrosstalkApi::class)
 class KrosstalkMethodTransformer(
     context: IrPluginContext,
     messageCollector: MessageCollector,
@@ -188,7 +189,7 @@ class KrosstalkMethodTransformer(
 
     inner class KrosstalkFunction(val declaration: IrSimpleFunction) {
 
-        val hasArgs by lazy { allNonScopeParameters.isNotEmpty() }
+        val hasArgs by lazy { allNonScopeParameters.filterNot { it.isSpecialParameter }.isNotEmpty() }
 
         val annotations by lazy {
             KrosstalkAnnotations(expectDeclaration?.annotations.orEmpty() + declaration.annotations)
@@ -212,6 +213,7 @@ class KrosstalkMethodTransformer(
 
         val endpointTemplate by lazy { annotations.KrosstalkEndpoint?.endpoint ?: defaultEndpoint }
 
+        @OptIn(InternalKrosstalkApi::class)
         val endpoint by lazy { Endpoint.withoutStatic(endpointTemplate) }
 
         val setEndpoint by lazy { annotations.KrosstalkEndpoint != null }
@@ -469,6 +471,7 @@ class KrosstalkMethodTransformer(
             ).filterNot { it.isScope }
         }
 
+        @OptIn(InternalKrosstalkApi::class)
         val objectParameters by lazy {
             if (annotations.PassObjects != null)
                 emptySet()
@@ -515,7 +518,7 @@ class KrosstalkMethodTransformer(
             returnDataType.expectableObject()
         }
 
-        @OptIn(ExperimentalStdlibApi::class)
+        @OptIn(ExperimentalStdlibApi::class, com.rnett.krosstalk.InternalKrosstalkApi::class)
         fun check() {
             if (checked)
                 return
@@ -593,7 +596,7 @@ class KrosstalkMethodTransformer(
                 )
             }
 
-            val paramNames = nonScopeValueParameters.map { it.krosstalkName }.toSet()
+            val paramNames = nonScopeValueParameters.filterNot { it.isSpecialParameter }.map { it.krosstalkName }.toSet()
             if (setEndpoint) {
                 val neededParams = endpoint.allReferencedParameters()
                 if (declaration.extensionReceiverParameter == null && extensionReceiver in neededParams) {
@@ -646,10 +649,10 @@ class KrosstalkMethodTransformer(
                 buildSet {
                     addAll(paramNames)
 
-                    if (declaration.extensionReceiverParameter != null)
+                    if (declaration.extensionReceiverParameter != null && !declaration.extensionReceiverParameter!!.param.isSpecialParameter)
                         add(extensionReceiver)
 
-                    if (declaration.dispatchReceiverParameter != null)
+                    if (declaration.dispatchReceiverParameter != null && !declaration.dispatchReceiverParameter!!.param.isSpecialParameter)
                         add(instanceReceiver)
                 }.forEach {
                     if (it in allowedOptionals) {

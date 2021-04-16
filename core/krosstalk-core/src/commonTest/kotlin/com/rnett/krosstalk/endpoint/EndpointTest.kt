@@ -1,5 +1,6 @@
 package com.rnett.krosstalk.endpoint
 
+import com.rnett.krosstalk.InternalKrosstalkApi
 import kotlin.math.pow
 import kotlin.test.Test
 import kotlin.test.assertEquals
@@ -28,6 +29,7 @@ class EndpointTest {
         assertEquals(3, endpoint.queryParameters.size)
     }
 
+    @OptIn(InternalKrosstalkApi::class)
     @Test
     fun testResolveOptionals() {
         assertEquals(Endpoint("method/test/id/{id}?test={test3}", "", ""), endpoint.resolveOptionals(setOf("id", "test3")))
@@ -66,6 +68,7 @@ class EndpointTest {
         assertEquals(null, resolver.resolve(UrlRequest("/method2/test/id/2/user/me?test=1")))
     }
 
+    @OptIn(InternalKrosstalkApi::class)
     @Test
     fun testBasic() {
         val resolver = Endpoint.withoutStatic("/krosstalk/basic").resolveTree
@@ -103,6 +106,7 @@ class EndpointTest {
 /**
  * List endpoints for all possible combinations of null or not null arguments
  */
+@OptIn(InternalKrosstalkApi::class)
 private fun Endpoint.enumerateOptionals(): Map<Set<String>, Endpoint> {
     val paramSet = mutableSetOf<String>()
     forEachPart {

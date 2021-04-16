@@ -8,10 +8,10 @@ import org.jetbrains.kotlin.ir.declarations.IrModuleFragment
 
 class KrosstalkIrGenerationExtension(val messageCollector: MessageCollector) : IrGenerationExtension {
     override fun generate(moduleFragment: IrModuleFragment, pluginContext: IrPluginContext) {
-        KrosstalkMethodTransformer(pluginContext, messageCollector).lower(moduleFragment)
+        if (pluginContext.referenceClass(Krosstalk.Krosstalk.fqName) != null) {
+            KrosstalkMethodTransformer(pluginContext, messageCollector).lower(moduleFragment)
+        }
         //TODO phase to make sure there's no annotations on non-krosstalk methods, all `krosstalkCall()`s get replaced, etc
-//        log("Post transform:", moduleFragment.dump(true))
-//        Tester(pluginContext).lower(moduleFragment)
     }
 
 }

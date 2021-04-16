@@ -1,11 +1,13 @@
 package com.rnett.krosstalk.ktor.client
 
 import com.rnett.krosstalk.KrosstalkPluginApi
+import com.rnett.krosstalk.ScopeInstance
 import com.rnett.krosstalk.client.AppliedClientScope
 import com.rnett.krosstalk.client.ClientHandler
 import com.rnett.krosstalk.client.ClientScope
 import com.rnett.krosstalk.client.InternalKrosstalkResponse
 import com.rnett.krosstalk.client.KrosstalkClient
+import com.rnett.krosstalk.client.invoke
 import io.ktor.client.HttpClient
 import io.ktor.client.HttpClientConfig
 import io.ktor.client.call.receive
@@ -57,7 +59,7 @@ interface KtorKrosstalkClient : KrosstalkClient<KtorClientScope<*>> {
 @OptIn(KrosstalkPluginApi::class)
 class KtorClient(
     val baseClient: HttpClient = HttpClient(),
-    val baseRequest: HttpRequestBuilder.() -> Unit,
+    val baseRequest: HttpRequestBuilder.() -> Unit = {},
 ) : ClientHandler<KtorClientScope<*>> {
 
     private val realBaseClient by lazy {
@@ -170,3 +172,6 @@ open class KtorClientBasicAuth(val sendWithoutRequest: Boolean = true, val realm
         }
     }
 }
+
+operator fun <T : KtorClientBasicAuth> T.invoke(username: String, password: String): ScopeInstance<T> =
+    this.invoke(BasicCredentials(username, password))

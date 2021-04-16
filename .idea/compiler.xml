@@ -77,6 +77,14 @@
       <module name="krosstalk.test.commonTest" target="13" />
       <module name="krosstalk.test.jvmMain" target="13" />
       <module name="krosstalk.test.jvmTest" target="13" />
+      <module name="samples.client-sample.commonMain" target="1.8" />
+      <module name="samples.client-sample.commonTest" target="1.8" />
+      <module name="samples.client-sample.jvmMain" target="1.8" />
+      <module name="samples.client-sample.jvmTest" target="1.8" />
+      <module name="samples.fullstack-sample.commonMain" target="1.8" />
+      <module name="samples.fullstack-sample.commonTest" target="1.8" />
+      <module name="samples.fullstack-sample.jvmMain" target="1.8" />
+      <module name="samples.fullstack-sample.jvmTest" target="1.8" />
     </bytecodeTargetLevel>
   </component>
 </project>

@@ -87,6 +87,13 @@
             </Attribute>
           </value>
         </entry>
+        <entry key="\tests\client-tests\build.gradle.kts">
+          <value>
+            <Attribute>
+              <option name="separator" value=":" />
+            </Attribute>
+          </value>
+        </entry>
         <entry key="\tests\fullstack-tests\src\jvmMain\kotlin\com\rnett\krosstalk\fullstack_test\Test.kt">
           <value>
             <Attribute>

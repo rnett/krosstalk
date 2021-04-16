@@ -85,16 +85,6 @@ kotlin {
                 implementation(kotlin("test-js"))
             }
         }
-
-        all {
-            languageSettings.apply {
-                enableLanguageFeature("InlineClasses")
-                enableLanguageFeature("NewInference")
-                useExperimentalAnnotation("kotlin.contracts.ExperimentalContracts")
-                useExperimentalAnnotation("kotlin.RequiresOptIn")
-                useExperimentalAnnotation("kotlin.time.ExperimentalTime")
-            }
-        }
     }
 }
 
@@ -102,7 +92,6 @@ application {
     this.mainClass.set("com.rnett.krosstalk.fullstack_test.TestKt")
 }
 
-//TODO may not show test failures for compiler error
 tasks.create<com.github.psxpaul.task.JavaExecFork>("startTestServer") {
     group = "verification"
 

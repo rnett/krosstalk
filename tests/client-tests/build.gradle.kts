@@ -1,11 +1,9 @@
-import org.jetbrains.kotlin.gradle.targets.js.webpack.KotlinWebpack
-import org.jetbrains.kotlin.gradle.targets.js.webpack.KotlinWebpackConfig.Mode
-
 plugins {
     kotlin("multiplatform")
     id("org.jetbrains.kotlin.plugin.serialization")
     application
     id("com.rnett.krosstalk")
+    id("com.github.hesch.execfork")
 }
 
 val ktor_version = "1.5.2"
@@ -26,36 +24,29 @@ kotlin {
                 useIR = true
             }
         }
-        withJava() //TODO report weird errors when missing this
+        withJava()
     }
     js(IR) {
-//        produceExecutable()
-
         browser {
             binaries.executable()
 
             webpackTask {
                 val project = project
-                mode = if (project.hasProperty("dev")) Mode.DEVELOPMENT else Mode.PRODUCTION
+                mode =
+                    if (project.hasProperty("dev")) org.jetbrains.kotlin.gradle.targets.js.webpack.KotlinWebpackConfig.Mode.DEVELOPMENT else org.jetbrains.kotlin.gradle.targets.js.webpack.KotlinWebpackConfig.Mode.PRODUCTION
+            }
+            testTask {
+                useMocha {
+                    timeout = "99999999999999"
+//                    useChromeHeadless()
+                }
+
             }
         }
-
-
-//        configure(compilations) {
-//            kotlinOptions {
-////                noStdlib = true
-//                sourceMapEmbedSources = "always"
-//                metaInfo = true
-//                sourceMap = true
-////                moduleKind = "commonjs"
-//            }
-//        }
     }
     sourceSets {
         val commonMain by getting {
             dependencies {
-                implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:$coroutines_version")
-                implementation("org.jetbrains.kotlinx:kotlinx-serialization-core:$serialization_version")
                 implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:$serialization_version")
             }
         }
@@ -68,23 +59,27 @@ kotlin {
         }
         val jvmMain by getting {
             dependencies {
-                implementation("io.ktor:ktor-server-netty:$ktor_version")
-                implementation("io.ktor:ktor-html-builder:$ktor_version")
+                implementation("io.ktor:ktor-server-cio:$ktor_version")
                 implementation("io.ktor:ktor-serialization:$ktor_version")
-
-//                api("org.jetbrains.kotlinx:kotlinx-html:0.7.2")
+                implementation("io.ktor:ktor-auth:$ktor_version")
 
                 implementation("ch.qos.logback:logback-classic:1.2.3")
             }
         }
         val jvmTest by getting {
             dependencies {
-                implementation(kotlin("test-junit5"))
+                implementation(kotlin("test-junit"))
             }
         }
         val jsMain by getting {
             dependencies {
+                implementation("com.github.rnett.krosstalk:krosstalk")
+
                 implementation("com.github.rnett.krosstalk:krosstalk-ktor-client")
+
+                api("io.ktor:ktor-client-core:$ktor_version")
+                api("io.ktor:ktor-client-auth:$ktor_version")
+                implementation("io.ktor:ktor-client-logging:$ktor_version")
             }
         }
         val jsTest by getting {
@@ -92,31 +87,23 @@ kotlin {
                 implementation(kotlin("test-js"))
             }
         }
-
-        all {
-            languageSettings.apply {
-                enableLanguageFeature("InlineClasses")
-                enableLanguageFeature("NewInference")
-                useExperimentalAnnotation("kotlin.contracts.ExperimentalContracts")
-                useExperimentalAnnotation("kotlin.RequiresOptIn")
-                useExperimentalAnnotation("kotlin.time.ExperimentalTime")
-            }
-        }
     }
 }
 
 application {
-    mainClassName = "com.rnett.krosstalk.client_sample.TestKt"
+    this.mainClass.set("com.rnett.krosstalk.fullstack_test.TestKt")
 }
-tasks.getByName<KotlinWebpack>("jsBrowserProductionWebpack") {
-    outputFileName = "test.js"
-}
-tasks.getByName<Jar>("jvmJar") {
-    dependsOn(tasks.getByName("jsBrowserProductionWebpack"))
-    val jsBrowserProductionWebpack = tasks.getByName<KotlinWebpack>("jsBrowserProductionWebpack")
-    from(File(jsBrowserProductionWebpack.destinationDirectory, jsBrowserProductionWebpack.outputFileName))
-}
-tasks.getByName<JavaExec>("run") {
-    dependsOn(tasks.getByName<Jar>("jvmJar"))
-    classpath(tasks.getByName<Jar>("jvmJar"))
+
+tasks.create<com.github.psxpaul.task.JavaExecFork>("startTestServer") {
+    group = "verification"
+
+    classpath = sourceSets.main.get().runtimeClasspath
+    main = "com.rnett.krosstalk.client_test.TestKt"
+    Thread.sleep(2_000)
+
+    dependsOn("jvmJar")
+
+    stopAfter = tasks["jsTest"]
+
+    tasks["jsTest"].dependsOn(this)
 }

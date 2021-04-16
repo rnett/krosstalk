@@ -36,11 +36,7 @@ kotlin {
 
         all {
             languageSettings.apply {
-                enableLanguageFeature("InlineClasses")
-                enableLanguageFeature("NewInference")
                 useExperimentalAnnotation("kotlin.contracts.ExperimentalContracts")
-                useExperimentalAnnotation("kotlin.RequiresOptIn")
-                useExperimentalAnnotation("kotlin.time.ExperimentalTime")
             }
         }
     }

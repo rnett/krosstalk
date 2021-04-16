@@ -1,10 +1,14 @@
-package com.rnett.krosstalk.client_sample
+package com.rnett.krosstalk.client_test
 
 import io.ktor.application.call
 import io.ktor.application.install
+import io.ktor.auth.Authentication
+import io.ktor.auth.Principal
+import io.ktor.auth.authenticate
+import io.ktor.auth.authentication
+import io.ktor.auth.basic
 import io.ktor.features.CORS
 import io.ktor.features.ContentNegotiation
-import io.ktor.html.respondHtml
 import io.ktor.http.HttpStatusCode
 import io.ktor.http.content.resource
 import io.ktor.http.content.static
@@ -13,36 +17,19 @@ import io.ktor.routing.get
 import io.ktor.routing.route
 import io.ktor.routing.routing
 import io.ktor.serialization.json
+import io.ktor.server.cio.CIO
 import io.ktor.server.engine.embeddedServer
-import io.ktor.server.netty.Netty
-import kotlinx.html.HTML
-import kotlinx.html.body
-import kotlinx.html.div
-import kotlinx.html.head
-import kotlinx.html.id
-import kotlinx.html.script
-import kotlinx.html.title
+import kotlinx.serialization.encodeToString
 import kotlinx.serialization.json.Json
-
-fun HTML.index() {
-    head {
-        title("Hello from Ktor!")
-    }
-    body {
-        div {
-            +"Hello from Ktor"
-        }
-        div {
-            id = "root"
-        }
-        script(src = "/test.js") {}
-    }
-}
 
 val knownItems = List(20) { Item(it, "Item $it") }.associateBy { it.id }
 
+data class User(val username: String) : Principal
+
+val users = mapOf("user" to "pass")
+
 fun main() {
-    embeddedServer(Netty, 8080, "localhost") {
+    embeddedServer(CIO, 8080, "localhost") {
 
         install(CORS) {
             anyHost()
@@ -52,17 +39,24 @@ fun main() {
             json(Json { })
         }
 
-        routing {
-
-            get("/") {
-                call.respondHtml(HttpStatusCode.OK, HTML::index)
+        install(Authentication) {
+            basic {
+                validate {
+                    if (users[it.name] == it.password)
+                        User(it.name)
+                    else
+                        null
+                }
             }
+        }
+
+        routing {
 
             route("items") {
                 get("{id}") {
                     val id = call.parameters["id"]?.toIntOrNull() ?: return@get call.respond(
-                            HttpStatusCode.BadRequest,
-                            "id must be an Int"
+                        HttpStatusCode.BadRequest,
+                        "id must be an Int"
                     )
 
                     knownItems[id]?.let {
@@ -73,6 +67,20 @@ fun main() {
                     call.respond(knownItems.values.map { it.id })
                 }
             }
+
+            authenticate {
+                get("user") {
+                    call.respond(Json { }.encodeToString(call.authentication.principal<User>()!!.username))
+                }
+            }
+
+            route("inner/server/path") {
+                get("test") {
+                    call.respond(HttpStatusCode.OK)
+                }
+            }
+
+
 
             static {
                 resource("/test.js", "test.js")
