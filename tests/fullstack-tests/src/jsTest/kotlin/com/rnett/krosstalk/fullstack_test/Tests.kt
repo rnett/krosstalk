@@ -10,6 +10,7 @@ import kotlinx.coroutines.promise
 import kotlin.test.Test
 import kotlin.test.assertEquals
 import kotlin.test.assertNotEquals
+import kotlin.test.assertNotNull
 
 class Tests {
 
@@ -241,5 +242,11 @@ class Tests {
     @Test
     fun testRequestHeaders() = GlobalScope.promise {
         assertEquals(4, withRequestHeaders(2, mapOf("value" to listOf("2"))))
+    }
+
+    @Test
+    fun testResultObject() = GlobalScope.promise {
+        assertEquals(ExpectObject, withResultObject(2).valueOrNull)
+        assertNotNull(withResultObject(-2).serverExceptionOrNull)
     }
 }

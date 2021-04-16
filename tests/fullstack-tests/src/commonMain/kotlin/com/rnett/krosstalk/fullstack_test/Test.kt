@@ -171,3 +171,7 @@ expect suspend fun withHeadersReturnObject(n: Int): WithHeaders<ExpectObject>
 
 @KrosstalkMethod(MyKrosstalk::class)
 expect suspend fun withRequestHeaders(n: Int, @RequestHeaders h: Headers): Int
+
+@KrosstalkMethod(MyKrosstalk::class)
+@ExplicitResult
+expect suspend fun withResultObject(n: Int): KrosstalkResult<ExpectObject>

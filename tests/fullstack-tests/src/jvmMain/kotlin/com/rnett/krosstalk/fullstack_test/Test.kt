@@ -177,3 +177,10 @@ actual suspend fun withHeadersReturnObject(n: Int): WithHeaders<ExpectObject> {
 actual suspend fun withRequestHeaders(n: Int, h: Headers): Int {
     return n * h["value"]!!.first().toInt()
 }
+
+actual suspend fun withResultObject(n: Int): KrosstalkResult<ExpectObject> = runKrosstalkCatching {
+    if (n < 0)
+        throw MyException("Can't have n < 0")
+
+    ExpectObject
+}

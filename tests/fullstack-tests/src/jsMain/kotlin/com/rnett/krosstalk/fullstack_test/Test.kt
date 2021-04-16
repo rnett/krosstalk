@@ -134,3 +134,5 @@ actual suspend fun withHeadersInsideResult(n: Int): KrosstalkResult<WithHeaders<
 actual suspend fun withHeadersReturnObject(n: Int): WithHeaders<ExpectObject> = krosstalkCall()
 
 actual suspend fun withRequestHeaders(n: Int, h: Headers): Int = krosstalkCall()
+
+actual suspend fun withResultObject(n: Int): KrosstalkResult<ExpectObject> = krosstalkCall()
