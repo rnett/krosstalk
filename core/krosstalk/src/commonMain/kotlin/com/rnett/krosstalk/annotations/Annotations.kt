@@ -13,9 +13,6 @@ import com.rnett.krosstalk.serialization.SerializationHandler
 import com.rnett.krosstalk.toKrosstalkResult
 import kotlin.reflect.KClass
 
-
-//TODO option to not send instance/extension(?) receiver when it is an object
-
 // meta annotations
 @Target(AnnotationTarget.ANNOTATION_CLASS)
 @Retention(AnnotationRetention.BINARY)
@@ -43,7 +40,6 @@ internal annotation class TopLevelOnly
 annotation class KrosstalkMethod(val klass: KClass<out Krosstalk>, val noParamHash: Boolean = false)
 
 //TODO update docs
-//TODO optional handling.  Make explicit?  Currently nullables don't get sent if optional in url, defaults aren't required on server
 /**
  * Specifies an endpoint for the krosstalk method to use.
  * Should be a http-formatted string of the (relative) pathname and query string, i.e. `"/items/?id={id}"`.

@@ -1,14 +1,11 @@
 package com.rnett.krosstalk
 
-//TODO catch/convert to http status code
 /**
  * An argument that should have been passed was not.
  */
 @OptIn(InternalKrosstalkApi::class)
 class MissingArgumentException @InternalKrosstalkApi constructor(val methodName: String, val subMessage: String) : KrosstalkException(
     "Method $methodName: $subMessage")
-
-//TODO catch/convert to http status code
 
 /**
  * An argument was passed as the wrong type.

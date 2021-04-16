@@ -20,9 +20,6 @@ import com.rnett.krosstalk.methodName
 import com.rnett.krosstalk.serialization.KotlinxBinarySerializationHandler
 import kotlinx.serialization.Serializable
 
-//TODO want some way to support binary serialization for body, but string for args (URL Encoded JSON?).  Have separate body and url serializers?
-
-//TODO I'd like to be able to test the used URLs
 @Serializable
 data class Data(val num: Int, val str: String)
 

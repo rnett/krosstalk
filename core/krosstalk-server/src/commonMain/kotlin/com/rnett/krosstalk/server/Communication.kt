@@ -47,7 +47,7 @@ else
  * @param handleException how to handle a server exception, if requested.  Should log if possible, throw if not.
  * @param responder a lambda to respond to the request.
  */
-@OptIn(InternalKrosstalkApi::class, ExperimentalStdlibApi::class)
+@OptIn(InternalKrosstalkApi::class, ExperimentalStdlibApi::class, kotlin.contracts.ExperimentalContracts::class)
 @KrosstalkPluginApi
 suspend fun <K> K.handle(
     serverUrl: String,
