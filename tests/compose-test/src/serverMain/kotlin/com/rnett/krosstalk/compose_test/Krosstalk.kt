@@ -1,6 +1,5 @@
 package com.rnett.krosstalk.compose_test
 
-import androidx.compose.runtime.Stable
 import com.rnett.krosstalk.Krosstalk
 import com.rnett.krosstalk.KrosstalkResult
 import com.rnett.krosstalk.Scope
@@ -17,7 +16,6 @@ import kotlinx.serialization.cbor.Cbor
 
 data class User(val username: String) : Principal
 
-@Stable
 actual object TodoKrosstalk : Krosstalk(), KtorKrosstalkServer {
     actual override val serialization = KotlinxBinarySerializationHandler(Cbor { })
 

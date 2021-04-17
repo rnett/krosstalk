@@ -1,6 +1,5 @@
 package com.rnett.krosstalk.compose_test
 
-import androidx.compose.runtime.Stable
 import com.rnett.krosstalk.Krosstalk
 import com.rnett.krosstalk.KrosstalkResult
 import com.rnett.krosstalk.Scope
@@ -15,7 +14,6 @@ import io.ktor.client.HttpClient
 import io.ktor.client.engine.apache.Apache
 import kotlinx.serialization.cbor.Cbor
 
-@Stable
 actual object TodoKrosstalk : Krosstalk(), KtorKrosstalkClient {
     actual override val serialization = KotlinxBinarySerializationHandler(Cbor { })
 
