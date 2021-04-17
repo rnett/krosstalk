@@ -1,3 +1,5 @@
+# README is very out of date
+
 # Krosstalk: Expect/Actual API call autowiring
 
 [ ![Download](https://api.bintray.com/packages/rnett/krosstalk/krosstalk/images/download.svg) ](https://bintray.com/rnett/krosstalk/krosstalk/_latestVersion)
