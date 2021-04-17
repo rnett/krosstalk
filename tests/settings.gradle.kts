@@ -2,6 +2,7 @@ pluginManagement {
     repositories {
         mavenCentral()
         gradlePluginPortal()
+        maven { url = uri("https://maven.pkg.jetbrains.space/public/p/compose/dev") }
         maven("https://oss.sonatype.org/content/repositories/snapshots") {
             mavenContent { snapshotsOnly() }
         }
@@ -12,5 +13,5 @@ pluginManagement {
 rootProject.name = "tests"
 
 includeBuild("..")
-include("client-tests", "fullstack-tests")
+include("client-test", "fullstack-test", "compose-test")
 

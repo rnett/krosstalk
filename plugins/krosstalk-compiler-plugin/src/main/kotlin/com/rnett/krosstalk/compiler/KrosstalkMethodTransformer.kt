@@ -51,7 +51,6 @@ import org.jetbrains.kotlin.ir.expressions.IrBody
 import org.jetbrains.kotlin.ir.expressions.IrCall
 import org.jetbrains.kotlin.ir.expressions.IrExpression
 import org.jetbrains.kotlin.ir.expressions.IrExpressionBody
-import org.jetbrains.kotlin.ir.symbols.IrClassSymbol
 import org.jetbrains.kotlin.ir.types.IrType
 import org.jetbrains.kotlin.ir.types.classOrNull
 import org.jetbrains.kotlin.ir.types.impl.IrSimpleTypeImpl
@@ -62,6 +61,7 @@ import org.jetbrains.kotlin.ir.types.isSubtypeOf
 import org.jetbrains.kotlin.ir.types.makeNotNull
 import org.jetbrains.kotlin.ir.types.makeNullable
 import org.jetbrains.kotlin.ir.types.typeWith
+import org.jetbrains.kotlin.ir.types.typeWithArguments
 import org.jetbrains.kotlin.ir.util.*
 import org.jetbrains.kotlin.name.FqName
 import org.jetbrains.kotlin.name.Name
@@ -80,8 +80,8 @@ class KrosstalkMethodTransformer(
 
     val Headers = context.referenceTypeAlias(FqName("com.rnett.krosstalk.Headers"))!!.owner.expandedType
 
-    val addedInitalizers = mutableMapOf<IrClassSymbol, IrAnonymousInitializer>()
-    val seenNames = mutableMapOf<IrClassSymbol, MutableSet<String>>()
+    val addedInitalizers = mutableMapOf<FqName, IrAnonymousInitializer>()
+    val seenNames = mutableMapOf<FqName, MutableSet<String>>()
 
     fun IrFunction.paramHash() = this.symbol.signature!!.hashCode().absoluteValue.toString(36)
 
@@ -378,7 +378,11 @@ class KrosstalkMethodTransformer(
                             "Scope parameter has invalid scope type.  Scopes must be objects nested in the Krosstalk class"
                         )
                     }
-                    if (scopeClass.parentClassOrNull?.symbol != krosstalkClass.declaration.symbol && scopeClass.parentClassOrNull?.symbol != actualKrosstalkClass.symbol) {
+
+                    //TODO checking symbols or signatures here sometimes gives false positive !=s
+                    if (scopeClass.parentClassOrNull?.kotlinFqName != krosstalkClass.declaration.kotlinFqName &&
+                        scopeClass.parentClassOrNull?.kotlinFqName != actualKrosstalkClass.kotlinFqName
+                    ) {
                         reportError(
                             "Scope parameter has invalid scope type.  Scopes must be objects nested in the Krosstalk class"
                         )
@@ -713,11 +717,11 @@ class KrosstalkMethodTransformer(
 
             val isPlaceholderBody = when (val body = declaration.body) {
                 is IrExpressionBody -> {
-                    body.expression.let { it is IrCall && it.symbol == Krosstalk.Client.clientPlaceholder() }
+                    body.expression.let { it is IrCall && it.symbol.owner.kotlinFqName == Krosstalk.Client.clientPlaceholder.fqName }
                 }
                 is IrBlockBody -> {
                     body.statements.size == 1 && body.statements.single()
-                        .let { it is IrCall && it.symbol == Krosstalk.Client.clientPlaceholder() }
+                        .let { it is IrCall && it.symbol.owner.kotlinFqName == Krosstalk.Client.clientPlaceholder.fqName }
                 }
                 else -> {
                     false
@@ -752,11 +756,15 @@ class KrosstalkMethodTransformer(
         fun IrBuilderWithScope.buildCallLambda(): IrSimpleFunction {
             if (!krosstalkClass.isServer) {
                 return buildLambda(declaration.returnType, { isSuspend = true }) {
-                    val exceptionConstructor = Krosstalk.CallFromClientSideException().constructors.single()
-                    irThrow(
-                        irCallConstructor(exceptionConstructor, emptyList())
-                            .withValueArguments(declaration.name.asString().asConst())
-                    )
+                    withBuilder {
+                        body = irJsExprBody(run {
+                            val exceptionConstructor = Krosstalk.CallFromClientSideException().constructors.single()
+                            irThrow(
+                                irCallConstructor(exceptionConstructor, emptyList())
+                                    .withValueArguments(declaration.name.asString().asConst())
+                            )
+                        })
+                    }
                 }
             }
 
@@ -846,7 +854,7 @@ class KrosstalkMethodTransformer(
         private fun calculateName(): String {
             val paramHash = expectDeclaration?.paramHash() ?: declaration.paramHash()
             val name = if (annotations.KrosstalkMethod?.noParamHash == true) {
-                if (declaration.name.asString() in seenNames.getOrDefault(krosstalkClass.declaration.symbol, mutableSetOf())) {
+                if (declaration.name.asString() in seenNames.getOrDefault(krosstalkClass.declaration.kotlinFqName, mutableSetOf())) {
                     messageCollector.reportError(
                         "Multiple methods for krosstalk object ${krosstalkClass.declaration.kotlinFqName} with name " +
                                 "${declaration.name.asString()}.  All but one must use `noParamHash = false` in their @KrosstalkMethod annotations.",
@@ -857,152 +865,148 @@ class KrosstalkMethodTransformer(
             } else {
                 declaration.name.asString() + "_$paramHash"
             }
-            seenNames.getOrPut(krosstalkClass.declaration.symbol) { mutableSetOf() } += name
+            seenNames.getOrPut(krosstalkClass.declaration.kotlinFqName) { mutableSetOf() } += name
             return name
         }
 
         fun addToKrosstalkClass() {
-            val initializer = addedInitalizers.getOrPut(krosstalkClass.declaration.symbol) {
-                krosstalkClass.declaration.addAnonymousInitializer {
-                    body = DeclarationIrBuilder(context, this.symbol).irBlockBody {
+            if (krosstalkClass.declaration.isExpect) return
+
+            krosstalkClass.declaration.addAnonymousInitializer {
+                parent = krosstalkClass.declaration
+                body = withBuilder {
+                    irBlockBody {
+                        +irCall(Krosstalk.Krosstalk.addMethod).apply {
+                            dispatchReceiver = krosstalkClass.declaration.thisReceiver?.let { irGet(it) }
+                            putTypeArgument(0, declaration.returnType)
+
+                            var valueArguments = 0
+                            fun addValueArgument(argument: IrExpression) = putValueArgument(valueArguments++, argument)
+
+                            // Name
+                            addValueArgument(calculateName().asConst())
+
+                            // endpoint
+
+                            addValueArgument(endpointTemplate.asConst())
+
+                            // method
+                            addValueArgument(
+                                (this@KrosstalkFunction.annotations.KrosstalkEndpoint?.httpMethod ?: defaultEndpointHttpMethod).asConst()
+                            )
+
+                            // content type
+                            addValueArgument((this@KrosstalkFunction.annotations.KrosstalkEndpoint?.contentType ?: "").asConst())
+
+                            // MethodTypes
+                            addValueArgument(
+                                irCall(Krosstalk.Serialization.MethodTypes().owner.primaryConstructor!!).apply {
+                                    val parameterMap: MutableMap<IrExpression, IrExpression> =
+                                        nonScopeValueParameters.filter { it !in objectParameters && !it.isSpecialParameter }
+                                            .associate {
+                                                it.krosstalkName.asConst() to stdlib.reflect.typeOf(it.dataType)
+                                            }.toMutableMap()
+
+                                    declaration.extensionReceiverParameter?.param?.let {
+                                        if (it !in objectParameters) {
+                                            parameterMap[it.krosstalkName.asConst()] =
+                                                stdlib.reflect.typeOf(it.dataType)
+                                        }
+                                    }
+
+                                    declaration.dispatchReceiverParameter?.param?.let {
+                                        if (it !in objectParameters) {
+                                            parameterMap[it.krosstalkName.asConst()] = stdlib.reflect.typeOf(it.dataType)
+                                        }
+                                    }
+
+                                    putValueArgument(
+                                        0,
+                                        stdlib.collections.mapOf(stringType, Kotlin.Reflect.KType().typeWith(), parameterMap)
+                                    )
+
+                                    putValueArgument(1, if (returnObject != null) {
+                                        irNull(irTypeOf<KType>())
+                                    } else {
+                                        stdlib.reflect.typeOf(returnDataType)
+                                    }
+                                    )
+                                }
+                            )
+
+                            // required scopes
+                            addValueArgument(
+                                stdlib.collections.setOf(
+                                    Krosstalk.Scope.resolveTypeWith(),
+                                    requiredScopes.values.map { irGetObject(it.symbol) }
+                                )
+                            )
+
+                            // optional scopes
+                            addValueArgument(
+                                stdlib.collections.setOf(
+                                    Krosstalk.Scope.resolveTypeWith(),
+                                    optionalScopes.values.map { irGetObject(it.symbol) }
+                                )
+                            )
+
+                            // useExplicitResult
+                            addValueArgument(isKrosstalkResult.asConst())
+
+                            // includeStacktrace
+                            addValueArgument(
+                                (this@KrosstalkFunction.annotations.ExplicitResult?.includeStacktrace == true).asConst()
+                            )
+
+                            // rethrowServerException
+                            addValueArgument((this@KrosstalkFunction.annotations.ExplicitResult?.propagateServerExceptions == true).asConst())
+
+                            // optionalParameters
+                            addValueArgument(
+                                optionalParameters.map { it.krosstalkName.asConst() }
+                                    .let { stdlib.collections.setOf(stringType, it) }
+                            )
+
+                            // serverDefaultParameters
+                            addValueArgument(
+                                serverDefaultParameters.map { it.krosstalkName.asConst() }
+                                    .let { stdlib.collections.setOf(stringType, it) }
+                            )
+
+                            // object params
+                            addValueArgument(
+                                objectParameters.associate {
+                                    (it.krosstalkName.asConst() as IrExpression) to irGetObjectValue(context.irBuiltIns.anyNType,
+                                        it.constantObject!!.symbol)
+                                }
+                                    .let { stdlib.collections.mapOf(stringType, context.irBuiltIns.anyNType, it) }
+                            )
+
+                            // object return
+                            addValueArgument(returnObject?.let { irGetObject(it.symbol) } ?: irNull())
+
+                            // outerWithHeaders
+                            addValueArgument(isOuterWithHeaders.asConst())
+
+                            // innerWithHeaders
+                            addValueArgument(isInnerWithHeaders.asConst())
+
+                            // requestHeadersParam
+                            addValueArgument(requestHeadersParameter?.krosstalkName?.asConst() ?: irNull())
+
+                            // serverUrlParam
+                            addValueArgument(serverUrlParameter?.krosstalkName?.asConst() ?: irNull())
+
+                            // call function
+                            // signature is (Map<String, *>, ImmutableWantedScopes)
+                            val lambda = buildCallLambda()
+
+                            addValueArgument(lambdaArgument(lambda))
+
+                        }
                     }
                 }
             }
-
-            initializer.body.apply {
-                initializer.withBuilder {
-                    statements += irCall(Krosstalk.Krosstalk.addMethod).apply {
-                        dispatchReceiver = krosstalkClass.declaration.thisReceiver?.let { irGet(it) }
-                        putTypeArgument(0, declaration.returnType)
-
-                        var valueArguments = 0
-                        fun addValueArgument(argument: IrExpression) = putValueArgument(valueArguments++, argument)
-
-                        // Name
-                        addValueArgument(calculateName().asConst())
-
-                        // endpoint
-
-                        addValueArgument(endpointTemplate.asConst())
-
-                        // method
-                        addValueArgument(
-                            (annotations.KrosstalkEndpoint?.httpMethod ?: defaultEndpointHttpMethod).asConst()
-                        )
-
-                        // content type
-                        addValueArgument((annotations.KrosstalkEndpoint?.contentType ?: "").asConst())
-
-                        // MethodTypes
-                        addValueArgument(
-                            irCall(Krosstalk.Serialization.MethodTypes().owner.primaryConstructor!!).apply {
-                                val parameterMap: MutableMap<IrExpression, IrExpression> =
-                                    nonScopeValueParameters.filter { it !in objectParameters && !it.isSpecialParameter }
-                                        .associate {
-                                            it.krosstalkName.asConst() to stdlib.reflect.typeOf(it.dataType)
-                                        }.toMutableMap()
-
-                                declaration.extensionReceiverParameter?.param?.let {
-                                    if (it !in objectParameters) {
-                                        parameterMap[it.krosstalkName.asConst()] =
-                                            stdlib.reflect.typeOf(it.dataType)
-                                    }
-                                }
-
-                                declaration.dispatchReceiverParameter?.param?.let {
-                                    if (it !in objectParameters) {
-                                        parameterMap[it.krosstalkName.asConst()] = stdlib.reflect.typeOf(it.dataType)
-                                    }
-                                }
-
-                                putValueArgument(
-                                    0,
-                                    stdlib.collections.mapOf(stringType, Kotlin.Reflect.KType().typeWith(), parameterMap)
-                                )
-
-                                putValueArgument(1, if (returnObject != null) {
-                                    irNull(irTypeOf<KType>())
-                                } else {
-                                    stdlib.reflect.typeOf(returnDataType)
-                                }
-                                )
-                            }
-                        )
-
-                        // required scopes
-                        addValueArgument(
-                            stdlib.collections.setOf(
-                                Krosstalk.Scope.resolveTypeWith(),
-                                requiredScopes.values.map { irGetObject(it.symbol) }
-                            )
-                        )
-
-                        // optional scopes
-                        addValueArgument(
-                            stdlib.collections.setOf(
-                                Krosstalk.Scope.resolveTypeWith(),
-                                optionalScopes.values.map { irGetObject(it.symbol) }
-                            )
-                        )
-
-                        // useExplicitResult
-                        addValueArgument(isKrosstalkResult.asConst())
-
-                        // includeStacktrace
-                        addValueArgument(
-                            (annotations.ExplicitResult?.includeStacktrace == true).asConst()
-                        )
-
-                        // rethrowServerException
-                        addValueArgument((annotations.ExplicitResult?.propagateServerExceptions == true).asConst())
-
-                        // optionalParameters
-                        addValueArgument(
-                            optionalParameters.map { it.krosstalkName.asConst() }
-                                .let { stdlib.collections.setOf(stringType, it) }
-                        )
-
-                        // serverDefaultParameters
-                        addValueArgument(
-                            serverDefaultParameters.map { it.krosstalkName.asConst() }
-                                .let { stdlib.collections.setOf(stringType, it) }
-                        )
-
-                        // object params
-                        addValueArgument(
-                            objectParameters.associate {
-                                (it.krosstalkName.asConst() as IrExpression) to irGetObjectValue(context.irBuiltIns.anyNType,
-                                    it.constantObject!!.symbol)
-                            }
-                                .let { stdlib.collections.mapOf(stringType, context.irBuiltIns.anyNType, it) }
-                        )
-
-                        // object return
-                        addValueArgument(returnObject?.let { irGetObject(it.symbol) } ?: irNull())
-
-                        // outerWithHeaders
-                        addValueArgument(isOuterWithHeaders.asConst())
-
-                        // innerWithHeaders
-                        addValueArgument(isInnerWithHeaders.asConst())
-
-                        // requestHeadersParam
-                        addValueArgument(requestHeadersParameter?.krosstalkName?.asConst() ?: irNull())
-
-                        // serverUrlParam
-                        addValueArgument(serverUrlParameter?.krosstalkName?.asConst() ?: irNull())
-
-                        // call function
-                        // signature is (Map<String, *>, ImmutableWantedScopes)
-                        val lambda = buildCallLambda()
-
-                        addValueArgument(lambdaArgument(lambda))
-
-                    }
-                }
-            }
-
-            initializer.patchDeclarationParents(krosstalkClass.declaration)
         }
 
         fun addCallMethodBody() {
@@ -1066,7 +1070,7 @@ class KrosstalkMethodTransformer(
                     )
                     putValueArgument(
                         2, stdlib.collections.listOfNotNull(
-                            Krosstalk.ScopeInstance.resolveTypeWith(),
+                            Krosstalk.Client.AppliedClientScope().typeWithArguments(listOf(clientScopeType as IrTypeBase, IrStarProjectionImpl)),
                             scopeList
                         )
                     )

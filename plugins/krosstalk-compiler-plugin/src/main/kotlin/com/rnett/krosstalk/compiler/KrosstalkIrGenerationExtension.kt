@@ -6,6 +6,7 @@ import org.jetbrains.kotlin.backend.common.lower
 import org.jetbrains.kotlin.cli.common.messages.MessageCollector
 import org.jetbrains.kotlin.ir.declarations.IrModuleFragment
 
+
 class KrosstalkIrGenerationExtension(val messageCollector: MessageCollector) : IrGenerationExtension {
     override fun generate(moduleFragment: IrModuleFragment, pluginContext: IrPluginContext) {
         if (pluginContext.referenceClass(Krosstalk.Krosstalk.fqName) != null) {

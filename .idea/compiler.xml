@@ -85,6 +85,14 @@
       <module name="samples.fullstack-sample.commonTest" target="1.8" />
       <module name="samples.fullstack-sample.jvmMain" target="1.8" />
       <module name="samples.fullstack-sample.jvmTest" target="1.8" />
+      <module name="tests.client-tests.commonMain" target="1.8" />
+      <module name="tests.client-tests.commonTest" target="1.8" />
+      <module name="tests.client-tests.jvmMain" target="1.8" />
+      <module name="tests.client-tests.jvmTest" target="1.8" />
+      <module name="tests.fullstack-tests.commonMain" target="1.8" />
+      <module name="tests.fullstack-tests.commonTest" target="1.8" />
+      <module name="tests.fullstack-tests.jvmMain" target="1.8" />
+      <module name="tests.fullstack-tests.jvmTest" target="1.8" />
     </bytecodeTargetLevel>
   </component>
 </project>

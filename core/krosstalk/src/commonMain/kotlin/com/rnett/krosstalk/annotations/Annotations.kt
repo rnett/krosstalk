@@ -6,8 +6,10 @@ import com.rnett.krosstalk.KrosstalkResult
 import com.rnett.krosstalk.WithHeaders
 import com.rnett.krosstalk.defaultEndpoint
 import com.rnett.krosstalk.defaultEndpointHttpMethod
+import com.rnett.krosstalk.extensionReceiver
 import com.rnett.krosstalk.instanceReceiver
 import com.rnett.krosstalk.krosstalkPrefix
+import com.rnett.krosstalk.methodName
 import com.rnett.krosstalk.runKrosstalkCatching
 import com.rnett.krosstalk.serialization.SerializationHandler
 import com.rnett.krosstalk.toKrosstalkResult
@@ -39,24 +41,36 @@ internal annotation class TopLevelOnly
 @TopLevelOnly
 annotation class KrosstalkMethod(val klass: KClass<out Krosstalk>, val noParamHash: Boolean = false)
 
+val a = methodName
+
 //TODO update docs
 /**
  * Specifies an endpoint for the krosstalk method to use.
- * Should be a http-formatted string of the (relative) pathname and query string, i.e. `"/items/?id={id}"`.
- * Can include arguments in the endpoint using `"{parameterName}"`, **except scope parameters**.
- * This will be evaluated by serializing the argument using the Krosstalk's serialization.
- * I highly recommend you use a string serialization method ([SerializationHandler] with [String]) when using this.
- * Unless you specify [MinimizeBody] or [EmptyBody] the arguments used in the endpoint will still be passed in the body.
- * If you want to include non-trivial functions of the arguments in the endpoint, include them in the function as default arguments and use those.
+ * [endpoint] should be a http-formatted string of the (relative) pathname and query string, i.e. `"/items/?id={id}"`.
+ * Supported syntax is as follows:
+ * * Literals
+ * * Parameters: `{param}`.
+ * * Parameter with name: `{{param}}`, becomes `/param/{param}` or `param={param}` depending on location.
+ * * Optional: `[?param:...]`.  Evaluates to the body (`...`) if param is not null, empty otherwise.  Contents are treated as full segments, i.e.
+ * `my[?param:id]={param2}` is not allowed.
+ * * Optional named parameter: `{{?param}}`, becomes `{{param}}` if param is non-null, empty otherwise.
  *
- * For instance and extension receivers, use `"$instanceReceiver"` and `"$extensionReceiver"`, respectively.
- * To include the name of the method, use `"$methodName"` (this includes the parameter hash if used).
- * To include the prefix set in the Krosstalk object, use `"$krosstalkPrefix` (it is not included automatically if [KrosstalkEndpoint] is present).
+ * Valid parameter names are the method parameters, [instanceReceiver] if it has an instance/dispatch receiver,
+ * [extensionReceiver] if it has a extension receiver.
+ *
+ * [krosstalkPrefix] and [methodName] may be used as literals, they evaluate to the Krosstalk's [Krosstalk.prefix] and the
+ * method's name (including the signature hash), respectively.
+ *
+ * All 4 of these special parameters may be included by using the constant in string interpolation, like `"$methodName"`,
+ * or by escaping the `$` like `"\$methodName"`.  This is because the value of each constant is it's name with `'$'` prepended.
  *
  * The default endpoint is thus `"$krosstalkPrefix/$methodName"`.
  *
- * **Note:** The hardcoded constants can have the `'$'` escaped, or not, using string interpolation with the constants, such as [krosstalkPrefix] or [instanceReceiver],
- * whose value is `'$'` and their name.
+ * URL parameters will be evaluated by serializing the argument using the Krosstalk's [Krosstalk.urlSerialization] (which by default is the same as the body).
+ * I highly recommend setting it to something string-based like JSON.  If you want to include non-trivial functions of the arguments in the endpoint,
+ * include them in the function as default arguments and use those.
+ *
+ * Parameters present in the URL whenever they are not null will not be passed in the body, and will instead be deserialized from the URL.
  *
  * [httpMethod] controls the HTTP method used by requests.  If it is `GET`, the function must have no parameters or use [EmptyBody].
  *
@@ -75,8 +89,7 @@ annotation class KrosstalkEndpoint(
 )
 
 /**
- * Don't include arguments that are part of the [KrosstalkEndpoint] endpoint in the body, and error if all arguments aren't in the endpoint.
- * Those arguments will be passed in the endpoint.
+ * Requires the method to always have an empty body, i.e. for use with GET.
  */
 @Target(AnnotationTarget.FUNCTION)
 @Retention(AnnotationRetention.BINARY)
@@ -100,13 +113,15 @@ annotation class PassObjects(val returnToo: Boolean = false)
 //TODO option to only do http errors, or only do exceptions (based on return type?) (should use separate result classes or sealed interfaces) (http error one should be usable wth CatchAsHttpError)
 //TODO post 1.5: a version that uses kotlin.Result.  Would have to limit to http errors, can't serialize exceptions (test, can I have a custom serializable annotation?)
 
+//TODO compiler/ide warnings for using KrosstalkResult server-only functions on client
+
 /**
  * Return a [KrosstalkResult], wrapping server exceptions or http errors.  Method return type must be [KrosstalkResult].
  * Server side function should return a [KrosstalkResult.Success].
  *
  * **The server side function should almost always use [runKrosstalkCatching] or [runCatching] and [Result.toKrosstalkResult]**.
- * To catch some exceptions as HTTP Errors, use [KrosstalkResult.catchAsHttpError] or [KrosstalkResult.catchAsHttpStatusCode] on the server.
- * To not catch some exceptions, use [KrosstalkResult.throwServerException] or [KrosstalkResult.throwOnServerException] to re-throw all.
+ * To catch some exceptions as HTTP Errors, use [KrosstalkResult.catchAsHttpError] or [KrosstalkResult.catchAsHttpStatusCode] **on the server**.
+ * To not catch some exceptions ** on the server**, use [KrosstalkResult.throwServerException] or [KrosstalkResult.throwOnServerException] to re-throw all.
  *
  * If [propagateServerExceptions] is `true`, the server implementation will re-throw or somehow log any server exceptions **after
  * the call completes** (so the client will receive a [KrosstalkResult.ServerException] result).

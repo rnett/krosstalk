@@ -97,7 +97,7 @@ abstract class Krosstalk {
     /**
      * Methods known to this Krosstalk instance.
      */
-    val methods: Map<String, MethodDefinition<*>> = _methods
+    val methods: Map<String, MethodDefinition<*>> get() = _methods
 
     @InternalKrosstalkApi
     fun requiredMethod(name: String) = methods[name]
