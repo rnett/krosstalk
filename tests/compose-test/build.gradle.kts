@@ -62,7 +62,7 @@ kotlin {
                 implementation("com.github.rnett.krosstalk:krosstalk-ktor-server")
 
                 implementation("ch.qos.logback:logback-classic:1.2.3")
-                implementation(compose.desktop.currentOs)
+                compileOnly(compose.desktop.currentOs)
             }
         }
         val serverTest by getting {
