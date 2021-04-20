@@ -999,7 +999,7 @@ class KrosstalkMethodTransformer(
 
                             // call function
                             // signature is (Map<String, *>, ImmutableWantedScopes)
-                            val lambda = buildCallLambda()
+                            val lambda = buildCallLambda().patchDeclarationParents(krosstalkClass.declaration)
 
                             addValueArgument(lambdaArgument(lambda))
 
