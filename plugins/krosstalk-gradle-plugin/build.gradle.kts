@@ -12,7 +12,7 @@ description = "Krosstalk gradle plugin, for serving the compiler plugin"
 dependencies {
     implementation("org.jetbrains.kotlin:kotlin-gradle-plugin-api:${Dependencies.kotlin}")
 
-    compileOnly("org.jetbrains.kotlin:kotlin-gradle-plugin:$${Dependencies.kotlin}")
+    compileOnly("org.jetbrains.kotlin:kotlin-gradle-plugin:${Dependencies.kotlin}")
 
     compileOnly("com.google.auto.service:auto-service-annotations:${Dependencies.autoService}")
     kapt("com.google.auto.service:auto-service:${Dependencies.autoService}")
