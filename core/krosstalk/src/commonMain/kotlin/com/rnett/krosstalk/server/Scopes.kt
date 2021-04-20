@@ -14,30 +14,30 @@ import com.rnett.krosstalk.ScopeInstance
  * Thus, it is discouraged in favor of implementation.
  */
 @KrosstalkPluginApi
-interface ServerScope<S> : Scope
+public interface ServerScope<S> : Scope
 
 
 /**
  * Some required scopes are missing from a Krosstalk call.
  */
 @OptIn(InternalKrosstalkApi::class)
-class MissingScopeException internal constructor(val scope: Scope, val methodName: String? = null) : KrosstalkException(
+public class MissingScopeException internal constructor(public val scope: Scope, public val methodName: String? = null) : KrosstalkException(
     "Missing required scope $scope${methodName?.let { " for method $it" }.orEmpty()}."
 )
 
 @KrosstalkPluginApi
-interface WantedScopes {
-    operator fun <T : ServerScope<D>, D> get(scope: T): D
-    fun <T : ServerScope<D>, D> getOptional(scope: T): D?
-    fun <T : ServerScope<D>, D> getOrElse(scope: T, default: D): D
+public interface WantedScopes {
+    public operator fun <T : ServerScope<D>, D> get(scope: T): D
+    public fun <T : ServerScope<D>, D> getOptional(scope: T): D?
+    public fun <T : ServerScope<D>, D> getOrElse(scope: T, default: D): D
 
-    fun toImmutable(): ImmutableWantedScopes
-    fun toMap(): Map<ServerScope<*>, Any?>
+    public fun toImmutable(): ImmutableWantedScopes
+    public fun toMap(): Map<ServerScope<*>, Any?>
 }
 
 @KrosstalkPluginApi
-class ImmutableWantedScopes internal constructor(values: Map<ServerScope<*>, Any?>) : WantedScopes {
-    constructor() : this(emptyMap())
+public class ImmutableWantedScopes internal constructor(values: Map<ServerScope<*>, Any?>) : WantedScopes {
+    public constructor() : this(emptyMap())
 
     private val values: Map<ServerScope<*>, Any?> = values.toMap()
 
@@ -59,12 +59,12 @@ class ImmutableWantedScopes internal constructor(values: Map<ServerScope<*>, Any
     override fun <T : ServerScope<D>, D> getOrElse(scope: T, default: D): D =
         if (scope in values) values[scope] as D else default
 
-    override fun toMap() = values.toMap()
+    override fun toMap(): Map<ServerScope<*>, Any?> = values.toMap()
     override fun toImmutable(): ImmutableWantedScopes = this
 }
 
 @KrosstalkPluginApi
-class MutableWantedScopes : WantedScopes {
+public class MutableWantedScopes : WantedScopes {
     private val values = mutableMapOf<ServerScope<*>, Any?>()
     override operator fun <T : ServerScope<D>, D> get(scope: T): D =
         if (scope in values) values[scope] as D else throw MissingScopeException(scope)
@@ -74,10 +74,10 @@ class MutableWantedScopes : WantedScopes {
     override fun <T : ServerScope<D>, D> getOrElse(scope: T, default: D): D =
         if (scope in values) values[scope] as D else default
 
-    operator fun <T : ServerScope<D>, D> set(scope: T, value: D) {
+    public operator fun <T : ServerScope<D>, D> set(scope: T, value: D) {
         values[scope] = value
     }
 
-    override fun toMap() = values.toMap()
-    override fun toImmutable() = ImmutableWantedScopes(values.toMap())
+    override fun toMap(): Map<ServerScope<*>, Any?> = values.toMap()
+    override fun toImmutable(): ImmutableWantedScopes = ImmutableWantedScopes(values.toMap())
 }

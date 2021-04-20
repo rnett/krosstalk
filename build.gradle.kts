@@ -4,8 +4,7 @@ plugins {
     id("org.jetbrains.kotlin.plugin.serialization") version Dependencies.kotlin apply false
     kotlin("kapt") version Dependencies.kotlin apply false
     id("com.github.johnrengelman.shadow") version "5.2.0" apply false
-//    id("com.jfrog.bintray") version "1.8.5" apply false
-    id("com.gradle.plugin-publish") version "0.11.0" apply false
+    id("com.gradle.plugin-publish") version "0.14.0" apply false
     id("org.jetbrains.dokka") version "1.4.20" apply false
     id("com.github.gmazzo.buildconfig") version "2.0.2" apply false
 }
@@ -21,4 +20,16 @@ allprojects {
     }
 
     apply(plugin = "org.jetbrains.dokka")
+
+    afterEvaluate {
+        if (this.parent?.name != "plugins") {
+            try {
+                extensions.configure<org.jetbrains.kotlin.gradle.dsl.KotlinProjectExtension> {
+                    explicitApi()
+                }
+            } catch (e: UnknownDomainObjectException) {
+
+            }
+        }
+    }
 }

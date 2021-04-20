@@ -12,6 +12,7 @@ import com.rnett.krosstalk.server.ServerHandler
 import com.rnett.krosstalk.server.handle
 import com.rnett.krosstalk.server.scopesAsType
 import com.rnett.krosstalk.server.serverScopes
+import io.ktor.application.Application
 import io.ktor.application.application
 import io.ktor.application.call
 import io.ktor.application.log
@@ -28,6 +29,7 @@ import io.ktor.routing.RouteSelector
 import io.ktor.routing.RouteSelectorEvaluation
 import io.ktor.routing.RoutingResolveContext
 import io.ktor.routing.application
+import io.ktor.routing.routing
 import io.ktor.util.AttributeKey
 import io.ktor.util.createFromCall
 import io.ktor.util.toByteArray
@@ -36,7 +38,7 @@ import io.ktor.util.toMap
 /**
  * Applies [remaining] scopes in reverse order, recursively, with [final] inside all of them.
  */
-fun wrapScopesHelper(
+internal fun wrapScopesHelper(
     route: Route,
     optional: Boolean,
     remaining: MutableList<KtorServerScope<*>>,
@@ -58,10 +60,10 @@ fun wrapScopesHelper(
 /**
  * Applies [remaining] scopes, recursively, with [final] inside all of them.
  */
-fun wrapScopes(route: Route, optional: Boolean, remaining: List<KtorServerScope<*>>, final: Route.() -> Unit) =
+internal fun wrapScopes(route: Route, optional: Boolean, remaining: List<KtorServerScope<*>>, final: Route.() -> Unit) =
     wrapScopesHelper(route, optional, remaining.toMutableList().asReversed(), final)
 
-interface KtorKrosstalkServer : KrosstalkServer<KtorServerScope<*>> {
+public interface KtorKrosstalkServer : KrosstalkServer<KtorServerScope<*>> {
     override val server: KtorServer
 }
 
@@ -69,7 +71,7 @@ interface KtorKrosstalkServer : KrosstalkServer<KtorServerScope<*>> {
  * A Krosstalk server handler that adds the krosstalk method endpoints to a Ktor server.
  */
 @OptIn(KrosstalkPluginApi::class)
-object KtorServer : ServerHandler<KtorServerScope<*>> {
+public object KtorServer : ServerHandler<KtorServerScope<*>> {
 
     /**
      * Defines the necessary routes for [krosstalk]'s methods.
@@ -88,7 +90,7 @@ object KtorServer : ServerHandler<KtorServerScope<*>> {
      *
      * @see [defineKtor]
      */
-    fun <K> define(base: Route, krosstalk: K) where K : Krosstalk, K : KrosstalkServer<KtorServerScope<*>> {
+    public fun <K> define(base: Route, krosstalk: K) where K : Krosstalk, K : KrosstalkServer<KtorServerScope<*>> {
         // apply Application configuration for each defined scopes
         base.application.apply {
             krosstalk.serverScopes
@@ -125,7 +127,7 @@ object KtorServer : ServerHandler<KtorServerScope<*>> {
                                 val scopes = MutableWantedScopes()
 
                                 method.allScopes.let(krosstalk::scopesAsType).forEach { scope ->
-                                    scope.getData(call)?.let { scopes[scope as KtorServerScope<Any?>] = it }
+                                    scope.getData(call)?.let { scopes[scope as KtorServerScope<Any>] = it }
                                 }
 
                                 krosstalk.handle(call.attributes[KrosstalkMethodBaseUrlAttribute],
@@ -169,7 +171,7 @@ object KtorServer : ServerHandler<KtorServerScope<*>> {
 private val KrosstalkMethodAttribute = AttributeKey<Map<String, String>>("KrosstalkMethodData")
 private val KrosstalkMethodBaseUrlAttribute = AttributeKey<String>("KrosstalkMethodBaseUrl")
 
-class KrosstalkRouteSelector(val method: MethodDefinition<*>) : RouteSelector(2.0) {
+internal class KrosstalkRouteSelector(val method: MethodDefinition<*>) : RouteSelector(2.0) {
     override fun evaluate(context: RoutingResolveContext, segmentIndex: Int): RouteSelectorEvaluation {
         with(context) {
             if (call.request.httpMethod.value.toLowerCase() != method.httpMethod.toLowerCase()) {
@@ -195,7 +197,7 @@ class KrosstalkRouteSelector(val method: MethodDefinition<*>) : RouteSelector(2.
 
 }
 
-//TODO use multiple receivers, add one for Application
+//TODO use multiple receivers
 /**
  * Defines the necessary routes for [this]'s methods.
  *
@@ -213,6 +215,27 @@ class KrosstalkRouteSelector(val method: MethodDefinition<*>) : RouteSelector(2.
  *
  * @see [define]
  */
-fun <K> K.defineKtor(route: Route) where K : Krosstalk, K : KrosstalkServer<KtorServerScope<*>> {
+public fun <K> K.defineKtor(route: Route) where K : Krosstalk, K : KrosstalkServer<KtorServerScope<*>> {
     KtorServer.define(route, this)
+}
+
+/**
+ * Defines the necessary routes for [this]'s methods.
+ *
+ * **If called in a non-root route, ensure that the client is configured to call the right URLs.**
+ * You can set [Krosstalk.prefix] differently or set the URL in the client's server (how will depend on your client implementation).
+ *
+ * Meant to be called from an Application, like:
+ * ```kotlin
+ * fun Application.server(){
+ *     routing{
+ *         MyKrosstalk.defineKtor(this)
+ *     }
+ * }
+ * ```
+ *
+ * @see [define]
+ */
+public fun <K> K.defineKtor(application: Application) where K : Krosstalk, K : KrosstalkServer<KtorServerScope<*>> {
+    KtorServer.define(application.routing { }, this)
 }

@@ -44,7 +44,7 @@ internal fun <D> AppliedClientScope<KtorClientScope<D>, *>.configureRequest(requ
     }
 }
 
-interface KtorKrosstalkClient : KrosstalkClient<KtorClientScope<*>> {
+public interface KtorKrosstalkClient : KrosstalkClient<KtorClientScope<*>> {
     override val client: KtorClient
 }
 
@@ -57,9 +57,9 @@ interface KtorKrosstalkClient : KrosstalkClient<KtorClientScope<*>> {
  *
  */
 @OptIn(KrosstalkPluginApi::class)
-class KtorClient(
-    val baseClient: HttpClient = HttpClient(),
-    val baseRequest: HttpRequestBuilder.() -> Unit = {},
+public class KtorClient(
+    public val baseClient: HttpClient = HttpClient(),
+    public val baseRequest: HttpRequestBuilder.() -> Unit = {},
 ) : ClientHandler<KtorClientScope<*>> {
 
     private val realBaseClient by lazy {
@@ -115,44 +115,44 @@ class KtorClient(
  * Note that a new client is used for each request.
  */
 @OptIn(KrosstalkPluginApi::class)
-interface KtorClientScope<in D> : ClientScope<D> {
-    fun HttpClientConfig<*>.configureClient(data: D) {}
-    fun HttpRequestBuilder.configureRequest(data: D) {}
+public interface KtorClientScope<in D> : ClientScope<D> {
+    public fun HttpClientConfig<*>.configureClient(data: D) {}
+    public fun HttpRequestBuilder.configureRequest(data: D) {}
 }
 
 /**
  * A Ktor client scope that only alters the request.
  */
-fun interface KtorClientRequestScope<D> : KtorClientScope<D> {
+public fun interface KtorClientRequestScope<D> : KtorClientScope<D> {
     override fun HttpRequestBuilder.configureRequest(data: D)
 }
 
 /**
  * A Ktor client scope that only adds headers.
  */
-fun interface KtorClientHeaderScope<D> : KtorClientRequestScope<D> {
+public fun interface KtorClientHeaderScope<D> : KtorClientRequestScope<D> {
     override fun HttpRequestBuilder.configureRequest(data: D) {
         this.headers.headers(data)
     }
 
-    fun HeadersBuilder.headers(data: D): Unit
+    public fun HeadersBuilder.headers(data: D): Unit
 }
 
 /**
  * A Ktor client scope that only alters the client.
  * Note that a new client is used for each request.
  */
-fun interface KtorClientClientScope<D> : KtorClientScope<D> {
+public fun interface KtorClientClientScope<D> : KtorClientScope<D> {
     override fun HttpClientConfig<*>.configureClient(data: D)
 }
 
 /**
  * Credentials for basic auth.
  */
-data class BasicCredentials(val username: String, val password: String)
+public data class BasicCredentials(val username: String, val password: String)
 
-abstract class KtorClientAuth<D> : KtorClientScope<D> {
-    abstract fun Auth.configureClientAuth(data: D)
+public abstract class KtorClientAuth<D> : KtorClientScope<D> {
+    public abstract fun Auth.configureClientAuth(data: D)
 
     override fun HttpClientConfig<*>.configureClient(data: D) {
         Auth {
@@ -161,7 +161,7 @@ abstract class KtorClientAuth<D> : KtorClientScope<D> {
     }
 }
 
-open class KtorClientBasicAuth(val sendWithoutRequest: Boolean = true, val realm: String? = null) :
+public open class KtorClientBasicAuth(public val sendWithoutRequest: Boolean = true, public val realm: String? = null) :
     KtorClientAuth<BasicCredentials>() {
     override fun Auth.configureClientAuth(data: BasicCredentials) {
         basic {
@@ -173,5 +173,5 @@ open class KtorClientBasicAuth(val sendWithoutRequest: Boolean = true, val realm
     }
 }
 
-operator fun <T : KtorClientBasicAuth> T.invoke(username: String, password: String): ScopeInstance<T> =
+public operator fun <T : KtorClientBasicAuth> T.invoke(username: String, password: String): ScopeInstance<T> =
     this.invoke(BasicCredentials(username, password))

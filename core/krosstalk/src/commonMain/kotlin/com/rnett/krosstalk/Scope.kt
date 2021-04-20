@@ -9,19 +9,19 @@ import com.rnett.krosstalk.server.ServerScope
  * While delegation is possible, it is easy to delegate from an interface (i.e. [ServerScope]) that doesn't define any methods.
  * Thus, it is discouraged in favor of implementation.
  */
-interface Scope {
-    val canBeOptional get() = true
+public interface Scope {
+    public val canBeOptional: Boolean get() = true
 }
 
 
-sealed class ScopeInstance<T : Scope> {
-    abstract val scope: T
+public sealed class ScopeInstance<T : Scope> {
+    public abstract val scope: T
 
     @OptIn(KrosstalkPluginApi::class)
     @InternalKrosstalkApi
-    class Server<T : ServerScope<S>, S>(@InternalKrosstalkApi val _data: S, override val scope: T) : ScopeInstance<T>()
+    public class Server<T : ServerScope<S>, S>(@InternalKrosstalkApi public val _data: S, override val scope: T) : ScopeInstance<T>()
 
     @OptIn(KrosstalkPluginApi::class)
     @InternalKrosstalkApi
-    class Client<T : ClientScope<C>, C>(@InternalKrosstalkApi val clientData: C, override val scope: T) : ScopeInstance<T>()
+    public class Client<T : ClientScope<C>, C>(@InternalKrosstalkApi public val clientData: C, override val scope: T) : ScopeInstance<T>()
 }

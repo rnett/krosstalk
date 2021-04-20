@@ -13,8 +13,8 @@ internal fun getUrlPath(url: String): String {
     return path.substringBefore("#")
 }
 
-data class UrlRequest(val urlParts: List<String>, val queryParams: Map<String, String>) {
-    constructor(url: String) : this(
+public data class UrlRequest(val urlParts: List<String>, val queryParams: Map<String, String>) {
+    public constructor(url: String) : this(
         getUrlPath(url).substringBefore("?").split("/").filter { it.isNotBlank() },
         getUrlPath(url).substringAfter("?", "").split("&").filter { it.isNotBlank() }.associate {
             if ("=" !in it)
@@ -24,7 +24,7 @@ data class UrlRequest(val urlParts: List<String>, val queryParams: Map<String, S
     )
 
 
-    fun withoutPrefixParts(prefix: List<String>): UrlRequest {
+    public fun withoutPrefixParts(prefix: List<String>): UrlRequest {
         val newParts = urlParts.toMutableList()
         prefix.forEach {
             if (newParts.firstOrNull() == it)
@@ -35,9 +35,9 @@ data class UrlRequest(val urlParts: List<String>, val queryParams: Map<String, S
         return UrlRequest(newParts, queryParams)
     }
 
-    fun withoutPrefix(prefix: String): UrlRequest = withoutPrefixParts(prefix.split('/').filter { it.isNotBlank() })
+    public fun withoutPrefix(prefix: String): UrlRequest = withoutPrefixParts(prefix.split('/').filter { it.isNotBlank() })
 
-    fun withoutQueryParams(params: Set<String>) = UrlRequest(urlParts, queryParams - params)
+    public fun withoutQueryParams(params: Set<String>): UrlRequest = UrlRequest(urlParts, queryParams - params)
 
     override fun toString(): String {
         return buildString {
@@ -56,14 +56,14 @@ internal sealed class ResolveResult {
     data class AddParam(val param: String, val value: String) : ResolveResult()
 }
 
-sealed class ResolveQueryParam {
-    abstract val isOptional: Boolean
+public sealed class ResolveQueryParam {
+    public abstract val isOptional: Boolean
 
-    data class Static(val value: String, override val isOptional: Boolean) : ResolveQueryParam() {
+    public data class Static(val value: String, override val isOptional: Boolean) : ResolveQueryParam() {
         override fun toString(): String = if (isOptional) "[?$value]" else value
     }
 
-    data class Param(val param: String, override val isOptional: Boolean) : ResolveQueryParam() {
+    public data class Param(val param: String, override val isOptional: Boolean) : ResolveQueryParam() {
         init {
             if (param == methodName || param == krosstalkPrefix)
                 error("Can't have resolve param of static parameter, use withStatic on the Endpoint first.")
@@ -72,9 +72,9 @@ sealed class ResolveQueryParam {
         override fun toString(): String = if (isOptional) "{?$param}" else "{$param}"
     }
 
-    companion object {
+    public companion object {
 
-        operator fun invoke(part: EndpointQueryParameter): ResolveQueryParam = when (part) {
+        public operator fun invoke(part: EndpointQueryParameter): ResolveQueryParam = when (part) {
             is EndpointPart.Parameter -> Param(part.param, false)
             is EndpointPart.Static -> Static(part.part, false)
             is EndpointPart.Optional -> when (val sub = ResolveQueryParam(part.part)) {
@@ -84,7 +84,7 @@ sealed class ResolveQueryParam {
 
         }
 
-        fun build(taken: Set<String>, untaken: Set<String>, urlParams: Map<String, EndpointQueryParameter>): Map<String, ResolveQueryParam> =
+        public fun build(taken: Set<String>, untaken: Set<String>, urlParams: Map<String, EndpointQueryParameter>): Map<String, ResolveQueryParam> =
             urlParams.mapNotNull { (key, value) ->
                 val resolved = value.resolveOptionals(taken, untaken) ?: return@mapNotNull null
                 key to ResolveQueryParam(resolved)
@@ -92,11 +92,11 @@ sealed class ResolveQueryParam {
     }
 }
 
-sealed class ResolveUrlPart {
+public sealed class ResolveUrlPart {
 
     internal abstract fun resolve(urlPart: String): ResolveResult
 
-    data class Static(val value: String) : ResolveUrlPart() {
+    public data class Static(val value: String) : ResolveUrlPart() {
         override fun resolve(urlPart: String): ResolveResult =
             if (urlPart == value)
                 ResolveResult.Pass
@@ -106,7 +106,7 @@ sealed class ResolveUrlPart {
         override fun toString(): String = value
     }
 
-    data class Param(val param: String) : ResolveUrlPart() {
+    public data class Param(val param: String) : ResolveUrlPart() {
         init {
             if (param == methodName || param == krosstalkPrefix)
                 error("Can't have resolve param of static parameter, use withStatic on the Endpoint first.")
@@ -118,18 +118,18 @@ sealed class ResolveUrlPart {
         override fun toString(): String = "{$param}"
     }
 
-    companion object {
-        operator fun invoke(part: EndpointUrlPart): ResolveUrlPart = when (part) {
+    public companion object {
+        public operator fun invoke(part: EndpointUrlPart): ResolveUrlPart = when (part) {
             is EndpointPart.Parameter -> Param(part.param)
             is EndpointPart.Static -> Static(part.part)
             is EndpointPart.Optional -> error("Can't resolve Optional")
         }
 
-        fun build(parts: List<EndpointUrlPart>) = parts.map(::invoke)
+        public fun build(parts: List<EndpointUrlPart>): List<ResolveUrlPart> = parts.map(::invoke)
     }
 }
 
-data class ResolveEndpoint(val urlParts: List<ResolveUrlPart>, val queryParams: Map<String, ResolveQueryParam>) {
+public data class ResolveEndpoint(val urlParts: List<ResolveUrlPart>, val queryParams: Map<String, ResolveQueryParam>) {
     internal constructor(endpoint: Endpoint) : this(
         endpoint.urlParts.map { ResolveUrlPart(it) },
         endpoint.queryParameters.mapValues { ResolveQueryParam(it.value) })
@@ -147,12 +147,12 @@ data class ResolveEndpoint(val urlParts: List<ResolveUrlPart>, val queryParams: 
     }
 }
 
-sealed class EndpointResolveTree {
-    abstract fun enumerate(): Set<ResolveEndpoint>
+public sealed class EndpointResolveTree {
+    public abstract fun enumerate(): Set<ResolveEndpoint>
 
-    abstract fun resolve(url: UrlRequest): Map<String, String>?
+    public abstract fun resolve(url: UrlRequest): Map<String, String>?
 
-    data class Fork(val options: Set<EndpointResolveTree>) : EndpointResolveTree() {
+    public data class Fork(val options: Set<EndpointResolveTree>) : EndpointResolveTree() {
         override fun enumerate(): Set<ResolveEndpoint> = options.flatMap { it.enumerate() }.toSet()
 
         override fun resolve(url: UrlRequest): Map<String, String>? {
@@ -165,7 +165,7 @@ sealed class EndpointResolveTree {
         }
     }
 
-    data class Multiple(val parts: List<ResolveUrlPart>, val node: EndpointResolveTree) : EndpointResolveTree() {
+    public data class Multiple(val parts: List<ResolveUrlPart>, val node: EndpointResolveTree) : EndpointResolveTree() {
         override fun enumerate(): Set<ResolveEndpoint> = node.enumerate()
         override fun resolve(url: UrlRequest): Map<String, String>? {
             val partsLeft = url.urlParts.toMutableList()
@@ -189,14 +189,14 @@ sealed class EndpointResolveTree {
         }
     }
 
-    data class Leaf(
+    public data class Leaf(
         val full: List<ResolveUrlPart>,
         val takenOptions: Set<String>,
         val untakenOptions: Set<String>,
-        val queryParams: Map<String, ResolveQueryParam>
+        val queryParams: Map<String, ResolveQueryParam>,
     ) :
         EndpointResolveTree() {
-        val resolvedEndpoint by lazy {
+        val resolvedEndpoint: ResolveEndpoint by lazy {
             ResolveEndpoint(full, queryParams)
         }
 
@@ -225,11 +225,11 @@ sealed class EndpointResolveTree {
                 null
     }
 
-    companion object {
+    public companion object {
 
-        operator fun invoke(endpoint: Endpoint) = invoke(endpoint.urlParts, endpoint.queryParameters)
+        public operator fun invoke(endpoint: Endpoint): EndpointResolveTree = invoke(endpoint.urlParts, endpoint.queryParameters)
 
-        operator fun invoke(urlParts: List<EndpointUrlPart>, urlParams: Map<String, EndpointQueryParameter>): EndpointResolveTree {
+        public operator fun invoke(urlParts: List<EndpointUrlPart>, urlParams: Map<String, EndpointQueryParameter>): EndpointResolveTree {
             return build(listOf(), listOf(), urlParts, setOf(), setOf(), urlParams)
         }
 
@@ -239,7 +239,7 @@ sealed class EndpointResolveTree {
             rest: List<EndpointUrlPart>,
             taken: Set<String>,
             untaken: Set<String>,
-            urlParams: Map<String, EndpointQueryParameter>
+            urlParams: Map<String, EndpointQueryParameter>,
         ): EndpointResolveTree {
             if (rest.isEmpty()) {
                 return if (currentPrefix.isEmpty())

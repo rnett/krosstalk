@@ -38,6 +38,7 @@ fun main(args: Array<String>) {
 
         append("// THIS FILE IS GENERATED, DO NOT EDIT\n\n")
 
-        append("val httpStatusCodes = ${generateStatusCodeMap()}")
+        append("@InternalKrosstalkApi\n")
+        append("public val httpStatusCodes: Map<Int, String> = ${generateStatusCodeMap()}")
     })
 }

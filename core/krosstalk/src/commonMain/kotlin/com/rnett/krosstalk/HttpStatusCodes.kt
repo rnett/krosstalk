@@ -2,7 +2,8 @@ package com.rnett.krosstalk
 
 // THIS FILE IS GENERATED, DO NOT EDIT
 
-val httpStatusCodes = mapOf<Int, String>(
+@InternalKrosstalkApi
+public val httpStatusCodes: Map<Int, String> = mapOf<Int, String>(
     100 to "Continue",
     101 to "Switching Protocols",
     102 to "Processing",

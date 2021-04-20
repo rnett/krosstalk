@@ -10,4 +10,4 @@ import com.rnett.krosstalk.annotations.RespondWithHeaders
  *
  * @see RespondWithHeaders
  */
-data class WithHeaders<out T>(val value: T, val headers: Headers = emptyMap())
+public data class WithHeaders<out T>(val value: T, val headers: Headers = emptyMap())

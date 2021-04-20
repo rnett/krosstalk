@@ -8,6 +8,6 @@ pluginManagement {
     }
 
 }
-//enableFeaturePreview("GRADLE_METADATA")
+
 rootProject.name = "krosstalk-generator"
 

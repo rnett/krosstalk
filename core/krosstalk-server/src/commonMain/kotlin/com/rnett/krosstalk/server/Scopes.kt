@@ -9,7 +9,7 @@ import kotlin.jvm.JvmName
 
 @OptIn(InternalKrosstalkApi::class, KrosstalkPluginApi::class)
 @Suppress("UNCHECKED_CAST")
-val <T : ServerScope<S>, S> ScopeInstance<T>.value
+public val <T : ServerScope<S>, S> ScopeInstance<T>.value: S
     get() =
         if (this !is ScopeInstance.Server<*, *>)
             error("Somehow had a client instance of a server scope.  This should be impossible.")
@@ -18,10 +18,10 @@ val <T : ServerScope<S>, S> ScopeInstance<T>.value
 
 
 @OptIn(InternalKrosstalkApi::class, KrosstalkPluginApi::class)
-operator fun <T : ServerScope<S>, S> T.invoke(serverData: S): ScopeInstance<T> = ScopeInstance.Server(serverData, this)
+public operator fun <T : ServerScope<S>, S> T.invoke(serverData: S): ScopeInstance<T> = ScopeInstance.Server(serverData, this)
 
 @KrosstalkPluginApi
-val <S : ServerScope<*>, K> K.serverScopes: List<S> where K : Krosstalk, K : KrosstalkServer<S>
+public val <S : ServerScope<*>, K> K.serverScopes: List<S> where K : Krosstalk, K : KrosstalkServer<S>
     get() = scopes.map {
         (it as? ServerScope<*> ?: error("Somehow had a client scope on the server side."))
                 as? S ?: error("Scope $it is not of correct server scope type for krosstalk $this")
@@ -29,7 +29,7 @@ val <S : ServerScope<*>, K> K.serverScopes: List<S> where K : Krosstalk, K : Kro
 
 @KrosstalkPluginApi
 @JvmName("serverScopesAsType")
-fun <S : ServerScope<*>, K> K.scopesAsType(scopes: Iterable<Scope>): List<S> where K : Krosstalk, K : KrosstalkServer<S> =
+public fun <S : ServerScope<*>, K> K.scopesAsType(scopes: Iterable<Scope>): List<S> where K : Krosstalk, K : KrosstalkServer<S> =
     scopes.map {
         (it as? ServerScope<*> ?: error("Somehow had a client scope on the server side"))
                 as? S ?: error("Scope $it was not of correct server scope type for krosstalk $this")

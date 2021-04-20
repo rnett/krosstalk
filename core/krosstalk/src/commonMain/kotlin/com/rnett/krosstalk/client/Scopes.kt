@@ -12,5 +12,5 @@ import com.rnett.krosstalk.Scope
  * Thus, it is discouraged in favor of implementation.
  */
 @KrosstalkPluginApi
-interface ClientScope<in D> : Scope
+public interface ClientScope<in D> : Scope
 

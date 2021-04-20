@@ -3,30 +3,30 @@ package com.rnett.krosstalk.serialization
 import com.rnett.krosstalk.KrosstalkPluginApi
 
 @KrosstalkPluginApi
-interface SerializedFormatTransformer<S>{
+public interface SerializedFormatTransformer<S> {
     /**
      * Transform [S] to a [ByteArray].
      */
-    fun toByteArray(data: S): ByteArray
+    public fun toByteArray(data: S): ByteArray
 
     /**
      * Transform a [ByteArray] to [S].
      */
-    fun fromByteArray(data: ByteArray): S
+    public fun fromByteArray(data: ByteArray): S
 
     /**
      * Transform [S] to a [String].
      */
-    fun toString(data: S): String
+    public fun toString(data: S): String
 
     /**
      * Transform a [String] to [S].
      */
-    fun fromString(data: String): S
+    public fun fromString(data: String): S
 }
 
 @KrosstalkPluginApi
-object StringTransformer: SerializedFormatTransformer<String>{
+public object StringTransformer : SerializedFormatTransformer<String> {
     override fun toByteArray(data: String): ByteArray = data.encodeToByteArray()
 
     override fun fromByteArray(data: ByteArray): String = data.decodeToString()
@@ -37,21 +37,21 @@ object StringTransformer: SerializedFormatTransformer<String>{
 }
 
 @OptIn(ExperimentalUnsignedTypes::class)
-fun UByte.toHex() = toString(16).let {
-    if(it.length == 1)
+private fun UByte.toHex(): String = toString(16).let {
+    if (it.length == 1)
         "0$it"
     else
         it
 }.capitalize()
 
 @OptIn(ExperimentalUnsignedTypes::class)
-fun ByteArray.toHexString() = toUByteArray().joinToString("") { it.toHex() }
+private fun ByteArray.toHexString(): String = toUByteArray().joinToString("") { it.toHex() }
 
 @OptIn(ExperimentalUnsignedTypes::class)
-fun String.hexToBytes() = chunked(2){ it.toString().toInt(16).toUByte() }.toUByteArray().toByteArray()
+private fun String.hexToBytes(): ByteArray = chunked(2) { it.toString().toInt(16).toUByte() }.toUByteArray().toByteArray()
 
 @KrosstalkPluginApi
-object ByteTransformer : SerializedFormatTransformer<ByteArray>{
+public object ByteTransformer : SerializedFormatTransformer<ByteArray> {
     override fun toByteArray(data: ByteArray): ByteArray = data
 
     override fun fromByteArray(data: ByteArray): ByteArray = data

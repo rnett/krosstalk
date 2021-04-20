@@ -39,9 +39,7 @@ internal annotation class TopLevelOnly
 @Retention(AnnotationRetention.BINARY)
 @MustBeDocumented
 @TopLevelOnly
-annotation class KrosstalkMethod(val klass: KClass<out Krosstalk>, val noParamHash: Boolean = false)
-
-val a = methodName
+public annotation class KrosstalkMethod(val klass: KClass<out Krosstalk>, val noParamHash: Boolean = false)
 
 //TODO update docs
 /**
@@ -82,7 +80,7 @@ val a = methodName
 @Retention(AnnotationRetention.BINARY)
 @MustBeDocumented
 @TopLevelOnly
-annotation class KrosstalkEndpoint(
+public annotation class KrosstalkEndpoint(
     val endpoint: String = defaultEndpoint,
     val httpMethod: String = defaultEndpointHttpMethod,
     val contentType: String = "",
@@ -95,7 +93,7 @@ annotation class KrosstalkEndpoint(
 @Retention(AnnotationRetention.BINARY)
 @MustBeDocumented
 @TopLevelOnly
-annotation class EmptyBody
+public annotation class EmptyBody
 
 
 /**
@@ -108,7 +106,7 @@ annotation class EmptyBody
 @Retention(AnnotationRetention.BINARY)
 @MustBeDocumented
 @TopLevelOnly
-annotation class PassObjects(val returnToo: Boolean = false)
+public annotation class PassObjects(val returnToo: Boolean = false)
 
 //TODO option to only do http errors, or only do exceptions (based on return type?) (should use separate result classes or sealed interfaces) (http error one should be usable wth CatchAsHttpError)
 //TODO post 1.5: a version that uses kotlin.Result.  Would have to limit to http errors, can't serialize exceptions (test, can I have a custom serializable annotation?)
@@ -139,7 +137,7 @@ annotation class PassObjects(val returnToo: Boolean = false)
 @Retention(AnnotationRetention.BINARY)
 @MustBeDocumented
 @TopLevelOnly
-annotation class ExplicitResult(
+public annotation class ExplicitResult(
     val includeStacktrace: Boolean = false,
     val propagateServerExceptions: Boolean = true,
 )
@@ -161,7 +159,7 @@ annotation class ExplicitResult(
 @MustBeDocumented
 @Repeatable
 @TopLevelOnly
-annotation class RespondWithHeaders()
+public annotation class RespondWithHeaders()
 
 /**
  * Must be used on a nullable parameter (for now).  If that parameter is null, it will not be sent.
@@ -177,7 +175,7 @@ annotation class RespondWithHeaders()
 @Retention(AnnotationRetention.BINARY)
 @MustBeDocumented
 @TopLevelOnly
-annotation class Optional()
+public annotation class Optional()
 
 //TODO see if I can replace this with passing the server url to krosstalkCall().  Would need an @Ignore or similar
 /**
@@ -191,7 +189,7 @@ annotation class Optional()
 @Retention(AnnotationRetention.BINARY)
 @MustBeDocumented
 @TopLevelOnly
-annotation class ServerURL
+public annotation class ServerURL
 
 /**
  * Marks a [Headers] parameter as the request headers.  The values passed to the client method will be
@@ -204,4 +202,4 @@ annotation class ServerURL
 @Retention(AnnotationRetention.BINARY)
 @MustBeDocumented
 @TopLevelOnly
-annotation class RequestHeaders
+public annotation class RequestHeaders

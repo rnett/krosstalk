@@ -1,5 +1,4 @@
 object Dependencies {
-
     const val kotlin = "1.4.32"
     const val serialization = "1.1.0"
 

@@ -9,9 +9,13 @@ pluginManagement {
     }
 
 }
-//enableFeaturePreview("GRADLE_METADATA")
+
 rootProject.name = "tests"
 
 includeBuild("..")
-include("client-test", "fullstack-test", "compose-test")
+include(
+    "fullstack-test",
+    "client-test",
+    "compose-test"
+)
 

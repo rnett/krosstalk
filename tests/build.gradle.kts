@@ -1,6 +1,3 @@
-//import com.jfrog.bintray.gradle.tasks.BintrayUploadTask
-//import org.gradle.api.publish.maven.internal.artifact.FileBasedMavenArtifact
-
 plugins {
     kotlin("multiplatform") version "1.4.32" apply false
     kotlin("jvm") version "1.4.32" apply false

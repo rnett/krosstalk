@@ -18,8 +18,13 @@ import kotlin.reflect.KClass
  * The response to a Krosstalk request.
  */
 @KrosstalkPluginApi
-class InternalKrosstalkResponse(val statusCode: Int, val headers: Headers, val data: ByteArray, stringData: () -> String?) {
-    val stringData by lazy {
+public class InternalKrosstalkResponse(
+    public val statusCode: Int,
+    public val headers: Headers,
+    public val data: ByteArray,
+    stringData: () -> String?,
+) {
+    public val stringData: String? by lazy {
         if (data.isEmpty())
             null
         else
@@ -27,14 +32,14 @@ class InternalKrosstalkResponse(val statusCode: Int, val headers: Headers, val d
     }
 
     @PublishedApi
-    internal fun isSuccess() = statusCode in 200..299
+    internal fun isSuccess(): Boolean = statusCode in 200..299
 }
 
 /**
  * A Krosstalk client handler.  Capable of sending krosstalk requests.
  */
 @KrosstalkPluginApi
-interface ClientHandler<C : ClientScope<*>> {
+public interface ClientHandler<C : ClientScope<*>> {
 
     /**
      * Send a krosstalk request to the server.
@@ -47,7 +52,7 @@ interface ClientHandler<C : ClientScope<*>> {
      * @param scopes The scopes to apply to the request.
      * @return The result of the request.
      */
-    suspend fun sendKrosstalkRequest(
+    public suspend fun sendKrosstalkRequest(
         url: String,
         httpMethod: String,
         contentType: String,
@@ -64,11 +69,11 @@ interface ClientHandler<C : ClientScope<*>> {
  * Placeholder for a Krosstalk client side method.  Will be replaced by the compiler plugin.
  */
 @OptIn(InternalKrosstalkApi::class)
-suspend fun krosstalkCall(): Nothing =
+public suspend fun krosstalkCall(): Nothing =
     throw KrosstalkException.CompilerError("Should have been replaced with a krosstalk call during compilation")
 
 @InternalKrosstalkApi
-class ServerDefaultInEndpointException(val methodName: String, val parameter: String) :
+public class ServerDefaultInEndpointException(public val methodName: String, public val parameter: String) :
     KrosstalkException("Parameter \"$parameter\" for method \"$methodName\" was an unrealized ServerDefault, but was used in the endpoint.")
 
 
@@ -76,10 +81,10 @@ class ServerDefaultInEndpointException(val methodName: String, val parameter: St
  * A Krosstalk call failed.
  */
 @OptIn(InternalKrosstalkApi::class)
-open class CallFailureException @InternalKrosstalkApi constructor(
-    val methodName: String,
-    val httpStatusCode: Int,
-    val responseMessage: String?,
+public open class CallFailureException @InternalKrosstalkApi constructor(
+    public val methodName: String,
+    public val httpStatusCode: Int,
+    public val responseMessage: String?,
     message: String = buildString {
         append("Krosstalk method $methodName failed with HTTP status code $httpStatusCode")
         if (httpStatusCode in httpStatusCodes)
@@ -92,9 +97,10 @@ open class CallFailureException @InternalKrosstalkApi constructor(
 ) : KrosstalkException(message)
 
 @OptIn(InternalKrosstalkApi::class)
-class WrongHeadersTypeException @InternalKrosstalkApi constructor(val methodName: String, val type: KClass<*>) : KrosstalkException(
-    "Invalid type for request headers param: Map<String, List<String>> is required, got $type."
-)
+public class WrongHeadersTypeException @InternalKrosstalkApi constructor(public val methodName: String, public val type: KClass<*>) :
+    KrosstalkException(
+        "Invalid type for request headers param: Map<String, List<String>> is required, got $type."
+    )
 
 @InternalKrosstalkApi
 @PublishedApi
@@ -105,7 +111,7 @@ internal fun <T> MethodDefinition<T>.getReturnValue(data: ByteArray): T = if (re
 }
 
 @PublishedApi
-internal fun Any?.withHeadersIf(withHeaders: Boolean, headers: Headers) = if (withHeaders) WithHeaders(this, headers) else this
+internal fun Any?.withHeadersIf(withHeaders: Boolean, headers: Headers): Any? = if (withHeaders) WithHeaders(this, headers) else this
 
 @OptIn(InternalKrosstalkApi::class, KrosstalkPluginApi::class, ExperimentalStdlibApi::class)
 @Suppress("unused")

@@ -25,9 +25,10 @@ import kotlin.contracts.contract
  * See the `krosstalk-ktor-server` artifact for an example server implementation using Ktor.
  */
 @KrosstalkPluginApi
-interface ServerHandler<S : ServerScope<*>>
+public interface ServerHandler<S : ServerScope<*>>
 
-typealias Responder = suspend (statusCode: Int, contentType: String?, responseHeaders: Headers, data: ByteArray) -> Unit
+@KrosstalkPluginApi
+public typealias Responder = suspend (statusCode: Int, contentType: String?, responseHeaders: Headers, data: ByteArray) -> Unit
 
 @InternalKrosstalkApi
 internal fun MethodDefinition<*>.getReturnBody(data: Any?): ByteArray = if (returnObject != null)
@@ -35,6 +36,7 @@ internal fun MethodDefinition<*>.getReturnBody(data: Any?): ByteArray = if (retu
 else
     serialization.serializeReturnValue(data)
 
+//TODO make inline
 /**
  * Helper method for server side to handle a method [methodName] with the body data [body].
  *
@@ -49,7 +51,7 @@ else
  */
 @OptIn(InternalKrosstalkApi::class, ExperimentalStdlibApi::class, kotlin.contracts.ExperimentalContracts::class)
 @KrosstalkPluginApi
-suspend fun <K> K.handle(
+public suspend fun <K> K.handle(
     serverUrl: String,
     method: MethodDefinition<*>,
     requestHeaders: Headers,

@@ -4,15 +4,17 @@ package com.rnett.krosstalk
  * An argument that should have been passed was not.
  */
 @OptIn(InternalKrosstalkApi::class)
-class MissingArgumentException @InternalKrosstalkApi constructor(val methodName: String, val subMessage: String) : KrosstalkException(
-    "Method $methodName: $subMessage")
+public class MissingArgumentException @InternalKrosstalkApi constructor(public val methodName: String, public val subMessage: String) :
+    KrosstalkException(
+        "Method $methodName: $subMessage")
 
 /**
  * An argument was passed as the wrong type.
  */
 @OptIn(InternalKrosstalkApi::class)
-class WrongArgumentTypeException @InternalKrosstalkApi constructor(val methodName: String, val subMessage: String) : KrosstalkException(
-    "Method $methodName: $subMessage")
+public class WrongArgumentTypeException @InternalKrosstalkApi constructor(public val methodName: String, public val subMessage: String) :
+    KrosstalkException(
+        "Method $methodName: $subMessage")
 
 @OptIn(InternalKrosstalkApi::class)
 @PublishedApi

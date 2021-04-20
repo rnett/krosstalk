@@ -5,8 +5,8 @@ import com.rnett.krosstalk.KrosstalkPluginApi
 import kotlin.reflect.KType
 import kotlin.reflect.typeOf
 
-const val byteArrayContentType = "application/octet-stream"
-const val stringContentType = "text/plain; charset=utf-8"
+public const val byteArrayContentType: String = "application/octet-stream"
+public const val stringContentType: String = "text/plain; charset=utf-8"
 
 /**
  * A SerializationHandler capable of getting serializers from [KType]s,
@@ -18,62 +18,62 @@ const val stringContentType = "text/plain; charset=utf-8"
  *
  */
 @OptIn(KrosstalkPluginApi::class)
-interface SerializationHandler<S> {
+public interface SerializationHandler<S> {
 
     /**
      * Get a serializer for a [KType].
      */
-    fun getSerializer(type: KType): Serializer<*, S>
+    public fun getSerializer(type: KType): Serializer<*, S>
 
     /**
      * Serialize a argument map to [S] using the provided argument serializers.
      */
-    fun serializeArguments(arguments: Map<String, *>, serializers: ArgumentSerializers<S>): S
+    public fun serializeArguments(arguments: Map<String, *>, serializers: ArgumentSerializers<S>): S
 
     /**
      * Deserialize an argument map from [S] using the provided argument serializers.
      */
-    fun deserializeArguments(arguments: S, serializers: ArgumentSerializers<S>): Map<String, *>
+    public fun deserializeArguments(arguments: S, serializers: ArgumentSerializers<S>): Map<String, *>
 
     /**
      * Serialize a single argument to [S].
      */
-    fun <T> serializeArgument(key: String, value: T, serializers: ArgumentSerializers<S>): S = serializers.serializeArgument(key, value)
+    public fun <T> serializeArgument(key: String, value: T, serializers: ArgumentSerializers<S>): S = serializers.serializeArgument(key, value)
 
     /**
      * Deserialize a single argument from [S].
      */
-    fun <T> deserializeArgument(key: String, value: S, serializers: ArgumentSerializers<S>): T = serializers.deserializeArgument(key, value)
+    public fun <T> deserializeArgument(key: String, value: S, serializers: ArgumentSerializers<S>): T = serializers.deserializeArgument(key, value)
 
     /**
      * Get the format transformer, to turn the serial format into byte arrays and strings
      */
-    val transformer: SerializedFormatTransformer<S>
+    public val transformer: SerializedFormatTransformer<S>
 
     /**
      * Get the default content type fo use for requests.
      */
-    val contentType: String get() = "application/*"
+    public val contentType: String get() = "application/*"
 }
 
 
 @KrosstalkPluginApi
-abstract class BaseSerializationHandler<S>(override val transformer: SerializedFormatTransformer<S>): SerializationHandler<S>
+public abstract class BaseSerializationHandler<S>(override val transformer: SerializedFormatTransformer<S>) : SerializationHandler<S>
 
 /**
  * A [StringSerializationHandler] that automatically serializes/deserializes each argument before calling [serializeArguments]/[deserializeArguments].
  */
 @KrosstalkPluginApi
-abstract class ArgumentSerializationHandler<S>(transformer: SerializedFormatTransformer<S>) : BaseSerializationHandler<S>(transformer) {
+public abstract class ArgumentSerializationHandler<S>(transformer: SerializedFormatTransformer<S>) : BaseSerializationHandler<S>(transformer) {
     /**
      * Combine serialized arguments into a final serialized form.
      */
-    abstract fun serializeArguments(serializedArguments: Map<String, S>): S
+    public abstract fun serializeArguments(serializedArguments: Map<String, S>): S
 
     /**
      * Deconstruct the final serialized form into serialized arguments.
      */
-    abstract fun deserializeArguments(arguments: S): Map<String, S>
+    public abstract fun deserializeArguments(arguments: S): Map<String, S>
 
     final override fun serializeArguments(arguments: Map<String, *>, serializers: ArgumentSerializers<S>): S {
         return serializeArguments(serializers.serializeAll(arguments))
@@ -90,14 +90,7 @@ abstract class ArgumentSerializationHandler<S>(transformer: SerializedFormatTran
  */
 @InternalKrosstalkApi
 @OptIn(ExperimentalStdlibApi::class, KrosstalkPluginApi::class)
-inline fun <reified T, S> SerializationHandler<S>.getSerializer() = getSerializer(typeOf<T>()) as Serializer<T, S>
-
-/**
- * Get a serializer for a type.
- */
-@InternalKrosstalkApi
-@OptIn(ExperimentalStdlibApi::class, KrosstalkPluginApi::class)
-inline fun <reified T> SerializationHandler<*>.getMethodSerializer() = MethodSerializer(
+internal inline fun <reified T> SerializationHandler<*>.getMethodSerializer() = TransformedSerializer(
     transformer as SerializedFormatTransformer<Any?>,
     getSerializer(typeOf<T>()) as Serializer<T, Any?>
 )
@@ -107,12 +100,12 @@ inline fun <reified T> SerializationHandler<*>.getMethodSerializer() = MethodSer
  */
 @InternalKrosstalkApi
 @OptIn(ExperimentalStdlibApi::class, KrosstalkPluginApi::class)
-fun <T> SerializationHandler<*>.getMethodSerializer(type: KType) = MethodSerializer(
+internal fun <T> SerializationHandler<*>.getMethodSerializer(type: KType) = TransformedSerializer(
     transformer as SerializedFormatTransformer<Any?>,
     getSerializer(type) as Serializer<T, Any?>
 )
 
 @OptIn(KrosstalkPluginApi::class)
 @InternalKrosstalkApi
-fun <S> SerializationHandler<S>.getArgumentSerializers(types: MethodTypes) =
+internal fun <S> SerializationHandler<S>.getArgumentSerializers(types: MethodTypes) =
     MethodArgumentSerializers(this, ArgumentSerializers(types.paramTypes.mapValues { this.getSerializer(it.value) }))

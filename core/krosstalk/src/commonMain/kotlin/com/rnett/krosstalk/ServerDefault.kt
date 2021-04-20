@@ -4,13 +4,13 @@ import kotlin.contracts.InvocationKind
 import kotlin.contracts.contract
 
 @OptIn(InternalKrosstalkApi::class)
-class UnrealizedServerDefaultException @InternalKrosstalkApi constructor() :
+public class UnrealizedServerDefaultException @InternalKrosstalkApi constructor() :
     KrosstalkException("ServerDefault was not realized on the server side, this should be impossible.")
 
-class ServerDefault<out T> @PublishedApi internal constructor(@PublishedApi internal val _value: Any?) {
+public class ServerDefault<out T> @PublishedApi internal constructor(@PublishedApi internal val _value: Any?) {
 
     @OptIn(InternalKrosstalkApi::class)
-    inline val value
+    public inline val value: T
         get(): T {
             if (isNone())
                 throw UnrealizedServerDefaultException()
@@ -25,12 +25,12 @@ class ServerDefault<out T> @PublishedApi internal constructor(@PublishedApi inte
 
 @InternalKrosstalkApi
 @Deprecated("Internal use only, accessible ServerDefaults will never be None")
-fun ServerDefault<*>.isNone() = _value == ServerDefault.None
+public fun ServerDefault<*>.isNone(): Boolean = _value == ServerDefault.None
 
 @PublishedApi
 internal fun noneServerDefault(): ServerDefault<Nothing> = ServerDefault(ServerDefault.None)
 
-inline fun <T> ServerDefault(value: () -> T): ServerDefault<T> {
+public inline fun <T> ServerDefault(value: () -> T): ServerDefault<T> {
     contract { callsInPlace(value, InvocationKind.EXACTLY_ONCE) }
     return ServerDefault(value())
 }

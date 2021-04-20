@@ -35,7 +35,7 @@ import com.rnett.krosstalk.server.ImmutableWantedScopes
  * @property call a lambda to call the method
  * @property allScopes all scopes used by the method
  */
-data class MethodDefinition<T> @InternalKrosstalkApi constructor(
+public data class MethodDefinition<T> @InternalKrosstalkApi constructor(
 //        val method: KCallable<T>,
     val name: String,
     val endpoint: Endpoint,
@@ -60,15 +60,15 @@ data class MethodDefinition<T> @InternalKrosstalkApi constructor(
     val call: MethodCaller<T>,
 ) {
 
-    val allScopes = requiredScopes + optionalScopes
+    val allScopes: Set<Scope> = requiredScopes + optionalScopes
 }
 
 // Unit and Nothing? scopes will be handled in the method
 @OptIn(KrosstalkPluginApi::class)
-typealias MethodCaller<T> = suspend (arguments: Map<String, *>, scopes: ImmutableWantedScopes) -> T
+public typealias MethodCaller<T> = suspend (arguments: Map<String, *>, scopes: ImmutableWantedScopes) -> T
 
 @OptIn(InternalKrosstalkApi::class)
-class MissingCompilerPluginException internal constructor() :
+public class MissingCompilerPluginException internal constructor() :
     KrosstalkException.CompilerError("The Krosstalk compiler plugin was not used when this module was compiled!")
 
 
@@ -76,7 +76,7 @@ class MissingCompilerPluginException internal constructor() :
  * A method was not registered with it's Krosstalk object.
  */
 @OptIn(InternalKrosstalkApi::class)
-class MissingMethodException @PublishedApi internal constructor(val krosstalkObject: Krosstalk, val methodName: String) :
+public class MissingMethodException @PublishedApi internal constructor(public val krosstalkObject: Krosstalk, public val methodName: String) :
     KrosstalkException.CompilerError(
         "Krosstalk $krosstalkObject does not have a registered method named $methodName.  Known methods: ${krosstalkObject.methods}."
     )
@@ -86,26 +86,26 @@ class MissingMethodException @PublishedApi internal constructor(val krosstalkObj
  * The Krosstalk coordinator.  Krosstalk objects extend this.  Contains a listing of defined methods, the serialization handler, and optionally the client or server.
  */
 @OptIn(KrosstalkPluginApi::class)
-abstract class Krosstalk {
-    abstract val serialization: SerializationHandler<*>
-    open val urlSerialization: SerializationHandler<*> by lazy { serialization }
-    open val prefix: String = "krosstalk"
+public abstract class Krosstalk {
+    public abstract val serialization: SerializationHandler<*>
+    public open val urlSerialization: SerializationHandler<*> by lazy { serialization }
+    public open val prefix: String = "krosstalk"
 
     @PublishedApi
-    internal val _methods = mutableMapOf<String, MethodDefinition<*>>()
+    internal val _methods: MutableMap<String, MethodDefinition<*>> = mutableMapOf<String, MethodDefinition<*>>()
 
     /**
      * Methods known to this Krosstalk instance.
      */
-    val methods: Map<String, MethodDefinition<*>> get() = _methods
+    public val methods: Map<String, MethodDefinition<*>> get() = _methods
 
     @InternalKrosstalkApi
-    fun requiredMethod(name: String) = methods[name]
+    public fun requiredMethod(name: String): MethodDefinition<*> = methods[name]
         ?: throw MissingMethodException(this, name)
 
     private val _scopes = mutableListOf<Scope>()
 
-    val scopes get() = _scopes.toList()
+    public val scopes: List<Scope> get() = _scopes.toList()
 
     @PublishedApi
     internal fun addScope(scope: Scope) {
@@ -116,10 +116,11 @@ abstract class Krosstalk {
     private val serverExceptionSerializer by lazy { urlSerialization.getMethodSerializer<KrosstalkResult.ServerException>() }
 
     @InternalKrosstalkApi
-    fun serializeServerException(exception: KrosstalkResult.ServerException) = serverExceptionSerializer.serializeToBytes(exception)
+    public fun serializeServerException(exception: KrosstalkResult.ServerException): ByteArray = serverExceptionSerializer.serializeToBytes(exception)
 
     @InternalKrosstalkApi
-    fun deserializeServerException(exception: ByteArray) = serverExceptionSerializer.deserializeFromBytes(exception)
+    public fun deserializeServerException(exception: ByteArray): KrosstalkResult.ServerException =
+        serverExceptionSerializer.deserializeFromBytes(exception)
 
     @OptIn(InternalKrosstalkApi::class)
     @PublishedApi

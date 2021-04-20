@@ -28,11 +28,11 @@ import kotlin.random.Random
  * A Ktor server scope.  Supports configuring the application and wrapping endpoints.
  */
 @OptIn(KrosstalkPluginApi::class)
-interface KtorServerScope<S> : ServerScope<S> {
+public interface KtorServerScope<S : Any> : ServerScope<S> {
     /**
      * Configure the Ktor application.
      */
-    fun Application.configureApplication() {}
+    public fun Application.configureApplication() {}
 
     /**
      * Wrap the endpoint.  **[endpoint] must be called at some point, it will build the rest of the endpoint.**
@@ -40,7 +40,7 @@ interface KtorServerScope<S> : ServerScope<S> {
      * @param optional Whether the scope is a optional scope for the method it is being applied to.
      * @param endpoint Builder for the rest of the endpoint.
      */
-    fun Route.wrapEndpoint(optional: Boolean, endpoint: Route.() -> Unit) {}
+    public fun Route.wrapEndpoint(optional: Boolean, endpoint: Route.() -> Unit) {}
 
     /**
      * Get the scope's data.
@@ -48,17 +48,17 @@ interface KtorServerScope<S> : ServerScope<S> {
      *
      * TODO use a better way than nullability, I want to support nullable data
      */
-    fun getData(call: ApplicationCall): S?
+    public fun getData(call: ApplicationCall): S?
 
     // can just use handle in buildEndpoint, I think
 //    fun PipelineContext<Unit, ApplicationCall>.handleRequest() {}
 }
 
 
-abstract class KtorServerAuth<T>(val authName: String? = randomAuthName()) : KtorServerScope<T> {
-    companion object {
+public abstract class KtorServerAuth<T : Any>(public val authName: String? = randomAuthName()) : KtorServerScope<T> {
+    public companion object {
         private val usedNames = mutableSetOf<String>()
-        fun randomAuthName(): String {
+        public fun randomAuthName(): String {
             while (true) {
                 val name = "auth-${Random.nextInt(0, Int.MAX_VALUE)}"
                 if (name !in usedNames) {
@@ -69,7 +69,7 @@ abstract class KtorServerAuth<T>(val authName: String? = randomAuthName()) : Kto
         }
     }
 
-    abstract fun Authentication.Configuration.configureAuth()
+    public abstract fun Authentication.Configuration.configureAuth()
 
     override fun Application.configureApplication() {
         install(Authentication) {
@@ -84,15 +84,15 @@ abstract class KtorServerAuth<T>(val authName: String? = randomAuthName()) : Kto
     }
 }
 
-abstract class KtorServerPrincipalAuth<T : Principal>(authName: String?) : KtorServerAuth<T>(authName) {
+public abstract class KtorServerPrincipalAuth<T : Principal>(authName: String?) : KtorServerAuth<T>(authName) {
     override fun getData(call: ApplicationCall): T? = call.authentication.principal as T?
 }
 
 //TODO artifact for others, esp JWT?
 
-open class KtorServerBasicAuth<T : Principal>(
+public open class KtorServerBasicAuth<T : Principal>(
     authName: String? = randomAuthName(),
-    val configure: BasicAuthenticationProvider.Configuration.() -> Unit,
+    public val configure: BasicAuthenticationProvider.Configuration.() -> Unit,
 ) : KtorServerPrincipalAuth<T>(authName) {
 
     override fun Authentication.Configuration.configureAuth() {
@@ -102,9 +102,9 @@ open class KtorServerBasicAuth<T : Principal>(
     }
 }
 
-open class KtorServerSessionAuth<T : Principal>(
+public open class KtorServerSessionAuth<T : Principal>(
     authName: String? = randomAuthName(),
-    val configure: FormAuthenticationProvider.Configuration.() -> Unit,
+    public val configure: FormAuthenticationProvider.Configuration.() -> Unit,
 ) : KtorServerPrincipalAuth<T>(authName) {
     override fun Authentication.Configuration.configureAuth() {
         form(authName) {
@@ -113,9 +113,9 @@ open class KtorServerSessionAuth<T : Principal>(
     }
 }
 
-open class KtorServerDigestAuth<T : Principal>(
+public open class KtorServerDigestAuth<T : Principal>(
     authName: String? = randomAuthName(),
-    val configure: DigestAuthenticationProvider.Configuration.() -> Unit,
+    public val configure: DigestAuthenticationProvider.Configuration.() -> Unit,
 ) : KtorServerAuth<DigestCredential>(authName) {
     override fun Authentication.Configuration.configureAuth() {
         digest(authName) {
@@ -126,9 +126,9 @@ open class KtorServerDigestAuth<T : Principal>(
     override fun getData(call: ApplicationCall): DigestCredential? = call.digestAuthenticationCredentials()
 }
 
-open class KtorServerOAuthAuth(
+public open class KtorServerOAuthAuth(
     authName: String? = randomAuthName(),
-    val configure: OAuthAuthenticationProvider.Configuration.() -> Unit,
+    public val configure: OAuthAuthenticationProvider.Configuration.() -> Unit,
 ) : KtorServerPrincipalAuth<OAuthAccessTokenResponse>(authName) {
     override fun Authentication.Configuration.configureAuth() {
         oauth(authName) {
