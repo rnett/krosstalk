@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<module external.system.module.type="sourceSet" type="JAVA_MODULE" version="4">
+  <component name="NewModuleRootManager">
+    <output url="file://$MODULE_DIR$/../../../../core/krosstalk-core/build/classes/kotlin/native/main" />
+    <exclude-output />
+    <content url="file://$MODULE_DIR$/../../../../core/krosstalk-core/src/nativeMain" />
+    <orderEntry type="jdk" jdkName="Kotlin SDK" jdkType="KotlinSDK" />
+    <orderEntry type="sourceFolder" forTests="false" />
+    <orderEntry type="library" scope="PROVIDED" name="Kotlin/Native 1.4.32 - stdlib" level="project" />
+    <orderEntry type="module" module-name="krosstalk-parent.core.krosstalk-core.commonMain" />
+    <orderEntry type="library" scope="PROVIDED" name="Kotlin/Native 1.4.32 - builtin [mingw_x64]" level="project" />
+    <orderEntry type="library" scope="PROVIDED" name="Kotlin/Native 1.4.32 - gdiplus [mingw_x64]" level="project" />
+    <orderEntry type="library" scope="PROVIDED" name="Kotlin/Native 1.4.32 - iconv [mingw_x64]" level="project" />
+    <orderEntry type="library" scope="PROVIDED" name="Kotlin/Native 1.4.32 - opengl32 [mingw_x64]" level="project" />
+    <orderEntry type="library" scope="PROVIDED" name="Kotlin/Native 1.4.32 - posix [mingw_x64]" level="project" />
+    <orderEntry type="library" scope="PROVIDED" name="Kotlin/Native 1.4.32 - windows [mingw_x64]" level="project" />
+    <orderEntry type="library" scope="PROVIDED" name="Kotlin/Native 1.4.32 - zlib [mingw_x64]" level="project" />
+    <orderEntry type="library" name="Gradle: org.jetbrains.kotlin:kotlin-stdlib-common:1.4.32" level="project" />
+  </component>
+</module>

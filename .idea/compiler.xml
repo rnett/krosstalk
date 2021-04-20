@@ -4,7 +4,10 @@
     <annotationProcessing>
       <profile default="true" name="Default" enabled="true" />
     </annotationProcessing>
-    <bytecodeTargetLevel target="14">
+    <bytecodeTargetLevel target="11">
+      <module name="com.github.rnett.krosstalk.krosstalk-parent" target="11" />
+      <module name="com.github.rnett.krosstalk.krosstalk-parent.main" target="11" />
+      <module name="com.github.rnett.krosstalk.krosstalk-parent.test" target="11" />
       <module name="com.rnett.krosstalk.samples.client-sample.commonMain" target="1.8" />
       <module name="com.rnett.krosstalk.samples.client-sample.commonTest" target="1.8" />
       <module name="com.rnett.krosstalk.samples.client-sample.jvmMain" target="1.8" />
@@ -85,10 +88,24 @@
       <module name="samples.fullstack-sample.commonTest" target="1.8" />
       <module name="samples.fullstack-sample.jvmMain" target="1.8" />
       <module name="samples.fullstack-sample.jvmTest" target="1.8" />
+      <module name="tests.client-test.commonMain" target="1.8" />
+      <module name="tests.client-test.commonTest" target="1.8" />
+      <module name="tests.client-test.jvmMain" target="1.8" />
+      <module name="tests.client-test.jvmTest" target="1.8" />
       <module name="tests.client-tests.commonMain" target="1.8" />
       <module name="tests.client-tests.commonTest" target="1.8" />
       <module name="tests.client-tests.jvmMain" target="1.8" />
       <module name="tests.client-tests.jvmTest" target="1.8" />
+      <module name="tests.compose-test.commonMain" target="1.8" />
+      <module name="tests.compose-test.commonTest" target="1.8" />
+      <module name="tests.compose-test.composeMain" target="1.8" />
+      <module name="tests.compose-test.composeTest" target="1.8" />
+      <module name="tests.compose-test.serverMain" target="1.8" />
+      <module name="tests.compose-test.serverTest" target="1.8" />
+      <module name="tests.fullstack-test.commonMain" target="1.8" />
+      <module name="tests.fullstack-test.commonTest" target="1.8" />
+      <module name="tests.fullstack-test.jvmMain" target="1.8" />
+      <module name="tests.fullstack-test.jvmTest" target="1.8" />
       <module name="tests.fullstack-tests.commonMain" target="1.8" />
       <module name="tests.fullstack-tests.commonTest" target="1.8" />
       <module name="tests.fullstack-tests.jvmMain" target="1.8" />

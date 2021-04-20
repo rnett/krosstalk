@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<module external.system.module.type="sourceSet" type="JAVA_MODULE" version="4">
+  <component name="NewModuleRootManager">
+    <output-test url="file://$MODULE_DIR$/../../../../core/krosstalk-core/build/classes/kotlin/js/test" />
+    <exclude-output />
+    <content url="file://$MODULE_DIR$/../../../../core/krosstalk-core/src/jsTest" />
+    <orderEntry type="jdk" jdkName="Kotlin SDK" jdkType="KotlinSDK" />
+    <orderEntry type="sourceFolder" forTests="false" />
+    <orderEntry type="module" module-name="krosstalk-parent.core.krosstalk-core.commonMain" scope="TEST" />
+    <orderEntry type="module" module-name="krosstalk-parent.core.krosstalk-core.commonTest" scope="TEST" production-on-test="" />
+    <orderEntry type="module" module-name="krosstalk-parent.core.krosstalk-core.jsMain" scope="TEST" />
+    <orderEntry type="module" module-name="krosstalk-parent.core.krosstalk-core.jsMain" scope="RUNTIME" />
+    <orderEntry type="library" scope="TEST" name="Gradle: org.jetbrains.kotlin:kotlin-stdlib-js:1.4.32" level="project" />
+    <orderEntry type="library" scope="TEST" name="Gradle: org.jetbrains.kotlin:kotlin-stdlib-common:1.4.32" level="project" />
+  </component>
+</module>

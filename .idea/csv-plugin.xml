@@ -94,6 +94,13 @@
             </Attribute>
           </value>
         </entry>
+        <entry key="\tests\compose-test\src\serverMain\kotlin\com\rnett\krosstalk\compose_test\Krosstalk.kt">
+          <value>
+            <Attribute>
+              <option name="separator" value=":" />
+            </Attribute>
+          </value>
+        </entry>
         <entry key="\tests\fullstack-tests\src\jvmMain\kotlin\com\rnett\krosstalk\fullstack_test\Test.kt">
           <value>
             <Attribute>

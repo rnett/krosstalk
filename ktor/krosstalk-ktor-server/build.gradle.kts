@@ -3,22 +3,12 @@ plugins {
     `maven-publish` apply true
 }
 
-val ktor_version = "1.5.2"
-
 description = "Basic Ktor server support for Krosstalk"
 
 dependencies {
-    api("io.ktor:ktor-server-core:$ktor_version")
-    api("io.ktor:ktor-auth:$ktor_version")
+    api("io.ktor:ktor-server-core:${Dependencies.ktor}")
+    api("io.ktor:ktor-auth:${Dependencies.ktor}")
     api(project(":core:krosstalk-server"))
 }
 
-kotlin {
-
-    target.compilations.all {
-        kotlinOptions {
-            jvmTarget = "1.8"
-            useIR = true
-        }
-    }
-}
+kotlin.irAndJava8()
