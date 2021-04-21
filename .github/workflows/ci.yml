@@ -44,7 +44,7 @@ jobs:
           fi
           echo "version=$version" >> $GITHUB_ENV
       - name: Clone past docs for release
-        if: env.version == "release"
+        if: env.version == 'release'
         run: git clone --depth 1 https://github.com/rnett/krosstalk.git --branch gh-pages --single-branch past-docs
       - name: Generate HTML Docs
         run: ./gradlew dokkaHtmlMultiModule -PsourceLinkBranch=$GITHUB_SHA -PversionDir=past-docs/release
