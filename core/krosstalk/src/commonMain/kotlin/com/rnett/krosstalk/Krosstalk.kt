@@ -35,6 +35,8 @@ import com.rnett.krosstalk.server.ImmutableWantedScopes
  * @property call a lambda to call the method
  * @property allScopes all scopes used by the method
  */
+//TODO consider propagating KrosstalkPluginApi
+@OptIn(KrosstalkPluginApi::class)
 public data class MethodDefinition<T> @InternalKrosstalkApi constructor(
 //        val method: KCallable<T>,
     val name: String,

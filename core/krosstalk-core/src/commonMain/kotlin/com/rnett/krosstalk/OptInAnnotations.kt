@@ -7,7 +7,9 @@ package com.rnett.krosstalk
  * These APIs may change without notice, and generally do things that users shouldn't be doing.
  */
 @Retention(AnnotationRetention.BINARY)
-@RequiresOptIn(message = "This API is for internal Krosstalk use.  Stability is not guaranteed and you probably shouldn't use it.")
+@RequiresOptIn(message = "This API is for internal Krosstalk use.  Stability is not guaranteed and you probably shouldn't use it.",
+    level = RequiresOptIn.Level.ERROR)
+@MustBeDocumented
 public annotation class InternalKrosstalkApi
 
 /**
@@ -15,7 +17,9 @@ public annotation class InternalKrosstalkApi
  *
  * New client or server implementations should opt in to this.
  */
-@Target(AnnotationTarget.CLASS, AnnotationTarget.PROPERTY, AnnotationTarget.FUNCTION, AnnotationTarget.TYPEALIAS)
+@Target(AnnotationTarget.CLASS, AnnotationTarget.CONSTRUCTOR, AnnotationTarget.FUNCTION, AnnotationTarget.PROPERTY, AnnotationTarget.TYPEALIAS)
 @Retention(AnnotationRetention.BINARY)
-@RequiresOptIn(message = "This API is used when implementing clients or servers and should not be used outside of such.")
+@MustBeDocumented
+@RequiresOptIn(message = "This API is used when implementing clients or servers and should not be used outside of such.",
+    level = RequiresOptIn.Level.ERROR)
 public annotation class KrosstalkPluginApi

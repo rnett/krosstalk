@@ -12,3 +12,7 @@ dependencies {
 }
 
 kotlin.irAndJava8()
+
+tasks.compileKotlin.configure {
+    this.javaPackagePrefix
+}

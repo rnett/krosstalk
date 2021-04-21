@@ -1,10 +1,12 @@
 package com.rnett.krosstalk.endpoint
 
 import com.rnett.krosstalk.InternalKrosstalkApi
+import com.rnett.krosstalk.KrosstalkPluginApi
 import kotlin.math.pow
 import kotlin.test.Test
 import kotlin.test.assertEquals
 
+@OptIn(KrosstalkPluginApi::class)
 class EndpointTest {
     val template = "/method/test/{{id}}/{{?user}}/[?t1:t2/t3/{{?t4}}]?test={test3}&[?test2:t=all&t1=2]"
     val endpoint = Endpoint(template, "method", "")
@@ -106,7 +108,7 @@ class EndpointTest {
 /**
  * List endpoints for all possible combinations of null or not null arguments
  */
-@OptIn(InternalKrosstalkApi::class)
+@OptIn(InternalKrosstalkApi::class, KrosstalkPluginApi::class)
 private fun Endpoint.enumerateOptionals(): Map<Set<String>, Endpoint> {
     val paramSet = mutableSetOf<String>()
     forEachPart {

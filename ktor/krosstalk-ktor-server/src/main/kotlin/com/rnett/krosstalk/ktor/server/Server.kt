@@ -171,6 +171,7 @@ public object KtorServer : ServerHandler<KtorServerScope<*>> {
 private val KrosstalkMethodAttribute = AttributeKey<Map<String, String>>("KrosstalkMethodData")
 private val KrosstalkMethodBaseUrlAttribute = AttributeKey<String>("KrosstalkMethodBaseUrl")
 
+@KrosstalkPluginApi
 internal class KrosstalkRouteSelector(val method: MethodDefinition<*>) : RouteSelector(2.0) {
     override fun evaluate(context: RoutingResolveContext, segmentIndex: Int): RouteSelectorEvaluation {
         with(context) {

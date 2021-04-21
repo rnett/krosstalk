@@ -11,7 +11,8 @@ internal val paramRegex = Regex("\\{\\{(\\??)([^}]+?)\\}\\}")
  * An unknown parameter was used in an `@KrosstalkEndpoint` template.
  */
 @OptIn(InternalKrosstalkApi::class)
-public class EndpointUnknownArgumentException @InternalKrosstalkApi constructor(
+public class EndpointUnknownArgumentException @OptIn(KrosstalkPluginApi::class)
+@InternalKrosstalkApi constructor(
     public val methodName: String,
     public val endpointTemplate: Endpoint,
     public val missingParam: String,
@@ -59,10 +60,12 @@ internal sealed class EndpointPreprocessor {
  * * `[?var:...]` -> body if var != null, else empty.  The body must contain whole segments
  * * `{{?var}}` -> `[?var:{{var}}]`
  */
+@KrosstalkPluginApi
 public data class Endpoint(
     val urlParts: EndpointRegion.UrlParts,
     val queryParameters: EndpointRegion.QueryParameters,
 ) {
+    @KrosstalkPluginApi
     public companion object {
 
         private fun parseApparentStatic(value: String): EndpointPart<EndpointRegion> =
@@ -373,6 +376,7 @@ public data class Endpoint(
     }
 }
 
+@KrosstalkPluginApi
 public sealed class EndpointRegion {
     public data class UrlParts(val parts: List<EndpointUrlPart>) : EndpointRegion(), List<EndpointPart<UrlParts>> by parts {
         override fun toString(): String = parts.joinToString("/")
@@ -389,9 +393,13 @@ public sealed class EndpointRegion {
     }
 }
 
+@KrosstalkPluginApi
 public typealias EndpointUrlPart = EndpointPart<EndpointRegion.UrlParts>
+
+@KrosstalkPluginApi
 public typealias EndpointQueryParameter = EndpointPart<EndpointRegion.QueryParameters>
 
+@KrosstalkPluginApi
 public sealed class EndpointPart<in L : EndpointRegion> {
     public abstract fun resolveOptionals(taken: Set<String>, untaken: Set<String>): EndpointPart<L>?
 
@@ -432,6 +440,7 @@ public sealed class EndpointPart<in L : EndpointRegion> {
             allParts
 }
 
+@KrosstalkPluginApi
 @PublishedApi
 internal inline fun <L : EndpointRegion> EndpointPart<L>.mapInOptional(transform: (EndpointPart<L>) -> EndpointPart<L>): EndpointPart<L> =
     when (this) {

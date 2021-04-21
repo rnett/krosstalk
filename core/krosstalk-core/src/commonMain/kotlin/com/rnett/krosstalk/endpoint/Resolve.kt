@@ -1,5 +1,6 @@
 package com.rnett.krosstalk.endpoint
 
+import com.rnett.krosstalk.KrosstalkPluginApi
 import com.rnett.krosstalk.krosstalkPrefix
 import com.rnett.krosstalk.methodName
 
@@ -13,6 +14,7 @@ internal fun getUrlPath(url: String): String {
     return path.substringBefore("#")
 }
 
+@KrosstalkPluginApi
 public data class UrlRequest(val urlParts: List<String>, val queryParams: Map<String, String>) {
     public constructor(url: String) : this(
         getUrlPath(url).substringBefore("?").split("/").filter { it.isNotBlank() },
@@ -50,12 +52,14 @@ public data class UrlRequest(val urlParts: List<String>, val queryParams: Map<St
     }
 }
 
+@KrosstalkPluginApi
 internal sealed class ResolveResult {
     object Pass : ResolveResult()
     object Fail : ResolveResult()
     data class AddParam(val param: String, val value: String) : ResolveResult()
 }
 
+@KrosstalkPluginApi
 public sealed class ResolveQueryParam {
     public abstract val isOptional: Boolean
 
@@ -92,6 +96,7 @@ public sealed class ResolveQueryParam {
     }
 }
 
+@KrosstalkPluginApi
 public sealed class ResolveUrlPart {
 
     internal abstract fun resolve(urlPart: String): ResolveResult
@@ -129,6 +134,7 @@ public sealed class ResolveUrlPart {
     }
 }
 
+@KrosstalkPluginApi
 public data class ResolveEndpoint(val urlParts: List<ResolveUrlPart>, val queryParams: Map<String, ResolveQueryParam>) {
     internal constructor(endpoint: Endpoint) : this(
         endpoint.urlParts.map { ResolveUrlPart(it) },
@@ -147,6 +153,7 @@ public data class ResolveEndpoint(val urlParts: List<ResolveUrlPart>, val queryP
     }
 }
 
+@KrosstalkPluginApi
 public sealed class EndpointResolveTree {
     public abstract fun enumerate(): Set<ResolveEndpoint>
 

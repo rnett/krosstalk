@@ -1,6 +1,7 @@
 package com.rnett.krosstalk.compiler
 
 import com.rnett.krosstalk.InternalKrosstalkApi
+import com.rnett.krosstalk.KrosstalkPluginApi
 import com.rnett.krosstalk.defaultEndpoint
 import com.rnett.krosstalk.defaultEndpointHttpMethod
 import com.rnett.krosstalk.endpoint.Endpoint
@@ -70,7 +71,7 @@ import kotlin.collections.set
 import kotlin.math.absoluteValue
 import kotlin.reflect.KType
 
-@OptIn(ExperimentalStdlibApi::class, InternalKrosstalkApi::class)
+@OptIn(ExperimentalStdlibApi::class, InternalKrosstalkApi::class, KrosstalkPluginApi::class)
 class KrosstalkMethodTransformer(
     context: IrPluginContext,
     messageCollector: MessageCollector,

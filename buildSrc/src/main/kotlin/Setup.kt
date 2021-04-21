@@ -1,6 +1,11 @@
 import org.gradle.api.GradleException
 import org.jetbrains.kotlin.gradle.dsl.KotlinJvmProjectExtension
 import org.jetbrains.kotlin.gradle.dsl.KotlinMultiplatformExtension
+import org.jetbrains.kotlin.gradle.plugin.LanguageSettingsBuilder
+
+inline fun LanguageSettingsBuilder.commonSettings() {
+    useExperimentalAnnotation("kotlin.RequiresOptIn")
+}
 
 inline fun KotlinMultiplatformExtension.allTargets() {
     jvm {
@@ -25,6 +30,10 @@ inline fun KotlinMultiplatformExtension.allTargets() {
         isMingwX64 -> mingwX64("native")
         else -> throw GradleException("Host OS is not supported in Kotlin/Native.")
     }
+
+    sourceSets.all {
+        languageSettings.commonSettings()
+    }
 }
 
 inline fun KotlinJvmProjectExtension.irAndJava8() {
@@ -34,6 +43,9 @@ inline fun KotlinJvmProjectExtension.irAndJava8() {
                 jvmTarget = "1.8"
                 useIR = true
             }
+        }
+        sourceSets.all {
+            languageSettings.commonSettings()
         }
     }
 }
