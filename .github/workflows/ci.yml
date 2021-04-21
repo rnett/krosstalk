@@ -69,7 +69,8 @@ jobs:
       #          ORG_GRADLE_PROJECT_mavenCentralRepositoryUsername: ${{ secrets.SONATYPE_USERNAME }}
       #          GRADLE_OPTS: -Xmx2048m -XX:MaxPermSize=512m
       #        run: ./gradlew publish --no-daemon --no-parallel -Psigning.keyId=${{steps.install_gpg_key.outputs.key-id}} -Psigning.secretKeyRingFile=/home/runner/.gnupg/secring.gpg -Psigning.password=${{ secrets.OSSRH_GPG_KEY_PASSWORD }}
-
+      - name: Test
+        run: git add -A
       - name: Publish docs
         if: github.ref == 'refs/heads/main'
         uses: rnett/publish-docs@v1.4
