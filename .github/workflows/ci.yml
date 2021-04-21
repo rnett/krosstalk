@@ -23,9 +23,11 @@ jobs:
           chmod +x tests/gradlew
 
       - name: Build and Unit Test
-        run: ./gradlew build -DRELEASE_SIGNING_ENABLED=false
+        run: ./gradlew build test allTests -DRELEASE_SIGNING_ENABLED=false
+
       - name: Run Integraiton Tests
         run: (cd tests && ./gradlew allTests)
+
       - name: Get version
         if: github.ref == 'refs/heads/main'
         id: get_version
@@ -34,18 +36,21 @@ jobs:
           regex: 'version ?(?:=|:) ?"?([\w.\-_]+)"?'
           files: "gradle.properties,build.gradle.kts,build.gradle"
           commands: "./gradlew properties"
+
       - name: Set release/snapshot
         run: |
-          if [[ "${${{ steps.get_version.outputs.match }},,}" == *snapshot ]]
+          if [[ "${{ steps.get_version.outputs.match }}" == *SNAPSHOT ]]
           then
               version="snapshot"
           else
               version="release"
           fi
           echo "version=$version" >> $GITHUB_ENV
+
       - name: Clone past docs for release
         if: env.version == 'release'
         run: git clone --depth 1 https://github.com/rnett/krosstalk.git --branch gh-pages --single-branch past-docs
+
       - name: Generate HTML Docs
         run: ./gradlew dokkaHtmlMultiModule -PsourceLinkBranch=$GITHUB_SHA -PversionDir=past-docs/release
 
