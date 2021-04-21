@@ -1,3 +1,9 @@
+buildscript {
+    dependencies {
+        classpath("org.jetbrains.dokka:versioning-plugin:${Dependencies.dokka}")
+    }
+}
+
 plugins {
     kotlin("multiplatform") version Dependencies.kotlin apply false
     kotlin("jvm") version Dependencies.kotlin apply false
@@ -9,6 +15,8 @@ plugins {
 }
 
 val sourceLinkBranch: String? by project
+
+val versionDir: String? by project
 
 allprojects {
     version = "0.2.0-SNAPSHOT"
@@ -41,13 +49,11 @@ allprojects {
         if (hasDocs) {
             tasks.withType<org.jetbrains.dokka.gradle.DokkaTaskPartial>() {
 
-                moduleName.set(this@afterEvaluate.moduleName)
+                moduleName.set(dokkaModuleName)
                 moduleVersion.set(if (sourceLinkBranch == null || sourceLinkBranch == "main") "main" else version.toString())
 
                 dokkaSourceSets.configureEach {
-                    if (isRoot) {
-                        includes.from("DOCS.md")
-                    } else {
+                    if (!isRoot) {
                         includes.from("README.md")
                     }
                     includeNonPublic.set(false)
@@ -76,4 +82,12 @@ allprojects {
 tasks.withType<org.jetbrains.dokka.gradle.DokkaMultiModuleTask>().configureEach {
     removeChildTasks(project(":plugins:krosstalk-compiler-plugin"))
     removeChildTasks(project(":plugins:krosstalk-gradle-plugin"))
+    this.fileLayout.set(org.jetbrains.dokka.gradle.DokkaMultiModuleFileLayout.CompactInParent)
+
+    if (versionDir != null) {
+        pluginConfiguration<org.jetbrains.dokka.versioning.VersioningPlugin, org.jetbrains.dokka.versioning.VersioningConfiguration> {
+            version = project.version.toString()
+            olderVersionsDir = projectDir.resolve(versionDir!!)
+        }
+    }
 }
