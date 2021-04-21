@@ -25,7 +25,7 @@ jobs:
       - name: Build and Unit Test
         run: ./gradlew build -DRELEASE_SIGNING_ENABLED=false
       - name: Run Integraiton Tests
-        run: (cd tests && ./gradlew build)
+        run: (cd tests && ./gradlew test)
       - name: Get version
         if: github.ref == 'refs/heads/main'
         id: get_version

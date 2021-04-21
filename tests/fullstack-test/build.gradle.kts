@@ -105,3 +105,7 @@ tasks.create<com.github.psxpaul.task.JavaExecFork>("startTestServer") {
 
     tasks["jsTest"].dependsOn(this)
 }
+
+tasks.test {
+    dependsOn("allTests")
+}
