@@ -12,6 +12,8 @@ plugins {
     id("com.gradle.plugin-publish") version Dependencies.gradlePluginPublish apply false
     id("org.jetbrains.dokka") version Dependencies.dokka apply true
     id("com.github.gmazzo.buildconfig") version Dependencies.buildconfig apply false
+    id("com.vanniktech.maven.publish") version Dependencies.publishPlugin apply false
+    signing
 }
 
 val sourceLinkBranch: String? by project
@@ -30,10 +32,14 @@ allprojects {
     }
 
     val isRoot = this == rootProject
-    val hasDocs = parent != rootProject || isRoot
+    val willPublish = parent != rootProject || isRoot
 
-    if (hasDocs)
+    if (willPublish) {
         apply(plugin = "org.jetbrains.dokka")
+        afterEvaluate {
+            apply(plugin = "com.vanniktech.maven.publish")
+        }
+    }
 
     afterEvaluate {
         if (this.parent?.name != "plugins") {
@@ -46,8 +52,14 @@ allprojects {
             }
         }
 
-        if (hasDocs) {
-            tasks.withType<org.jetbrains.dokka.gradle.DokkaTaskPartial>() {
+        if (willPublish) {
+            tasks.withType<org.jetbrains.dokka.gradle.AbstractDokkaTask>() {
+
+                val (moduleName, moduleVersion, dokkaSourceSets) = when(this){
+                    is org.jetbrains.dokka.gradle.DokkaTask -> Triple(moduleName, moduleVersion, dokkaSourceSets)
+                    is org.jetbrains.dokka.gradle.DokkaTaskPartial -> Triple(moduleName, moduleVersion, dokkaSourceSets)
+                    else -> return@withType
+                }
 
                 moduleName.set(dokkaModuleName)
                 moduleVersion.set(if (sourceLinkBranch == null || sourceLinkBranch == "main") "main" else version.toString())
