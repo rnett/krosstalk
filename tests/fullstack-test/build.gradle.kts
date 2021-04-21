@@ -97,7 +97,9 @@ tasks.create<com.github.psxpaul.task.JavaExecFork>("startTestServer") {
 
     classpath = sourceSets.main.get().runtimeClasspath
     main = "com.rnett.krosstalk.fullstack_test.TestKt"
-    Thread.sleep(2_000)
+    doLast {
+        Thread.sleep(5_000)
+    }
 
     dependsOn("jvmJar")
 
