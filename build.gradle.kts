@@ -84,7 +84,7 @@ tasks.withType<org.jetbrains.dokka.gradle.DokkaMultiModuleTask>().configureEach 
     removeChildTasks(project(":plugins:krosstalk-gradle-plugin"))
     this.fileLayout.set(org.jetbrains.dokka.gradle.DokkaMultiModuleFileLayout.CompactInParent)
 
-    if (versionDir != null) {
+    if (versionDir != null && "snapshot" !in project.version.toString().toLowerCase()) {
         pluginConfiguration<org.jetbrains.dokka.versioning.VersioningPlugin, org.jetbrains.dokka.versioning.VersioningConfiguration> {
             version = project.version.toString()
             olderVersionsDir = projectDir.resolve(versionDir!!)
