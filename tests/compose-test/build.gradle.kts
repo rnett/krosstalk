@@ -90,6 +90,10 @@ application {
     this.mainClass.set("com.rnett.krosstalk.compose_test.TestKt")
 }
 
+tasks.test {
+    dependsOn("allTests")
+}
+
 //tasks.create<com.github.psxpaul.task.JavaExecFork>("startTestServer") {
 //    group = "verification"
 //
