@@ -23,10 +23,10 @@ jobs:
           chmod +x tests/gradlew
 
       - name: Build and Unit Test
-        run: ./gradlew build test allTests -DRELEASE_SIGNING_ENABLED=false
+        run: ./gradlew build -DRELEASE_SIGNING_ENABLED=false # test allTests
 
-      - name: Run Integraiton Tests
-        run: (cd tests && ./gradlew allTests)
+#      - name: Run Integraiton Tests
+#        run: (cd tests && ./gradlew allTests)
 
       - name: Get version
         if: github.ref == 'refs/heads/main'
@@ -34,7 +34,7 @@ jobs:
         uses: rnett/find-regex@v1.1
         with:
           regex: 'version ?(?:=|:) ?"?([\w.\-_]+)"?'
-          files: "gradle.properties,build.gradle.kts,build.gradle"
+          files: "build.gradle.kts,gradle.properties,build.gradle"
           commands: "./gradlew properties"
 
       - name: Set release/snapshot
