@@ -70,6 +70,5 @@ jobs:
         uses: rnett/publish-docs@v1.4
         with:
           from: compiler-plugin-utils/build/dokka/html
-          publish-to: version
-          version: ${{ env.version }}
+          publish-to: ${{ env.version }}
           restore: 'false'
