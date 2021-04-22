@@ -21,7 +21,7 @@ val sourceLinkBranch: String? by project
 val versionDir: String? by project
 
 allprojects {
-    version = "0.2.4"
+    version = "0.2.5"
 
     group = "com.github.rnett.krosstalk"
 

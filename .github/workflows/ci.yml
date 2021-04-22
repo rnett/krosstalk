@@ -37,29 +37,15 @@ jobs:
           files: "build.gradle.kts,gradle.properties,build.gradle"
           commands: "./gradlew properties"
 
-      - name: Set release/snapshot
-        run: |
-          raw_version="${{ steps.get_version.outputs.match }}"
-          if [[ raw_version == *SNAPSHOT ]]
-          then
-              version="snapshot"
-              version_dir="snapshot"
-          else
-              version="release"
-              version_dir="release/$raw_version"
-          fi
-          echo "version=$version" >> $GITHUB_ENV
-          echo "version_dir=$version_dir" >> $GITHUB_ENV
-
       - name: Clone past docs for release
-        if: env.version == 'release'
+        if: endsWith(steps.get_version.outputs.match, "SNAPSHOT") || endsWith(steps.get_version.outputs.match, "snapshot")
         run: |
           git clone --depth 1 https://github.com/rnett/krosstalk.git --branch gh-pages --single-branch past-docs
-          mkdir -p past-docs/release
-          ls -l past-docs/release
+          mkdir -p past-docs/old-releases
+          ls -l past-docs/old-releases
 
       - name: Generate HTML Docs
-        run: ./gradlew dokkaHtmlMultiModule -PsourceLinkBranch=$GITHUB_SHA -PversionDir=past-docs/release
+        run: ./gradlew dokkaHtmlMultiModule -PsourceLinkBranch=$GITHUB_SHA -PversionDir=past-docs/old-releases
 
 
       #      - id: install_gpg_key
@@ -81,8 +67,9 @@ jobs:
         run: ./gradlew --stop
       - name: Publish docs
         if: github.ref == 'refs/heads/main'
-        uses: rnett/publish-docs@v1.6-pre11
+        uses: rnett/publish-docs@v2.0
         with:
           from: build/dokka/htmlMultiModule
-          publish-to: ${{ env.version_dir }}
+          publish-to: $latest,!old-releases/$version
+          version: ${{ steps.get_version.outputs.match }}
           restore: 'false'
