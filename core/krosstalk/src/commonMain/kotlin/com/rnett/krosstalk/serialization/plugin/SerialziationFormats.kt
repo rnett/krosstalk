@@ -1,4 +1,4 @@
-package com.rnett.krosstalk.serialization
+package com.rnett.krosstalk.serialization.plugin
 
 import com.rnett.krosstalk.KrosstalkPluginApi
 

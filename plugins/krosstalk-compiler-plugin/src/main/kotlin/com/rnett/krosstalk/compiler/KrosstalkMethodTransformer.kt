@@ -783,7 +783,7 @@ class KrosstalkMethodTransformer(
 
                     val scopes = addValueParameter {
                         name = Name.identifier("scopes")
-                        type = Krosstalk.Server.ImmutableWantedScopes.resolveTypeWith()
+                        type = Krosstalk.Server.Plugin.ImmutableWantedScopes.resolveTypeWith()
                     }
 
                     body = irJsExprBody(irCall(declaration.symbol).apply {
@@ -803,9 +803,9 @@ class KrosstalkMethodTransformer(
                         }
 
                         requiredScopes.forEach { (param, cls) ->
-                            val dataType = cls.defaultType.raiseTo(Krosstalk.Server.ServerScope()).typeArgument(0)
+                            val dataType = cls.defaultType.raiseTo(Krosstalk.Server.Plugin.ServerScope()).typeArgument(0)
                             putValueArgument(param.index,
-                                irCall(Krosstalk.Server.ImmutableWantedScopes.getRequiredInstance)
+                                irCall(Krosstalk.Server.Plugin.ImmutableWantedScopes.getRequiredInstance)
                                     .withDispatchReceiver(irGet(scopes))
                                     .withTypeArguments(cls.defaultType, dataType)
                                     .withValueArguments(irGetObject(cls.symbol), calculateName().asConst())
@@ -813,10 +813,10 @@ class KrosstalkMethodTransformer(
                         }
 
                         optionalScopes.forEach { (param, cls) ->
-                            val dataType = cls.defaultType.raiseTo(Krosstalk.Server.ServerScope()).typeArgument(0)
+                            val dataType = cls.defaultType.raiseTo(Krosstalk.Server.Plugin.ServerScope()).typeArgument(0)
 
                             putValueArgument(param.index,
-                                irCall(Krosstalk.Server.ImmutableWantedScopes.getOptionalInstance)
+                                irCall(Krosstalk.Server.Plugin.ImmutableWantedScopes.getOptionalInstance)
                                     .withDispatchReceiver(irGet(scopes))
                                     .withTypeArguments(cls.defaultType, dataType)
                                     .withValueArguments(irGetObject(cls.symbol))
@@ -1047,7 +1047,7 @@ class KrosstalkMethodTransformer(
 
                     requiredScopes.forEach { (param, cls) ->
                         scopeList.add(
-                            irCall(Krosstalk.Client.instanceToAppliedScope)
+                            irCall(Krosstalk.Client.Plugin.instanceToAppliedScope)
                                 .withExtensionReceiver(irGet(param.declaration))
                                 .withTypeArguments(cls.defaultType, context.irBuiltIns.anyType.makeNullable())
                         )
@@ -1055,7 +1055,7 @@ class KrosstalkMethodTransformer(
 
                     optionalScopes.forEach { (param, cls) ->
                         scopeList.add(
-                            irCall(Krosstalk.Client.instanceToAppliedScope)
+                            irCall(Krosstalk.Client.Plugin.instanceToAppliedScope)
                                 .withExtensionReceiver(irGet(param.declaration))
                                 .withTypeArguments(cls.defaultType, context.irBuiltIns.anyType.makeNullable())
                         )
@@ -1071,7 +1071,8 @@ class KrosstalkMethodTransformer(
                     )
                     putValueArgument(
                         2, stdlib.collections.listOfNotNull(
-                            Krosstalk.Client.AppliedClientScope().typeWithArguments(listOf(clientScopeType as IrTypeBase, IrStarProjectionImpl)),
+                            Krosstalk.Client.Plugin.AppliedClientScope()
+                                .typeWithArguments(listOf(clientScopeType as IrTypeBase, IrStarProjectionImpl)),
                             scopeList
                         )
                     )

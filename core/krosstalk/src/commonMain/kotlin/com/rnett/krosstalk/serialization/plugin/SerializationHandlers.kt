@@ -1,7 +1,10 @@
-package com.rnett.krosstalk.serialization
+package com.rnett.krosstalk.serialization.plugin
 
 import com.rnett.krosstalk.InternalKrosstalkApi
 import com.rnett.krosstalk.KrosstalkPluginApi
+import com.rnett.krosstalk.serialization.MethodArgumentSerializers
+import com.rnett.krosstalk.serialization.MethodTypes
+import com.rnett.krosstalk.serialization.TransformedSerializer
 import kotlin.reflect.KType
 import kotlin.reflect.typeOf
 

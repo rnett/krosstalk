@@ -47,10 +47,13 @@ object Krosstalk : RootPackage(krosstalkPackage) {
 
     object Client : PackageRef() {
         val KrosstalkClient by Class()
-        val ClientScope by Class()
-        val AppliedClientScope by Class()
 
-        val instanceToAppliedScope by function("toAppliedScope")
+        object Plugin : PackageRef() {
+            val ClientScope by Class()
+            val AppliedClientScope by Class()
+
+            val instanceToAppliedScope by function("toAppliedScope")
+        }
 
         val call by function()
         val clientPlaceholder by function("krosstalkCall")
@@ -58,17 +61,20 @@ object Krosstalk : RootPackage(krosstalkPackage) {
 
     object Server : PackageRef() {
         val KrosstalkServer by Class()
-        val ServerScope by Class()
+
+        object Plugin : PackageRef() {
+            val ServerScope by Class()
+
+            object ImmutableWantedScopes : ClassRef() {
+                val getRequiredInstance by function()
+                val getOptionalInstance by function()
+            }
+        }
 
         val createServerScopeInstance by function("invoke") {
             parameters[0] = {
                 it.name.asString() == "serverData"
             }
-        }
-
-        object ImmutableWantedScopes : ClassRef() {
-            val getRequiredInstance by function()
-            val getOptionalInstance by function()
         }
     }
 
@@ -104,8 +110,5 @@ object Krosstalk : RootPackage(krosstalkPackage) {
 
     val CallFromClientSideException by Class()
     val KrosstalkException by Class()
-
-    val AnnotationSpec by Class()
-    val KrosstalkAnnotations by Class()
 
 }

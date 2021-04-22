@@ -6,8 +6,8 @@ sealed class MainState {
 }
 
 fun main() {
-    val m = TodoKrosstalk.methods
-    println(m)
+//    val m = TodoKrosstalk.methods
+//    println(m)
 //    Window("Krosstalk + Compose test") {
 //        DesktopMaterialTheme {
 //            var mainState: MainState by remember { mutableStateOf(MainState.LoginScreen) }

@@ -7,11 +7,11 @@ import com.rnett.krosstalk.MethodDefinition
 import com.rnett.krosstalk.endpoint.UrlRequest
 import com.rnett.krosstalk.ktor.server.KtorServer.define
 import com.rnett.krosstalk.server.KrosstalkServer
-import com.rnett.krosstalk.server.MutableWantedScopes
-import com.rnett.krosstalk.server.ServerHandler
-import com.rnett.krosstalk.server.handle
-import com.rnett.krosstalk.server.scopesAsType
-import com.rnett.krosstalk.server.serverScopes
+import com.rnett.krosstalk.server.plugin.MutableWantedScopes
+import com.rnett.krosstalk.server.plugin.ServerHandler
+import com.rnett.krosstalk.server.plugin.handle
+import com.rnett.krosstalk.server.plugin.scopesAsType
+import com.rnett.krosstalk.server.plugin.serverScopes
 import io.ktor.application.Application
 import io.ktor.application.application
 import io.ktor.application.call

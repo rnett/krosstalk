@@ -1,4 +1,4 @@
-package com.rnett.krosstalk.client
+package com.rnett.krosstalk.client.plugin
 
 import com.rnett.krosstalk.KrosstalkPluginApi
 import com.rnett.krosstalk.Scope

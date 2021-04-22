@@ -148,6 +148,9 @@ public sealed class KrosstalkResult<out T> {
         Failure {
         override fun getException(): ResultHttpErrorException = ResultHttpErrorException(this)
 
+        /**
+         * The name of [statusCode].  Generated from [https://developer.mozilla.org/en-US/docs/Web/HTTP/Status](https://developer.mozilla.org/en-US/docs/Web/HTTP/Status).
+         */
         @OptIn(InternalKrosstalkApi::class)
         val statusCodeName: String? by lazy { httpStatusCodes[statusCode] }
     }

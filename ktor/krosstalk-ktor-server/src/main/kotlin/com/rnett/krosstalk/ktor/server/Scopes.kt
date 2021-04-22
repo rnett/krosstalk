@@ -1,7 +1,7 @@
 package com.rnett.krosstalk.ktor.server
 
 import com.rnett.krosstalk.KrosstalkPluginApi
-import com.rnett.krosstalk.server.ServerScope
+import com.rnett.krosstalk.server.plugin.ServerScope
 import io.ktor.application.Application
 import io.ktor.application.ApplicationCall
 import io.ktor.application.install

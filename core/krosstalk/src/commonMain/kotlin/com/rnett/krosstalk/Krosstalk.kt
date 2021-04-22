@@ -4,10 +4,10 @@ import com.rnett.krosstalk.annotations.ExplicitResult
 import com.rnett.krosstalk.endpoint.Endpoint
 import com.rnett.krosstalk.serialization.MethodSerialization
 import com.rnett.krosstalk.serialization.MethodTypes
-import com.rnett.krosstalk.serialization.SerializationHandler
-import com.rnett.krosstalk.serialization.getArgumentSerializers
-import com.rnett.krosstalk.serialization.getMethodSerializer
-import com.rnett.krosstalk.server.ImmutableWantedScopes
+import com.rnett.krosstalk.serialization.plugin.SerializationHandler
+import com.rnett.krosstalk.serialization.plugin.getArgumentSerializers
+import com.rnett.krosstalk.serialization.plugin.getMethodSerializer
+import com.rnett.krosstalk.server.plugin.ImmutableWantedScopes
 
 
 //TODO track empty body, throw if not empty?
@@ -35,8 +35,8 @@ import com.rnett.krosstalk.server.ImmutableWantedScopes
  * @property call a lambda to call the method
  * @property allScopes all scopes used by the method
  */
-//TODO consider propagating KrosstalkPluginApi
 @OptIn(KrosstalkPluginApi::class)
+@KrosstalkPluginApi
 public data class MethodDefinition<T> @InternalKrosstalkApi constructor(
 //        val method: KCallable<T>,
     val name: String,
@@ -45,28 +45,27 @@ public data class MethodDefinition<T> @InternalKrosstalkApi constructor(
     val contentType: String?,
     val requiredScopes: Set<Scope>,
     val optionalScopes: Set<Scope>,
-    val useExplicitResult: Boolean,
-    val includeStacktrace: Boolean,
-    val propagateServerExceptions: Boolean,
-    val optionalParameters: Set<String>,
-    val serverDefaultParameters: Set<String>,
-    val objectParameters: Map<String, *>,
-    val returnObject: Any?,
-    val outerWithHeaders: Boolean,
-    val innerWithHeaders: Boolean,
-    val requestHeadersParam: String?,
-    val serverUrlParam: String?,
-    @InternalKrosstalkApi
-    val types: MethodTypes,
+    @InternalKrosstalkApi val useExplicitResult: Boolean,
+    @InternalKrosstalkApi val includeStacktrace: Boolean,
+    @InternalKrosstalkApi val propagateServerExceptions: Boolean,
+    @InternalKrosstalkApi val optionalParameters: Set<String>,
+    @InternalKrosstalkApi val serverDefaultParameters: Set<String>,
+    @InternalKrosstalkApi val objectParameters: Map<String, *>,
+    @InternalKrosstalkApi val returnObject: Any?,
+    @InternalKrosstalkApi val outerWithHeaders: Boolean,
+    @InternalKrosstalkApi val innerWithHeaders: Boolean,
+    @InternalKrosstalkApi val requestHeadersParam: String?,
+    @InternalKrosstalkApi val serverUrlParam: String?,
+    @InternalKrosstalkApi val types: MethodTypes,
     @InternalKrosstalkApi val serialization: MethodSerialization,
-    val call: MethodCaller<T>,
+    @InternalKrosstalkApi val call: MethodCaller<T>,
 ) {
 
     val allScopes: Set<Scope> = requiredScopes + optionalScopes
 }
 
 // Unit and Nothing? scopes will be handled in the method
-@OptIn(KrosstalkPluginApi::class)
+@KrosstalkPluginApi
 public typealias MethodCaller<T> = suspend (arguments: Map<String, *>, scopes: ImmutableWantedScopes) -> T
 
 @OptIn(InternalKrosstalkApi::class)
@@ -77,7 +76,7 @@ public class MissingCompilerPluginException internal constructor() :
 /**
  * A method was not registered with it's Krosstalk object.
  */
-@OptIn(InternalKrosstalkApi::class)
+@OptIn(InternalKrosstalkApi::class, KrosstalkPluginApi::class)
 public class MissingMethodException @PublishedApi internal constructor(public val krosstalkObject: Krosstalk, public val methodName: String) :
     KrosstalkException.CompilerError(
         "Krosstalk $krosstalkObject does not have a registered method named $methodName.  Known methods: ${krosstalkObject.methods}."
@@ -99,7 +98,9 @@ public abstract class Krosstalk {
     /**
      * Methods known to this Krosstalk instance.
      */
-    public val methods: Map<String, MethodDefinition<*>> get() = _methods
+    @KrosstalkPluginApi
+    public val methods: Map<String, MethodDefinition<*>>
+        get() = _methods
 
     @InternalKrosstalkApi
     public fun requiredMethod(name: String): MethodDefinition<*> = methods[name]

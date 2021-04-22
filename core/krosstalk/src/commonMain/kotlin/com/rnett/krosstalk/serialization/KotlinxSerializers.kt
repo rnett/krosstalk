@@ -1,6 +1,15 @@
 package com.rnett.krosstalk.serialization
 
 import com.rnett.krosstalk.KrosstalkPluginApi
+import com.rnett.krosstalk.serialization.plugin.ArgumentSerializationHandler
+import com.rnett.krosstalk.serialization.plugin.ArgumentSerializers
+import com.rnett.krosstalk.serialization.plugin.BaseSerializationHandler
+import com.rnett.krosstalk.serialization.plugin.BinarySerializer
+import com.rnett.krosstalk.serialization.plugin.ByteTransformer
+import com.rnett.krosstalk.serialization.plugin.StringSerializer
+import com.rnett.krosstalk.serialization.plugin.StringTransformer
+import com.rnett.krosstalk.serialization.plugin.byteArrayContentType
+import com.rnett.krosstalk.serialization.plugin.stringContentType
 import kotlinx.serialization.BinaryFormat
 import kotlinx.serialization.KSerializer
 import kotlinx.serialization.StringFormat

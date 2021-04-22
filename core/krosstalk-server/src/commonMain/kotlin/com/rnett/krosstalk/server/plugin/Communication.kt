@@ -1,4 +1,4 @@
-package com.rnett.krosstalk.server
+package com.rnett.krosstalk.server.plugin
 
 import com.rnett.krosstalk.Headers
 import com.rnett.krosstalk.InternalKrosstalkApi
@@ -10,6 +10,7 @@ import com.rnett.krosstalk.ServerDefault
 import com.rnett.krosstalk.WithHeaders
 import com.rnett.krosstalk.addHeadersFrom
 import com.rnett.krosstalk.endpoint.Endpoint
+import com.rnett.krosstalk.server.KrosstalkServer
 import kotlin.contracts.InvocationKind
 import kotlin.contracts.contract
 
@@ -30,6 +31,7 @@ public interface ServerHandler<S : ServerScope<*>>
 @KrosstalkPluginApi
 public typealias Responder = suspend (statusCode: Int, contentType: String?, responseHeaders: Headers, data: ByteArray) -> Unit
 
+@KrosstalkPluginApi
 @InternalKrosstalkApi
 internal fun MethodDefinition<*>.getReturnBody(data: Any?): ByteArray = if (returnObject != null)
     ByteArray(0)

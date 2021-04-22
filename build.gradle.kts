@@ -76,7 +76,7 @@ allprojects {
                     skipEmptyPackages.set(true)
                     jdkVersion.set(8)
 
-                    println("Platform: ${platform.orNull}")
+                    println("Project: ${project.path}, SourceSet: ${this.sourceSetID}, Platform: ${platform.orNull}")
 
                     val sourceSet = this.sourceSetID.sourceSetName
 

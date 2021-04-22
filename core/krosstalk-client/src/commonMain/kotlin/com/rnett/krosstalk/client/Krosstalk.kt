@@ -1,6 +1,8 @@
 package com.rnett.krosstalk.client
 
 import com.rnett.krosstalk.KrosstalkPluginApi
+import com.rnett.krosstalk.client.plugin.ClientHandler
+import com.rnett.krosstalk.client.plugin.ClientScope
 
 /**
  * The interface for a krosstalk client.  Have your Krosstalk object implement this to be a client.

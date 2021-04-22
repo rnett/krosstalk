@@ -11,7 +11,7 @@ import com.rnett.krosstalk.instanceReceiver
 import com.rnett.krosstalk.krosstalkPrefix
 import com.rnett.krosstalk.methodName
 import com.rnett.krosstalk.runKrosstalkCatching
-import com.rnett.krosstalk.serialization.SerializationHandler
+import com.rnett.krosstalk.serialization.plugin.SerializationHandler
 import com.rnett.krosstalk.toKrosstalkResult
 import kotlin.reflect.KClass
 

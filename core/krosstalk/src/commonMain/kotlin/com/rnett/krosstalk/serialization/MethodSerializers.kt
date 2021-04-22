@@ -6,6 +6,10 @@ import com.rnett.krosstalk.KrosstalkPluginApi
 import com.rnett.krosstalk.KrosstalkResult
 import com.rnett.krosstalk.extensionReceiver
 import com.rnett.krosstalk.instanceReceiver
+import com.rnett.krosstalk.serialization.plugin.ArgumentSerializers
+import com.rnett.krosstalk.serialization.plugin.SerializationHandler
+import com.rnett.krosstalk.serialization.plugin.SerializedFormatTransformer
+import com.rnett.krosstalk.serialization.plugin.Serializer
 import com.rnett.krosstalk.urlDecode
 import com.rnett.krosstalk.urlEncode
 import kotlin.reflect.KType
@@ -71,47 +75,6 @@ public data class MethodSerialization internal constructor(
 
     @InternalKrosstalkApi
     public fun deserializeBodyArguments(arguments: ByteArray): Map<String, *> = bodySerializers.deserializeArgumentsFromBytes(arguments)
-}
-
-/**
- * A `{Argument -> Serializer}` map, with helper functions to get the needed serializer as `Serializer<Any?, S>` rather than `Serializer<*, S>` and to serialize/deserialize all arguments.
- */
-@KrosstalkPluginApi
-public class ArgumentSerializers<S>(public val map: Map<String, Serializer<*, S>>) {
-    @KrosstalkPluginApi
-    public operator fun contains(argument: String): Boolean = argument in map
-
-    /**
-     * Get a serializer for an argument as a `Serializer<Any?, S>`, throwing [MissingSerializerException] if a serializer is missing.
-     */
-    @OptIn(InternalKrosstalkApi::class)
-    @KrosstalkPluginApi
-    public operator fun get(argument: String): Serializer<Any?, S> = (map[argument]
-        ?: throw MissingSerializerException(argument, map.keys, false)) as Serializer<Any?, S>
-
-    /**
-     * Serialize all arguments, throwing [MissingSerializerException] if a serializer is missing.
-     */
-    @KrosstalkPluginApi
-    public fun serializeAll(arguments: Map<String, *>): Map<String, S> = arguments.mapValues { serializeArgument(it.key, it.value) }
-
-    /**
-     * Deserialize all arguments, throwing [MissingSerializerException] if a serializer is missing.
-     */
-    @KrosstalkPluginApi
-    public fun deserializeAll(arguments: Map<String, S>): Map<String, Any?> = arguments.mapValues { deserializeArgument<Any?>(it.key, it.value) }
-
-    /**
-     * Serialize an argument, throwing [MissingSerializerException] if the serializer is missing.
-     */
-    @KrosstalkPluginApi
-    public fun <T> serializeArgument(key: String, value: T): S = this[key].serialize(value)
-
-    /**
-     * Deserialize an argument, throwing [MissingSerializerException] if the serializer is missing.
-     */
-    @KrosstalkPluginApi
-    public fun <T> deserializeArgument(key: String, value: S): T = this[key].deserialize(value) as T
 }
 
 @InternalKrosstalkApi

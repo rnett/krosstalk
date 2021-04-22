@@ -29,7 +29,6 @@ import org.slf4j.event.Level
 
 
 fun main() {
-    println(MyKrosstalk.methods)
     embeddedServer(CIO, 8080, "localhost") {
 
         install(CORS) {
