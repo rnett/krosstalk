@@ -21,7 +21,7 @@ val sourceLinkBranch: String? by project
 val versionDir: String? by project
 
 allprojects {
-    version = "0.2.0-SNAPSHOT"
+    version = "0.2.0"
 
     group = "com.github.rnett.krosstalk"
 
@@ -55,7 +55,7 @@ allprojects {
         if (willPublish) {
             tasks.withType<org.jetbrains.dokka.gradle.AbstractDokkaTask>() {
 
-                val (moduleName, moduleVersion, dokkaSourceSets) = when(this){
+                val (moduleName, moduleVersion, dokkaSourceSets) = when (this) {
                     is org.jetbrains.dokka.gradle.DokkaTask -> Triple(moduleName, moduleVersion, dokkaSourceSets)
                     is org.jetbrains.dokka.gradle.DokkaTaskPartial -> Triple(moduleName, moduleVersion, dokkaSourceSets)
                     else -> return@withType
