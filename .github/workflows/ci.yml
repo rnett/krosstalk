@@ -67,7 +67,7 @@ jobs:
         run: ./gradlew --stop
       - name: Publish docs
         if: github.ref == 'refs/heads/main'
-        uses: rnett/publish-docs@v2.0
+        uses: rnett/publish-docs@v2.1
         with:
           from: build/dokka/htmlMultiModule
           publish-to: '$latest,!old-releases/$version'
