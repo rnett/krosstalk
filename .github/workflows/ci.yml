@@ -49,7 +49,7 @@ jobs:
               version_dir="release/$raw_version"
           fi
           echo "version=$version" >> $GITHUB_ENV
-          echo "version_dir=version_dir" >> $GITHUB_ENV
+          echo "version_dir=$version_dir" >> $GITHUB_ENV
 
       - name: Clone past docs for release
         if: env.version == 'release'
