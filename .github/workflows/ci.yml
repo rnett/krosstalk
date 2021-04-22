@@ -72,7 +72,7 @@ jobs:
 
       - name: Publish docs
         if: github.ref == 'refs/heads/main'
-        uses: rnett/publish-docs@v1.6-pre3
+        uses: rnett/publish-docs@v1.6-pre4
         with:
           from: build/dokka/htmlMultiModule
           publish-to: ${{ env.version }}
