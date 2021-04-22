@@ -21,7 +21,7 @@ val sourceLinkBranch: String? by project
 val versionDir: String? by project
 
 allprojects {
-    version = "0.2.2"
+    version = "0.2.3"
 
     group = "com.github.rnett.krosstalk"
 
@@ -97,9 +97,11 @@ tasks.withType<org.jetbrains.dokka.gradle.DokkaMultiModuleTask>().configureEach 
     this.fileLayout.set(org.jetbrains.dokka.gradle.DokkaMultiModuleFileLayout.CompactInParent)
 
     if (versionDir != null && "snapshot" !in project.version.toString().toLowerCase()) {
+        val oldVersionsDir = projectDir.resolve(versionDir!!)
+        println("Using older versions from $oldVersionsDir")
         pluginConfiguration<org.jetbrains.dokka.versioning.VersioningPlugin, org.jetbrains.dokka.versioning.VersioningConfiguration> {
             version = project.version.toString()
-            olderVersionsDir = projectDir.resolve(versionDir!!)
+            olderVersionsDir = oldVersionsDir
         }
     }
 }

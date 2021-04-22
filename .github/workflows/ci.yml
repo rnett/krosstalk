@@ -39,13 +39,17 @@ jobs:
 
       - name: Set release/snapshot
         run: |
-          if [[ "${{ steps.get_version.outputs.match }}" == *SNAPSHOT ]]
+          raw_version="${{ steps.get_version.outputs.match }}"
+          if [[ raw_version == *SNAPSHOT ]]
           then
               version="snapshot"
+              version_dir="snapshot"
           else
               version="release"
+              version_dir="release/$raw_version"
           fi
           echo "version=$version" >> $GITHUB_ENV
+          echo "version_dir=version_dir" >> $GITHUB_ENV
 
       - name: Clone past docs for release
         if: env.version == 'release'
@@ -80,5 +84,5 @@ jobs:
         uses: rnett/publish-docs@v1.6-pre11
         with:
           from: build/dokka/htmlMultiModule
-          publish-to: ${{ env.version }}
+          publish-to: ${{ env.version_dir }}
           restore: 'false'
