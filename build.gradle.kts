@@ -21,14 +21,14 @@ val sourceLinkBranch: String? by project
 val versionDir: String? by project
 
 allprojects {
-    version = "0.2.5"
+    version = "0.2.5-SNAPSHOT"
 
     group = "com.github.rnett.krosstalk"
 
     repositories {
         mavenCentral()
         maven("https://oss.sonatype.org/content/repositories/snapshots")
-        jcenter()
+        maven("https://maven.pkg.jetbrains.space/public/p/kotlinx-html/maven")
     }
 
     val isRoot = this == rootProject
@@ -42,6 +42,7 @@ allprojects {
     }
 
     afterEvaluate {
+        val project = this
         if (this.parent?.name != "plugins") {
             try {
                 extensions.configure<org.jetbrains.kotlin.gradle.dsl.KotlinProjectExtension> {
@@ -69,19 +70,26 @@ allprojects {
                         includes.from("README.md")
                     }
                     includeNonPublic.set(false)
+                    suppressObviousFunctions.set(true)
+                    suppressInheritedMembers.set(true)
                     skipDeprecated.set(true)
                     skipEmptyPackages.set(true)
                     jdkVersion.set(8)
 
+                    println("Platform: ${platform.orNull}")
+
+                    val sourceSet = this.sourceSetID.sourceSetName
+
                     sourceLink {
-                        localDirectory.set(file("src/main/kotlin"))
+                        localDirectory.set(file("src/$sourceSet/kotlin"))
+
                         remoteUrl.set(java.net.URL(buildString {
                             append("https://github.com/rnett/krosstalk/blob/")
                             append(sourceLinkBranch ?: "main")
 
                             val dir = projectDir.relativeTo(rootProject.projectDir).path.trim('/')
 
-                            append("/$dir/src/main/kotlin")
+                            append("/$dir/src/$sourceSet/kotlin")
                         }))
                         remoteLineSuffix.set("#L")
                     }
@@ -95,6 +103,9 @@ tasks.withType<org.jetbrains.dokka.gradle.DokkaMultiModuleTask>().configureEach 
     removeChildTasks(project(":plugins:krosstalk-compiler-plugin"))
     removeChildTasks(project(":plugins:krosstalk-gradle-plugin"))
     this.fileLayout.set(org.jetbrains.dokka.gradle.DokkaMultiModuleFileLayout.CompactInParent)
+    this.includes.from("DOCS.md")
+    this.moduleName.set("Krosstalk")
+    this.moduleVersion.set(version.toString())
 
     if (versionDir != null && "snapshot" !in project.version.toString().toLowerCase()) {
         val oldVersionsDir = projectDir.resolve(versionDir!!)
