@@ -33,16 +33,16 @@ Krosstalk APIs necessary for defining a client. See the module description.
 
 # Package com.rnett.krosstalk.client.plugin
 
-APIs for defining client plugins. For an example, see the Krosstalk Ktor client.
+APIs for defining client plugins. For an example, see the Krosstalk Ktor client.  
 
 Client plugins will need to define a scope for their implementation that implements `ClientScope`, and a client handler
 that implements `ClientHandler<S>` where `S` is their scope type. Their client handler can then be used
-in `KrosstalkClient`s.
+in `KrosstalkClient`s.  
 
 The scope interface (or abstract class, but it's uslally an interface) will need to define the methods that the client
 handler will call to apply the scope to a request. Subclasses can then implement these methods. Since users define
 scopes by defining objects, all scope classes should be `open`, and `abstract` methods should be preferred over lambda
-properties or parameters.
+properties or parameters.  
 
 The client handler only has one method to implement: `ClientHandler.sendKrosstalkRequest`, which sends a http request
 and returns the response (as an `InternalKrosstalkResponse`). This method must apply all of the method's scopes, which
