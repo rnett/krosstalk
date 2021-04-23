@@ -74,7 +74,7 @@
                         <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
                       </span></span></div>
                   <div><span class="brief-comment">
-                      <p class="paragraph">Krosstalk APIs necessary for defining a client.</p>
+                      <p class="paragraph">Krosstalk APIs necessary for defining a client. <br></br> To define a Krosstalk client, create an object that inherits from <code>Krosstalk</code> and <code>KrosstalkClient&lt;S&gt;</code>, where <code>S</code> is the scope type of the client plugin you are using. Client plugins will usually provide an interface to do this that also sets the <code>client</code> type, i.e. <code>KtorKrosstalkClient</code>. You will then set the <code>client</code> property to an instance of your client plugin's handler, i.e. <code>KtorClient</code> and the <code>serverUrl</code> property to the target server's URL. <br></br> A minimal example using the Ktor client looks like this:</p>
                     </span></div>
                 </div>
               </div>
