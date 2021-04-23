@@ -1,18 +1,8 @@
 package com.rnett.krosstalk.client
 
-import com.rnett.krosstalk.Headers
-import com.rnett.krosstalk.InternalKrosstalkApi
-import com.rnett.krosstalk.Krosstalk
-import com.rnett.krosstalk.KrosstalkException
-import com.rnett.krosstalk.KrosstalkPluginApi
-import com.rnett.krosstalk.KrosstalkResult
-import com.rnett.krosstalk.MethodDefinition
-import com.rnett.krosstalk.ServerDefault
-import com.rnett.krosstalk.WithHeaders
+import com.rnett.krosstalk.*
 import com.rnett.krosstalk.client.plugin.AppliedClientScope
 import com.rnett.krosstalk.client.plugin.ClientScope
-import com.rnett.krosstalk.httpStatusCodes
-import com.rnett.krosstalk.isNone
 import kotlin.reflect.KClass
 
 /**
@@ -47,7 +37,10 @@ public open class CallFailureException @InternalKrosstalkApi constructor(
 ) : KrosstalkException(message)
 
 @OptIn(InternalKrosstalkApi::class)
-public class WrongHeadersTypeException @InternalKrosstalkApi constructor(public val methodName: String, public val type: KClass<*>) :
+public class WrongHeadersTypeException @InternalKrosstalkApi constructor(
+    public val methodName: String,
+    public val type: KClass<*>
+) :
     KrosstalkException(
         "Invalid type for request headers param: Map<String, List<String>> is required, got $type."
     )
@@ -62,7 +55,8 @@ internal fun <T> MethodDefinition<T>.getReturnValue(data: ByteArray): T = if (re
 }
 
 @PublishedApi
-internal fun Any?.withHeadersIf(withHeaders: Boolean, headers: Headers): Any? = if (withHeaders) WithHeaders(this, headers) else this
+internal fun Any?.withHeadersIf(withHeaders: Boolean, headers: Headers): Any? =
+    if (withHeaders) WithHeaders(this, headers) else this
 
 @OptIn(InternalKrosstalkApi::class, KrosstalkPluginApi::class, ExperimentalStdlibApi::class)
 @Suppress("unused")
@@ -76,7 +70,8 @@ internal suspend inline fun <T, K, reified C : ClientScope<*>> K.call(
     val method = requiredMethod(methodName)
 
     val requestHeaders = if (method.requestHeadersParam != null) {
-        rawArguments.getValue(method.requestHeadersParam!!)!!.let { it as? Headers ?: throw WrongHeadersTypeException(methodName, it::class) }
+        rawArguments.getValue(method.requestHeadersParam!!)!!
+            .let { it as? Headers ?: throw WrongHeadersTypeException(methodName, it::class) }
     } else null
 
     val serverUrl = method.serverUrlParam?.let { rawArguments.getValue(it) as String? } ?: this.serverUrl
@@ -104,7 +99,8 @@ internal suspend inline fun <T, K, reified C : ClientScope<*>> K.call(
     }
 
     val bodyArguments = arguments
-        .filterNot { it.value == null && it.key in method.optionalParameters }.minus(method.objectParameters.keys).minus(usedInUrl)
+        .filterNot { it.value == null && it.key in method.optionalParameters }.minus(method.objectParameters.keys)
+        .minus(usedInUrl)
 
     val serializedBody = method.serialization.serializeBodyArguments(bodyArguments)
 
@@ -119,23 +115,25 @@ internal suspend inline fun <T, K, reified C : ClientScope<*>> K.call(
 
     return if (method.useExplicitResult) {
         if (result.isSuccess()) {
-            KrosstalkResult.Success(method.getReturnValue(result.data).withHeadersIf(method.innerWithHeaders, result.headers))
+            KrosstalkResult.Success(
+                method.getReturnValue(result.body).withHeadersIf(method.innerWithHeaders, result.headers)
+            )
         } else {
             if (result.statusCode == 500) {
                 try {
-                    deserializeServerException(result.data)
+                    deserializeServerException(result.body)
                 } catch (t: Throwable) {
-                    KrosstalkResult.HttpError(result.statusCode, result.stringData)
+                    KrosstalkResult.HttpError(result.statusCode, result.stringBody)
                 }
             } else {
-                KrosstalkResult.HttpError(result.statusCode, result.stringData)
+                KrosstalkResult.HttpError(result.statusCode, result.stringBody)
             }
         }
     } else {
         if (result.isSuccess()) {
-            method.getReturnValue(result.data).withHeadersIf(method.innerWithHeaders, result.headers)
+            method.getReturnValue(result.body).withHeadersIf(method.innerWithHeaders, result.headers)
         } else {
-            throw CallFailureException(methodName, result.statusCode, result.stringData)
+            throw CallFailureException(methodName, result.statusCode, result.stringBody)
         }
     }.withHeadersIf(method.outerWithHeaders, result.headers) as T
 }

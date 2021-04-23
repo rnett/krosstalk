@@ -6,19 +6,25 @@ import com.rnett.krosstalk.KrosstalkPluginApi
 
 /**
  * The response to a Krosstalk request.
+ *
+ * @property statusCode the http status code of the response
+ * @property headers the response headers
+ * @property body the response body
+ * @param stringBody a lambda to get the body as a string, or null if not possible.  Will likely use the response's charset header
+ * @property stringBody the body as a string, or null if not possible or the body is empty.  Calculated using the `stringBody` parameter.
  */
 @KrosstalkPluginApi
 public class InternalKrosstalkResponse(
     public val statusCode: Int,
     public val headers: Headers,
-    public val data: ByteArray,
-    stringData: () -> String?,
+    public val body: ByteArray,
+    stringBody: () -> String?,
 ) {
-    public val stringData: String? by lazy {
-        if (data.isEmpty())
+    public val stringBody: String? by lazy {
+        if (body.isEmpty())
             null
         else
-            stringData()
+            stringBody()
     }
 
     @PublishedApi

@@ -1,6 +1,7 @@
 # Module Krosstalk
 
-Common Krosstalk APIs that are used be both clients and servers, and everything required to define an `expect` Krosstalk. Includes `Krosstalk`, `Scope`, `KrosstalkResult`, etc.
+Common Krosstalk APIs that are used be both clients and servers, and everything required to define an `expect`
+Krosstalk. Includes `Krosstalk`, `Scope`, `KrosstalkResult`, etc.
 
 Modules defining a `expect` Krosstalk that will have an `actual` client and server should depend on this.
 
@@ -16,7 +17,11 @@ Annotations that can be used to configure Krosstalk methods.
 
 # Package com.rnett.krosstalk.serialization
 
-Serialization handling. Kotlinx serialization is included by default, but other serialization handlers can be defined.
+Serialization APIs. Kotlinx serialization is included by default, but other serialization plugins can be defined.
+
+# Package com.rnett.krosstalk.serialization.plugin
+
+APIs necessary to define serialization plugins. Look at the Kotlinx serializers for examples.
 
 # Package com.rnett.krosstalk.client
 
