@@ -1,12 +1,14 @@
 # Module Krosstalk Client
 
 Krosstalk APIs necessary for defining a client.
-<br></br>
+<br/>
+<br/>
 To define a Krosstalk client, create an object that inherits from `Krosstalk` and `KrosstalkClient<S>`, where `S`
 is the scope type of the client plugin you are using. Client plugins will usually provide an interface to do this that
 also sets the `client` type, i.e. `KtorKrosstalkClient`. You will then set the `client` property to an instance of your
 client plugin's handler, i.e. `KtorClient` and the `serverUrl` property to the target server's URL.
-<br></br>
+<br/>
+<br/>
 A minimal example using the Ktor client looks like this:
 
 ```kotlin
@@ -20,11 +22,12 @@ actual object MyKrosstalk : Krosstalk(), KtorKrosstalkClient {
 }
 ```
 
-<br></br>
 A standalone client would look the same, except without the `actual`s.
-<br></br>
+<br/>
+<br/>
 For more examples, see `tests`.
-<br></br>
+<br/>
+<br/>
 Plugin APIs are in `com.rnett.krosstalk.client.plugin`.
 
 # Package com.rnett.krosstalk.client
