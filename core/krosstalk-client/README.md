@@ -7,7 +7,7 @@ is the scope type of the client plugin you are using. Client plugins will usuall
 also sets the `client` type, i.e. `KtorKrosstalkClient`. You will then set the `client` property to an instance of your
 client plugin's handler, i.e. `KtorClient` and the `serverUrl` property to the target server's URL.
 
-A minimal example using the Ktor client looks like this:
+A minimal example with authentication using the Ktor client looks like this:
 
 ```kotlin
 actual object MyKrosstalk : Krosstalk(), KtorKrosstalkClient {
@@ -19,6 +19,9 @@ actual object MyKrosstalk : Krosstalk(), KtorKrosstalkClient {
     actual object Auth : Scope, KtorClientBasicAuth()
 }
 ```
+
+Note that the actual scope objects need to explicitly inherit from `Scope`. This is due
+to [KT-20641](https://youtrack.jetbrains.com/issue/KT-20641).
 
 A standalone client would look the same, except without the `actual`s.
 
@@ -38,7 +41,7 @@ Client plugins will need to define a scope for their implementation that impleme
 that implements `ClientHandler<S>` where `S` is their scope type. Their client handler can then be used
 in `KrosstalkClient`s.
 
-The scope interface (or abstract class, but it's uslally an interface) will need to define the methods that the client
+The scope interface (or abstract class, but it's usually an interface) will need to define the methods that the client
 handler will call to apply the scope to a request. Subclasses can then implement these methods. Since users define
 scopes by defining objects, all scope classes should be `open`, and `abstract` methods should be preferred over lambda
 properties or parameters.

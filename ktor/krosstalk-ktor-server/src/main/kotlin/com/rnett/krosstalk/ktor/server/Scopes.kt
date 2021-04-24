@@ -5,21 +5,8 @@ import com.rnett.krosstalk.server.plugin.ServerScope
 import io.ktor.application.Application
 import io.ktor.application.ApplicationCall
 import io.ktor.application.install
-import io.ktor.auth.Authentication
-import io.ktor.auth.BasicAuthenticationProvider
-import io.ktor.auth.DigestAuthenticationProvider
-import io.ktor.auth.DigestCredential
-import io.ktor.auth.FormAuthenticationProvider
-import io.ktor.auth.OAuthAccessTokenResponse
-import io.ktor.auth.OAuthAuthenticationProvider
-import io.ktor.auth.Principal
-import io.ktor.auth.authenticate
-import io.ktor.auth.authentication
-import io.ktor.auth.basic
-import io.ktor.auth.digest
-import io.ktor.auth.digestAuthenticationCredentials
-import io.ktor.auth.form
-import io.ktor.auth.oauth
+import io.ktor.auth.*
+import io.ktor.http.Headers
 import io.ktor.routing.Route
 import kotlin.random.Random
 
@@ -54,7 +41,20 @@ public interface KtorServerScope<S : Any> : ServerScope<S> {
 //    fun PipelineContext<Unit, ApplicationCall>.handleRequest() {}
 }
 
+/**
+ * A Ktor server scope that only reads headers.
+ */
+public interface KtorServerHeaderScope<T : Any> : KtorServerScope<T> {
+    public abstract fun getValue(headers: Headers): T?
 
+    override fun getData(call: ApplicationCall): T? {
+        return getValue(call.request.headers)
+    }
+}
+
+/**
+ * A base class for defining an authentication scope.
+ */
 public abstract class KtorServerAuth<T : Any>(public val authName: String? = randomAuthName()) : KtorServerScope<T> {
     public companion object {
         private val usedNames = mutableSetOf<String>()
@@ -84,16 +84,20 @@ public abstract class KtorServerAuth<T : Any>(public val authName: String? = ran
     }
 }
 
+/**
+ * A base class for defining an authentication scope that sets a principal to `call.authentication.principal`.
+ */
 public abstract class KtorServerPrincipalAuth<T : Principal>(authName: String?) : KtorServerAuth<T>(authName) {
     override fun getData(call: ApplicationCall): T? = call.authentication.principal as T?
 }
 
-//TODO artifact for others, esp JWT?
-
-public open class KtorServerBasicAuth<T : Principal>(
-    authName: String? = randomAuthName(),
-    public val configure: BasicAuthenticationProvider.Configuration.() -> Unit,
+/**
+ * A Ktor server Basic auth scope.
+ */
+public abstract class KtorServerBasicAuth<T : Principal>(
+    authName: String? = randomAuthName()
 ) : KtorServerPrincipalAuth<T>(authName) {
+    public abstract fun BasicAuthenticationProvider.Configuration.configure()
 
     override fun Authentication.Configuration.configureAuth() {
         basic(authName) {
@@ -102,10 +106,14 @@ public open class KtorServerBasicAuth<T : Principal>(
     }
 }
 
-public open class KtorServerSessionAuth<T : Principal>(
+/**
+ * A Ktor server form auth scope.
+ */
+public abstract class KtorServerFormAuth<T : Principal>(
     authName: String? = randomAuthName(),
-    public val configure: FormAuthenticationProvider.Configuration.() -> Unit,
 ) : KtorServerPrincipalAuth<T>(authName) {
+    public abstract fun FormAuthenticationProvider.Configuration.configure()
+
     override fun Authentication.Configuration.configureAuth() {
         form(authName) {
             configure()
@@ -113,10 +121,13 @@ public open class KtorServerSessionAuth<T : Principal>(
     }
 }
 
-public open class KtorServerDigestAuth<T : Principal>(
+/**
+ * A Ktor server digest auth scope.
+ */
+public abstract class KtorServerDigestAuth<T : Principal>(
     authName: String? = randomAuthName(),
-    public val configure: DigestAuthenticationProvider.Configuration.() -> Unit,
 ) : KtorServerAuth<DigestCredential>(authName) {
+    public abstract fun DigestAuthenticationProvider.Configuration.configure()
     override fun Authentication.Configuration.configureAuth() {
         digest(authName) {
             configure()
@@ -126,13 +137,16 @@ public open class KtorServerDigestAuth<T : Principal>(
     override fun getData(call: ApplicationCall): DigestCredential? = call.digestAuthenticationCredentials()
 }
 
-public open class KtorServerOAuthAuth(
-    authName: String? = randomAuthName(),
-    public val configure: OAuthAuthenticationProvider.Configuration.() -> Unit,
+/**
+ * A Ktor server OAuth auth scope.
+ */
+public abstract class KtorServerOAuthAuth(
+    authName: String? = randomAuthName()
 ) : KtorServerPrincipalAuth<OAuthAccessTokenResponse>(authName) {
+    public abstract fun OAuthAuthenticationProvider.Configuration.configure()
     override fun Authentication.Configuration.configureAuth() {
         oauth(authName) {
-            configure
+            configure()
         }
     }
 }

@@ -105,7 +105,12 @@ public class KtorClient(
         val bytes = response.receive<ByteArray>()
         val charset = response.charset() ?: Charsets.UTF_8
 
-        return InternalKrosstalkResponse(response.status.value, response.headers.toMap(), bytes) { String(bytes, charset = charset) }
+        return InternalKrosstalkResponse(response.status.value, response.headers.toMap(), bytes) {
+            String(
+                bytes,
+                charset = charset
+            )
+        }
     }
 }
 
@@ -121,16 +126,9 @@ public interface KtorClientScope<in D> : ClientScope<D> {
 }
 
 /**
- * A Ktor client scope that only alters the request.
- */
-public fun interface KtorClientRequestScope<D> : KtorClientScope<D> {
-    override fun HttpRequestBuilder.configureRequest(data: D)
-}
-
-/**
  * A Ktor client scope that only adds headers.
  */
-public fun interface KtorClientHeaderScope<D> : KtorClientRequestScope<D> {
+public fun interface KtorClientHeaderScope<D> : KtorClientScope<D> {
     override fun HttpRequestBuilder.configureRequest(data: D) {
         this.headers.headers(data)
     }
@@ -139,18 +137,13 @@ public fun interface KtorClientHeaderScope<D> : KtorClientRequestScope<D> {
 }
 
 /**
- * A Ktor client scope that only alters the client.
- * Note that a new client is used for each request.
- */
-public fun interface KtorClientClientScope<D> : KtorClientScope<D> {
-    override fun HttpClientConfig<*>.configureClient(data: D)
-}
-
-/**
  * Credentials for basic auth.
  */
 public data class BasicCredentials(val username: String, val password: String)
 
+/**
+ * A base Ktor client authentication scope.
+ */
 public abstract class KtorClientAuth<D> : KtorClientScope<D> {
     public abstract fun Auth.configureClientAuth(data: D)
 
@@ -161,6 +154,9 @@ public abstract class KtorClientAuth<D> : KtorClientScope<D> {
     }
 }
 
+/**
+ * A Ktor client Basic authentication scope.
+ */
 public open class KtorClientBasicAuth(public val sendWithoutRequest: Boolean = true, public val realm: String? = null) :
     KtorClientAuth<BasicCredentials>() {
     override fun Auth.configureClientAuth(data: BasicCredentials) {
@@ -173,5 +169,8 @@ public open class KtorClientBasicAuth(public val sendWithoutRequest: Boolean = t
     }
 }
 
+/**
+ * Create a basic auth scope instance by providing the username and password.
+ */
 public operator fun <T : KtorClientBasicAuth> T.invoke(username: String, password: String): ScopeInstance<T> =
     this.invoke(com.rnett.krosstalk.ktor.client.BasicCredentials(username, password))
