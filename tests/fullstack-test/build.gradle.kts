@@ -65,6 +65,7 @@ kotlin {
                 implementation("io.ktor:ktor-server-cio:$ktor_version")
 
                 implementation("com.github.rnett.krosstalk:krosstalk-ktor-server")
+                implementation("com.github.rnett.krosstalk:krosstalk-ktor-server-auth")
 
                 implementation("ch.qos.logback:logback-classic:1.2.3")
             }
@@ -77,6 +78,7 @@ kotlin {
         val jsMain by getting {
             dependencies {
                 implementation("com.github.rnett.krosstalk:krosstalk-ktor-client")
+                implementation("com.github.rnett.krosstalk:krosstalk-ktor-client-auth")
                 implementation("io.ktor:ktor-client-logging:$ktor_version")
             }
         }

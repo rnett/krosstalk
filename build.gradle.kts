@@ -43,7 +43,7 @@ allprojects {
 
     afterEvaluate {
         val project = this
-        if (this.parent?.name != "plugins") {
+        if (this.parent?.name != "compiler") {
             try {
                 extensions.configure<org.jetbrains.kotlin.gradle.dsl.KotlinProjectExtension> {
                     explicitApi()
@@ -98,8 +98,8 @@ allprojects {
 }
 
 tasks.withType<org.jetbrains.dokka.gradle.DokkaMultiModuleTask>().configureEach {
-    removeChildTasks(project(":plugins:krosstalk-compiler-plugin"))
-    removeChildTasks(project(":plugins:krosstalk-gradle-plugin"))
+    removeChildTasks(project(":compiler:krosstalk-compiler-plugin"))
+    removeChildTasks(project(":compiler:krosstalk-gradle-plugin"))
     this.fileLayout.set(org.jetbrains.dokka.gradle.DokkaMultiModuleFileLayout.CompactInParent)
     this.includes.from("README.md")
     this.moduleName.set("Krosstalk")

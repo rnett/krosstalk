@@ -24,6 +24,13 @@
       <module name="krosstalk-parent.core.krosstalk-server-sdk.commonTest" target="1.8" />
       <module name="krosstalk-parent.core.krosstalk-server-sdk.jvmMain" target="1.8" />
       <module name="krosstalk-parent.core.krosstalk-server-sdk.jvmTest" target="1.8" />
+      <module name="krosstalk-parent.ktor.krosstalk-ktor-client.commonMain" target="1.8" />
+      <module name="krosstalk-parent.ktor.krosstalk-ktor-client.commonTest" target="1.8" />
+      <module name="krosstalk-parent.ktor.krosstalk-ktor-client.jvmMain" target="1.8" />
+      <module name="krosstalk-parent.ktor.krosstalk-ktor-client.jvmTest" target="1.8" />
+      <module name="krosstalk-parent.plugins.krosstalk-gradle-plugin" target="1.8" />
+      <module name="krosstalk-parent.plugins.krosstalk-gradle-plugin.main" target="1.8" />
+      <module name="krosstalk-parent.plugins.krosstalk-gradle-plugin.test" target="1.8" />
       <module name="krosstalk.client-sample.commonMain" target="1.8" />
       <module name="krosstalk.client-sample.commonTest" target="1.8" />
       <module name="krosstalk.client-sample.jvmMain" target="1.8" />

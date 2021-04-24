@@ -15,7 +15,22 @@ rootProject.name = "krosstalk-parent"
 include(
     "core:krosstalk", "core:krosstalk-core",
     "core:krosstalk-client", "core:krosstalk-server",
-    "plugins:krosstalk-compiler-plugin", "plugins:krosstalk-gradle-plugin",
-    "ktor:krosstalk-ktor-server", "ktor:krosstalk-ktor-client"
+    "compiler:krosstalk-compiler-plugin", "compiler:krosstalk-gradle-plugin"
+)
+
+include(
+    "plugins:ktor-server:krosstalk-ktor-server",
+    "plugins:ktor-server:krosstalk-ktor-server-auth",
+    "plugins:ktor-server:krosstalk-ktor-server-auth-jwt"
+)
+
+include(
+    "plugins:ktor-client:krosstalk-ktor-client",
+    "plugins:ktor-client:krosstalk-ktor-client-auth"
+)
+
+include(
+    "plugins:kotlinx-serialization:krosstalk-kotlinx-serialization-cbor",
+    "plugins:kotlinx-serialization:krosstalk-kotlinx-serialization-json"
 )
 

@@ -74,11 +74,9 @@ kotlin {
         val jsMain by getting {
             dependencies {
                 implementation("com.github.rnett.krosstalk:krosstalk")
-
                 implementation("com.github.rnett.krosstalk:krosstalk-ktor-client")
+                implementation("com.github.rnett.krosstalk:krosstalk-ktor-client-auth")
 
-                api("io.ktor:ktor-client-core:$ktor_version")
-                api("io.ktor:ktor-client-auth:$ktor_version")
                 implementation("io.ktor:ktor-client-logging:$ktor_version")
             }
         }
