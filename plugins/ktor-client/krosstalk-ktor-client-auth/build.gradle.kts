@@ -10,7 +10,7 @@ kotlin {
         val commonMain by getting {
             dependencies {
                 api("io.ktor:ktor-client-auth:${Dependencies.ktor}")
-                implementation(project(":plugins:ktor-client:krosstalk-ktor-client"))
+                api(project(":plugins:ktor-client:krosstalk-ktor-client"))
             }
         }
     }
