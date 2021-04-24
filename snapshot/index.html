@@ -21,7 +21,84 @@
             </div>
           </div>
           <div class="cover ">
-            <div class="cover "></div>
+            <div class="cover ">
+              <h1 class="">README is very out of date</h1>
+              <h1 class=""> Krosstalk: Expect/Actual API call autowiring</h1>
+              <p class="paragraph"><a href="https://bintray.com/rnett/krosstalk/krosstalk/_latestVersion"><img alt="Download" src="https://api.bintray.com/packages/rnett/krosstalk/krosstalk/images/download.svg"></a><a href="https://opensource.org/licenses/Apache-2.0"><img alt="License" src="https://img.shields.io/badge/License-Apache%202.0-yellowgreen.svg"></a></p>
+              <p class="paragraph"><span style="color: red; font-weight: bold">Currently blocked by <a href="https://youtrack.jetbrains.com/issue/KT-44199">KT-44199</a>.</span></p>
+              <p class="paragraph">Krosstalk is a Kotlin compiler plugin supported library that turns <code>expect</code>/<code>actual</code> methods into api calls and endpoints, with fully pluggable serialization, client and server implementations. When a client method is called, the arguments are serialized and sent to the server. The server deserializes the arguments, calls the method, and sends the serialized result as the response. Note that this means any side-effects will only happen server side.</p>
+              <p class="paragraph">Krosstalk ships with Kotlinx serialization support by default, and a rudimentary Ktor client and server are available.</p>
+              <p class="paragraph">A working example is provided in <code>sample</code>.</p>
+              <h2 class=""> Basics</h2>
+              <p class="paragraph">To use krosstalk methods, you need a Krosstalk object. This object is essentially a table of all known methods and configuration options: client/server and serialization.</p>
+              <p class="paragraph">A basic krosstalk object using the Ktor client and server might look like:</p>
+              <p class="paragraph">Common:</p>
+              <div class="sample-container"><code class="" theme="idea">
+                  <pre>expect object MyKrosstalk : Krosstalk</pre>
+                </code></div>
+              <p class="paragraph">JS (client):</p>
+              <div class="sample-container"><code class="" theme="idea">
+                  <pre>actual object MyKrosstalk : Krosstalk(), KrosstalkClient&lt;KtorClientScope&gt; {<br>    override val serialization = KotlinxSerializationHandler<br>    override val client = KtorClient<br>}</pre>
+                </code></div>
+              <p class="paragraph">JVM (server):</p>
+              <div class="sample-container"><code class="" theme="idea">
+                  <pre>actual object MyKrosstalk : Krosstalk(), KrosstalkServer&lt;KtorServerScope&gt;, Scopes {<br>    override val serialization = KotlinxSerializationHandler<br>    override val server = KtorServer<br>}</pre>
+                </code></div>
+              <p class="paragraph">As you can see, each actual krosstalk object defines its serialization handler (<code>override val serialization</code>), whether it is a client or server (inheriting from <code>KrosstalkClient</code> or <code>KrosstalkServer</code>, ignore the type argument for now), and its client or server implementation (<code>override val client</code>, <code>override val server</code>). None of these have to match, so long as they are compatible.</p>
+              <p class="paragraph">Using a krosstalk object is extremly simple: Common:</p>
+              <div class="sample-container"><code class="" theme="idea">
+                  <pre></pre>
+                </code></div>
+              <p class="paragraph">class Data(val num: Int, val str: String)</p>
+              <p class="paragraph">suspend fun doThing(data: Data): List<String></p>
+              <div class="sample-container"><code class="" theme="idea">
+                  <pre>**JS (client):**<br><br>```kotlin<br>actual suspend fun doThing(data: Data): List&lt;String&gt; = krosstaklCall()</pre>
+                </code></div>
+              <p class="paragraph">JVM (server):</p>
+              <div class="sample-container"><code class="" theme="idea">
+                  <pre>actual suspend fun doThing(data: Data): List&lt;String&gt; {<br>    return List(data.num) { data.str }<br>}</pre>
+                </code></div>
+              <p class="paragraph">The <code>expect</code> declaration should have a <code>@KrosstalkMethod</code> defining the krosstalk object to use and any scopes (I'll get to that later). The JS <code>actual</code> declaration should only be the definition and <code>krosstaklCall()</code>. The JVM <code>actual</code> declaration should have the implementation. All krosstalk methods must be <code>suspend</code>, as they are API calls even if they don't look like it.</p>
+              <p class="paragraph">You also have to define the krosstalk endpoints in your server. Krosstalk won't create its own server, but any server implementation should define helper functions to make this easy.</p>
+              <p class="paragraph">For the Ktor server, it looks like:</p>
+              <div class="sample-container"><code class="" theme="idea">
+                  <pre>fun main() {<br>    embeddedServer(Netty, 8080, &quot;localhost&quot;) {<br><br>        install(CORS) {<br>            anyHost()<br>        }<br>        KtorServer.define(this, MyKrosstalk)<br><br>        routing {<br>            // Index and JS resources<br>        }<br><br>    }.start(true)<br>}</pre>
+                </code></div>
+              <p class="paragraph">The <code>KtorServer.define</code> defines a POST <code>krosstalk/$methodName</code> endpoint for each method and wraps them in their scope handlers (again, later).</p>
+              <h2 class=""> Scopes</h2>
+              <p class="paragraph">There is a rather glaring flaw with what I've covered so far: you can't authenticate your krosstalk methods. You also can't do any other fancy frontend or backend handling. Scopes solve this.</p>
+              <p class="paragraph">A scope is a way of attaching special handling, optionally with required data, to a krosstalk method. They are defined in the krosstalk object (or rather, right above it):</p>
+              <p class="paragraph">Common:</p>
+              <div class="sample-container"><code class="" theme="idea">
+                  <pre>interface Scopes {<br>    val auth: ScopeHolder<br>}<br><br>expect object MyKrosstalk : Krosstalk, Scopes</pre>
+                </code></div>
+              <p class="paragraph">The unfortunate requirement of using an interface is because Kotlin expect/actual force the property types to match exactly, which, given that we want client scopes on the client and server scopes on the server, doesn't work.</p>
+              <p class="paragraph">Defining the client and server scopes looks like: JS (client):</p>
+              <div class="sample-container"><code class="" theme="idea">
+                  <pre>actual object MyKrosstalk : Krosstalk(), KrosstalkClient&lt;KtorClientScope&gt;, Scopes {<br>    override val serialization = KotlinxSerializationHandler<br>    override val client = KtorClient<br>    override val auth by scope&lt;KtorClientAuth&gt;()<br>}</pre>
+                </code></div>
+              <p class="paragraph">JVM (server):</p>
+              <div class="sample-container"><code class="" theme="idea">
+                  <pre>actual object MyKrosstalk : Krosstalk(), KrosstalkServer&lt;KtorServerScope&gt;, Scopes {<br>    override val serialization = KotlinxSerializationHandler<br>    override val server = KtorServer<br>    override val auth by scope(KtorServerAuth(mapOf(&quot;username&quot; to &quot;password&quot;)))<br>}</pre>
+                </code></div>
+              <p class="paragraph">This is where the type parameter of <code>KrosstalkClient</code> and <code>KtorServerScope</code> come from: the client and server scopes need to be supported by the client and server. A ktor server will only be able to support scopes that define handlers on ktor requests, and the same for the client.</p>
+              <p class="paragraph">The <code>auth</code> scope is then used like:</p>
+              <div class="sample-container"><code class="" theme="idea">
+                  <pre></pre>
+                </code></div>
+              <p class="paragraph">&quot;auth&quot;) expect suspend fun doAuthThing(num: Int): Data</p>
+              <div class="sample-container"><code class="" theme="idea">
+                  <pre>**JS (client):**<br><br>```kotlin<br>actual suspend fun doAuthThing(num: Int): Data = krosstaklCall()</pre>
+                </code></div>
+              <p class="paragraph">JVM (server):</p>
+              <div class="sample-container"><code class="" theme="idea">
+                  <pre>actual suspend fun doAuthThing(num: Int): Data {<br>    return Data(num, (num * 10).toString())<br>}</pre>
+                </code></div>
+              <p class="paragraph">The inclusion of <code>&quot;auth&quot;</code> in <code>@KrosstalkMethod</code> specifies that it is a required scope for <code>doAuthThing</code>: the scope's server handler will be attached to that endpoint.</p>
+              <h2 class=""> Implementing Serializers</h2>
+              <h2 class=""> Implementing Clients</h2>
+              <h2 class=""> Implementing Servers</h2>
+            </div>
             <h2 class="">All modules:</h2>
             <div class="table"><a data-name="-1011534586%2FMain%2F0" anchor-label="Krosstalk Server" id="-1011534586%2FMain%2F0" data-filterable-set=""></a>
               <div class="table-row">
@@ -74,7 +151,7 @@
                         <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
                       </span></span></div>
                   <div><span class="brief-comment">
-                      <p class="paragraph">Krosstalk APIs necessary for defining a client. <br/><br/> To define a Krosstalk client, create an object that inherits from <code>Krosstalk</code> and <code>KrosstalkClient&lt;S&gt;</code>, where <code>S</code> is the scope type of the client plugin you are using. Client plugins will usually provide an interface to do this that also sets the <code>client</code> type, i.e. <code>KtorKrosstalkClient</code>. You will then set the <code>client</code> property to an instance of your client plugin's handler, i.e. <code>KtorClient</code> and the <code>serverUrl</code> property to the target server's URL. <br/><br/> A minimal example using the Ktor client looks like this:</p>
+                      <p class="paragraph">Krosstalk APIs necessary for defining a client.</p>
                     </span></div>
                 </div>
               </div>
