@@ -42,10 +42,11 @@ jobs:
         run: |
           git clone --depth 1 https://github.com/rnett/krosstalk.git --branch gh-pages --single-branch past-docs
           mkdir -p past-docs/old-releases
-          ls -l past-docs/old-releases
+          ls -l past-docs/old-releases/core
+          ls -l past-docs/old-releases/plugins
 
       - name: Generate HTML Docs
-        run: ./gradlew dokkaHtmlMultiModule -PsourceLinkBranch=$GITHUB_SHA -PversionDir=past-docs/old-releases
+        run: ./gradlew dokkaHtmlMultiModule -PgitBranch=$GITHUB_SHA -PcoreVersionDir=past-docs/old-releases/core -PpluginVersionDir=past-docs/old-releases/plugins
 
 
       #      - id: install_gpg_key
@@ -65,11 +66,21 @@ jobs:
 
       - name: Stop gradle daemon
         run: ./gradlew --stop
-      - name: Publish docs
+      - name: Publish Core docs
         if: github.ref == 'refs/heads/main'
         uses: rnett/publish-docs@v2.2
         with:
-          from: build/dokka/htmlMultiModule
-          publish-to: '$latest,!old-releases/$version'
+          from: core/build/dokka/htmlMultiModule
+          publish-to: '$latest/core,!old-releases/core/$version'
+          version: ${{ steps.get_version.outputs.match }}
+          restore: 'true'
+          message: Update Core docs for $version
+      - name: Publish Plugin docs
+        if: github.ref == 'refs/heads/main'
+        uses: rnett/publish-docs@v2.2
+        with:
+          from: plugins/build/dokka/htmlMultiModule
+          publish-to: '$latest/plugins,!old-releases/plugins/$version'
           version: ${{ steps.get_version.outputs.match }}
           restore: 'false'
+          message: Update Plugin docs for $version

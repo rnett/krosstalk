@@ -13,6 +13,7 @@ pluginManagement {
 rootProject.name = "krosstalk-parent"
 
 include(
+    "core",
     "core:krosstalk", "core:krosstalk-core",
     "core:krosstalk-client", "core:krosstalk-server",
     "compiler:krosstalk-compiler-plugin", "compiler:krosstalk-gradle-plugin"
@@ -25,6 +26,7 @@ include(
 )
 
 include(
+    "plugins",
     "plugins:ktor-client:krosstalk-ktor-client",
     "plugins:ktor-client:krosstalk-ktor-client-auth"
 )
