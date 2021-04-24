@@ -56,13 +56,15 @@ public class ArgumentSerializers<S>(public val map: Map<String, Serializer<*, S>
      * Serialize all arguments, throwing [MissingSerializerException] if a serializer is missing.
      */
     @KrosstalkPluginApi
-    public fun serializeAll(arguments: Map<String, *>): Map<String, S> = arguments.mapValues { serializeArgument(it.key, it.value) }
+    public fun serializeAll(arguments: Map<String, *>): Map<String, S> =
+        arguments.mapValues { serializeArgument(it.key, it.value) }
 
     /**
      * Deserialize all arguments, throwing [MissingSerializerException] if a serializer is missing.
      */
     @KrosstalkPluginApi
-    public fun deserializeAll(arguments: Map<String, S>): Map<String, Any?> = arguments.mapValues { deserializeArgument<Any?>(it.key, it.value) }
+    public fun deserializeAll(arguments: Map<String, S>): Map<String, Any?> =
+        arguments.mapValues { deserializeArgument<Any?>(it.key, it.value) }
 
     /**
      * Serialize an argument, throwing [MissingSerializerException] if the serializer is missing.

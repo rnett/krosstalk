@@ -76,8 +76,6 @@ allprojects {
                     skipEmptyPackages.set(true)
                     jdkVersion.set(8)
 
-                    println("Project: ${project.path}, SourceSet: ${this.sourceSetID}, Platform: ${platform.orNull}")
-
                     val sourceSet = this.sourceSetID.sourceSetName
 
                     sourceLink {
@@ -103,7 +101,7 @@ tasks.withType<org.jetbrains.dokka.gradle.DokkaMultiModuleTask>().configureEach 
     removeChildTasks(project(":plugins:krosstalk-compiler-plugin"))
     removeChildTasks(project(":plugins:krosstalk-gradle-plugin"))
     this.fileLayout.set(org.jetbrains.dokka.gradle.DokkaMultiModuleFileLayout.CompactInParent)
-    this.includes.from("DOCS.md")
+    this.includes.from("README.md")
     this.moduleName.set("Krosstalk")
     this.moduleVersion.set(version.toString())
 
