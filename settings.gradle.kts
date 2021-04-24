@@ -30,7 +30,6 @@ include(
 )
 
 include(
-    "plugins:kotlinx-serialization:krosstalk-kotlinx-serialization-cbor",
-    "plugins:kotlinx-serialization:krosstalk-kotlinx-serialization-json"
+    "plugins:krosstalk-kotlinx-serialization"
 )
 

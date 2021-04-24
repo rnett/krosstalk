@@ -41,8 +41,8 @@ kotlin {
         val commonMain by getting {
             dependencies {
                 implementation("com.github.rnett.krosstalk:krosstalk")
+                implementation("com.github.rnett.krosstalk:krosstalk-kotlinx-serialization")
                 implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:$coroutines_version")
-                implementation("org.jetbrains.kotlinx:kotlinx-serialization-core:$serialization_version")
                 implementation("org.jetbrains.kotlinx:kotlinx-serialization-cbor:$serialization_version")
 
                 implementation("org.jetbrains.kotlinx:kotlinx-datetime:0.1.1")
@@ -60,6 +60,7 @@ kotlin {
                 implementation("io.ktor:ktor-server-cio:$ktor_version")
 
                 implementation("com.github.rnett.krosstalk:krosstalk-ktor-server")
+                implementation("com.github.rnett.krosstalk:krosstalk-ktor-server-auth")
 
                 implementation("ch.qos.logback:logback-classic:1.2.3")
                 compileOnly(compose.desktop.currentOs)
@@ -73,6 +74,7 @@ kotlin {
         val composeMain by getting {
             dependencies {
                 implementation("com.github.rnett.krosstalk:krosstalk-ktor-client")
+                implementation("com.github.rnett.krosstalk:krosstalk-ktor-client-auth")
                 implementation("io.ktor:ktor-client-apache:$ktor_version")
                 implementation("io.ktor:ktor-client-logging:$ktor_version")
                 implementation(compose.desktop.currentOs)

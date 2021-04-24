@@ -26,7 +26,7 @@ jobs:
         run: ./gradlew build -DRELEASE_SIGNING_ENABLED=false # test allTests
 
       #      - name: Run Integraiton Tests
-      #        run: (cd tests && ./gradlew allTests)
+      #        run: (cd tests && ./gradlew allTests --no-parallel)
 
       - name: Get version
         if: github.ref == 'refs/heads/main'

@@ -1,8 +1,7 @@
 package com.rnett.krosstalk.fullstack_test
 
 import com.rnett.krosstalk.ServerDefault
-import com.rnett.krosstalk.client.invoke
-import com.rnett.krosstalk.ktor.client.BasicCredentials
+import com.rnett.krosstalk.ktor.client.auth.invoke
 import io.ktor.client.utils.EmptyContent
 import io.ktor.http.HttpMethod
 import kotlinx.coroutines.GlobalScope
@@ -131,12 +130,12 @@ class Tests {
 
     @Test
     fun testAuth() = GlobalScope.promise {
-        assertEquals("username", withAuth(2, MyKrosstalk.Auth(BasicCredentials("username", "password"))))
+        assertEquals("username", withAuth(2, MyKrosstalk.Auth("username", "password")))
     }
 
     @Test
     fun testOptionalAuth() = GlobalScope.promise {
-        assertEquals("username", withOptionalAuth(MyKrosstalk.Auth(BasicCredentials("username", "password"))))
+        assertEquals("username", withOptionalAuth(MyKrosstalk.Auth("username", "password")))
         assertEquals(null, withOptionalAuth(null))
     }
 

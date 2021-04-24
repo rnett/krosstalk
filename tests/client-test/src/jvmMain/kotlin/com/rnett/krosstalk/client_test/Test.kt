@@ -2,11 +2,7 @@ package com.rnett.krosstalk.client_test
 
 import io.ktor.application.call
 import io.ktor.application.install
-import io.ktor.auth.Authentication
-import io.ktor.auth.Principal
-import io.ktor.auth.authenticate
-import io.ktor.auth.authentication
-import io.ktor.auth.basic
+import io.ktor.auth.*
 import io.ktor.features.CORS
 import io.ktor.features.ContentNegotiation
 import io.ktor.http.HttpStatusCode
@@ -29,7 +25,7 @@ data class User(val username: String) : Principal
 val users = mapOf("user" to "pass")
 
 fun main() {
-    embeddedServer(CIO, 8080, "localhost") {
+    embeddedServer(CIO, 8081, "localhost") {
 
         install(CORS) {
             anyHost()

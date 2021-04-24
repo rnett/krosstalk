@@ -28,6 +28,14 @@
       <module name="krosstalk-parent.ktor.krosstalk-ktor-client.commonTest" target="1.8" />
       <module name="krosstalk-parent.ktor.krosstalk-ktor-client.jvmMain" target="1.8" />
       <module name="krosstalk-parent.ktor.krosstalk-ktor-client.jvmTest" target="1.8" />
+      <module name="krosstalk-parent.plugins.kotlinx-serialization.krosstalk-kotlinx-serialization-cbor.commonMain" target="1.8" />
+      <module name="krosstalk-parent.plugins.kotlinx-serialization.krosstalk-kotlinx-serialization-cbor.commonTest" target="1.8" />
+      <module name="krosstalk-parent.plugins.kotlinx-serialization.krosstalk-kotlinx-serialization-cbor.jvmMain" target="1.8" />
+      <module name="krosstalk-parent.plugins.kotlinx-serialization.krosstalk-kotlinx-serialization-cbor.jvmTest" target="1.8" />
+      <module name="krosstalk-parent.plugins.kotlinx-serialization.krosstalk-kotlinx-serialization.commonMain" target="1.8" />
+      <module name="krosstalk-parent.plugins.kotlinx-serialization.krosstalk-kotlinx-serialization.commonTest" target="1.8" />
+      <module name="krosstalk-parent.plugins.kotlinx-serialization.krosstalk-kotlinx-serialization.jvmMain" target="1.8" />
+      <module name="krosstalk-parent.plugins.kotlinx-serialization.krosstalk-kotlinx-serialization.jvmTest" target="1.8" />
       <module name="krosstalk-parent.plugins.krosstalk-gradle-plugin" target="1.8" />
       <module name="krosstalk-parent.plugins.krosstalk-gradle-plugin.main" target="1.8" />
       <module name="krosstalk-parent.plugins.krosstalk-gradle-plugin.test" target="1.8" />

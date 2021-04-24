@@ -1,22 +1,15 @@
 package com.rnett.krosstalk.fullstack_test
 
-import com.rnett.krosstalk.Headers
-import com.rnett.krosstalk.Krosstalk
-import com.rnett.krosstalk.KrosstalkResult
-import com.rnett.krosstalk.Scope
-import com.rnett.krosstalk.ScopeInstance
-import com.rnett.krosstalk.ServerDefault
-import com.rnett.krosstalk.WithHeaders
+import com.rnett.krosstalk.*
 import com.rnett.krosstalk.ktor.server.KtorServer
-import com.rnett.krosstalk.ktor.server.KtorServerBasicAuth
 import com.rnett.krosstalk.ktor.server.KtorServerScope
+import com.rnett.krosstalk.ktor.server.auth.KtorServerBasicAuth
 import com.rnett.krosstalk.ktor.server.defineKtor
-import com.rnett.krosstalk.runKrosstalkCatching
 import com.rnett.krosstalk.serialization.KotlinxBinarySerializationHandler
 import com.rnett.krosstalk.server.KrosstalkServer
 import com.rnett.krosstalk.server.value
-import com.rnett.krosstalk.toKrosstalkResult
 import io.ktor.application.install
+import io.ktor.auth.BasicAuthenticationProvider
 import io.ktor.auth.Principal
 import io.ktor.features.CORS
 import io.ktor.features.CallLogging
@@ -54,14 +47,16 @@ actual object MyKrosstalk : Krosstalk(), KrosstalkServer<KtorServerScope<*>> {
     actual override val serialization = KotlinxBinarySerializationHandler(Cbor { })
     override val server = KtorServer
 
-    actual object Auth : Scope, KtorServerBasicAuth<User>("auth", {
-        validate {
-            if (validUsers[it.name] == it.password)
-                User(it.name)
-            else
-                null
+    actual object Auth : Scope, KtorServerBasicAuth<User>("auth") {
+        override fun BasicAuthenticationProvider.Configuration.configure() {
+            validate {
+                if (validUsers[it.name] == it.password)
+                    User(it.name)
+                else
+                    null
+            }
         }
-    })
+    }
 }
 
 actual suspend fun basicTest(data: Data): List<String> {
@@ -153,15 +148,18 @@ actual suspend fun withPassedObjectReturn(s: String): SerializableObject = Seria
 
 actual suspend fun withDifferentPassing(arg: SerializableObject): ExpectObject = ExpectObject
 
-actual suspend fun withHeadersBasic(n: Int): WithHeaders<String> = WithHeaders(n.toString(), mapOf("test" to listOf("value")))
+actual suspend fun withHeadersBasic(n: Int): WithHeaders<String> =
+    WithHeaders(n.toString(), mapOf("test" to listOf("value")))
 
-actual suspend fun withHeadersOutsideResult(n: Int): WithHeaders<KrosstalkResult<String>> = WithHeaders(runKrosstalkCatching {
-    if (n < 0)
-        throw MyException("Can't have n < 0")
+actual suspend fun withHeadersOutsideResult(n: Int): WithHeaders<KrosstalkResult<String>> =
+    WithHeaders(runKrosstalkCatching {
+        if (n < 0)
+            throw MyException("Can't have n < 0")
 
-    n.toString()
-}.catchAsHttpStatusCode<MyException> { 422 },
-    mapOf("test" to listOf("value")))
+        n.toString()
+    }.catchAsHttpStatusCode<MyException> { 422 },
+        mapOf("test" to listOf("value"))
+    )
 
 actual suspend fun withHeadersInsideResult(n: Int): KrosstalkResult<WithHeaders<String>> = runKrosstalkCatching {
     if (n < 0)

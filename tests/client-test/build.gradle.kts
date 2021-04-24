@@ -74,6 +74,7 @@ kotlin {
         val jsMain by getting {
             dependencies {
                 implementation("com.github.rnett.krosstalk:krosstalk")
+                implementation("com.github.rnett.krosstalk:krosstalk-kotlinx-serialization")
                 implementation("com.github.rnett.krosstalk:krosstalk-ktor-client")
                 implementation("com.github.rnett.krosstalk:krosstalk-ktor-client-auth")
 

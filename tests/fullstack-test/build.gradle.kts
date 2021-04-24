@@ -48,9 +48,9 @@ kotlin {
         val commonMain by getting {
             dependencies {
                 implementation("com.github.rnett.krosstalk:krosstalk")
-                implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:$coroutines_version")
-                implementation("org.jetbrains.kotlinx:kotlinx-serialization-core:$serialization_version")
+                implementation("com.github.rnett.krosstalk:krosstalk-kotlinx-serialization")
                 implementation("org.jetbrains.kotlinx:kotlinx-serialization-cbor:$serialization_version")
+                implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:$coroutines_version")
             }
         }
 

@@ -1,15 +1,12 @@
 package com.rnett.krosstalk.compose_test
 
-import com.rnett.krosstalk.Krosstalk
-import com.rnett.krosstalk.KrosstalkResult
-import com.rnett.krosstalk.Scope
-import com.rnett.krosstalk.ScopeInstance
+import com.rnett.krosstalk.*
 import com.rnett.krosstalk.ktor.server.KtorKrosstalkServer
 import com.rnett.krosstalk.ktor.server.KtorServer
-import com.rnett.krosstalk.ktor.server.KtorServerBasicAuth
-import com.rnett.krosstalk.runKrosstalkCatching
+import com.rnett.krosstalk.ktor.server.auth.KtorServerBasicAuth
 import com.rnett.krosstalk.serialization.KotlinxBinarySerializationHandler
 import com.rnett.krosstalk.server.value
+import io.ktor.auth.BasicAuthenticationProvider
 import io.ktor.auth.Principal
 import kotlinx.datetime.Clock
 import kotlinx.serialization.cbor.Cbor
@@ -21,17 +18,20 @@ actual object TodoKrosstalk : Krosstalk(), KtorKrosstalkServer {
 
     override val server: KtorServer = KtorServer
 
-    actual object Auth : Scope, KtorServerBasicAuth<User>(configure = {
-        validate {
-            if (it.name == it.password)
-                User(it.name)
-            else
-                null
+    actual object Auth : Scope, KtorServerBasicAuth<User>() {
+        override fun BasicAuthenticationProvider.Configuration.configure() {
+            validate {
+                if (it.name == it.password)
+                    User(it.name)
+                else
+                    null
+            }
         }
-    })
+    }
 }
 
-actual suspend fun tryLogin(auth: ScopeInstance<TodoKrosstalk.Auth>): KrosstalkResult<Unit> = runKrosstalkCatching { Unit }
+actual suspend fun tryLogin(auth: ScopeInstance<TodoKrosstalk.Auth>): KrosstalkResult<Unit> =
+    runKrosstalkCatching { Unit }
 
 val todos: MutableMap<User, List<ToDo>> = mutableMapOf()
 

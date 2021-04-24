@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<module external.system.module.type="sourceSet" type="JAVA_MODULE" version="4">
+  <component name="NewModuleRootManager">
+    <output-test url="file://$MODULE_DIR$/../../../plugins/kotlinx-serialization/krosstalk-kotlinx-serialization-cbor/build/classes/kotlin/native/test" />
+    <exclude-output />
+    <content url="file://$MODULE_DIR$/../../../plugins/kotlinx-serialization/krosstalk-kotlinx-serialization-cbor/src/nativeTest" />
+    <orderEntry type="jdk" jdkName="Kotlin SDK" jdkType="KotlinSDK" />
+    <orderEntry type="sourceFolder" forTests="false" />
+    <orderEntry type="library" scope="PROVIDED" name="Kotlin/Native 1.4.32 - stdlib" level="project" />
+    <orderEntry type="module" module-name="krosstalk-parent.core.krosstalk-core.nativeMain" scope="TEST" />
+    <orderEntry type="module" module-name="krosstalk-parent.core.krosstalk.nativeMain" scope="TEST" />
+    <orderEntry type="module" module-name="krosstalk-parent.plugins.kotlinx-serialization.krosstalk-kotlinx-serialization-cbor.commonMain" scope="TEST" />
+    <orderEntry type="module" module-name="krosstalk-parent.plugins.kotlinx-serialization.krosstalk-kotlinx-serialization-cbor.commonTest" scope="TEST" production-on-test="" />
+    <orderEntry type="module" module-name="krosstalk-parent.plugins.kotlinx-serialization.krosstalk-kotlinx-serialization-cbor.nativeMain" scope="TEST" />
+    <orderEntry type="library" scope="PROVIDED" name="Kotlin/Native 1.4.32 - builtin [mingw_x64]" level="project" />
+    <orderEntry type="library" scope="PROVIDED" name="Kotlin/Native 1.4.32 - gdiplus [mingw_x64]" level="project" />
+    <orderEntry type="library" scope="PROVIDED" name="Kotlin/Native 1.4.32 - iconv [mingw_x64]" level="project" />
+    <orderEntry type="library" scope="PROVIDED" name="Kotlin/Native 1.4.32 - opengl32 [mingw_x64]" level="project" />
+    <orderEntry type="library" scope="PROVIDED" name="Kotlin/Native 1.4.32 - posix [mingw_x64]" level="project" />
+    <orderEntry type="library" scope="PROVIDED" name="Kotlin/Native 1.4.32 - windows [mingw_x64]" level="project" />
+    <orderEntry type="library" scope="PROVIDED" name="Kotlin/Native 1.4.32 - zlib [mingw_x64]" level="project" />
+    <orderEntry type="library" scope="TEST" name="Gradle: org.jetbrains.kotlin:kotlin-stdlib-common:1.4.32" level="project" />
+    <orderEntry type="library" scope="TEST" name="Gradle: org.jetbrains.kotlinx:kotlinx-serialization-core-mingwx64:klib:1.1.0" level="project" />
+    <orderEntry type="module" module-name="krosstalk-parent.core.krosstalk.commonMain" scope="TEST" />
+    <orderEntry type="module" module-name="krosstalk-parent.core.krosstalk-core.commonMain" scope="TEST" />
+  </component>
+</module>

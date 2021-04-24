@@ -6,9 +6,9 @@ import com.rnett.krosstalk.Scope
 import com.rnett.krosstalk.ScopeInstance
 import com.rnett.krosstalk.client.krosstalkCall
 import com.rnett.krosstalk.ktor.client.KtorClient
-import com.rnett.krosstalk.ktor.client.KtorClientBasicAuth
 import com.rnett.krosstalk.ktor.client.KtorKrosstalkClient
-import com.rnett.krosstalk.ktor.client.invoke
+import com.rnett.krosstalk.ktor.client.auth.KtorClientBasicAuth
+import com.rnett.krosstalk.ktor.client.auth.invoke
 import com.rnett.krosstalk.serialization.KotlinxBinarySerializationHandler
 import io.ktor.client.HttpClient
 import io.ktor.client.engine.apache.Apache
@@ -18,7 +18,7 @@ actual object TodoKrosstalk : Krosstalk(), KtorKrosstalkClient {
     actual override val serialization = KotlinxBinarySerializationHandler(Cbor { })
 
     override val client: KtorClient = KtorClient(HttpClient(Apache))
-    override val serverUrl: String = "http://localhost:8080"
+    override val serverUrl: String = "http://localhost:8082"
 
     actual object Auth : Scope, KtorClientBasicAuth()
 }

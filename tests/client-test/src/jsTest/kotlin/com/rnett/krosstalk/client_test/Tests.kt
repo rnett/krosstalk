@@ -1,6 +1,6 @@
 package com.rnett.krosstalk.client_test
 
-import com.rnett.krosstalk.ktor.client.invoke
+import com.rnett.krosstalk.ktor.client.auth.invoke
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.promise
 import kotlin.test.Test
@@ -26,6 +26,6 @@ class Tests {
 
     @Test
     fun testUnitServerUrl() = GlobalScope.promise {
-        assertEquals(Unit, getTestUnit("http://localhost:8080/inner/server/path"))
+        assertEquals(Unit, getTestUnit("http://localhost:8081/inner/server/path"))
     }
 }

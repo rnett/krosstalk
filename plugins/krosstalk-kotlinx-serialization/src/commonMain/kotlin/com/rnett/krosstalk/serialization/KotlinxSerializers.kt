@@ -1,15 +1,7 @@
 package com.rnett.krosstalk.serialization
 
 import com.rnett.krosstalk.KrosstalkPluginApi
-import com.rnett.krosstalk.serialization.plugin.ArgumentSerializationHandler
-import com.rnett.krosstalk.serialization.plugin.ArgumentSerializers
-import com.rnett.krosstalk.serialization.plugin.BaseSerializationHandler
-import com.rnett.krosstalk.serialization.plugin.BinarySerializer
-import com.rnett.krosstalk.serialization.plugin.ByteTransformer
-import com.rnett.krosstalk.serialization.plugin.StringSerializer
-import com.rnett.krosstalk.serialization.plugin.StringTransformer
-import com.rnett.krosstalk.serialization.plugin.byteArrayContentType
-import com.rnett.krosstalk.serialization.plugin.stringContentType
+import com.rnett.krosstalk.serialization.plugin.*
 import kotlinx.serialization.BinaryFormat
 import kotlinx.serialization.KSerializer
 import kotlinx.serialization.StringFormat
@@ -23,7 +15,8 @@ import kotlin.reflect.KType
  * A serializer that uses a kotlinx [KSerializer] with a [BinaryFormat].
  */
 @OptIn(KrosstalkPluginApi::class)
-public data class KotlinxBinarySerializer<T>(val serializer: KSerializer<T>, val format: BinaryFormat) : BinarySerializer<T> {
+public data class KotlinxBinarySerializer<T>(val serializer: KSerializer<T>, val format: BinaryFormat) :
+    BinarySerializer<T> {
     override fun deserialize(data: ByteArray): T = format.decodeFromByteArray(serializer, data)
 
     override fun serialize(data: T): ByteArray = format.encodeToByteArray(serializer, data)
@@ -34,7 +27,8 @@ public data class KotlinxBinarySerializer<T>(val serializer: KSerializer<T>, val
  * A serializer that uses a kotlinx [KSerializer] with a [StringFormat].
  */
 @OptIn(KrosstalkPluginApi::class)
-public data class KotlinxStringSerializer<T>(val serializer: KSerializer<T>, val format: StringFormat) : StringSerializer<T> {
+public data class KotlinxStringSerializer<T>(val serializer: KSerializer<T>, val format: StringFormat) :
+    StringSerializer<T> {
     override fun deserialize(data: String): T = format.decodeFromString(serializer, data)
 
     override fun serialize(data: T): String = format.encodeToString(serializer, data)
@@ -44,7 +38,8 @@ public data class KotlinxStringSerializer<T>(val serializer: KSerializer<T>, val
  * Kotlinx serialization handler that uses a [BinaryFormat].  Combines arguments into a `Map<String, ByteArray>`, then serializes the map.
  */
 @OptIn(KrosstalkPluginApi::class)
-public data class KotlinxBinarySerializationHandler(val format: BinaryFormat) : ArgumentSerializationHandler<ByteArray>(ByteTransformer) {
+public data class KotlinxBinarySerializationHandler(val format: BinaryFormat) :
+    ArgumentSerializationHandler<ByteArray>(ByteTransformer) {
     override fun serializeArguments(serializedArguments: Map<String, ByteArray>): ByteArray {
         return format.encodeToByteArray(mapSerializer, serializedArguments)
     }
@@ -53,7 +48,8 @@ public data class KotlinxBinarySerializationHandler(val format: BinaryFormat) : 
         return format.decodeFromByteArray(mapSerializer, arguments)
     }
 
-    override fun getSerializer(type: KType): KotlinxBinarySerializer<*> = KotlinxBinarySerializer(serializer(type), format)
+    override fun getSerializer(type: KType): KotlinxBinarySerializer<*> =
+        KotlinxBinarySerializer(serializer(type), format)
 
     private val mapSerializer = serializer<Map<String, ByteArray>>()
     override val contentType: String = byteArrayContentType
@@ -68,7 +64,8 @@ public data class KotlinxBinarySerializationHandler(val format: BinaryFormat) : 
  * This is necessary for using non-krosstalk apis.
  */
 @OptIn(KrosstalkPluginApi::class)
-public data class KotlinxStringSerializationHandler(val format: StringFormat) : ArgumentSerializationHandler<String>(StringTransformer) {
+public data class KotlinxStringSerializationHandler(val format: StringFormat) :
+    ArgumentSerializationHandler<String>(StringTransformer) {
     override fun serializeArguments(serializedArguments: Map<String, String>): String {
         return format.encodeToString(mapSerializer, serializedArguments)
     }
@@ -77,7 +74,8 @@ public data class KotlinxStringSerializationHandler(val format: StringFormat) : 
         return format.decodeFromString(mapSerializer, arguments)
     }
 
-    override fun getSerializer(type: KType): KotlinxStringSerializer<*> = KotlinxStringSerializer(serializer(type), format)
+    override fun getSerializer(type: KType): KotlinxStringSerializer<*> =
+        KotlinxStringSerializer(serializer(type), format)
 
     private val mapSerializer = serializer<Map<String, String>>()
     override val contentType: String = stringContentType
@@ -88,13 +86,18 @@ public data class KotlinxStringSerializationHandler(val format: StringFormat) : 
  * If you are interacting with a non-krosstalk api, this is almost certainly what you want to use.
  */
 @OptIn(KrosstalkPluginApi::class)
-public data class KotlinxJsonObjectSerializationHandler(val format: Json) : BaseSerializationHandler<String>(StringTransformer) {
-    override fun getSerializer(type: KType): KotlinxStringSerializer<*> = KotlinxStringSerializer(serializer(type), format)
+public data class KotlinxJsonObjectSerializationHandler(val format: Json) :
+    BaseSerializationHandler<String>(StringTransformer) {
+    override fun getSerializer(type: KType): KotlinxStringSerializer<*> =
+        KotlinxStringSerializer(serializer(type), format)
 
     override fun serializeArguments(arguments: Map<String, *>, serializers: ArgumentSerializers<String>): String {
         val jsonObject = buildJsonObject {
             arguments.forEach { (key, data) ->
-                put(key, format.encodeToJsonElement((serializers[key] as KotlinxStringSerializer<Any?>).serializer, data))
+                put(
+                    key,
+                    format.encodeToJsonElement((serializers[key] as KotlinxStringSerializer<Any?>).serializer, data)
+                )
             }
         }
         return jsonObject.toString()
