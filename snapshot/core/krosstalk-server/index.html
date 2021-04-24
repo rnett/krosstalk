@@ -23,7 +23,7 @@
           </div>
           <div class="cover ">
             <h1 class="cover"><span>Krosstalk</span> <span>Server</span></h1>
-            <div class="platform-hinted UnderCoverText" data-platform-hinted="data-platform-hinted"><div class="content sourceset-depenent-content" data-active="" data-togglable=":core:krosstalk-server:dokkaHtmlPartial/commonMain"><p class="paragraph">Krosstalk APIs necessary for defining a server, as well as the API to define new server implementations (marked with <code>@KrosstalkPluginApi</code>).</p></div></div>
+            <div class="platform-hinted UnderCoverText" data-platform-hinted="data-platform-hinted"><div class="content sourceset-depenent-content" data-active="" data-togglable=":core:krosstalk-server:dokkaHtmlPartial/commonMain"><p class="paragraph">Krosstalk APIs necessary for defining a server.</p><p class="paragraph">To define a Krosstalk server, create an object that inherits from <code>Krosstalk</code> and <code>KrosstalkServer&lt;S&gt;</code>, where <code>S</code> is the scope type of the server plugin you are using. Server plugins will usually provide an interface to do this that also sets the <code>server</code> type, i.e. <code>KtorKrosstalkServer</code>. You will then set the <code>server</code> property to an instance of your server plugin's handler, i.e. <code>KtorKrosstalkServer</code>.</p><p class="paragraph">However, there is usually an extra step. Servers usually have their own entrypoints, and we probably wouldn't want to start a new server just for our Krosstalk. Because of this, the server handlers provided by plugins are usually objects that don't do anything. The server plugin should provide some way of adding the Krosstalk's methods to the server, for example the Ktor server's defineKtor.</p><p class="paragraph">A minimal example with authentication using the Ktor server looks like this:</p><div class="sample-container"><code class="" theme="idea"><pre>actual object MyKrosstalk : Krosstalk(), KrosstalkServer&lt;KtorServerScope&lt;*&gt;&gt; {<br>    actual override val serialization = KotlinxBinarySerializationHandler(Cbor { })<br>    override val server = KtorServer<br><br>    actual object Auth : Scope, KtorServerBasicAuth&lt;User&gt;("auth", {<br>        validate {<br>            if (validUsers[it.name] == it.password)<br>                User(it.name)<br>            else<br>                null<br>        }<br>    })<br>}<br><br>fun main() {<br>    embeddedServer(CIO, 8080, "localhost") {<br>        MyKrosstalk.defineKtor(this)<br>    }.start(true)<br>}</pre></code></div><p class="paragraph">Note that the actual scope objects need to explicitly inherit from <code>Scope</code>. This is due to <a href="https://youtrack.jetbrains.com/issue/KT-20641">KT-20641</a>.</p><p class="paragraph">A standalone server would look the same, except without the <code>actual</code>s.</p><p class="paragraph">For more examples, see <code>tests</code>.</p><p class="paragraph">Plugin APIs are in <code>com.rnett.krosstalk.server.plugin</code>.</p></div></div>
           </div>
           <h2 class="">Packages</h2>
           <div class="table"><a data-name="-1545033199%2FPackages%2F817894734" anchor-label="com.rnett.krosstalk.server" id="-1545033199%2FPackages%2F817894734" data-filterable-set=":core:krosstalk-server:dokkaHtmlPartial/commonMain"></a>
@@ -35,7 +35,7 @@
                       </span></span></div>
                   <div class="pull-right"></div>
                 </div>
-                <div></div>
+                <div><span class="brief-comment"><a data-name="-1545033199%2FPackages%2F817894734" anchor-label="com.rnett.krosstalk.server" id="-1545033199%2FPackages%2F817894734" data-filterable-set=":core:krosstalk-server:dokkaHtmlPartial/commonMain"></a>Krosstalk APIs necessary for defining a server.</span></div>
               </div>
             </div>
 <a data-name="-1581288844%2FPackages%2F817894734" anchor-label="com.rnett.krosstalk.server.plugin" id="-1581288844%2FPackages%2F817894734" data-filterable-set=":core:krosstalk-server:dokkaHtmlPartial/commonMain"></a>
@@ -47,7 +47,7 @@
                       </span></span></div>
                   <div class="pull-right"></div>
                 </div>
-                <div></div>
+                <div><span class="brief-comment"><a data-name="-1581288844%2FPackages%2F817894734" anchor-label="com.rnett.krosstalk.server.plugin" id="-1581288844%2FPackages%2F817894734" data-filterable-set=":core:krosstalk-server:dokkaHtmlPartial/commonMain"></a>APIs for defining server plugins.</span></div>
               </div>
             </div>
           </div>
