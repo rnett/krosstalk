@@ -8,13 +8,12 @@ import com.rnett.krosstalk.ping.ping
 import com.rnett.krosstalk.serialization.KotlinxBinarySerializationHandler
 import io.ktor.application.install
 import io.ktor.features.CORS
-import io.ktor.features.CallLogging
 import io.ktor.server.cio.CIO
 import io.ktor.server.engine.embeddedServer
 import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import kotlinx.serialization.cbor.Cbor
-import org.slf4j.event.Level
 import kotlin.system.exitProcess
 
 internal actual object PongKrosstalk : Krosstalk(), KtorKrosstalkServer {
@@ -24,21 +23,35 @@ internal actual object PongKrosstalk : Krosstalk(), KtorKrosstalkServer {
 
 fun startServer() {
     embeddedServer(CIO, 8084, "localhost") {
-
         install(CORS) {
             anyHost()
         }
-        install(CallLogging) {
-            level = Level.DEBUG
-        }
 
         PongKrosstalk.defineKtor(this)
-    }.start()
+    }.start(true)
+}
+
+object Main {
+    @JvmStatic
+    fun main(args: Array<String>) {
+        startServer()
+    }
+}
+
+object TestServer {
+    @JvmStatic
+    fun main(args: Array<String>) {
+        startServer()
+    }
 }
 
 actual suspend fun pong(n: Int, call: Boolean): Boolean {
     println("Pong $n")
     if (n == 1000) {
+        GlobalScope.launch {
+            delay(1000)
+            exitProcess(0)
+        }
         return false
     }
     if (call) {

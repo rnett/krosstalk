@@ -17,6 +17,7 @@ include(
     "fullstack-test",
     "client-test",
     "compose-test",
+    "microservices-test",
     "microservices-test:ping",
     "microservices-test:pong"
 )

@@ -64,6 +64,8 @@ kotlin {
                 implementation("com.github.rnett.krosstalk:krosstalk-ktor-server")
                 implementation("com.github.rnett.krosstalk:krosstalk-ktor-server-auth")
 
+                implementation("com.github.rnett.krosstalk:krosstalk-client")
+
                 implementation("ch.qos.logback:logback-classic:1.2.3")
 
                 implementation(project(":microservices-test:pong").krosstalkClient())
@@ -93,12 +95,20 @@ application {
     this.mainClass.set("com.rnett.krosstalk.ping.Main")
 }
 
-tasks.create<com.github.psxpaul.task.JavaExecFork>("startTestServer") {
+tasks.create<com.github.psxpaul.task.JavaExecFork>("startAllTestsServer") {
+    group = "verification"
+
+    classpath = sourceSets.main.get().runtimeClasspath
+    main = "com.rnett.krosstalk.ping.Main"
+
+    dependsOn("serverJar")
+}
+
+tasks.create<com.github.psxpaul.task.JavaExecFork>("startLocalTestServer") {
     group = "verification"
 
     classpath = sourceSets.main.get().runtimeClasspath
     main = "com.rnett.krosstalk.ping.TestServer"
-    Thread.sleep(2_000)
 
     dependsOn("serverJar")
 

@@ -1093,11 +1093,8 @@ class KrosstalkMethodTransformer(
                             scopeList
                         )
                     )
-                }, true)
+                })
             }
-
-            log(declaration.name.asString(), declaration.dumpKotlinLike())
-            log(declaration.name.asString(), declaration.dump(true))
         }
     }
 

@@ -93,12 +93,21 @@ application {
     this.mainClass.set("com.rnett.krosstalk.pong.Main")
 }
 
-tasks.create<com.github.psxpaul.task.JavaExecFork>("startTestServer") {
+tasks.create<com.github.psxpaul.task.JavaExecFork>("startAllTestsServer") {
+    group = "verification"
+
+    classpath = sourceSets.main.get().runtimeClasspath
+    main = "com.rnett.krosstalk.pong.Main"
+
+    dependsOn("serverJar")
+}
+
+
+tasks.create<com.github.psxpaul.task.JavaExecFork>("startLocalTestServer") {
     group = "verification"
 
     classpath = sourceSets.main.get().runtimeClasspath
     main = "com.rnett.krosstalk.pong.TestServer"
-    Thread.sleep(2_000)
 
     dependsOn("serverJar")
 

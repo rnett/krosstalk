@@ -18,10 +18,11 @@ public class ServerDefaultInEndpointException(public val methodName: String, pub
 
 
 /**
- * A Krosstalk call failed.
+ * A Krosstalk call returned an error response.
+ * TODO merge w/ KrosstalkResult
  */
 @OptIn(InternalKrosstalkApi::class)
-public open class CallFailureException @InternalKrosstalkApi constructor(
+public open class CallErrorResponseException @InternalKrosstalkApi constructor(
     public val methodName: String,
     public val httpStatusCode: Int,
     public val responseMessage: String?,
@@ -35,6 +36,15 @@ public open class CallFailureException @InternalKrosstalkApi constructor(
 
     },
 ) : KrosstalkException(message)
+
+/**
+ * A Krosstalk call failed in the client.  Happens when a request could not be made.
+ */
+@OptIn(InternalKrosstalkApi::class)
+public open class ClientFailureException @InternalKrosstalkApi constructor(
+    public val methodName: String,
+    override val cause: Throwable
+) : KrosstalkException("Method $methodName failed with a client exception", cause)
 
 @OptIn(InternalKrosstalkApi::class)
 public class WrongHeadersTypeException @InternalKrosstalkApi constructor(
@@ -104,14 +114,18 @@ internal suspend inline fun <T, K, reified C : ClientScope<*>> K.call(
 
     val serializedBody = method.serialization.serializeBodyArguments(bodyArguments)
 
-    val result = client.sendKrosstalkRequest(
-        serverUrl.trimEnd('/') + "/" + endpoint.trimStart('/'),
-        method.httpMethod,
-        method.contentType ?: serialization.contentType,
-        requestHeaders ?: emptyMap(),
-        if (bodyArguments.isEmpty()) null else serializedBody,
-        scopes
-    )
+    val result = try {
+        client.sendKrosstalkRequest(
+            serverUrl.trimEnd('/') + "/" + endpoint.trimStart('/'),
+            method.httpMethod,
+            method.contentType ?: serialization.contentType,
+            requestHeaders ?: emptyMap(),
+            if (bodyArguments.isEmpty()) null else serializedBody,
+            scopes
+        )
+    } catch (e: Throwable) {
+        throw ClientFailureException(methodName, e)
+    }
 
     return if (method.useExplicitResult) {
         if (result.isSuccess()) {
@@ -133,7 +147,7 @@ internal suspend inline fun <T, K, reified C : ClientScope<*>> K.call(
         if (result.isSuccess()) {
             method.getReturnValue(result.body).withHeadersIf(method.innerWithHeaders, result.headers)
         } else {
-            throw CallFailureException(methodName, result.statusCode, result.stringBody)
+            throw CallErrorResponseException(methodName, result.statusCode, result.stringBody)
         }
     }.withHeadersIf(method.outerWithHeaders, result.headers) as T
 }
