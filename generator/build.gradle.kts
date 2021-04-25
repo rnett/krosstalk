@@ -17,7 +17,21 @@ dependencies {
     implementation("org.jsoup:jsoup:1.13.1")
 }
 
+kotlin {
+    target {
+        compilations.all {
+            kotlinOptions {
+                useIR = true
+                jvmTarget = "1.8"
+            }
+            //TODO remove once KT-36942 and KT-35003 are fixed
+            compileJavaTaskProvider.get().apply {
+                targetCompatibility = "1.8"
+                sourceCompatibility = "1.8"
+            }
+        }
+    }
+}
+
 tasks.withType<org.jetbrains.kotlin.gradle.tasks.KotlinCompile> {
-    kotlinOptions.useIR = true
-    kotlinOptions.jvmTarget = "1.8"
 }

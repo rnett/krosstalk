@@ -1,4 +1,5 @@
 import org.gradle.api.GradleException
+import org.gradle.api.attributes.java.TargetJvmVersion
 import org.jetbrains.kotlin.gradle.dsl.KotlinJvmProjectExtension
 import org.jetbrains.kotlin.gradle.dsl.KotlinMultiplatformExtension
 import org.jetbrains.kotlin.gradle.plugin.LanguageSettingsBuilder
@@ -9,10 +10,19 @@ inline fun LanguageSettingsBuilder.commonSettings() {
 
 inline fun KotlinMultiplatformExtension.allTargets() {
     jvm {
+        //TODO remove once KT-36942 and KT-35003 are fixed
+        attributes {
+            attribute(TargetJvmVersion.TARGET_JVM_VERSION_ATTRIBUTE, 8)
+        }
         compilations.all {
             kotlinOptions {
                 jvmTarget = "1.8"
                 useIR = true
+                //TODO remove once KT-36942 and KT-35003 are fixed
+                compileJavaTaskProvider?.get()?.apply {
+                    targetCompatibility = "1.8"
+                    sourceCompatibility = "1.8"
+                }
             }
         }
     }
@@ -38,10 +48,19 @@ inline fun KotlinMultiplatformExtension.allTargets() {
 
 inline fun KotlinJvmProjectExtension.irAndJava8() {
     target {
+        //TODO remove once KT-36942 and KT-35003 are fixed
+        attributes {
+            attribute(TargetJvmVersion.TARGET_JVM_VERSION_ATTRIBUTE, 8)
+        }
         compilations.all {
             kotlinOptions {
                 jvmTarget = "1.8"
                 useIR = true
+                //TODO remove once KT-36942 and KT-35003 are fixed
+                compileJavaTaskProvider.get().apply {
+                    targetCompatibility = "1.8"
+                    sourceCompatibility = "1.8"
+                }
             }
         }
         sourceSets.all {
