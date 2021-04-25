@@ -4,7 +4,7 @@ buildscript {
     }
 }
 
-plugins{
+plugins {
     id("org.jetbrains.dokka")
 }
 
@@ -20,7 +20,7 @@ tasks.withType<org.jetbrains.dokka.gradle.DokkaMultiModuleTask>().configureEach 
     this.moduleVersion.set(version.toString())
 
     if (coreVersionDir != null && "snapshot" !in project.version.toString().toLowerCase()) {
-        val oldVersionsDir = projectDir.resolve(coreVersionDir!!)
+        val oldVersionsDir = rootDir.resolve(coreVersionDir!!)
         println("Using older versions from $oldVersionsDir")
         pluginConfiguration<org.jetbrains.dokka.versioning.VersioningPlugin, org.jetbrains.dokka.versioning.VersioningConfiguration> {
             version = project.version.toString()
