@@ -40,7 +40,10 @@ jobs:
       - name: Clone past docs for release
         if: endsWith(${{ steps.get_version.outputs.match }}, 'SNAPSHOT') || endsWith(${{ steps.get_version.outputs.match }}, 'snapshot')
         run: |
+          git fetch
           git clone --depth 1 https://github.com/rnett/krosstalk.git --branch gh-pages --single-branch past-docs
+          ls -l past-docs
+          ls -l past-docs/old-releases
           mkdir -p past-docs/old-releases/core
           mkdir -p past-docs/old-releases/plugins
           ls -l past-docs/old-releases/core
