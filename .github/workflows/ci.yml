@@ -23,8 +23,17 @@ jobs:
           chmod +x gradlew
           chmod +x tests/gradlew
 
+      - name: Get version
+        if: github.ref == 'refs/heads/main'
+        id: get_version
+        uses: rnett/find-regex@v1.1
+        with:
+          regex: 'version ?(?:=|:) ?"?([\w.\-_]+)"?'
+          files: "build.gradle.kts,gradle.properties,build.gradle"
+          commands: "./gradlew properties"
+
       - name: Clone past docs for release
-        if: endsWith(${{ steps.get_version.outputs.match }}, 'SNAPSHOT') || endsWith(${{ steps.get_version.outputs.match }}, 'snapshot')
+        if: !endsWith(${{ steps.get_version.outputs.match }}, 'SNAPSHOT') && !endsWith(${{ steps.get_version.outputs.match }}, 'snapshot')
         run: |
           git fetch
           git clone --depth 1 https://github.com/rnett/krosstalk.git --branch gh-pages --single-branch past-docs
@@ -40,15 +49,6 @@ jobs:
 
       #      - name: Run Integraiton Tests
       #        run: (cd tests && ./gradlew allTests --no-parallel)
-
-      - name: Get version
-        if: github.ref == 'refs/heads/main'
-        id: get_version
-        uses: rnett/find-regex@v1.1
-        with:
-          regex: 'version ?(?:=|:) ?"?([\w.\-_]+)"?'
-          files: "build.gradle.kts,gradle.properties,build.gradle"
-          commands: "./gradlew properties"
 
       - name: Generate HTML Docs
         run: ./gradlew dokkaHtmlMultiModule -PgitBranch=$GITHUB_SHA -PcoreVersionDir=past-docs/old-releases/core -PpluginVersionDir=past-docs/old-releases/plugins
