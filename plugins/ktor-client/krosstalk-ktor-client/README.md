@@ -11,8 +11,8 @@ The scope interface of this plugin is [KtorClientScope], which provides optional
 i.e. adding features) and to configure requests (i.e. using features). A header based scope [KtorClientHeaderScope] is
 provided as well.
 
-We also provide a base abstract auth scope [KtorClientAuth], and an implementation for Basic auth: [KtorClientBasicAuth]
-.
+An generic authentication scope and an implementation of that scope for basic auth are provided in the
+`krosstalk-ktor-client-auth` plugin.
 
 # Package com.rnett.krosstalk.ktor.client
 

@@ -39,7 +39,7 @@ For configuration options, see the annotations in [com.rnett.annotations].
 
 # Package com.rnett.krosstalk
 
-The main package. See the module docs.
+The main package. See module description.
 
 # Package com.rnett.krosstalk.annotations
 
