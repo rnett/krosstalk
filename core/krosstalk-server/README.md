@@ -41,7 +41,7 @@ to [KT-20641](https://youtrack.jetbrains.com/issue/KT-20641).
 
 A standalone server would look the same, except without the `actual`s.
 
-For more examples, see `tests`.
+For more examples, see [`tests`](./../../tests).
 
 Plugin APIs are in `com.rnett.krosstalk.server.plugin`.
 

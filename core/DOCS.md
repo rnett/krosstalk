@@ -10,5 +10,5 @@ These docs are for the core artifacts of Krosstalk:
 Note that despite calling `krosstalk` "the common API", both the client and server APIs are fully multiplatform.
 However, generally your common source set will be the only one depending on `krosstalk` directly.
 
-A guide to Krosstalk is available in the [GitHub README](./../README.md), and each artifact's docs give an overview of
-how to use it (the guide should be read first).
+A guide to Krosstalk is available in the [GitHub README](https://github.com/rnett/krosstalk#readme), and each artifact's
+docs give an overview of how to use it (the guide should be read first).

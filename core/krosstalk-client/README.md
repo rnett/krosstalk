@@ -25,7 +25,15 @@ to [KT-20641](https://youtrack.jetbrains.com/issue/KT-20641).
 
 A standalone client would look the same, except without the `actual`s.
 
-For more examples, see `tests`.
+Client methods should all look like:
+
+```kotlin
+actual suspend fun basicMethod(number: Int, str: String): String = krosstalkCall()
+```
+
+Their only body should be `krosstalkCall()`.
+
+For more examples, see [`tests`](./../../tests).
 
 Plugin APIs are in `com.rnett.krosstalk.client.plugin`.
 
