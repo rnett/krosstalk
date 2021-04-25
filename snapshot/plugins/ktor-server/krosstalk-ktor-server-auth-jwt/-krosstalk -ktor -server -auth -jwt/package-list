@@ -1,0 +1,9 @@
+$dokka.format:html-v1
+$dokka.linkExtension:html
+$dokka.location:com.rnett.krosstalk.ktor.server.auth////PointingToDeclaration/-krosstalk -ktor -server -auth -jwt/com.rnett.krosstalk.ktor.server.auth/index.html
+$dokka.location:com.rnett.krosstalk.ktor.server.auth/KtorServerJWTAuth///PointingToDeclaration/-krosstalk -ktor -server -auth -jwt/com.rnett.krosstalk.ktor.server.auth/-ktor-server-j-w-t-auth/index.html
+$dokka.location:com.rnett.krosstalk.ktor.server.auth/KtorServerJWTAuth/KtorServerJWTAuth/#kotlin.String?/PointingToDeclaration/-krosstalk -ktor -server -auth -jwt/com.rnett.krosstalk.ktor.server.auth/-ktor-server-j-w-t-auth/-ktor-server-j-w-t-auth.html
+$dokka.location:com.rnett.krosstalk.ktor.server.auth/KtorServerJWTAuth/configure/io.ktor.auth.jwt.JWTAuthenticationProvider.Configuration#/PointingToDeclaration/-krosstalk -ktor -server -auth -jwt/com.rnett.krosstalk.ktor.server.auth/-ktor-server-j-w-t-auth/configure.html
+$dokka.location:com.rnett.krosstalk.ktor.server.auth/KtorServerJWTAuth/configureAuth/io.ktor.auth.Authentication.Configuration#/PointingToDeclaration/-krosstalk -ktor -server -auth -jwt/com.rnett.krosstalk.ktor.server.auth/-ktor-server-j-w-t-auth/configure-auth.html
+com.rnett.krosstalk.ktor.server.auth
+
