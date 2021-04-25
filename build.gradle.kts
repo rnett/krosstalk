@@ -11,7 +11,7 @@ plugins {
 }
 
 allprojects {
-    version = "0.2.5-SNAPSHOT"
+    version = "0.2.6"
 
     group = "com.github.rnett.krosstalk"
 
@@ -28,7 +28,7 @@ allprojects {
     if (generateDocs)
         apply(plugin = "org.jetbrains.dokka")
 
-    if(willPublish)
+    if (willPublish)
         afterEvaluate { apply(plugin = "com.vanniktech.maven.publish") }
 
     afterEvaluate {
