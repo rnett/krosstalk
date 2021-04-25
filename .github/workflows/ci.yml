@@ -69,16 +69,16 @@ jobs:
         run: ./gradlew --stop
       - name: Publish Core docs
         if: github.ref == 'refs/heads/main'
-        uses: rnett/publish-docs@v2.2
+        uses: rnett/publish-docs@v2.3
         with:
           from: core/build/dokka/htmlMultiModule
           publish-to: '$latest/core,!old-releases/core/$version'
           version: ${{ steps.get_version.outputs.match }}
-          restore: 'true'
+          restore: true
           message: Update Core docs for $version
       - name: Publish Plugin docs
         if: github.ref == 'refs/heads/main'
-        uses: rnett/publish-docs@v2.2
+        uses: rnett/publish-docs@v2.3
         with:
           from: plugins/build/dokka/htmlMultiModule
           publish-to: '$latest/plugins,!old-releases/plugins/$version'

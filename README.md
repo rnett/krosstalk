@@ -5,12 +5,103 @@
 [ ![Download](https://api.bintray.com/packages/rnett/krosstalk/krosstalk/images/download.svg) ](https://bintray.com/rnett/krosstalk/krosstalk/_latestVersion)
 [![License](https://img.shields.io/badge/License-Apache%202.0-yellowgreen.svg)](https://opensource.org/licenses/Apache-2.0)
 
-<span style="color: red; font-weight: bold">Currently blocked by <a href="https://youtrack.jetbrains.com/issue/KT-44199">KT-44199</a>.</span>
+Krosstalk allows you to easily create RPC methods using pure kotlin. Client, server, and serialization implementations
+are plugable, and Kotlin's expect-actual modifiers can be used to ensure that client and server methods match.
 
-Krosstalk is a Kotlin compiler plugin supported library that turns `expect`/`actual` methods into api calls and endpoints, with fully pluggable
-serialization, client and server implementations. When a client method is called, the arguments are serialized and sent to the server. The server
-deserializes the arguments, calls the method, and sends the serialized result as the response. Note that this means any side-effects will only happen
-server side.
+Ktor client and server and Kotlinx Serialization plugins are provided, along with instructions on how to write your own.
+
+## Artifacts
+
+### Core
+
+* Gradle plugin (required): `com.rnett.krosstalk` for the `plugins` block. Full coordinates
+  are `com.github.rnett.krosstalk:krosstalk-gradle-plugin`.
+* Common:`com.github.rnett.krosstalk:krosstalk`
+* Client: `com.github.rnett.krosstalk:krosstalk-client`
+* Server: `com.github.rnett.krosstalk:krosstalk-server`
+
+Any common source set defining an `expect` Krosstalk object will need to depend on the common artifact. The client and
+server artifacts will generally be inherited from plugins.
+
+### Plugins
+
+[Docs](../../plugins)
+
+#### Serialization
+
+* Kotlinx serialization (includes JSON): `com.github.rnett.krosstalk:krosstalk-kotlinx-serialization`
+
+#### Client
+
+* Ktor: `com.github.rnett.krosstalk:krosstalk-ktor-client`
+    * Auth: `krosstalk-ktor-client-auth`
+
+#### Server
+
+* Ktor: `com.github.rnett.krosstalk:krosstalk-ktor-server`
+    * Auth: `krosstalk-ktor-server-auth`
+        * JWT: `krosstalk-ktor-server-auth-jwt`
+
+## Minimal example:
+
+Common:
+
+```kotlin
+@Serializable
+data class Data(val num: Int, val str: String)
+
+expect object MyKrosstalk : Krosstalk {
+  override val serialization: KotlinxBinarySerializationHandler
+}
+
+@KrosstalkMethod(MyKrosstalk::class)
+expect suspend fun basicTest(data: Data): List<String>
+```
+
+Client (JS):
+
+```kotlin
+actual object MyKrosstalk : Krosstalk(), KrosstalkClient<KtorClientScope<*>> {
+  actual override val serialization = KotlinxBinarySerializationHandler(Cbor { })
+  override val serverUrl: String = "http://localhost:8080"
+  
+  override val client = KtorClient()
+}
+
+actual suspend fun basicTest(data: Data): List<String> = krosstalkCall()
+```
+
+Server (JVM):
+
+```kotlin
+actual object MyKrosstalk : Krosstalk(), KrosstalkServer<KtorServerScope<*>> {
+  actual override val serialization = KotlinxBinarySerializationHandler(Cbor { })
+  override val server = KtorServer
+}
+
+actual suspend fun basicTest(data: Data): List<String> {
+  return List(data.num) { data.str }
+}
+
+fun main() {
+  embeddedServer(CIO, 8080, "localhost") {
+    install(CORS) {
+      anyHost()
+    }
+    MyKrosstalk.defineKtor(this)
+  }.start(true)
+}
+```
+
+# OLD
+
+<span style="color: red; font-weight: bold">Currently blocked
+by <a href="https://youtrack.jetbrains.com/issue/KT-44199">KT-44199</a>.</span>
+
+Krosstalk is a Kotlin compiler plugin supported library that turns `expect`/`actual` methods into api calls and
+endpoints, with fully pluggable serialization, client and server implementations. When a client method is called, the
+arguments are serialized and sent to the server. The server deserializes the arguments, calls the method, and sends the
+serialized result as the response. Note that this means any side-effects will only happen server side.
 
 Krosstalk ships with Kotlinx serialization support by default, and a rudimentary Ktor client and server are available.
 
