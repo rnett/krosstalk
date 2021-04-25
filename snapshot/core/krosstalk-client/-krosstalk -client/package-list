@@ -1,0 +1,39 @@
+$dokka.format:html-v1
+$dokka.linkExtension:html
+$dokka.location:com.rnett.krosstalk.client.plugin////PointingToDeclaration/-krosstalk -client/com.rnett.krosstalk.client.plugin/index.html
+$dokka.location:com.rnett.krosstalk.client.plugin//clientScopes/TypeParam(bounds=[com.rnett.krosstalk.Krosstalk, com.rnett.krosstalk.client.KrosstalkClient[TypeParam(bounds=[com.rnett.krosstalk.client.plugin.ClientScope[*]])]])#/PointingToDeclaration/-krosstalk -client/com.rnett.krosstalk.client.plugin/client-scopes.html
+$dokka.location:com.rnett.krosstalk.client.plugin//scopesAsType/TypeParam(bounds=[com.rnett.krosstalk.Krosstalk, com.rnett.krosstalk.client.KrosstalkClient[TypeParam(bounds=[com.rnett.krosstalk.client.plugin.ClientScope[*]])]])#kotlin.collections.Iterable[com.rnett.krosstalk.Scope]/PointingToDeclaration/-krosstalk -client/com.rnett.krosstalk.client.plugin/scopes-as-type.html
+$dokka.location:com.rnett.krosstalk.client.plugin/AppliedClientScope///PointingToDeclaration/-krosstalk -client/com.rnett.krosstalk.client.plugin/-applied-client-scope/index.html
+$dokka.location:com.rnett.krosstalk.client.plugin/AppliedClientScope/AppliedClientScope/#TypeParam(bounds=[com.rnett.krosstalk.client.plugin.ClientScope[TypeParam(bounds=[kotlin.Any?])]])#TypeParam(bounds=[kotlin.Any?])/PointingToDeclaration/-krosstalk -client/com.rnett.krosstalk.client.plugin/-applied-client-scope/-applied-client-scope.html
+$dokka.location:com.rnett.krosstalk.client.plugin/AppliedClientScope/data/#/PointingToDeclaration/-krosstalk -client/com.rnett.krosstalk.client.plugin/-applied-client-scope/data.html
+$dokka.location:com.rnett.krosstalk.client.plugin/AppliedClientScope/scope/#/PointingToDeclaration/-krosstalk -client/com.rnett.krosstalk.client.plugin/-applied-client-scope/scope.html
+$dokka.location:com.rnett.krosstalk.client.plugin/ClientHandler///PointingToDeclaration/-krosstalk -client/com.rnett.krosstalk.client.plugin/-client-handler/index.html
+$dokka.location:com.rnett.krosstalk.client.plugin/ClientHandler/sendKrosstalkRequest/#kotlin.String#kotlin.String#kotlin.String#kotlin.collections.Map[kotlin.String,kotlin.collections.List[kotlin.String]]#kotlin.ByteArray?#kotlin.collections.List[com.rnett.krosstalk.client.plugin.AppliedClientScope[TypeParam(bounds=[com.rnett.krosstalk.client.plugin.ClientScope[*]]),*]]/PointingToDeclaration/-krosstalk -client/com.rnett.krosstalk.client.plugin/-client-handler/send-krosstalk-request.html
+$dokka.location:com.rnett.krosstalk.client.plugin/InternalKrosstalkResponse///PointingToDeclaration/-krosstalk -client/com.rnett.krosstalk.client.plugin/-internal-krosstalk-response/index.html
+$dokka.location:com.rnett.krosstalk.client.plugin/InternalKrosstalkResponse/InternalKrosstalkResponse/#kotlin.Int#kotlin.collections.Map[kotlin.String,kotlin.collections.List[kotlin.String]]#kotlin.ByteArray#kotlin.Function0[kotlin.String?]/PointingToDeclaration/-krosstalk -client/com.rnett.krosstalk.client.plugin/-internal-krosstalk-response/-internal-krosstalk-response.html
+$dokka.location:com.rnett.krosstalk.client.plugin/InternalKrosstalkResponse/body/#/PointingToDeclaration/-krosstalk -client/com.rnett.krosstalk.client.plugin/-internal-krosstalk-response/body.html
+$dokka.location:com.rnett.krosstalk.client.plugin/InternalKrosstalkResponse/headers/#/PointingToDeclaration/-krosstalk -client/com.rnett.krosstalk.client.plugin/-internal-krosstalk-response/headers.html
+$dokka.location:com.rnett.krosstalk.client.plugin/InternalKrosstalkResponse/statusCode/#/PointingToDeclaration/-krosstalk -client/com.rnett.krosstalk.client.plugin/-internal-krosstalk-response/status-code.html
+$dokka.location:com.rnett.krosstalk.client.plugin/InternalKrosstalkResponse/stringBody/#/PointingToDeclaration/-krosstalk -client/com.rnett.krosstalk.client.plugin/-internal-krosstalk-response/string-body.html
+$dokka.location:com.rnett.krosstalk.client////PointingToDeclaration/-krosstalk -client/com.rnett.krosstalk.client/index.html
+$dokka.location:com.rnett.krosstalk.client//invoke/TypeParam(bounds=[com.rnett.krosstalk.client.plugin.ClientScope[TypeParam(bounds=[kotlin.Any?])]])#TypeParam(bounds=[kotlin.Any?])/PointingToDeclaration/-krosstalk -client/com.rnett.krosstalk.client/invoke.html
+$dokka.location:com.rnett.krosstalk.client//krosstalkCall/#/PointingToDeclaration/-krosstalk -client/com.rnett.krosstalk.client/krosstalk-call.html
+$dokka.location:com.rnett.krosstalk.client/CallFailureException///PointingToDeclaration/-krosstalk -client/com.rnett.krosstalk.client/-call-failure-exception/index.html
+$dokka.location:com.rnett.krosstalk.client/CallFailureException/CallFailureException/#kotlin.String#kotlin.Int#kotlin.String?#kotlin.String/PointingToDeclaration/-krosstalk -client/com.rnett.krosstalk.client/-call-failure-exception/-call-failure-exception.html
+$dokka.location:com.rnett.krosstalk.client/CallFailureException/httpStatusCode/#/PointingToDeclaration/-krosstalk -client/com.rnett.krosstalk.client/-call-failure-exception/http-status-code.html
+$dokka.location:com.rnett.krosstalk.client/CallFailureException/methodName/#/PointingToDeclaration/-krosstalk -client/com.rnett.krosstalk.client/-call-failure-exception/method-name.html
+$dokka.location:com.rnett.krosstalk.client/CallFailureException/responseMessage/#/PointingToDeclaration/-krosstalk -client/com.rnett.krosstalk.client/-call-failure-exception/response-message.html
+$dokka.location:com.rnett.krosstalk.client/KrosstalkClient///PointingToDeclaration/-krosstalk -client/com.rnett.krosstalk.client/-krosstalk-client/index.html
+$dokka.location:com.rnett.krosstalk.client/KrosstalkClient/client/#/PointingToDeclaration/-krosstalk -client/com.rnett.krosstalk.client/-krosstalk-client/client.html
+$dokka.location:com.rnett.krosstalk.client/KrosstalkClient/serverUrl/#/PointingToDeclaration/-krosstalk -client/com.rnett.krosstalk.client/-krosstalk-client/server-url.html
+$dokka.location:com.rnett.krosstalk.client/ServerDefaultInEndpointException///PointingToDeclaration/-krosstalk -client/com.rnett.krosstalk.client/-server-default-in-endpoint-exception/index.html
+$dokka.location:com.rnett.krosstalk.client/ServerDefaultInEndpointException/ServerDefaultInEndpointException/#kotlin.String#kotlin.String/PointingToDeclaration/-krosstalk -client/com.rnett.krosstalk.client/-server-default-in-endpoint-exception/-server-default-in-endpoint-exception.html
+$dokka.location:com.rnett.krosstalk.client/ServerDefaultInEndpointException/methodName/#/PointingToDeclaration/-krosstalk -client/com.rnett.krosstalk.client/-server-default-in-endpoint-exception/method-name.html
+$dokka.location:com.rnett.krosstalk.client/ServerDefaultInEndpointException/parameter/#/PointingToDeclaration/-krosstalk -client/com.rnett.krosstalk.client/-server-default-in-endpoint-exception/parameter.html
+$dokka.location:com.rnett.krosstalk.client/WrongHeadersTypeException///PointingToDeclaration/-krosstalk -client/com.rnett.krosstalk.client/-wrong-headers-type-exception/index.html
+$dokka.location:com.rnett.krosstalk.client/WrongHeadersTypeException/WrongHeadersTypeException/#kotlin.String#kotlin.reflect.KClass[*]/PointingToDeclaration/-krosstalk -client/com.rnett.krosstalk.client/-wrong-headers-type-exception/-wrong-headers-type-exception.html
+$dokka.location:com.rnett.krosstalk.client/WrongHeadersTypeException/methodName/#/PointingToDeclaration/-krosstalk -client/com.rnett.krosstalk.client/-wrong-headers-type-exception/method-name.html
+$dokka.location:com.rnett.krosstalk.client/WrongHeadersTypeException/type/#/PointingToDeclaration/-krosstalk -client/com.rnett.krosstalk.client/-wrong-headers-type-exception/type.html
+com.rnett.krosstalk.client
+com.rnett.krosstalk.client.plugin
+
