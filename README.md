@@ -12,7 +12,9 @@ Ktor client and server and Kotlinx Serialization plugins are provided, along wit
 
 ## Artifacts
 
-### Core
+### Core ([Docs](https://rnett.github.io/krosstalk/release/core/index.html))
+
+[Snapshot Docs](https://rnett.github.io/krosstalk/snapshot/core/index.html)
 
 * Gradle plugin (required): `com.rnett.krosstalk` for the `plugins` block. Full coordinates
   are `com.github.rnett.krosstalk:krosstalk-gradle-plugin`.
@@ -23,9 +25,9 @@ Ktor client and server and Kotlinx Serialization plugins are provided, along wit
 Any common source set defining an `expect` Krosstalk object will need to depend on the common artifact. The client and
 server artifacts will generally be inherited from plugins.
 
-### Plugins
+### Plugins ([Docs](https://rnett.github.io/krosstalk/release/plugins/index.html))
 
-[Docs](../../plugins)
+[Snapshot Docs](https://rnett.github.io/krosstalk/snapshot/plugins/index.html)
 
 #### Serialization
 

@@ -1,6 +1,6 @@
 # Module Krosstalk Ktor Client
 
-A basic multiplatform Krosstalk client implementation using Ktor. Includes authentication scopes.
+A basic multiplatform Krosstalk client plugin using [Ktor](https://ktor.io/).
 
 To use, have your Krosstalk client object implement `KtorKrosstalkClient`, and set `client` to a `KtorClient`.
 
@@ -12,7 +12,7 @@ i.e. adding features) and to configure requests (i.e. using features). A header 
 provided as well.
 
 An generic authentication scope and an implementation of that scope for basic auth are provided in the
-`krosstalk-ktor-client-auth` plugin.
+[`krosstalk-ktor-client-auth`](../../krosstalk-ktor-client-auth) plugin.
 
 # Package com.rnett.krosstalk.ktor.client
 
