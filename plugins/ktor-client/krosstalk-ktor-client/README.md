@@ -12,7 +12,7 @@ i.e. adding features) and to configure requests (i.e. using features). A header 
 provided as well.
 
 An generic authentication scope and an implementation of that scope for basic auth are provided in the
-[`krosstalk-ktor-client-auth`](../../krosstalk-ktor-client-auth) plugin.
+`krosstalk-ktor-client-auth` plugin.
 
 # Package com.rnett.krosstalk.ktor.client
 

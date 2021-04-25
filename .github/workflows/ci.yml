@@ -37,11 +37,11 @@ jobs:
         run: |
           git fetch
           git clone --depth 1 https://github.com/rnett/krosstalk.git --branch gh-pages --single-branch past-docs
-          ls -l past-docs
-          ls -l past-docs/old-releases
           mkdir -p past-docs/old-releases/core
           mkdir -p past-docs/old-releases/plugins
+          echo "Core"
           ls -l past-docs/old-releases/core
+          echo "Plugins"
           ls -l past-docs/old-releases/plugins
 
       - name: Build and Unit Test
