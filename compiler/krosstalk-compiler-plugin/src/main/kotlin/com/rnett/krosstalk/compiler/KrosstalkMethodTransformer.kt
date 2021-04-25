@@ -745,9 +745,30 @@ class KrosstalkMethodTransformer(
         }
 
         fun IrBuilderWithScope.buildCallLambda(): IrSimpleFunction {
+
+            fun IrSimpleFunction.addCallMethodParameters(): Pair<IrValueParameter, IrValueParameter> {
+                val args = addValueParameter {
+                    name = Name.identifier("arguments")
+                    type = IrSimpleTypeImpl(
+                        Kotlin.Collections.Map(),
+                        false,
+                        listOf(stringType as IrTypeBase, IrStarProjectionImpl),
+                        emptyList()
+                    )
+                }
+
+                val scopes = addValueParameter {
+                    name = Name.identifier("scopes")
+                    type = Krosstalk.Server.Plugin.ImmutableWantedScopes.resolveTypeWith()
+                }
+                return args to scopes
+            }
+
             if (!krosstalkClass.isServer) {
                 return buildLambda(declaration.returnType, { isSuspend = true }) {
                     withBuilder {
+                        addCallMethodParameters()
+
                         body = irJsExprBody(run {
                             val exceptionConstructor = Krosstalk.CallFromClientSideException().constructors.single()
                             irThrow(
@@ -761,20 +782,7 @@ class KrosstalkMethodTransformer(
 
             return buildLambda(declaration.returnType, { isSuspend = true }) {
                 withBuilder {
-                    val args = addValueParameter {
-                        name = Name.identifier("arguments")
-                        type = IrSimpleTypeImpl(
-                            Kotlin.Collections.Map(),
-                            false,
-                            listOf(stringType as IrTypeBase, IrStarProjectionImpl),
-                            emptyList()
-                        )
-                    }
-
-                    val scopes = addValueParameter {
-                        name = Name.identifier("scopes")
-                        type = Krosstalk.Server.Plugin.ImmutableWantedScopes.resolveTypeWith()
-                    }
+                    val (args, scopes) = addCallMethodParameters()
 
                     body = irJsExprBody(irCall(declaration.symbol).apply {
                         nonScopeValueParameters.forEach { param ->
@@ -1088,6 +1096,8 @@ class KrosstalkMethodTransformer(
                 })
             }
 
+            log(declaration.name.asString(), declaration.dumpKotlinLike())
+            log(declaration.name.asString(), declaration.dump(true))
         }
     }
 

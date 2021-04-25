@@ -11,7 +11,7 @@ plugins {
 }
 
 allprojects {
-    version = "0.2.8"
+    version = "0.2.8-SNAPSHOT"
 
     group = "com.github.rnett.krosstalk"
 

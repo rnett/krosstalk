@@ -8,7 +8,7 @@ plugins {
 }
 
 allprojects {
-    group = "com.rnett.krosstalk"
+    group = "krosstalk.tests"
     version = "1.0.3-ALPHA"
 
     repositories {
