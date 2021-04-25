@@ -17,10 +17,23 @@ jobs:
         uses: actions/setup-java@v1
         with:
           java-version: 11
+
       - name: Grant execute permission for gradlew
         run: |
           chmod +x gradlew
           chmod +x tests/gradlew
+
+      - name: Clone past docs for release
+        if: endsWith(${{ steps.get_version.outputs.match }}, 'SNAPSHOT') || endsWith(${{ steps.get_version.outputs.match }}, 'snapshot')
+        run: |
+          git fetch
+          git clone --depth 1 https://github.com/rnett/krosstalk.git --branch gh-pages --single-branch past-docs
+          ls -l past-docs
+          ls -l past-docs/old-releases
+          mkdir -p past-docs/old-releases/core
+          mkdir -p past-docs/old-releases/plugins
+          ls -l past-docs/old-releases/core
+          ls -l past-docs/old-releases/plugins
 
       - name: Build and Unit Test
         run: ./gradlew build -DRELEASE_SIGNING_ENABLED=false # test allTests
@@ -36,18 +49,6 @@ jobs:
           regex: 'version ?(?:=|:) ?"?([\w.\-_]+)"?'
           files: "build.gradle.kts,gradle.properties,build.gradle"
           commands: "./gradlew properties"
-
-      - name: Clone past docs for release
-        if: endsWith(${{ steps.get_version.outputs.match }}, 'SNAPSHOT') || endsWith(${{ steps.get_version.outputs.match }}, 'snapshot')
-        run: |
-          git fetch
-          git clone --depth 1 https://github.com/rnett/krosstalk.git --branch gh-pages --single-branch past-docs
-          ls -l past-docs
-          ls -l past-docs/old-releases
-          mkdir -p past-docs/old-releases/core
-          mkdir -p past-docs/old-releases/plugins
-          ls -l past-docs/old-releases/core
-          ls -l past-docs/old-releases/plugins
 
       - name: Generate HTML Docs
         run: ./gradlew dokkaHtmlMultiModule -PgitBranch=$GITHUB_SHA -PcoreVersionDir=past-docs/old-releases/core -PpluginVersionDir=past-docs/old-releases/plugins
