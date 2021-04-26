@@ -1,13 +1,16 @@
 package com.rnett.krosstalk.compose_test
 
+import com.rnett.krosstalk.KrosstalkPluginApi
+
 sealed class MainState {
     object LoginScreen : MainState()
     data class TodoView(val auth: AuthCredentials) : MainState()
 }
 
+@OptIn(KrosstalkPluginApi::class)
 fun main() {
-//    val m = TodoKrosstalk.methods
-//    println(m)
+    val m = TodoKrosstalk.methods
+    println(m)
 //    Window("Krosstalk + Compose test") {
 //        DesktopMaterialTheme {
 //            var mainState: MainState by remember { mutableStateOf(MainState.LoginScreen) }
