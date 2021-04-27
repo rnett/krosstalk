@@ -1,4 +1,4 @@
-package com.rnett.krosstalk.compiler
+package com.rnett.krosstalk.compiler.transformer
 
 import org.jetbrains.kotlin.backend.common.lower.irCatch
 import org.jetbrains.kotlin.ir.builders.IrBuilderWithScope
@@ -40,7 +40,7 @@ fun IrBuilderWithScope.irTry(
     result: IrExpression,
     type: IrType,
     catches: List<IrCatch>,
-    finally: IrExpression? = null
+    finally: IrExpression? = null,
 ): IrTry =
     IrTryImpl(startOffset, endOffset, type, result, catches, finally)
 
@@ -93,6 +93,6 @@ class IrTryBuilder(private val builder: IrBuilderWithScope) {
 inline fun IrBuilderWithScope.irTry(
     result: IrExpression,
     type: IrType = result.type,
-    catches: IrTryBuilder.() -> Unit
+    catches: IrTryBuilder.() -> Unit,
 ) =
     IrTryBuilder(this).apply(catches).build(result, type)

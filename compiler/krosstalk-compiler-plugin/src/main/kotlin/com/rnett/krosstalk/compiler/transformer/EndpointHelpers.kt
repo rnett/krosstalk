@@ -1,4 +1,4 @@
-package com.rnett.krosstalk.compiler
+package com.rnett.krosstalk.compiler.transformer
 
 import com.rnett.krosstalk.InternalKrosstalkApi
 import com.rnett.krosstalk.KrosstalkPluginApi

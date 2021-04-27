@@ -1,5 +1,6 @@
 package com.rnett.krosstalk.compiler
 
+import com.rnett.krosstalk.compiler.transformer.KrosstalkMethodTransformer
 import org.jetbrains.kotlin.backend.common.extensions.IrGenerationExtension
 import org.jetbrains.kotlin.backend.common.extensions.IrPluginContext
 import org.jetbrains.kotlin.backend.common.lower
