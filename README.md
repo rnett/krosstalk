@@ -1,6 +1,4 @@
-# README is very out of date
-
-# Krosstalk: Expect/Actual API call autowiring
+# Krosstalk: Expect/Actual RPC call autowiring
 
 [ ![Download](https://api.bintray.com/packages/rnett/krosstalk/krosstalk/images/download.svg) ](https://bintray.com/rnett/krosstalk/krosstalk/_latestVersion)
 [![License](https://img.shields.io/badge/License-Apache%202.0-yellowgreen.svg)](https://opensource.org/licenses/Apache-2.0)
@@ -8,7 +6,8 @@
 Krosstalk allows you to easily create RPC methods using pure kotlin. Client, server, and serialization implementations
 are plugable, and Kotlin's expect-actual modifiers can be used to ensure that client and server methods match.
 
-Ktor client and server and Kotlinx Serialization plugins are provided, along with instructions on how to write your own.
+Ktor client and server and Kotlinx Serialization plugins are provided, along
+with [instructions on how to write your own](./WRITING_PLUGINS.md).
 
 ## Artifacts
 
@@ -122,7 +121,9 @@ There are three types of Krosstalk objects, depending on how they are declared: 
 * Client Krosstalks are those that implement `KrosstalkClient` in addition to `Krosstalk`. They can be declared as
   standalone objects, or as the `actual` object of a common Krosstalk. They specify a client handler via the
   `client` property and a server url via the `serverUrl` property. The server url is read each request, so it can
-  be `var`, but using [server url parameters] is recommended instead.
+  be `var`, but
+  using [server url parameters](https://rnett.github.io/krosstalk/release/core/krosstalk/-krosstalk/com.rnett.krosstalk.annotations/-server-u-r-l/index.html)
+  is recommended instead.
 * Server Krosstalks are those that implement `KrosstalkServer` in addition to `Krosstalk`. Like clients, than can be
   standalone or `actual`. They define a server handler via `server`. This handler is usually just an object, since
   server entrypoints and structure can vary, but should define methods to add your Krosstalk's methods to its server
@@ -145,6 +146,10 @@ handler of their Krosstalk object. Methods can be further configured using the a
 over [the docs of `com.rnett.krosstalk. annotations`](https://rnett.github.io/krosstalk/release/core/krosstalk/-krosstalk/com.rnett.krosstalk.annotations/index.html)
 for an overview (click on an annotation to see the full docs).
 
+### Error Handling
+
+TODO
+
 ## Scopes
 
 Scopes are defined as nested `object`s in the Krosstalk objects. They must extend `Scope`, which is usually done
@@ -155,7 +160,11 @@ since they also must extend their plugin's scope interface (or whatever was pass
 Both `ClientScope` and `ServerScope` have a type parameter; on `ClientScope`, this is the type of data that the scope
 requires, on `ServerScope` it is the type of data the scope produces. The plugin's scope class will provide some methods
 to override to configure the request, which should make use of the data on client scopes or have a way to produce it on
-server scopes. See [KtorClientScope] and [KtorServerScope] for examples.
+server scopes.
+See [KtorClientScope](plugins/ktor-client/krosstalk-ktor-client/src/commonMain/kotlin/com/rnett/krosstalk/ktor/client/Scopes.kt)
+and
+[KtorServerScope](plugins/ktor-server/krosstalk-ktor-server/src/main/kotlin/com/rnett/krosstalk/ktor/server/Scopes.kt)
+for examples.
 
 Generally, you will not extend a plugin's scope class directly. Most plugins should provide scope classes to configure
 the wanted behavior, like `KtorClientBasicAuth`. You can then have your scope class extend this.
