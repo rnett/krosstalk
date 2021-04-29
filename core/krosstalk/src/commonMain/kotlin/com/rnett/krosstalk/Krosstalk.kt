@@ -83,6 +83,8 @@ public class MissingMethodException @PublishedApi internal constructor(public va
     )
 //TODO import from other
 //TODO maybe add serializer type?
+
+//TODO test using a abstract class between Krosstalk and object to define some things
 /**
  * The Krosstalk coordinator.  Krosstalk objects extend this.  Contains a listing of defined methods, the serialization handler, and optionally the client or server.
  */

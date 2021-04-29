@@ -15,19 +15,25 @@ import com.rnett.krosstalk.serialization.plugin.SerializationHandler
 import com.rnett.krosstalk.toKrosstalkResult
 import kotlin.reflect.KClass
 
-// meta annotations
+/**
+ * Can only be configured on the client methods.
+ */
 @Target(AnnotationTarget.ANNOTATION_CLASS)
 @Retention(AnnotationRetention.BINARY)
 @MustBeDocumented
 internal annotation class ClientOnly
 
+/**
+ * Can only be configured on the top level Krosstalk function, i.e. the expect function
+ * if using an expect Krosstalk.
+ */
 @Target(AnnotationTarget.ANNOTATION_CLASS)
 @Retention(AnnotationRetention.BINARY)
 @MustBeDocumented
 internal annotation class TopLevelOnly
 
 /**
- * Makes a method a krosstalk method.   Should only be on the `expect` declaration.
+ * Makes a method a krosstalk method.  Should only be on the `expect` declaration if using a common Krosstalk.
  *
  * By default, the endpoint will be "/krosstalk/$methodName" although the prefix can be overridden in Krosstalk.
  *
@@ -41,7 +47,6 @@ internal annotation class TopLevelOnly
 @TopLevelOnly
 public annotation class KrosstalkMethod(val klass: KClass<out Krosstalk>, val noParamHash: Boolean = false)
 
-//TODO update docs
 /**
  * Specifies an endpoint for the krosstalk method to use.
  * [endpoint] should be a http-formatted string of the (relative) pathname and query string, i.e. `"/items/?id={id}"`.
@@ -68,12 +73,12 @@ public annotation class KrosstalkMethod(val klass: KClass<out Krosstalk>, val no
  * I highly recommend setting it to something string-based like JSON.  If you want to include non-trivial functions of the arguments in the endpoint,
  * include them in the function as default arguments and use those.
  *
- * Parameters present in the URL whenever they are not null will not be passed in the body, and will instead be deserialized from the URL.
+ * Parameters that are present in the URL whenever they are not null will not be passed in the body, and will instead be deserialized from the URL.
  *
  * [httpMethod] controls the HTTP method used by requests.  If it is `GET`, the function must have no parameters or use [EmptyBody].
  *
  * [contentType] controls the content type of the request and response.  If empty (which is default), the Krosstalk object's serialization handler's
- * [SerializationHandler.contentType] is used.  May not be used for non-success results when used with [ExplicitResult].  **This is a recommendation,
+ * [SerializationHandler.contentType] is used.  May not be used for non-success results when used with [ExplicitResult].  **This setting is a recommendation,
  * which may be ignored by the client in some cases.**  Servers should almost always use it, but may not in some corner cases.
  */
 @Target(AnnotationTarget.FUNCTION)
@@ -97,6 +102,8 @@ public annotation class EmptyBody
 
 
 /**
+ * Pass object parameters like normal parameters.
+ *
  * By default, arguments that are objects at the common level will not be passed (except for as URL parameters).
  * This annotation causes them to be passed like normal parameters.
  *
@@ -159,10 +166,10 @@ public annotation class ExplicitResult(
 @MustBeDocumented
 @Repeatable
 @TopLevelOnly
-public annotation class RespondWithHeaders()
+public annotation class RespondWithHeaders
 
 /**
- * Must be used on a nullable parameter (for now).  If that parameter is null, it will not be sent.
+ * Don't send a parameter if it is null.  Must be used on a nullable parameter.
  * **If it is not present in a call to the server, `null` will be used, not any default.**
  * Defaults will be evaluated at the call side, i.e. on client side if called from the client, or server side if called from the server.
  * Defaults are ignored for direct HTTP requests.
@@ -175,7 +182,7 @@ public annotation class RespondWithHeaders()
 @Retention(AnnotationRetention.BINARY)
 @MustBeDocumented
 @TopLevelOnly
-public annotation class Optional()
+public annotation class Optional
 
 //TODO see if I can replace this with passing the server url to krosstalkCall().  Would need an @Ignore or similar
 /**

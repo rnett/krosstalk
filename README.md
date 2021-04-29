@@ -25,6 +25,9 @@ Ktor client and server and Kotlinx Serialization plugins are provided, along wit
 Any common source set defining an `expect` Krosstalk object will need to depend on the common artifact. The client and
 server artifacts will generally be inherited from plugins.
 
+The Krosstalk compiler plugin will automatically not apply to source sets that don't
+include `com.rnett.krosstalk. Krosstalk` as an accessible class (i.e. if you don't depend on any Krosstalk artifacts).
+
 ### Plugins ([Docs](https://rnett.github.io/krosstalk/release/plugins/index.html))
 
 [Snapshot Docs](https://rnett.github.io/krosstalk/snapshot/plugins/index.html)
@@ -36,13 +39,13 @@ server artifacts will generally be inherited from plugins.
 #### Client
 
 * Ktor: `com.github.rnett.krosstalk:krosstalk-ktor-client`
-    * Auth: `krosstalk-ktor-client-auth`
+  * Auth: `krosstalk-ktor-client-auth`
 
 #### Server
 
 * Ktor: `com.github.rnett.krosstalk:krosstalk-ktor-server`
-    * Auth: `krosstalk-ktor-server-auth`
-        * JWT: `krosstalk-ktor-server-auth-jwt`
+  * Auth: `krosstalk-ktor-server-auth`
+    * JWT: `krosstalk-ktor-server-auth-jwt`
 
 ## Minimal example:
 
@@ -66,7 +69,7 @@ Client (JS):
 actual object MyKrosstalk : Krosstalk(), KrosstalkClient<KtorClientScope<*>> {
   actual override val serialization = KotlinxBinarySerializationHandler(Cbor { })
   override val serverUrl: String = "http://localhost:8080"
-  
+
   override val client = KtorClient()
 }
 
@@ -95,183 +98,147 @@ fun main() {
 }
 ```
 
-# OLD
+# Overview
 
-<span style="color: red; font-weight: bold">Currently blocked
-by <a href="https://youtrack.jetbrains.com/issue/KT-44199">KT-44199</a>.</span>
+Krosstalk works by registering any methods annotated with `@KrosstalkMethod` with the class specified in the annotation,
+which must be an `object` that extends `Krosstalk` (refered to as the Krosstalk object). Client methods (which must have
+a body of `krosstalkCall()`) will then have their bodies replaced with a call to the Krosstalk object, which will use
+the client handler to send a request and return the response). Registering the server Krosstalk with your server
+implementation (using a server plugin) will then cause incoming requests to be handled by the Krosstalk object, which
+will call the requested method and respond with the returned value.
 
-Krosstalk is a Kotlin compiler plugin supported library that turns `expect`/`actual` methods into api calls and
-endpoints, with fully pluggable serialization, client and server implementations. When a client method is called, the
-arguments are serialized and sent to the server. The server deserializes the arguments, calls the method, and sends the
-serialized result as the response. Note that this means any side-effects will only happen server side.
+There are three types of Krosstalk objects, depending on how they are declared: common, client, and server:
 
-Krosstalk ships with Kotlinx serialization support by default, and a rudimentary Ktor client and server are available.
+* Common Krosstalk objects are those that are declared `expect` in a common source set, and only extend `Krosstalk`. The
+  primary reason for doing this is that you can then use it with `expect` Krosstalk methods, and Kotlin's
+  `expect-actual`  mechanics will enforce that the client and server methods have exactly the same signature. To support
+  this, Krosstalk's configuration must be done on `expect` Krosstalk methods when available. Common Krosstalks (and
+  indeed all Krosstalks, since they all inherit from `Krosstalk`) must specify a serialization handler via
+  `serialization`, and can optionally specify a different serialization handler for url arguments
+  (`urlSerialization`) and a prefix to use in method endpoint urls (`prefix`, `"krosstalk"` by default).  **Note that
+  the value of `prefix` and the serialization formats must match on `actual` client and server Krosstalks.**  
+  It is not yet possible to declare these directly in the `expect` object, so take care. You can add a abstract class
+  between your Krosstalk object and `Krosstalk` to define these.
+* Client Krosstalks are those that implement `KrosstalkClient` in addition to `Krosstalk`. They can be declared as
+  standalone objects, or as the `actual` object of a common Krosstalk. They specify a client handler via the
+  `client` property and a server url via the `serverUrl` property. The server url is read each request, so it can
+  be `var`, but using [server url parameters] is recommended instead.
+* Server Krosstalks are those that implement `KrosstalkServer` in addition to `Krosstalk`. Like clients, than can be
+  standalone or `actual`. They define a server handler via `server`. This handler is usually just an object, since
+  server entrypoints and structure can vary, but should define methods to add your Krosstalk's methods to its server
+  implementation (i.e. `defineKtor`).
 
-A working example is provided in `sample`.
+The `KrosstalkClient` and `KrosstalkServer` interfaces also require you to provide the scope class of your client or
+server plugin, respectively. Plugins usually define their own interface or typealias that does this, i.e.
+`KtorKrosstalkClient`. Scopes are a mechanism to allow clients to modify requests depending on arguments and to allow
+servers to selectively match and extract data from requests. As such, their implementation will be plugin specific,
+requiring you to specify the scope type. More on that later.
 
-## Basics
+## Methods
 
-To use krosstalk methods, you need a Krosstalk object. This object is essentially a table of all known methods and
-configuration options: client/server and serialization.
+As mentioned before, Krosstalk methods are methods annotated with `KrosstalkMethod`, which must be passed the Krosstalk
+object to register them with. Krosstalk methods must also be `suspend` (because they will be converted to a HTTP
+request), and all parameters (including receivers) and the return type should be serializable by the serialization
+handler of their Krosstalk object. Methods can be further configured using the annotations in
+`com.rnett.krosstalk.annotations`. All configuration (including the `KrosstalkMethod` annotation) should be done on the
+`expect` methods when using a common Krosstalk. I suggest reading
+over [the docs of `com.rnett.krosstalk. annotations`](https://rnett.github.io/krosstalk/release/core/krosstalk/-krosstalk/com.rnett.krosstalk.annotations/index.html)
+for an overview (click on an annotation to see the full docs).
 
-A basic krosstalk object using the Ktor client and server might look like:
+## Scopes
 
-**Common:**
+Scopes are defined as nested `object`s in the Krosstalk objects. They must extend `Scope`, which is usually done
+transitively. Note that for `actual` scopes this must be explicit because of
+[KT-20641](https://youtrack.jetbrains.com/issue/KT-20641). Client and server scopes (declared in their respective
+Krosstalk objects) must extend `ClientScope` and `ServerScope`, respectively. This is also usually done transitively,
+since they also must extend their plugin's scope interface (or whatever was passed to `KrosstalkClient/Server`).
+Both `ClientScope` and `ServerScope` have a type parameter; on `ClientScope`, this is the type of data that the scope
+requires, on `ServerScope` it is the type of data the scope produces. The plugin's scope class will provide some methods
+to override to configure the request, which should make use of the data on client scopes or have a way to produce it on
+server scopes. See [KtorClientScope] and [KtorServerScope] for examples.
 
-```kotlin
-expect object MyKrosstalk : Krosstalk
-```
+Generally, you will not extend a plugin's scope class directly. Most plugins should provide scope classes to configure
+the wanted behavior, like `KtorClientBasicAuth`. You can then have your scope class extend this.
 
-**JS (client):**
+Scopes are passed to methods by adding a parameter of type `ScopeInstance<T>`, where `T` is the scope's type. Scope
+instances can be created using the `invoke` methods of `ClientScope` and `ServerScope`. If you need to create a scope
+instance in common code (when using a common Krosstalk), you must use `expect-actual`, since the data types of the
+scopes may differ between the client and server. To get the value extracted by the scope on the server, use
+`ScopeInstance.value`.
 
-```kotlin
-actual object MyKrosstalk : Krosstalk(), KrosstalkClient<KtorClientScope> {
-    override val serialization = KotlinxSerializationHandler
-    override val client = KtorClient
-}
-```
+Scope parameters can be made optional by making their type nullable (i.e. `ScopeInstance<T>?`). If this is the case,
+`null` may be passed on the client resulting in no changes being made to the request, and the server may fail to get a
+value (like if `null` was passed by the client, but not limited to this) resulting in the value of the argument
+being `null`. This can be forbidden by some scope types by overriding `Scope.canBeOptional` and returning `false`.
 
-**JVM (server):**
+Adding an authentication scope to our initial example would look like this:
 
-```kotlin
-actual object MyKrosstalk : Krosstalk(), KrosstalkServer<KtorServerScope>, Scopes {
-    override val serialization = KotlinxSerializationHandler
-    override val server = KtorServer
-}
-```
-
-As you can see, each actual krosstalk object defines its serialization handler (`override val serialization`), whether
-it is a client or server (inheriting from `KrosstalkClient` or `KrosstalkServer`, ignore the type argument for now), and
-its client or server implementation (`override val client`, `override val server`). None of these have to match, so long
-as they are compatible.
-
-Using a krosstalk object is extremly simple:
-**Common:**
+Common:
 
 ```kotlin
 @Serializable
 data class Data(val num: Int, val str: String)
 
+expect object MyKrosstalk : Krosstalk {
+  override val serialization: KotlinxBinarySerializationHandler
+
+  object Auth : Scope
+}
+
 @KrosstalkMethod(MyKrosstalk::class)
-expect suspend fun doThing(data: Data): List<String>
+expect suspend fun basicTest(data: Data, auth: ScopeInstance<Auth>): List<String>
 ```
 
-**JS (client):**
+Client (JS):
 
 ```kotlin
-actual suspend fun doThing(data: Data): List<String> = krosstaklCall()
-```
+actual object MyKrosstalk : Krosstalk(), KrosstalkClient<KtorClientScope<*>> {
+  actual override val serialization = KotlinxBinarySerializationHandler(Cbor { })
+  override val serverUrl: String = "http://localhost:8080"
 
-**JVM (server):**
+  override val client = KtorClient()
 
-```kotlin
-actual suspend fun doThing(data: Data): List<String> {
-    return List(data.num) { data.str }
+  actual object Auth : Scope, KtorClientBasicAuth()
 }
+
+actual suspend fun basicTest(data: Data, auth: ScopeInstance<Auth>): List<String> = krosstalkCall()
 ```
 
-The `expect` declaration should have a `@KrosstalkMethod` defining the krosstalk object to use and any scopes (I'll get
-to that later). The JS `actual` declaration should only be the definition and `krosstaklCall()`. The JVM `actual`
-declaration should have the implementation. All krosstalk methods must be `suspend`, as they are API calls even if they
-don't look like it.
-
-You also have to define the krosstalk endpoints in your server. Krosstalk won't create its own server, but any server
-implementation *should* define helper functions to make this easy.
-
-For the Ktor server, it looks like:
+Server (JVM):
 
 ```kotlin
+actual object MyKrosstalk : Krosstalk(), KrosstalkServer<KtorServerScope<*>> {
+  actual override val serialization = KotlinxBinarySerializationHandler(Cbor { })
+  override val server = KtorServer
+
+  actual object Auth : Scope, KtorServerBasicAuth<User>("auth") {
+    override fun BasicAuthenticationProvider.Configuration.configure() {
+      validate {
+        if (validUsers[it.name] == it.password)
+          User(it.name)
+        else
+          null
+      }
+    }
+  }
+}
+
+data class User(val username: String) : Principal
+
+private val validUsers = mapOf("username" to "password")
+
+actual suspend fun basicTest(data: Data, auth: ScopeInstance<Auth>): List<String> {
+  println("Request from: ${auth.value/*: User*/.username}")
+  return List(data.num) { data.str }
+}
+
 fun main() {
-    embeddedServer(Netty, 8080, "localhost") {
-
-        install(CORS) {
-            anyHost()
-        }
-        KtorServer.define(this, MyKrosstalk)
-
-        routing {
-            // Index and JS resources
-        }
-
-    }.start(true)
+  embeddedServer(CIO, 8080, "localhost") {
+    install(CORS) {
+      anyHost()
+    }
+    MyKrosstalk.defineKtor(this)
+  }.start(true)
 }
 ```
 
-The `KtorServer.define` defines a POST `krosstalk/$methodName` endpoint for each method and wraps them in their scope
-handlers (again, later).
-
-## Scopes
-
-There is a rather glaring flaw with what I've covered so far: you can't authenticate your krosstalk methods. You also
-can't do any other fancy frontend or backend handling. Scopes solve this.
-
-A scope is a way of attaching special handling, optionally with required data, to a krosstalk method. They are defined
-in the krosstalk object (or rather, right above it):
-
-**Common:**
-
-```kotlin
-interface Scopes {
-    val auth: ScopeHolder
-}
-
-expect object MyKrosstalk : Krosstalk, Scopes
-```
-
-The unfortunate requirement of using an interface is because Kotlin expect/actual force the property types to match
-exactly, which, given that we want client scopes on the client and server scopes on the server, doesn't work.
-
-Defining the client and server scopes looks like:
-**JS (client):**
-
-```kotlin
-actual object MyKrosstalk : Krosstalk(), KrosstalkClient<KtorClientScope>, Scopes {
-    override val serialization = KotlinxSerializationHandler
-    override val client = KtorClient
-    override val auth by scope<KtorClientAuth>()
-}
-```
-
-**JVM (server):**
-
-```kotlin
-actual object MyKrosstalk : Krosstalk(), KrosstalkServer<KtorServerScope>, Scopes {
-    override val serialization = KotlinxSerializationHandler
-    override val server = KtorServer
-    override val auth by scope(KtorServerAuth(mapOf("username" to "password")))
-}
-```
-
-This is where the type parameter of `KrosstalkClient` and `KtorServerScope` come from: the client and server scopes need
-to be supported by the client and server. A ktor server will only be able to support scopes that define handlers on ktor
-requests, and the same for the client.
-
-The `auth` scope is then used like:
-
-```kotlin
-@KrosstalkMethod(MyKrosstalk::class, "auth")
-expect suspend fun doAuthThing(num: Int): Data
-```
-
-**JS (client):**
-
-```kotlin
-actual suspend fun doAuthThing(num: Int): Data = krosstaklCall()
-```
-
-**JVM (server):**
-
-```kotlin
-actual suspend fun doAuthThing(num: Int): Data {
-    return Data(num, (num * 10).toString())
-}
-```
-
-The inclusion of `"auth"` in `@KrosstalkMethod` specifies that it is a required scope for `doAuthThing`: the scope's
-server handler will be attached to that endpoint.
-
-## Implementing Serializers
-
-## Implementing Clients
-
-## Implementing Servers
