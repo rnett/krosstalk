@@ -1,6 +1,14 @@
 package com.rnett.krosstalk.server.plugin
 
-import com.rnett.krosstalk.*
+import com.rnett.krosstalk.Headers
+import com.rnett.krosstalk.InternalKrosstalkApi
+import com.rnett.krosstalk.Krosstalk
+import com.rnett.krosstalk.KrosstalkPluginApi
+import com.rnett.krosstalk.KrosstalkResult
+import com.rnett.krosstalk.MethodDefinition
+import com.rnett.krosstalk.ServerDefault
+import com.rnett.krosstalk.WithHeaders
+import com.rnett.krosstalk.addHeadersFrom
 import com.rnett.krosstalk.endpoint.Endpoint
 import com.rnett.krosstalk.server.KrosstalkServer
 import kotlin.contracts.InvocationKind
@@ -20,8 +28,11 @@ import kotlin.contracts.contract
 @KrosstalkPluginApi
 public interface ServerHandler<S : ServerScope<*>>
 
+/**
+ * A lambda to send a response from the server with the appropriate configuration and data.
+ */
 @KrosstalkPluginApi
-public typealias Responder = suspend (statusCode: Int, contentType: String?, responseHeaders: Headers, data: ByteArray) -> Unit
+public typealias Responder = suspend (statusCode: Int, contentType: String?, responseHeaders: Headers, responseBody: ByteArray) -> Unit
 
 @KrosstalkPluginApi
 @InternalKrosstalkApi
@@ -32,13 +43,13 @@ else
 
 //TODO make inline
 /**
- * Helper method for server side to handle a method [methodName] with the body data [body].
+ * Helper method for server side to handle a request for a Krosstalk [method].
  *
  * @param serverUrl the base url of the server, **not including the method's endpoint**.
  * @param method method to call
  * @param requestHeaders the headers of the request
  * @param urlArguments the arguments gotten from the URL (probably using the endpoint's resolver)
- * @param body the body
+ * @param requestBody the body of the request
  * @param scopes the scopes gotten from the request.  Missing required scopes will be handled here.
  * @param handleException how to handle a server exception, if requested.  Should log if possible, throw if not.
  * @param responder a lambda to respond to the request.
@@ -50,7 +61,7 @@ public suspend fun <K> K.handle(
     method: MethodDefinition<*>,
     requestHeaders: Headers,
     urlArguments: Map<String, String>,
-    body: ByteArray,
+    requestBody: ByteArray,
     scopes: WantedScopes,
     handleException: (Throwable) -> Unit = { throw it },
     responder: Responder,
@@ -69,8 +80,8 @@ public suspend fun <K> K.handle(
             put(key, method.serialization.deserializeUrlArg(key, value))
         }
 
-        if (body.isNotEmpty())
-            putAll(method.serialization.deserializeBodyArguments(body))
+        if (requestBody.isNotEmpty())
+            putAll(method.serialization.deserializeBodyArguments(requestBody))
 
         if (method.requestHeadersParam != null)
             put(method.requestHeadersParam!!, requestHeaders)

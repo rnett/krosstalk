@@ -33,9 +33,6 @@ public interface KtorServerScope<S : Any> : ServerScope<S> {
      * TODO use a better way than nullability, I want to support nullable data
      */
     public fun getData(call: ApplicationCall): S?
-
-    // can just use handle in buildEndpoint, I think
-//    fun PipelineContext<Unit, ApplicationCall>.handleRequest() {}
 }
 
 /**

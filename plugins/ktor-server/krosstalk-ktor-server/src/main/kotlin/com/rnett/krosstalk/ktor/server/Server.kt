@@ -7,7 +7,11 @@ import com.rnett.krosstalk.MethodDefinition
 import com.rnett.krosstalk.endpoint.UrlRequest
 import com.rnett.krosstalk.ktor.server.KtorServer.define
 import com.rnett.krosstalk.server.KrosstalkServer
-import com.rnett.krosstalk.server.plugin.*
+import com.rnett.krosstalk.server.plugin.MutableWantedScopes
+import com.rnett.krosstalk.server.plugin.ServerHandler
+import com.rnett.krosstalk.server.plugin.handle
+import com.rnett.krosstalk.server.plugin.scopesAsType
+import com.rnett.krosstalk.server.plugin.serverScopes
 import io.ktor.application.Application
 import io.ktor.application.application
 import io.ktor.application.call
@@ -20,7 +24,12 @@ import io.ktor.request.httpMethod
 import io.ktor.request.receiveChannel
 import io.ktor.request.uri
 import io.ktor.response.respondBytes
-import io.ktor.routing.*
+import io.ktor.routing.Route
+import io.ktor.routing.RouteSelector
+import io.ktor.routing.RouteSelectorEvaluation
+import io.ktor.routing.RoutingResolveContext
+import io.ktor.routing.application
+import io.ktor.routing.routing
 import io.ktor.util.AttributeKey
 import io.ktor.util.createFromCall
 import io.ktor.util.toByteArray
@@ -93,7 +102,6 @@ public object KtorServer : ServerHandler<KtorServerScope<*>> {
         }
 
         base.apply {
-
 
             // add each method
             krosstalk.methods.values.forEach { method ->
@@ -190,7 +198,6 @@ internal class KrosstalkRouteSelector(val method: MethodDefinition<*>) : RouteSe
     override fun toString(): String {
         return "(Krosstalk method: ${method.name})"
     }
-
 }
 
 //TODO use multiple receivers
