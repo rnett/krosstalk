@@ -5,6 +5,8 @@ import com.rnett.krosstalk.InternalKrosstalkApi
 import com.rnett.krosstalk.Krosstalk
 import com.rnett.krosstalk.KrosstalkPluginApi
 import com.rnett.krosstalk.KrosstalkResult
+import com.rnett.krosstalk.KrosstalkResultHttpError
+import com.rnett.krosstalk.KrosstalkServerException
 import com.rnett.krosstalk.MethodDefinition
 import com.rnett.krosstalk.ServerDefault
 import com.rnett.krosstalk.WithHeaders
@@ -41,6 +43,58 @@ internal fun MethodDefinition<*>.getReturnBody(data: Any?): ByteArray = if (retu
 else
     serialization.serializeReturnValue(data)
 
+//TODO make value class
+@KrosstalkPluginApi
+@InternalKrosstalkApi
+internal class ResponseContext<K>(
+    val krosstalk: K,
+    val method: MethodDefinition<*>,
+    val respond: Responder,
+    val contentType: String,
+) where K : Krosstalk, K : KrosstalkServer<*> {
+
+    val responseHeaders = mutableMapOf<String, List<String>>()
+
+    fun addResponseHeaders(other: Map<String, List<String>>) {
+        responseHeaders addHeadersFrom other
+    }
+
+    //TODO something in plaintext for non-krosstalk servers?  JSON serialize the exception maybe.  I can just use Kotlinx here too, rather than getting the serializer
+    internal suspend inline fun respondServerException(exception: KrosstalkResult.ServerException) {
+        respond(
+            500,
+            "application/octet-stream",
+            emptyMap(),
+            krosstalk.serializeServerException(exception.withIncludeStackTrace(method.includeStacktrace))
+        )
+    }
+
+    internal suspend inline fun respondHttpError(error: KrosstalkResult.HttpError) {
+        respond(
+            error.statusCode,
+            "text/plain; charset=utf-8",
+            emptyMap(),
+            (error.message ?: "").encodeToByteArray()
+        )
+    }
+
+    fun Any?.unwrapInnerHeaders(): Any? =
+        if (method.innerWithHeaders) {
+            this as WithHeaders<Any?>
+            addResponseHeaders(this.headers)
+            this.value
+        } else {
+            this
+        }
+
+    internal suspend inline fun respondSuccess(value: Any?) {
+        val responseBody = method.getReturnBody(value.unwrapInnerHeaders())
+        respond(200, contentType, responseHeaders, responseBody)
+    }
+}
+
+//TODO tests for new behavior, new catch methods, catch for http errors only?
+
 //TODO make inline
 /**
  * Helper method for server side to handle a request for a Krosstalk [method].
@@ -70,85 +124,75 @@ public suspend fun <K> K.handle(
         callsInPlace(responder, InvocationKind.EXACTLY_ONCE)
         callsInPlace(handleException, InvocationKind.AT_MOST_ONCE)
     }
-    val wantedScopes = scopes.toImmutable()
-    val contentType = method.contentType ?: serialization.contentType
+    with(ResponseContext(this, method, responder, method.contentType ?: serialization.contentType)) {
+        val wantedScopes = scopes.toImmutable()
 
-    val arguments: Map<String, Any?> = buildMap() {
-        putAll(method.objectParameters)
+        val arguments: Map<String, Any?> = buildMap() {
+            putAll(method.objectParameters)
 
-        urlArguments.forEach { (key, value) ->
-            put(key, method.serialization.deserializeUrlArg(key, value))
+            urlArguments.forEach { (key, value) ->
+                put(key, method.serialization.deserializeUrlArg(key, value))
+            }
+
+            if (requestBody.isNotEmpty())
+                putAll(method.serialization.deserializeBodyArguments(requestBody))
+
+            if (method.requestHeadersParam != null)
+                put(method.requestHeadersParam!!, requestHeaders)
+
+            if (method.serverUrlParam != null)
+                put(method.serverUrlParam!!, serverUrl)
         }
 
-        if (requestBody.isNotEmpty())
-            putAll(method.serialization.deserializeBodyArguments(requestBody))
+        val caughtResult = kotlin.runCatching {
+            method.call(arguments.mapValues {
+                if (it.key in method.serverDefaultParameters)
+                    ServerDefault { it.value }
+                else
+                    it.value
+            }, wantedScopes)
+        }
 
-        if (method.requestHeadersParam != null)
-            put(method.requestHeadersParam!!, requestHeaders)
-
-        if (method.serverUrlParam != null)
-            put(method.serverUrlParam!!, serverUrl)
-    }
-
-    val givenHeaders = mutableMapOf<String, List<String>>()
-
-    var result = method.call(arguments.mapValues {
-        if (it.key in method.serverDefaultParameters)
-            ServerDefault { it.value }
-        else
-            it.value
-    }, wantedScopes)
-
-    if (method.outerWithHeaders) {
-        result as WithHeaders<Any?>
-        givenHeaders addHeadersFrom result.headers
-        result = result.value
-    }
-
-    val exception = if (method.propagateServerExceptions && result is KrosstalkResult.ServerException) {
-        result.throwable
-    } else
-        null
-
-    fun Any?.unwrapHeaders(): Any? =
-        if (method.innerWithHeaders) {
-            this as WithHeaders<Any?>
-            givenHeaders addHeadersFrom this.headers
-            this.value
+        if (caughtResult.isFailure) {
+            when (val exception = caughtResult.exceptionOrNull()!!) {
+                is KrosstalkResultHttpError -> respondHttpError(exception.httpError)
+                is KrosstalkServerException -> {
+                    respondServerException(exception.exception)
+                    val t = exception.exception.throwable
+                    if (method.propagateServerExceptions && t != null) {
+                        handleException(t)
+                    }
+                }
+                else -> {
+                    respondServerException(KrosstalkResult.ServerException(exception, true))
+                    throw exception
+                }
+            }
+            return
         } else {
-            this
-        }
+            var result = caughtResult.getOrNull()
 
-    if (method.useExplicitResult) {
-        when (val kr = result as KrosstalkResult<*>) {
-            is KrosstalkResult.Success -> {
-                val responseBody = method.getReturnBody(kr.value.unwrapHeaders())
-                responder(200, contentType, givenHeaders, responseBody)
+            if (method.outerWithHeaders) {
+                result as WithHeaders<Any?>
+                addResponseHeaders(result.headers)
+                result = result.value
             }
-            is KrosstalkResult.ServerException -> {
-                //TODO something in plaintext for non-krosstalk servers?  JSON serialize the exception maybe.  I can just use Kotlinx here too, rather than getting the serializer
-                responder(
-                    500,
-                    "application/octet-stream",
-                    emptyMap(),
-                    serializeServerException(kr.withIncludeStackTrace(method.includeStacktrace))
-                )
-            }
-            is KrosstalkResult.HttpError -> {
-                responder(
-                    kr.statusCode,
-                    "text/plain; charset=utf-8",
-                    emptyMap(),
-                    (kr.message ?: "").encodeToByteArray()
-                )
+
+            if (method.useExplicitResult) {
+                when (val kr = result as KrosstalkResult<*>) {
+                    is KrosstalkResult.Success -> respondSuccess(kr.value)
+                    is KrosstalkResult.ServerException -> {
+                        respondServerException(kr)
+
+                        if (method.propagateServerExceptions && kr.throwable != null) {
+                            handleException(kr.throwable!!)
+                        }
+                    }
+                    is KrosstalkResult.HttpError -> respondHttpError(kr)
+                }
+            } else {
+                respondSuccess(result)
             }
         }
-    } else {
-        val responseBody = method.getReturnBody(result.unwrapHeaders())
-        responder(200, contentType, givenHeaders, responseBody)
-    }
-
-    if (exception != null) {
-        handleException(exception)
     }
 }

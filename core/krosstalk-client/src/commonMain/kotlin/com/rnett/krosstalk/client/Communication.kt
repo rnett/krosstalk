@@ -1,8 +1,17 @@
 package com.rnett.krosstalk.client
 
-import com.rnett.krosstalk.*
+import com.rnett.krosstalk.Headers
+import com.rnett.krosstalk.InternalKrosstalkApi
+import com.rnett.krosstalk.Krosstalk
+import com.rnett.krosstalk.KrosstalkException
+import com.rnett.krosstalk.KrosstalkPluginApi
+import com.rnett.krosstalk.KrosstalkResult
+import com.rnett.krosstalk.MethodDefinition
+import com.rnett.krosstalk.ServerDefault
+import com.rnett.krosstalk.WithHeaders
 import com.rnett.krosstalk.client.plugin.AppliedClientScope
 import com.rnett.krosstalk.client.plugin.ClientScope
+import com.rnett.krosstalk.isNone
 import kotlin.reflect.KClass
 
 /**
@@ -15,27 +24,6 @@ public suspend fun krosstalkCall(): Nothing =
 @InternalKrosstalkApi
 public class ServerDefaultInEndpointException(public val methodName: String, public val parameter: String) :
     KrosstalkException("Parameter \"$parameter\" for method \"$methodName\" was an unrealized ServerDefault, but was used in the endpoint.")
-
-
-/**
- * A Krosstalk call returned an error response.
- * TODO merge w/ KrosstalkResult
- */
-@OptIn(InternalKrosstalkApi::class)
-public open class CallErrorResponseException @InternalKrosstalkApi constructor(
-    public val methodName: String,
-    public val httpStatusCode: Int,
-    public val responseMessage: String?,
-    message: String = buildString {
-        append("Krosstalk method $methodName failed with HTTP status code $httpStatusCode")
-        if (httpStatusCode in httpStatusCodes)
-            append(": ${httpStatusCodes[httpStatusCode]}")
-
-        if (responseMessage != null)
-            append(" and response message: $responseMessage")
-
-    },
-) : KrosstalkException(message)
 
 /**
  * A Krosstalk call failed in the client.  Happens when a request could not be made.
@@ -68,6 +56,7 @@ internal fun <T> MethodDefinition<T>.getReturnValue(data: ByteArray): T = if (re
 internal fun Any?.withHeadersIf(withHeaders: Boolean, headers: Headers): Any? =
     if (withHeaders) WithHeaders(this, headers) else this
 
+//TODO finish result changes (will runKrosstalkCatching pick them up?) unify server/client handling as much as possible
 @OptIn(InternalKrosstalkApi::class, KrosstalkPluginApi::class, ExperimentalStdlibApi::class)
 @Suppress("unused")
 @PublishedApi
@@ -127,7 +116,7 @@ internal suspend inline fun <T, K, reified C : ClientScope<*>> K.call(
         throw ClientFailureException(methodName, e)
     }
 
-    return if (method.useExplicitResult) {
+    val wrappedResult =
         if (result.isSuccess()) {
             KrosstalkResult.Success(
                 method.getReturnValue(result.body).withHeadersIf(method.innerWithHeaders, result.headers)
@@ -143,11 +132,10 @@ internal suspend inline fun <T, K, reified C : ClientScope<*>> K.call(
                 KrosstalkResult.HttpError(result.statusCode, result.stringBody)
             }
         }
+
+    return if (method.useExplicitResult) {
+        wrappedResult
     } else {
-        if (result.isSuccess()) {
-            method.getReturnValue(result.body).withHeadersIf(method.innerWithHeaders, result.headers)
-        } else {
-            throw CallErrorResponseException(methodName, result.statusCode, result.stringBody)
-        }
+        wrappedResult.valueOrThrow
     }.withHeadersIf(method.outerWithHeaders, result.headers) as T
 }

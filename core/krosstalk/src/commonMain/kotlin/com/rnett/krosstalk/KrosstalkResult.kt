@@ -9,7 +9,7 @@ import kotlin.reflect.KClass
 
 
 @OptIn(InternalKrosstalkApi::class)
-public class ResultHttpErrorException(public val httpError: KrosstalkResult.HttpError) :
+public class KrosstalkResultHttpError(public val httpError: KrosstalkResult.HttpError) :
     KrosstalkException(buildString {
         "KrosstalkResult is http error code ${httpError.statusCode}"
         if (httpError.statusCodeName != null)
@@ -19,9 +19,19 @@ public class ResultHttpErrorException(public val httpError: KrosstalkResult.Http
             append(", with message: ${httpError.message}")
     })
 
+public inline fun throwKrosstalkHttpError(statusCode: Int, message: String? = null): Nothing {
+    throw KrosstalkResultHttpError(KrosstalkResult.HttpError(statusCode, message))
+}
+
 @OptIn(InternalKrosstalkApi::class)
-public class ResultServerExceptionException(public val exception: KrosstalkResult.ServerException) :
+public class KrosstalkServerException(public val exception: KrosstalkResult.ServerException) :
     KrosstalkException("KrosstalkResult is exception $exception")
+
+@OptIn(InternalKrosstalkApi::class)
+public inline fun throwKrosstalkServerException(throwable: Throwable, includeStackTrace: Boolean = true): Nothing {
+    throw KrosstalkServerException(KrosstalkResult.ServerException(throwable, includeStackTrace))
+}
+
 
 internal expect fun getClassName(klass: KClass<*>): String?
 
@@ -29,7 +39,7 @@ internal expect fun getClassName(klass: KClass<*>): String?
  * Runs [block] and wraps the result if it is a success.  If [block] throws,
  * it wraps the resulting exception in [KrosstalkResult.ServerException].
  *
- * If the caught exception is [ResultServerExceptionException] or [ResultHttpErrorException],
+ * If the caught exception is [KrosstalkServerException] or [KrosstalkResultHttpError],
  * they are unwrapped instead of wrapped (i.e. their contained [KrosstalkResult] is returned).
  *
  * Note that [includeStackTrace] will be overridden by the vale in any [ExplicitResult] annotations,
@@ -40,9 +50,9 @@ public inline fun <T> runKrosstalkCatching(includeStackTrace: Boolean = true, bl
     contract { callsInPlace(block, InvocationKind.EXACTLY_ONCE) }
     return try {
         KrosstalkResult.Success(block())
-    } catch (e: ResultServerExceptionException) {
+    } catch (e: KrosstalkServerException) {
         return e.exception
-    } catch (e: ResultHttpErrorException) {
+    } catch (e: KrosstalkResultHttpError) {
         return e.httpError
     } catch (t: Throwable) {
         KrosstalkResult.ServerException(t, includeStackTrace)
@@ -133,7 +143,7 @@ public sealed class KrosstalkResult<out T> {
             asStringWithStacktrace = if (includeStacktrace) asStringWithStacktrace else null
         )
 
-        override fun getException(): ResultServerExceptionException = ResultServerExceptionException(this)
+        override fun getException(): KrosstalkServerException = KrosstalkServerException(this)
     }
 
     /**
@@ -146,7 +156,7 @@ public sealed class KrosstalkResult<out T> {
     public data class HttpError(val statusCode: Int, val message: String? = null) :
         KrosstalkResult<Nothing>(),
         Failure {
-        override fun getException(): ResultHttpErrorException = ResultHttpErrorException(this)
+        override fun getException(): KrosstalkResultHttpError = KrosstalkResultHttpError(this)
 
         /**
          * The name of [statusCode].  Generated from [https://developer.mozilla.org/en-US/docs/Web/HTTP/Status](https://developer.mozilla.org/en-US/docs/Web/HTTP/Status).
@@ -227,7 +237,7 @@ public sealed class KrosstalkResult<out T> {
     public val failureOrNull: Any? get() = if (this is Failure) this else null
 
     /**
-     * If this is a [HttpError], throw [ResultHttpErrorException].  If this is a [ServerException], throw [ResultServerExceptionException].
+     * If this is a [HttpError], throw [KrosstalkResultHttpError].  If this is a [ServerException], throw [KrosstalkServerException].
      */
     public fun throwOnFailure(): KrosstalkResult<T> {
         // TODO use contracts, blocked by https://youtrack.jetbrains.com/issue/KT-41078
@@ -240,7 +250,7 @@ public sealed class KrosstalkResult<out T> {
     }
 
     /**
-     * If this is a [HttpError], throw [ResultHttpErrorException].
+     * If this is a [HttpError], throw [KrosstalkResultHttpError].
      */
     public fun throwOnHttpError(): KrosstalkResult<T> {
         contract { returns() implies (this@KrosstalkResult !is HttpError) }
@@ -252,7 +262,7 @@ public sealed class KrosstalkResult<out T> {
     }
 
     /**
-     * If this is a [ServerException], throw [ResultServerExceptionException].
+     * If this is a [ServerException], throw [KrosstalkServerException].
      */
     public fun throwOnServerException(): KrosstalkResult<T> {
         contract { returns() implies (this@KrosstalkResult !is ServerException) }
@@ -384,7 +394,8 @@ public inline fun <R, T : R> KrosstalkResult<T>.getOrElse(
 ): R = fold(
     { it },
     onServerException = onServerException,
-    onHttpError = onHttpError)
+    onHttpError = onHttpError
+)
 
 /**
  * Get the value on success, or [onFailure] otherwise.
@@ -416,7 +427,7 @@ public inline fun <R, T : R> KrosstalkResult<T>.recover(onFailure: (KrosstalkRes
 
 /**
  * Recover from some failures.  Successes will be presented, and if [onFailure] successfully completes, a success will be returned.
- * If [onFailure] throws a [ResultServerExceptionException] or [ResultHttpErrorException], like from [KrosstalkResult.Failure.throwException],
+ * If [onFailure] throws a [KrosstalkServerException] or [KrosstalkResultHttpError], like from [KrosstalkResult.Failure.throwException],
  * the originating result will be used.
  *
  * For example:
@@ -434,9 +445,9 @@ public inline fun <R, T : R> KrosstalkResult<T>.recover(onFailure: (KrosstalkRes
 public inline fun <R, T : R> KrosstalkResult<T>.recoverCatching(onFailure: (KrosstalkResult.Failure) -> R): KrosstalkResult<R> = recover {
     try {
         KrosstalkResult.Success(onFailure(it))
-    } catch (e: ResultServerExceptionException) {
+    } catch (e: KrosstalkServerException) {
         e.exception
-    } catch (e: ResultHttpErrorException) {
+    } catch (e: KrosstalkResultHttpError) {
         e.httpError
     }
 }
@@ -454,7 +465,7 @@ public inline fun <R, T : R> KrosstalkResult<T>.recoverServerException(onServerE
 
 /**
  * Recover from some failures.  Successes will be presented, and if [onServerException] successfully completes, a success will be returned.
- * If [onServerException] throws a [ResultServerExceptionException], like from [KrosstalkResult.ServerException.throwException],
+ * If [onServerException] throws a [KrosstalkServerException], like from [KrosstalkResult.ServerException.throwException],
  * the originating result will be used.
  *
  * @see recoverCatching
@@ -465,7 +476,7 @@ public inline fun <R, T : R> KrosstalkResult<T>.recoverServerExceptionCatching(o
         if (it is KrosstalkResult.ServerException) {
             try {
                 KrosstalkResult.Success(onServerException(it))
-            } catch (e: ResultServerExceptionException) {
+            } catch (e: KrosstalkServerException) {
                 e.exception
             }
         } else
@@ -485,7 +496,7 @@ public inline fun <R, T : R> KrosstalkResult<T>.recoverHttpError(onHttpError: (K
 
 /**
  * Recover from some failures.  Successes will be presented, and if [onServerException] successfully completes, a success will be returned.
- * If [onServerException] throws a [ResultServerExceptionException], like from [KrosstalkResult.ServerException.throwException],
+ * If [onServerException] throws a [KrosstalkServerException], like from [KrosstalkResult.ServerException.throwException],
  * the originating result will be used.
  *
  * @see recoverCatching
@@ -496,7 +507,7 @@ public inline fun <R, T : R> KrosstalkResult<T>.recoverHttpErrorCatching(onHttpE
         if (it is KrosstalkResult.HttpError) {
             try {
                 KrosstalkResult.Success(onHttpError(it))
-            } catch (e: ResultHttpErrorException) {
+            } catch (e: KrosstalkResultHttpError) {
                 e.httpError
             }
         } else
