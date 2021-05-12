@@ -1,4 +1,4 @@
-package com.rnett.krosstalk
+package com.rnett.krosstalk.result
 
 import kotlin.reflect.KClass
 

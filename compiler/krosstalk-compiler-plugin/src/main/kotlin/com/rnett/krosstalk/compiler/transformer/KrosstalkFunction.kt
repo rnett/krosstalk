@@ -203,10 +203,10 @@ class KrosstalkFunction(val declaration: IrSimpleFunction, val methodTransformer
     val returnDataType by lazy {
         val type = declaration.returnType
 
-        if (type.isClassifierOf(Krosstalk.KrosstalkResult)) {
+        if (type.isClassifierOf(Krosstalk.Result.KrosstalkResult)) {
             type.typeArgument(0).unwrapClassifier(Krosstalk.WithHeaders)
         } else if (type.isClassifierOf(Krosstalk.WithHeaders)) {
-            type.typeArgument(0).unwrapClassifier(Krosstalk.KrosstalkResult)
+            type.typeArgument(0).unwrapClassifier(Krosstalk.Result.KrosstalkResult)
         } else
             type
     }
@@ -214,7 +214,7 @@ class KrosstalkFunction(val declaration: IrSimpleFunction, val methodTransformer
     val isWithHeaders by lazy {
         val type = declaration.returnType
         type.isClassifierOf(Krosstalk.WithHeaders) ||
-                (type.isClassifierOf(Krosstalk.KrosstalkResult) && type.typeArgument(0)
+                (type.isClassifierOf(Krosstalk.Result.KrosstalkResult) && type.typeArgument(0)
                     .isClassifierOf(Krosstalk.WithHeaders))
     }
 
@@ -228,9 +228,9 @@ class KrosstalkFunction(val declaration: IrSimpleFunction, val methodTransformer
 
     val isKrosstalkResult by lazy {
         val type = declaration.returnType
-        type.isClassifierOf(Krosstalk.KrosstalkResult) ||
+        type.isClassifierOf(Krosstalk.Result.KrosstalkResult) ||
                 (type.isClassifierOf(Krosstalk.WithHeaders) && type.typeArgument(0)
-                    .isClassifierOf(Krosstalk.KrosstalkResult))
+                    .isClassifierOf(Krosstalk.Result.KrosstalkResult))
     }
 
     val returnObject by lazy {
@@ -300,7 +300,7 @@ class KrosstalkFunction(val declaration: IrSimpleFunction, val methodTransformer
                         "when used with KrosstalkResult (either order is valid).", declaration
             )
         }
-        if (Krosstalk.KrosstalkResult() in allReturnTypeArgs) {
+        if (Krosstalk.Result.KrosstalkResult() in allReturnTypeArgs) {
             messageCollector.reportError(
                 "Can't use KrosstalkResult in return type except for top level or second level " +
                         "when used with WithHeaders (either order is valid).", declaration

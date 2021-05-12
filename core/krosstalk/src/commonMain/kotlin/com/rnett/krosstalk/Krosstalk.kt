@@ -2,6 +2,7 @@ package com.rnett.krosstalk
 
 import com.rnett.krosstalk.annotations.ExplicitResult
 import com.rnett.krosstalk.endpoint.Endpoint
+import com.rnett.krosstalk.result.KrosstalkResult
 import com.rnett.krosstalk.serialization.MethodSerialization
 import com.rnett.krosstalk.serialization.MethodTypes
 import com.rnett.krosstalk.serialization.plugin.SerializationHandler
@@ -21,7 +22,7 @@ import com.rnett.krosstalk.server.plugin.ImmutableWantedScopes
  * @property requiredScopes scopes required by the method
  * @property optionalParameters scopes optionally used by the method
  * @property useExplicitResult whether the result is wrapped in a [KrosstalkResult]
- * @property includeStacktrace whether any [KrosstalkResult.ServerException]s should include the exception stack trace
+ * @property includeStacktrace whether any [ServerException]s should include the exception stack trace
  * @property propagateServerExceptions whether [ExplicitResult.propagateServerExceptions] is set
  * @property optionalParameters parameters marked as optional
  * @property serverDefaultParameters parameters using [ServerDefault]
@@ -153,9 +154,11 @@ public abstract class Krosstalk {
         //TODO check endpoint exclusivity
 
         if (methodName in methods)
-            throw KrosstalkException.CompilerError("Already registered method with name $methodName, " +
-                    "all but one must use `noParamHash = false` in their @KrosstalkMethod annotations.  " +
-                    "If you've done this already you may have had a hash collision.")
+            throw KrosstalkException.CompilerError(
+                "Already registered method with name $methodName, " +
+                        "all but one must use `noParamHash = false` in their @KrosstalkMethod annotations.  " +
+                        "If you've done this already you may have had a hash collision."
+            )
 
         optionalScopes.forEach {
             if (!it.canBeOptional)

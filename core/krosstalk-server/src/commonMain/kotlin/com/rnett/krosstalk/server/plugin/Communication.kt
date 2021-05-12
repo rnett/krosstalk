@@ -4,14 +4,14 @@ import com.rnett.krosstalk.Headers
 import com.rnett.krosstalk.InternalKrosstalkApi
 import com.rnett.krosstalk.Krosstalk
 import com.rnett.krosstalk.KrosstalkPluginApi
-import com.rnett.krosstalk.KrosstalkResult
-import com.rnett.krosstalk.KrosstalkResultHttpError
-import com.rnett.krosstalk.KrosstalkServerException
 import com.rnett.krosstalk.MethodDefinition
 import com.rnett.krosstalk.ServerDefault
 import com.rnett.krosstalk.WithHeaders
 import com.rnett.krosstalk.addHeadersFrom
 import com.rnett.krosstalk.endpoint.Endpoint
+import com.rnett.krosstalk.result.KrosstalkHttpError
+import com.rnett.krosstalk.result.KrosstalkResult
+import com.rnett.krosstalk.result.KrosstalkServerException
 import com.rnett.krosstalk.server.KrosstalkServer
 import kotlin.contracts.InvocationKind
 import kotlin.contracts.contract
@@ -155,7 +155,7 @@ public suspend fun <K> K.handle(
 
         if (caughtResult.isFailure) {
             when (val exception = caughtResult.exceptionOrNull()!!) {
-                is KrosstalkResultHttpError -> respondHttpError(exception.httpError)
+                is KrosstalkHttpError -> respondHttpError(exception.httpError)
                 is KrosstalkServerException -> {
                     respondServerException(exception.exception)
                     val t = exception.exception.throwable

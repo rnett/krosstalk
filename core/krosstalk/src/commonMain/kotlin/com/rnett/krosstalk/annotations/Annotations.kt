@@ -2,7 +2,6 @@ package com.rnett.krosstalk.annotations
 
 import com.rnett.krosstalk.Headers
 import com.rnett.krosstalk.Krosstalk
-import com.rnett.krosstalk.KrosstalkResult
 import com.rnett.krosstalk.WithHeaders
 import com.rnett.krosstalk.defaultEndpoint
 import com.rnett.krosstalk.defaultEndpointHttpMethod
@@ -10,9 +9,10 @@ import com.rnett.krosstalk.extensionReceiver
 import com.rnett.krosstalk.instanceReceiver
 import com.rnett.krosstalk.krosstalkPrefix
 import com.rnett.krosstalk.methodName
-import com.rnett.krosstalk.runKrosstalkCatching
+import com.rnett.krosstalk.result.KrosstalkResult
+import com.rnett.krosstalk.result.runKrosstalkCatching
+import com.rnett.krosstalk.result.toKrosstalkResult
 import com.rnett.krosstalk.serialization.plugin.SerializationHandler
-import com.rnett.krosstalk.toKrosstalkResult
 import kotlin.reflect.KClass
 
 /**

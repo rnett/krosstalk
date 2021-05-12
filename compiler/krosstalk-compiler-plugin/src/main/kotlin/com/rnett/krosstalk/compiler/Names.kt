@@ -1,6 +1,11 @@
 package com.rnett.krosstalk.compiler
 
-import com.rnett.plugin.naming.*
+import com.rnett.plugin.naming.Class
+import com.rnett.plugin.naming.ClassRef
+import com.rnett.plugin.naming.PackageRef
+import com.rnett.plugin.naming.RootPackage
+import com.rnett.plugin.naming.function
+import com.rnett.plugin.naming.primaryConstructor
 import org.jetbrains.kotlin.ir.util.render
 
 const val krosstalkPackage = "com.rnett.krosstalk"
@@ -72,9 +77,8 @@ object Krosstalk : RootPackage(krosstalkPackage) {
         }
     }
 
-    object KrosstalkResult : ClassRef() {
-        object ServerException : ClassRef() {
-            val throwableConstructor by constructor { numParameters = 2 }
+    object Result : PackageRef() {
+        object KrosstalkResult : ClassRef() {
         }
     }
 

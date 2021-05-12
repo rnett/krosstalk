@@ -5,13 +5,14 @@ import com.rnett.krosstalk.InternalKrosstalkApi
 import com.rnett.krosstalk.Krosstalk
 import com.rnett.krosstalk.KrosstalkException
 import com.rnett.krosstalk.KrosstalkPluginApi
-import com.rnett.krosstalk.KrosstalkResult
 import com.rnett.krosstalk.MethodDefinition
 import com.rnett.krosstalk.ServerDefault
 import com.rnett.krosstalk.WithHeaders
 import com.rnett.krosstalk.client.plugin.AppliedClientScope
 import com.rnett.krosstalk.client.plugin.ClientScope
 import com.rnett.krosstalk.isNone
+import com.rnett.krosstalk.result.KrosstalkResult
+import com.rnett.krosstalk.result.valueOrThrow
 import kotlin.reflect.KClass
 
 /**
