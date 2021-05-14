@@ -90,7 +90,6 @@ object Krosstalk : RootPackage(krosstalkPackage) {
         }
     }
 
-    //TODO is a typealias atm
     val Headers by Class()
 
     object WithHeaders : ClassRef() {

@@ -35,8 +35,6 @@ class KrosstalkMethodTransformer(
 
     val stringType = context.irBuiltIns.stringType
 
-    val Headers = context.referenceTypeAlias(FqName("com.rnett.krosstalk.Headers"))!!.owner.expandedType
-
     val addedInitalizers = mutableMapOf<FqName, IrAnonymousInitializer>()
     val seenNames = mutableMapOf<FqName, MutableSet<String>>()
 

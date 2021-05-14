@@ -5,6 +5,7 @@ import com.rnett.krosstalk.client.KrosstalkClient
 import com.rnett.krosstalk.client.plugin.AppliedClientScope
 import com.rnett.krosstalk.client.plugin.ClientHandler
 import com.rnett.krosstalk.client.plugin.InternalKrosstalkResponse
+import com.rnett.krosstalk.toHeaders
 import io.ktor.client.HttpClient
 import io.ktor.client.HttpClientConfig
 import io.ktor.client.call.receive
@@ -90,7 +91,7 @@ public class KtorClient(
                 }
 
                 // add any set headers
-                additionalHeaders.forEach { (key, list) ->
+                additionalHeaders.forEach { key, list ->
                     this.headers.appendAll(key, list)
                 }
             }
@@ -99,7 +100,7 @@ public class KtorClient(
         val bytes = response.receive<ByteArray>()
         val charset = response.charset() ?: Charsets.UTF_8
 
-        return InternalKrosstalkResponse(response.status.value, response.headers.toMap(), bytes) {
+        return InternalKrosstalkResponse(response.status.value, response.headers.toMap().toHeaders(), bytes) {
             String(
                 bytes,
                 charset = charset

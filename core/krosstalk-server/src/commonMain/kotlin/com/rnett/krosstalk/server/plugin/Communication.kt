@@ -9,13 +9,13 @@ import com.rnett.krosstalk.KrosstalkPluginApi
 import com.rnett.krosstalk.MethodDefinition
 import com.rnett.krosstalk.ServerDefault
 import com.rnett.krosstalk.WithHeaders
-import com.rnett.krosstalk.addHeadersFrom
+import com.rnett.krosstalk.addHeaders
 import com.rnett.krosstalk.endpoint.Endpoint
+import com.rnett.krosstalk.mutableHeadersOf
 import com.rnett.krosstalk.result.KrosstalkHttpError
 import com.rnett.krosstalk.result.KrosstalkResult
 import com.rnett.krosstalk.result.KrosstalkServerException
 import com.rnett.krosstalk.server.KrosstalkServer
-import com.rnett.krosstalk.withHeader
 import kotlin.contracts.InvocationKind
 import kotlin.contracts.contract
 
@@ -56,11 +56,7 @@ internal class ResponseContext<K>(
     val contentType: String,
 ) where K : Krosstalk, K : KrosstalkServer<*> {
 
-    val responseHeaders = mutableMapOf<String, List<String>>()
-
-    fun addResponseHeaders(other: Map<String, List<String>>) {
-        responseHeaders addHeadersFrom other
-    }
+    val responseHeaders = mutableHeadersOf()
 
     //TODO something in plaintext for non-krosstalk servers?  JSON serialize the exception maybe.  I can just use Kotlinx here too, rather than getting the serializer
     internal suspend inline fun respondServerException(
@@ -71,16 +67,11 @@ internal class ResponseContext<K>(
         respond(
             500,
             krosstalk.urlSerialization.contentType,
-            responseHeaders.let {
+            responseHeaders.addHeaders {
                 if (throwing)
-                    it.withHeader(KROSSTALK_THROW_EXCEPTION_HEADER_NAME, "true")
-                else
-                    it
-            }.let {
+                    this[KROSSTALK_THROW_EXCEPTION_HEADER_NAME] = "true"
                 if (uncaught)
-                    it.withHeader(KROSSTALK_UNCAUGHT_EXCEPTION_HEADER_NAME, "true")
-                else
-                    it
+                    this[KROSSTALK_UNCAUGHT_EXCEPTION_HEADER_NAME] = "true"
             },
             krosstalk.serializeServerException(exception.withIncludeStackTrace(method.includeStacktrace))
         )
@@ -90,11 +81,9 @@ internal class ResponseContext<K>(
         respond(
             error.statusCode,
             "text/plain; charset=utf-8",
-            responseHeaders.let {
+            responseHeaders.addHeaders {
                 if (throwing)
-                    it.withHeader(KROSSTALK_THROW_EXCEPTION_HEADER_NAME, "true")
-                else
-                    it
+                    this[KROSSTALK_THROW_EXCEPTION_HEADER_NAME] = "true"
             },
             (error.message ?: "").encodeToByteArray()
         )
@@ -103,7 +92,7 @@ internal class ResponseContext<K>(
     fun Any?.unwrapInnerHeaders(): Any? =
         if (method.innerWithHeaders) {
             this as WithHeaders<Any?>
-            addResponseHeaders(this.headers)
+            responseHeaders += this.headers
             this.value
         } else {
             this
@@ -196,7 +185,7 @@ public suspend fun <K> K.handle(
 
             if (method.outerWithHeaders) {
                 result as WithHeaders<Any?>
-                addResponseHeaders(result.headers)
+                responseHeaders += result.headers
                 result = result.value
             }
 

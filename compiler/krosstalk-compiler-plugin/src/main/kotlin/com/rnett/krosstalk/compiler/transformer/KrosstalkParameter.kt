@@ -192,7 +192,7 @@ class KrosstalkParameter(
             reportError("Type of @ServerURL parameter must be String or String?")
         }
 
-        if (isRequestHeaders && dataType != krosstalkFunction.methodTransformer.Headers) {
+        if (isRequestHeaders && !dataType.isClassifierOf(Krosstalk.Headers)) {
             reportError("Type of @RequestHeaders parameter must be Headers (com.rnett.krosstalk.Headers)")
         }
 

@@ -6,21 +6,6 @@ public const val KROSSTALK_THROW_EXCEPTION_HEADER_NAME: String = "Krosstalk-Thro
 @InternalKrosstalkApi
 public const val KROSSTALK_UNCAUGHT_EXCEPTION_HEADER_NAME: String = "Krosstalk-Uncaught-Exception"
 
-//TODO make own class so I can use proper merge w/ plus, etc.  Case-insensitivity, too
-public typealias Headers = Map<String, List<String>>
-public typealias MutableHeaders = MutableMap<String, List<String>>
-
-@OptIn(ExperimentalStdlibApi::class)
-@InternalKrosstalkApi
-public infix fun MutableHeaders.addHeadersFrom(other: Headers) {
-    other.forEach { (k, v) ->
-        this[k] = this[k].orEmpty() + v
-    }
-}
-
-@InternalKrosstalkApi
-public fun Headers.withHeader(key: String, value: String): Headers = this.plus(key to this.getOrElse(key) { emptyList() } + value)
-
 @Suppress("unused")
 @OptIn(InternalKrosstalkApi::class)
 public class CallFromClientSideException @PublishedApi internal constructor(methodName: String) :

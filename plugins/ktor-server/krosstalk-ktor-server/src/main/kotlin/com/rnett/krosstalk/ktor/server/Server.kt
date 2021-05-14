@@ -12,6 +12,7 @@ import com.rnett.krosstalk.server.plugin.ServerHandler
 import com.rnett.krosstalk.server.plugin.handle
 import com.rnett.krosstalk.server.plugin.scopesAsType
 import com.rnett.krosstalk.server.plugin.serverScopes
+import com.rnett.krosstalk.toHeaders
 import io.ktor.application.Application
 import io.ktor.application.application
 import io.ktor.application.call
@@ -131,7 +132,7 @@ public object KtorServer : ServerHandler<KtorServerScope<*>> {
 
                                 krosstalk.handle(call.attributes[KrosstalkMethodBaseUrlAttribute],
                                     method,
-                                    call.request.headers.toMap(),
+                                    call.request.headers.toMap().toHeaders(),
                                     data,
                                     body,
                                     scopes.toImmutable(),
@@ -142,11 +143,7 @@ public object KtorServer : ServerHandler<KtorServerScope<*>> {
                                         )
                                     }) { status: Int, contentType: String?, headers: Headers, bytes: ByteArray ->
 
-                                    headers.forEach { (k, v) ->
-                                        v.forEach {
-                                            call.response.headers.append(k, it, false)
-                                        }
-                                    }
+                                    headers.forEachPair { k, v -> call.response.headers.append(k, v, false) }
 
                                     call.respondBytes(
                                         bytes,

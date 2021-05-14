@@ -6,6 +6,7 @@ import com.rnett.krosstalk.Scope
 import com.rnett.krosstalk.ScopeInstance
 import com.rnett.krosstalk.ServerDefault
 import com.rnett.krosstalk.WithHeaders
+import com.rnett.krosstalk.headersOf
 import com.rnett.krosstalk.ktor.server.KtorServer
 import com.rnett.krosstalk.ktor.server.KtorServerScope
 import com.rnett.krosstalk.ktor.server.auth.KtorServerBasicAuth
@@ -162,7 +163,7 @@ actual suspend fun withPassedObjectReturn(s: String): SerializableObject = Seria
 actual suspend fun withDifferentPassing(arg: SerializableObject): ExpectObject = ExpectObject
 
 actual suspend fun withHeadersBasic(n: Int): WithHeaders<String> =
-    WithHeaders(n.toString(), mapOf("test" to listOf("value")))
+    WithHeaders(n.toString(), "test" to "value")
 
 actual suspend fun withHeadersOutsideResult(n: Int): WithHeaders<KrosstalkResult<String>> =
     WithHeaders(
@@ -172,18 +173,18 @@ actual suspend fun withHeadersOutsideResult(n: Int): WithHeaders<KrosstalkResult
 
             n.toString()
         }.catchAsHttpError(MyException::class, 422),
-        mapOf("test" to listOf("value"))
+        "test" to "value"
     )
 
 actual suspend fun withHeadersInsideResult(n: Int): KrosstalkResult<WithHeaders<String>> = runKrosstalkCatching {
     if (n < 0)
         throw MyException("Can't have n < 0")
 
-    WithHeaders(n.toString(), mapOf("test" to listOf("value")))
+    WithHeaders(n.toString(), "test" to "value")
 }.catchAsHttpError(MyException::class, 422)
 
 actual suspend fun withHeadersReturnObject(n: Int): WithHeaders<ExpectObject> {
-    return WithHeaders(ExpectObject, mapOf("value" to listOf(n.toString())))
+    return WithHeaders(ExpectObject, headersOf("value", n.toString()))
 }
 
 actual suspend fun withRequestHeaders(n: Int, h: Headers): Int {
@@ -216,14 +217,14 @@ actual suspend fun withHttpError(n: Int): KrosstalkResult.HttpError {
 }
 
 actual suspend fun withHttpErrorWithHeaders(n: Int): WithHeaders<KrosstalkResult.HttpError> {
-    return WithHeaders(KrosstalkResult.HttpError(416, "Test"), mapOf("test" to listOf("test3")))
+    return WithHeaders(KrosstalkResult.HttpError(416, "Test"), "test" to "test3")
 }
 
 actual suspend fun withSuccessOrServerExceptionWithHeaders(n: Int): KrosstalkResult.SuccessOrServerException<WithHeaders<Int>> {
     if (n < 0)
         return KrosstalkResult.ServerException(IllegalStateException("Negative n = $n"))
 
-    return KrosstalkResult.Success(WithHeaders(n * 2, mapOf("test" to listOf("test2"))))
+    return KrosstalkResult.Success(WithHeaders(n * 2, "test" to "test2"))
 }
 
 actual suspend fun withNonKrosstalkHttpError(n: Int): Int {

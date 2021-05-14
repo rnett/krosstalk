@@ -1,6 +1,7 @@
 package com.rnett.krosstalk.fullstack_test
 
 import com.rnett.krosstalk.ServerDefault
+import com.rnett.krosstalk.headersOf
 import com.rnett.krosstalk.ktor.client.auth.invoke
 import com.rnett.krosstalk.result.KrosstalkHttpError
 import com.rnett.krosstalk.result.KrosstalkUncaughtServerException
@@ -251,7 +252,7 @@ class Tests {
 
     @Test
     fun testRequestHeaders() = GlobalScope.promise {
-        assertEquals(4, withRequestHeaders(2, mapOf("value" to listOf("2"))))
+        assertEquals(4, withRequestHeaders(2, headersOf("value" to "2")))
     }
 
     @Test

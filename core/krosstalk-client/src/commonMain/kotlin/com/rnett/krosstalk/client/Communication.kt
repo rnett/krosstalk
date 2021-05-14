@@ -13,6 +13,7 @@ import com.rnett.krosstalk.WithHeaders
 import com.rnett.krosstalk.client.plugin.AppliedClientScope
 import com.rnett.krosstalk.client.plugin.ClientScope
 import com.rnett.krosstalk.isNone
+import com.rnett.krosstalk.orEmpty
 import com.rnett.krosstalk.result.KrosstalkResult
 import com.rnett.krosstalk.result.KrosstalkUncaughtServerException
 import com.rnett.krosstalk.result.isFailure
@@ -114,7 +115,7 @@ internal suspend inline fun <T, K, reified C : ClientScope<*>> K.call(
             serverUrl.trimEnd('/') + "/" + endpoint.trimStart('/'),
             method.httpMethod,
             method.contentType ?: serialization.contentType,
-            requestHeaders ?: emptyMap(),
+            requestHeaders.orEmpty(),
             if (bodyArguments.isEmpty()) null else serializedBody,
             scopes
         )
