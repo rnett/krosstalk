@@ -730,11 +730,11 @@ class KrosstalkFunction(val declaration: IrSimpleFunction, val methodTransformer
 
                         // includeStacktrace
                         addValueArgument(
-                            (this@KrosstalkFunction.annotations.ExplicitResult?.includeStacktrace == true).asConst()
+                            (this@KrosstalkFunction.annotations.ExceptionHandling?.includeStacktrace == true).asConst()
                         )
 
                         // rethrowServerException
-                        addValueArgument((this@KrosstalkFunction.annotations.ExplicitResult?.propagateServerExceptions == true).asConst())
+                        addValueArgument((this@KrosstalkFunction.annotations.ExceptionHandling?.propagateServerExceptions == true).asConst())
 
                         // optionalParameters
                         addValueArgument(

@@ -63,6 +63,7 @@ data class KrosstalkAnnotations(val annotations: Set<KrosstalkAnnotation>) :
 
     val EmptyBody by annotation<KrosstalkAnnotation.EmptyBody>()
     val ExplicitResult by annotation<KrosstalkAnnotation.ExplicitResult>()
+    val ExceptionHandling by annotation<KrosstalkAnnotation.ExceptionHandling>()
 
     val Optional by annotation<KrosstalkAnnotation.Optional>()
 
@@ -188,7 +189,9 @@ sealed class KrosstalkAnnotation(val call: IrConstructorCall, name: String) {
 
     class EmptyBody(call: IrConstructorCall) : KrosstalkAnnotation(call, "EmptyBody")
 
-    class ExplicitResult(call: IrConstructorCall) : KrosstalkAnnotation(call, "ExplicitResult") {
+    class ExplicitResult(call: IrConstructorCall) : KrosstalkAnnotation(call, "ExplicitResult")
+
+    class ExceptionHandling(call: IrConstructorCall) : KrosstalkAnnotation(call, "ExceptionHandling") {
         val includeStacktrace by field(false)
         val propagateServerExceptions by field(true)
     }

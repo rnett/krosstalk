@@ -6,6 +6,7 @@ import com.rnett.krosstalk.result.isHttpError
 import com.rnett.krosstalk.result.isServerException
 import com.rnett.krosstalk.result.valueOrNull
 import kotlin.test.assertEquals
+import kotlin.test.assertNotNull
 import kotlin.test.assertTrue
 import kotlin.test.fail
 
@@ -19,6 +20,7 @@ object CommonTests {
 
         assertTrue(result.isServerException())
         assertEquals("java.lang.IllegalStateException: Can't have n < 0", result.asStringNoStacktrace)
+        assertNotNull(result.asStringWithStacktrace)
     }
 
     suspend fun krosstalkResultCatchingMatching() {
@@ -44,7 +46,7 @@ object CommonTests {
         assertEquals("Negative n = -2", errorResult.message)
     }
 
-    suspend fun krosstalkResultSuccessOrServerException() {
+    suspend fun krosstalkResultSuccessOrServerException(shouldHaveStackTrace: Boolean) {
         val result = withSuccessOrServerException(2)
 
         assertEquals(4, result.valueOrNull)
@@ -53,6 +55,11 @@ object CommonTests {
         assertTrue(errorResult.isServerException())
         assertEquals("java.lang.IllegalStateException", errorResult.className)
         assertEquals("Negative n = -2", errorResult.message)
+        assertEquals(
+            shouldHaveStackTrace,
+            errorResult.asStringWithStacktrace != null,
+            "Stack trace doesn't match presence setting: $shouldHaveStackTrace"
+        )
     }
 
     suspend fun krosstalkResultHttpError() {

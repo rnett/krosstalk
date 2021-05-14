@@ -151,9 +151,11 @@ for an overview (click on an annotation to see the full docs).
 There are two separate modes for error handling: using exceptions, like normal, and using `@ExplicitResult` and
 returning a subclass of `KrosstalkResult`. In both, throwing `KrosstalkHttpError` or `KrosstalkServerException`
 (using `throwKrosstalkHttpError` and `throwKrosstalkServerException`) will result in an error response being sent, and
-the exception being re-thrown on the client. However, `@ExplicitResult` will often include those in its return value. In
-this cause, the error response will still be sent, but the exception will be part of the client's return value like on
-the server instead of being re-thrown.
+the exception being re-thrown on the client. However, methods using `@ExplicitResult` will usually include those in its
+return value instead of throwing exceptions. In this cause, the error response will still be sent, but the exception
+will be part of the client's return value like on the server instead of being re-thrown. In all cases,
+`ServerException` responses are sent as 500s (with the `ServerException` being serialized to JSON), and `HttpError`
+responses are sent with their status code and the message as the body.
 
 If you throw an exception that is not `KrosstalkHttpError` or `KrosstalkServerException` **outside** of a
 `runKrosstalkCatching` block or some other block that would wrap it in a `KrosstalkServerException`, **the behavior of
@@ -161,7 +163,19 @@ the method when called on the client and server will differ**. If called on the 
 thrown, while on the client, a `KrosstalkUncaughtServerException` wrapping the original exception will be thrown. This
 is unavoidable, since exceptions can't be serialized.
 
-As you can see, the entire method should almost always be wrapped in `runKrosstalkCatching`. Methods
+If an exception is thrown during a call from a client, the server will handle it according to the settings in
+`@ExceptionHandling`. If `propagateServerExceptions` is true, the underlying exception of any
+`ServerException` (from throwing a `KrosstalkServerException` or returning one with `@ExplicitResult`) will be
+propagated to your server handler's exception handler, which usually will at least log it.  `HttpError` results (via
+exception or return) won't be logged anywhere specific, but almost all servers provide methods to log error responses,
+and they will show up there. Any non-`KrosstalkServerException` or `KrosstalkHttpError` exceptions are re-thrown on the
+server.  `includeStacktrace` controls whether the stack trace will be included in the responses. It is `false` by
+default to prevent leaking details, and a `false` value here will override any `true` values in
+`runKrosstalkCatching` or `throwKrosstalkServerException`. Note that it is impossible for a `true` value here to
+override a `false` value elsewhere, so all other uses (i.e. `runKrosstalkCatching`) default to `true`. Also note that
+this only applies on the client: the stack trace will always be present on the server.
+
+When using `@ExplicitResult`, the entire method should almost always be wrapped in `runKrosstalkCatching`. Methods
 like `KrosstalkResult<T>.catchAsHttpError` or `when` blocks can be used to convert `ServerException`s to
 `HttpError`s.  `ServerException`s should generally be treated as an exceptional state, while `HttpError` is a less fatal
 error. Helper methods like `KrosstalkResult<T>.handleHttpError` can be used to selectively handle error codes, so a

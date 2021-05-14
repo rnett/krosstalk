@@ -25,7 +25,7 @@ class JvmTests {
 
     @Test
     fun testServerResultSuccessOrServerException() = runBlocking {
-        CommonTests.krosstalkResultSuccessOrServerException()
+        CommonTests.krosstalkResultSuccessOrServerException(true)
     }
 
     @Test

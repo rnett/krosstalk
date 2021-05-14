@@ -268,7 +268,7 @@ class Tests {
 
     @Test
     fun testSuccessOrServerException() = GlobalScope.promise {
-        CommonTests.krosstalkResultSuccessOrServerException()
+        CommonTests.krosstalkResultSuccessOrServerException(false)
         assertEquals(500, lastStatusCode)
     }
 

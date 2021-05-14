@@ -7,6 +7,7 @@ import com.rnett.krosstalk.ScopeInstance
 import com.rnett.krosstalk.ServerDefault
 import com.rnett.krosstalk.WithHeaders
 import com.rnett.krosstalk.annotations.EmptyBody
+import com.rnett.krosstalk.annotations.ExceptionHandling
 import com.rnett.krosstalk.annotations.ExplicitResult
 import com.rnett.krosstalk.annotations.KrosstalkEndpoint
 import com.rnett.krosstalk.annotations.KrosstalkMethod
@@ -80,7 +81,8 @@ expect suspend fun optionalEndpointQueryParamsGet(n: Int, @Optional s: String?):
 expect suspend fun partialMinimize(n: Int, @Optional s: String?): String?
 
 @KrosstalkMethod(MyKrosstalk::class)
-@ExplicitResult(propagateServerExceptions = true)
+@ExplicitResult
+@ExceptionHandling(propagateServerExceptions = true, includeStacktrace = true)
 expect suspend fun withResult(n: Int): KrosstalkResult<Int>
 
 class MyException(message: String) : RuntimeException(message)
