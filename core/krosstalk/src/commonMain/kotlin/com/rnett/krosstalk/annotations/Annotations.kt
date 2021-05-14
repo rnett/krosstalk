@@ -193,6 +193,8 @@ public annotation class Optional
 /**
  * Marks a `String` or `String?` parameter as the server url.  This will override the server url set in the krosstalk client if it is non null.
  *
+ * This will override any server url passed to `krosstalkCall`.
+ *
  * Note that this is the base URL of the server, not including any set endpoint or the [Krosstalk.prefix].
  *
  * Also note that the host seen by the server may not match the url the client sent to the request to, depending on your server configuration.
@@ -209,6 +211,8 @@ public annotation class ServerURL
  * from the HTTP request.
  *
  * These headers will be set after scopes are applied, although most HTTP clients add headers rather than replacing them.
+ *
+ * These headers will be added to any passed to `krosstalkCall`.
  */
 @Target(AnnotationTarget.VALUE_PARAMETER)
 @Retention(AnnotationRetention.BINARY)

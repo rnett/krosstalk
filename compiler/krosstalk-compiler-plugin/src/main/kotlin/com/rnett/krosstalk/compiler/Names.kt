@@ -55,7 +55,7 @@ object Krosstalk : RootPackage(krosstalkPackage) {
         }
 
         val call by function()
-        val clientPlaceholder by function("krosstalkCall")
+        val clientPlaceholderFqName = function("krosstalkCall").fqName
     }
 
     object Server : PackageRef() {

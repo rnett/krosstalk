@@ -8,10 +8,14 @@ import com.rnett.krosstalk.Krosstalk
 import com.rnett.krosstalk.KrosstalkException
 import com.rnett.krosstalk.KrosstalkPluginApi
 import com.rnett.krosstalk.MethodDefinition
+import com.rnett.krosstalk.Scope
+import com.rnett.krosstalk.ScopeInstance
 import com.rnett.krosstalk.ServerDefault
 import com.rnett.krosstalk.WithHeaders
 import com.rnett.krosstalk.client.plugin.AppliedClientScope
 import com.rnett.krosstalk.client.plugin.ClientScope
+import com.rnett.krosstalk.client.plugin.toAppliedScope
+import com.rnett.krosstalk.headersOf
 import com.rnett.krosstalk.isNone
 import com.rnett.krosstalk.orEmpty
 import com.rnett.krosstalk.result.KrosstalkResult
@@ -20,12 +24,60 @@ import com.rnett.krosstalk.result.isFailure
 import com.rnett.krosstalk.result.isServerException
 import com.rnett.krosstalk.result.valueOrThrow
 import kotlin.reflect.KClass
+import kotlin.reflect.KType
+import kotlin.reflect.typeOf
 
 /**
  * Placeholder for a Krosstalk client side method.  Will be replaced by the compiler plugin.
  */
 @OptIn(InternalKrosstalkApi::class)
 public suspend fun krosstalkCall(): Nothing =
+    throw KrosstalkException.CompilerError("Should have been replaced with a krosstalk call during compilation")
+
+/**
+ * Placeholder for a Krosstalk client side method.  Will be replaced by the compiler plugin.
+ */
+@OptIn(InternalKrosstalkApi::class)
+public suspend fun krosstalkCall(serverUrl: String?): Nothing =
+    throw KrosstalkException.CompilerError("Should have been replaced with a krosstalk call during compilation")
+
+/**
+ * Placeholder for a Krosstalk client side method.  Will be replaced by the compiler plugin.
+ */
+@OptIn(InternalKrosstalkApi::class)
+public suspend fun krosstalkCall(requestHeaders: Headers): Nothing =
+    throw KrosstalkException.CompilerError("Should have been replaced with a krosstalk call during compilation")
+
+/**
+ * Placeholder for a Krosstalk client side method.  Will be replaced by the compiler plugin.
+ */
+@OptIn(InternalKrosstalkApi::class)
+public suspend fun krosstalkCall(vararg scopes: ScopeInstance<*>): Nothing =
+    throw KrosstalkException.CompilerError("Should have been replaced with a krosstalk call during compilation")
+
+/**
+ * Placeholder for a Krosstalk client side method.  Will be replaced by the compiler plugin.
+ */
+@OptIn(InternalKrosstalkApi::class)
+public suspend fun krosstalkCall(scopes: Iterable<ScopeInstance<*>>): Nothing =
+    throw KrosstalkException.CompilerError("Should have been replaced with a krosstalk call during compilation")
+
+/**
+ * Placeholder for a Krosstalk client side method.  Will be replaced by the compiler plugin.
+ */
+@OptIn(InternalKrosstalkApi::class)
+public suspend fun krosstalkCall(
+    serverUrl: String? = null,
+    headers: Headers = headersOf(),
+    scopes: Iterable<ScopeInstance<*>> = emptyList()
+): Nothing =
+    throw KrosstalkException.CompilerError("Should have been replaced with a krosstalk call during compilation")
+
+/**
+ * Placeholder for a Krosstalk client side method.  Will be replaced by the compiler plugin.
+ */
+@OptIn(InternalKrosstalkApi::class)
+public suspend fun krosstalkCall(serverUrl: String? = null, headers: Headers = headersOf(), vararg scopes: ScopeInstance<*>): Nothing =
     throw KrosstalkException.CompilerError("Should have been replaced with a krosstalk call during compilation")
 
 @InternalKrosstalkApi
@@ -50,6 +102,12 @@ public class WrongHeadersTypeException @InternalKrosstalkApi constructor(
         "Invalid type for request headers param: Map<String, List<String>> is required, got $type."
     )
 
+@OptIn(InternalKrosstalkApi::class)
+public class WrongScopeTypeException @InternalKrosstalkApi constructor(
+    public val scope: Scope,
+    public val required: KType
+) : KrosstalkException("krosstalkCall scope $scope is not of client type $required")
+
 @KrosstalkPluginApi
 @InternalKrosstalkApi
 @PublishedApi
@@ -63,24 +121,38 @@ internal fun <T> MethodDefinition<T>.getReturnValue(data: ByteArray): T = if (re
 internal fun Any?.withHeadersIf(withHeaders: Boolean, headers: Headers): Any? =
     if (withHeaders) WithHeaders(this, headers) else this
 
-//TODO finish result changes (will runKrosstalkCatching pick them up?) unify server/client handling as much as possible
+@OptIn(KrosstalkPluginApi::class, ExperimentalStdlibApi::class, InternalKrosstalkApi::class)
+@PublishedApi
+internal inline fun <reified C : ClientScope<*>> KrosstalkClient<C>.toAppliedScopeWithType(scope: ScopeInstance<*>): AppliedClientScope<C, *> {
+    if (scope.scope !is C)
+        throw WrongScopeTypeException(scope.scope, typeOf<C>())
+    return (scope as ScopeInstance<C>).toAppliedScope()!!
+}
+
 @OptIn(InternalKrosstalkApi::class, KrosstalkPluginApi::class, ExperimentalStdlibApi::class)
 @Suppress("unused")
 @PublishedApi
 internal suspend inline fun <T, K, reified C : ClientScope<*>> K.call(
     methodName: String,
     rawArguments: Map<String, *>,
-    scopes: List<AppliedClientScope<C, *>>,
+    methodScopes: List<AppliedClientScope<C, *>>,
+    callServerUrl: String?,
+    callRequestHeaders: Headers?,
+    callScopes: Iterable<ScopeInstance<*>>?
 ): T where K : KrosstalkClient<C>, K : Krosstalk {
 
     val method = requiredMethod(methodName)
 
-    val requestHeaders = if (method.requestHeadersParam != null) {
-        rawArguments.getValue(method.requestHeadersParam!!)!!
-            .let { it as? Headers ?: throw WrongHeadersTypeException(methodName, it::class) }
-    } else null
+    val requestHeaders = (callRequestHeaders ?: headersOf()) +
+            if (method.requestHeadersParam != null) {
+                rawArguments.getValue(method.requestHeadersParam!!)!!
+                    .let { it as? Headers ?: throw WrongHeadersTypeException(methodName, it::class) }
+            } else
+                headersOf()
 
-    val serverUrl = method.serverUrlParam?.let { rawArguments.getValue(it) as String? } ?: this.serverUrl
+    val serverUrl = method.serverUrlParam?.let { rawArguments.getValue(it) as String? } ?: callServerUrl ?: this.serverUrl
+
+    val scopes = methodScopes + callScopes?.map { toAppliedScopeWithType(it) }.orEmpty()
 
     val arguments = rawArguments.filterValues {
         !(it is ServerDefault<*> && it.isNone())

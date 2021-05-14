@@ -252,6 +252,31 @@ class KrosstalkFunction(val declaration: IrSimpleFunction, val methodTransformer
         returnDataType.expectableObject()
     }
 
+    val placeholderCall by lazy {
+        when (val body = declaration.body) {
+            is IrExpressionBody -> {
+                body.expression.let {
+                    if (it is IrCall && it.isClientPlaceholder())
+                        KrosstalkClientPlaceholder(it, context)
+                    else
+                        null
+                }
+            }
+            is IrBlockBody -> {
+                if (body.statements.size == 1) {
+                    body.statements.single().let {
+                        if (it is IrCall && it.isClientPlaceholder())
+                            KrosstalkClientPlaceholder(it, context)
+                        else
+                            null
+                    }
+                } else
+                    null
+            }
+            else -> null
+        }
+    }
+
     fun check() {
         if (checked)
             return
@@ -459,27 +484,14 @@ class KrosstalkFunction(val declaration: IrSimpleFunction, val methodTransformer
             )
         }
 
-        val isPlaceholderBody = when (val body = declaration.body) {
-            is IrExpressionBody -> {
-                body.expression.let { it is IrCall && it.symbol.owner.kotlinFqName == Krosstalk.Client.clientPlaceholder.fqName }
-            }
-            is IrBlockBody -> {
-                body.statements.size == 1 && body.statements.single()
-                    .let { it is IrCall && it.symbol.owner.kotlinFqName == Krosstalk.Client.clientPlaceholder.fqName }
-            }
-            else -> {
-                false
-            }
-        }
-
-        if (krosstalkClass.isClient && !isPlaceholderBody) {
+        if (krosstalkClass.isClient && placeholderCall == null) {
             messageCollector.reportError(
                 "Krosstalk methods for client should have placeholder krosstalkCall() body.",
                 declaration
             )
         }
 
-        if (isPlaceholderBody && !krosstalkClass.isClient) {
+        if (placeholderCall != null && !krosstalkClass.isClient) {
             messageCollector.reportError(
                 "Krosstalk method has placeholder body, but is not on a client Krosstalk.  The method should be implemented.",
                 declaration
@@ -852,6 +864,10 @@ class KrosstalkFunction(val declaration: IrSimpleFunction, val methodTransformer
                         scopeList
                     )
                 )
+
+                putValueArgument(3, placeholderCall!!.serverUrl)
+                putValueArgument(4, placeholderCall!!.requestHeaders)
+                putValueArgument(5, placeholderCall!!.scopes(this@withBuilder))
             })
         }
     }
