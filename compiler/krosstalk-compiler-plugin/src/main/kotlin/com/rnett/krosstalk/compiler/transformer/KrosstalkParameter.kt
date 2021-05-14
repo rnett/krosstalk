@@ -70,6 +70,8 @@ class KrosstalkParameter(
     val isRequestHeaders by lazy { annotations.RequestHeaders != null }
     val isServerURL by lazy { annotations.ServerURL != null }
 
+    val isIgnored by lazy { annotations.Ignore != null }
+
     /**
      * Is this a parameter that will be specially handled in call/handle methods?
      *
@@ -77,7 +79,7 @@ class KrosstalkParameter(
      * and added to the argument map client side, but will not be registered in MethodTypes and thus
      * should not be passed via serialization.
      */
-    val isSpecialParameter by lazy { isRequestHeaders || isServerURL }
+    val isSpecialParameter by lazy { isRequestHeaders || isServerURL || isIgnored }
 
     val realName get() = declaration.name.asString()
     val krosstalkName: String by lazy {
@@ -105,7 +107,13 @@ class KrosstalkParameter(
     }
 
     private fun reportError(error: String) {
-        krosstalkFunction.messageCollector.reportError("Error on parameter \"$realName\": $error", declaration)
+        if (isExtensionReceiver) {
+            krosstalkFunction.messageCollector.reportError("Error on extension receiver: $error", declaration)
+        } else if (isDispatchReceiver) {
+            krosstalkFunction.messageCollector.reportError("Error on dispatch receiver: $error", declaration)
+        } else {
+            krosstalkFunction.messageCollector.reportError("Error on parameter \"$realName\": $error", declaration)
+        }
     }
 
     private var checked = false
@@ -194,6 +202,10 @@ class KrosstalkParameter(
 
         if (isRequestHeaders && !dataType.isClassifierOf(Krosstalk.Headers)) {
             reportError("Type of @RequestHeaders parameter must be Headers (com.rnett.krosstalk.Headers)")
+        }
+
+        if (isIgnored && !dataType.isNullable() && defaultValue == null) {
+            reportError("Parameter with @Ignore must be nullable or have a default value")
         }
 
         checked = true

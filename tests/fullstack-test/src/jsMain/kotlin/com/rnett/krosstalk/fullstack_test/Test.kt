@@ -8,13 +8,16 @@ import com.rnett.krosstalk.ServerDefault
 import com.rnett.krosstalk.WithHeaders
 import com.rnett.krosstalk.client.KrosstalkClient
 import com.rnett.krosstalk.client.krosstalkCall
+import com.rnett.krosstalk.headersOf
 import com.rnett.krosstalk.ktor.client.KtorClient
 import com.rnett.krosstalk.ktor.client.KtorClientScope
 import com.rnett.krosstalk.ktor.client.auth.KtorClientBasicAuth
 import com.rnett.krosstalk.result.KrosstalkResult
 import com.rnett.krosstalk.serialization.KotlinxBinarySerializationHandler
+import com.rnett.krosstalk.toHeaders
 import io.ktor.client.HttpClient
 import io.ktor.client.features.HttpResponseValidator
+import io.ktor.client.features.defaultRequest
 import io.ktor.client.features.logging.LogLevel
 import io.ktor.client.features.logging.Logging
 import io.ktor.http.ContentType
@@ -40,6 +43,9 @@ internal var lastContentType: ContentType? = null
 internal var lastStatusCode: Int? = null
     private set
 
+internal var lastHeaders: Headers? = null
+    private set
+
 actual object MyKrosstalk : Krosstalk(), KrosstalkClient<KtorClientScope<*>> {
     actual override val serialization = KotlinxBinarySerializationHandler(Cbor { })
     override val serverUrl: String = "http://localhost:8080"
@@ -53,6 +59,9 @@ actual object MyKrosstalk : Krosstalk(), KrosstalkClient<KtorClientScope<*>> {
                 validateResponse {
                     lastStatusCode = it.status.value
                 }
+            }
+            defaultRequest {
+                lastHeaders = this.headers.entries().associate { it.key to it.value }.toHeaders()
             }
         },
         baseRequest = {
@@ -165,3 +174,10 @@ actual suspend fun withNonKrosstalkUncaughtException(n: Int): Int = krosstalkCal
 actual suspend fun withUncaughtExceptionOutsideKrosstalkResult(n: Int): KrosstalkResult<Int> = krosstalkCall()
 
 actual suspend fun withHttpErrorOutsideKrosstalkResult(n: Int): KrosstalkResult<Int> = krosstalkCall()
+
+actual suspend fun withRequestHeadersInCall(): String = krosstalkCall(headersOf("test" to "2"))
+
+actual suspend fun withRequestHeadersInCallAndParam(
+    headers: Headers,
+    keys: Pair<String, String>
+): Pair<String?, String?> = krosstalkCall(headersOf(keys.first to "call"))

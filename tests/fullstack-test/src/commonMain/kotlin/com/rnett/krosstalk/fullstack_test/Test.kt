@@ -215,4 +215,9 @@ expect suspend fun withUncaughtExceptionOutsideKrosstalkResult(n: Int): Krosstal
 @KrosstalkMethod(MyKrosstalk::class)
 expect suspend fun withHttpErrorOutsideKrosstalkResult(n: Int): KrosstalkResult<Int>
 
+@KrosstalkMethod(MyKrosstalk::class)
+expect suspend fun withRequestHeadersInCall(): String
+
+@KrosstalkMethod(MyKrosstalk::class)
+expect suspend fun withRequestHeadersInCallAndParam(@RequestHeaders headers: Headers, keys: Pair<String, String>): Pair<String?, String?>
 

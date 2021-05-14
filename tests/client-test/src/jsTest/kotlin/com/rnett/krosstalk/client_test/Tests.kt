@@ -30,4 +30,15 @@ class Tests {
     fun testUnitServerUrl() = GlobalScope.promise {
         assertEquals(Unit, getTestUnit("http://localhost:8081/inner/server/path"))
     }
+
+    @Test
+    fun testUnitServerUrlInCall() = GlobalScope.promise {
+        assertEquals(Unit, with(WithServerUrl("http://localhost:8081/inner/server/path")) { getTestUnitCallServerUrl() })
+    }
+
+    @Test
+    fun testAuthInCall() = GlobalScope.promise {
+        assertEquals("user", getUserWithCallAuth("user", "pass").valueOrNull)
+        assertEquals(401, getUserWithCallAuth("user", "password2").httpErrorOrNull?.statusCode)
+    }
 }

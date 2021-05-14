@@ -61,6 +61,7 @@ import org.jetbrains.kotlin.ir.types.typeWith
 import org.jetbrains.kotlin.ir.types.typeWithArguments
 import org.jetbrains.kotlin.ir.util.constructedClass
 import org.jetbrains.kotlin.ir.util.constructors
+import org.jetbrains.kotlin.ir.util.deepCopyWithSymbols
 import org.jetbrains.kotlin.ir.util.defaultType
 import org.jetbrains.kotlin.ir.util.hasAnnotation
 import org.jetbrains.kotlin.ir.util.isAnonymousObject
@@ -361,7 +362,7 @@ class KrosstalkFunction(val declaration: IrSimpleFunction, val methodTransformer
         }
 
         val paramNames =
-            nonScopeValueParameters.filterNot { it.isSpecialParameter }.map { it.krosstalkName }.toSet()
+            nonScopeValueParameters.filter { !it.isSpecialParameter || it.isIgnored }.map { it.krosstalkName }.toSet()
         if (setEndpoint) {
             val neededParams = endpoint.allReferencedParameters()
             if (declaration.extensionReceiverParameter == null && extensionReceiver in neededParams) {
@@ -420,7 +421,7 @@ class KrosstalkFunction(val declaration: IrSimpleFunction, val methodTransformer
         if (requireEmptyBody) {
             val topLevelParams = endpoint.topLevelParameters()
             buildSet {
-                addAll(paramNames)
+                nonScopeValueParameters.filterNot { it.isSpecialParameter }.forEach { add(it.krosstalkName) }
 
                 if (declaration.extensionReceiverParameter != null && !declaration.extensionReceiverParameter!!.param.isSpecialParameter)
                     add(extensionReceiver)
@@ -551,20 +552,27 @@ class KrosstalkFunction(val declaration: IrSimpleFunction, val methodTransformer
 
                 body = irJsExprBody(irCall(declaration.symbol).apply {
                     nonScopeValueParameters.forEach { param ->
-                        putValueArgument(
-                            param.index,
-                            with(methodTransformer) {
-                                getValueOrError(
-                                    declaration.name.asString(),
-                                    irGet(args),
-                                    param.rawType,
-                                    param.krosstalkName,
-                                    param.run { defaultBody() },
-                                    "No argument for ${param.krosstalkName}, but it was required",
-                                    "Argument for ${param.krosstalkName} was type \$type, but the parameter is of type \$required"
-                                )
-                            }
-                        )
+                        if (param.isIgnored) {
+                            if (param.defaultValue == null)
+                                putValueArgument(param.index, irNull(param.rawType))
+                            else
+                                putValueArgument(param.index, param.defaultValue!!.expression.deepCopyWithSymbols(this@buildLambda))
+                        } else {
+                            putValueArgument(
+                                param.index,
+                                with(methodTransformer) {
+                                    getValueOrError(
+                                        declaration.name.asString(),
+                                        irGet(args),
+                                        param.rawType,
+                                        param.krosstalkName,
+                                        param.run { defaultBody() },
+                                        "No argument for ${param.krosstalkName}, but it was required",
+                                        "Argument for ${param.krosstalkName} was type \$type, but the parameter is of type \$required"
+                                    )
+                                }
+                            )
+                        }
                     }
 
                     requiredScopes.forEach { (param, cls) ->
@@ -594,15 +602,19 @@ class KrosstalkFunction(val declaration: IrSimpleFunction, val methodTransformer
 
                     with(methodTransformer) {
                         declaration.extensionReceiverParameter?.param?.let { param ->
-                            extensionReceiver = getValueOrError(
-                                declaration.name.asString(),
-                                irGet(args),
-                                param.rawType,
-                                param.krosstalkName,
-                                param.run { defaultBody() },
-                                "No extension receiver argument, but it was required",
-                                "Extension receiver argument was type \$type, but parameter is of type \$required"
-                            )
+                            extensionReceiver = if (param.isIgnored) {
+                                irNull(param.rawType)
+                            } else {
+                                getValueOrError(
+                                    declaration.name.asString(),
+                                    irGet(args),
+                                    param.rawType,
+                                    param.krosstalkName,
+                                    param.run { defaultBody() },
+                                    "No extension receiver argument, but it was required",
+                                    "Extension receiver argument was type \$type, but parameter is of type \$required"
+                                )
+                            }
                         }
 
                         declaration.dispatchReceiverParameter?.let {
@@ -689,7 +701,7 @@ class KrosstalkFunction(val declaration: IrSimpleFunction, val methodTransformer
                                         }.toMutableMap()
 
                                 declaration.extensionReceiverParameter?.param?.let {
-                                    if (it !in objectParameters) {
+                                    if (it !in objectParameters && !it.isIgnored) {
                                         parameterMap[it.krosstalkName.asConst()] =
                                             stdlib.reflect.typeOf(it.dataType)
                                     }
@@ -821,11 +833,12 @@ class KrosstalkFunction(val declaration: IrSimpleFunction, val methodTransformer
                 putTypeArgument(2, clientScopeType)
 
                 val argumentsMap =
-                    nonScopeValueParameters.associate { it.krosstalkName.asConst() to irGet(it.declaration) }
+                    nonScopeValueParameters.filterNot { it.isIgnored }.associate { it.krosstalkName.asConst() to irGet(it.declaration) }
                         .toMutableMap<IrExpression, IrExpression>()
 
-                declaration.extensionReceiverParameter?.let {
-                    argumentsMap[com.rnett.krosstalk.extensionReceiver.asConst()] = irGet(it)
+                declaration.extensionReceiverParameter?.param?.let {
+                    if (!it.isIgnored)
+                        argumentsMap[com.rnett.krosstalk.extensionReceiver.asConst()] = irGet(it.declaration)
                 }
                 declaration.dispatchReceiverParameter?.let {
                     argumentsMap[instanceReceiver.asConst()] = irGet(it)

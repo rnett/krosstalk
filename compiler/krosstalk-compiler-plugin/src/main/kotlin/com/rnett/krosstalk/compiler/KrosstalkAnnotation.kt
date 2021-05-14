@@ -74,6 +74,7 @@ data class KrosstalkAnnotations(val annotations: Set<KrosstalkAnnotation>) :
 
     val ServerURL by annotation<KrosstalkAnnotation.ServerURL>()
     val RequestHeaders by annotation<KrosstalkAnnotation.RequestHeaders>()
+    val Ignore by annotation<KrosstalkAnnotation.Ignore>()
 }
 
 data class WrapperDelegate<T>(val value: T) {
@@ -207,4 +208,6 @@ sealed class KrosstalkAnnotation(val call: IrConstructorCall, name: String) {
     class ServerURL(call: IrConstructorCall) : KrosstalkAnnotation(call, "ServerURL")
 
     class RequestHeaders(call: IrConstructorCall) : KrosstalkAnnotation(call, "RequestHeaders")
+
+    class Ignore(call: IrConstructorCall) : KrosstalkAnnotation(call, "Ignore")
 }

@@ -265,3 +265,14 @@ actual suspend fun withHttpErrorOutsideKrosstalkResult(n: Int): KrosstalkResult<
         n * 2
     }
 }
+
+actual suspend fun withRequestHeadersInCall(): String {
+    return ""
+}
+
+actual suspend fun withRequestHeadersInCallAndParam(
+    headers: Headers,
+    keys: Pair<String, String>
+): Pair<String?, String?> {
+    return headers[keys.first]?.firstOrNull() to headers[keys.second]?.firstOrNull()
+}

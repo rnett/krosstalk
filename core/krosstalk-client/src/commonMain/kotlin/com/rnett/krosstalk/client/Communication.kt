@@ -12,12 +12,12 @@ import com.rnett.krosstalk.Scope
 import com.rnett.krosstalk.ScopeInstance
 import com.rnett.krosstalk.ServerDefault
 import com.rnett.krosstalk.WithHeaders
+import com.rnett.krosstalk.annotations.ServerURL
 import com.rnett.krosstalk.client.plugin.AppliedClientScope
 import com.rnett.krosstalk.client.plugin.ClientScope
 import com.rnett.krosstalk.client.plugin.toAppliedScope
 import com.rnett.krosstalk.headersOf
 import com.rnett.krosstalk.isNone
-import com.rnett.krosstalk.orEmpty
 import com.rnett.krosstalk.result.KrosstalkResult
 import com.rnett.krosstalk.result.KrosstalkUncaughtServerException
 import com.rnett.krosstalk.result.isFailure
@@ -36,6 +36,8 @@ public suspend fun krosstalkCall(): Nothing =
 
 /**
  * Placeholder for a Krosstalk client side method.  Will be replaced by the compiler plugin.
+ *
+ * [serverUrl] will override the [KrosstalkClient.serverUrl] if non-null, and be overridden by [ServerURL] parameters in turn.
  */
 @OptIn(InternalKrosstalkApi::class)
 public suspend fun krosstalkCall(serverUrl: String?): Nothing =
@@ -43,6 +45,8 @@ public suspend fun krosstalkCall(serverUrl: String?): Nothing =
 
 /**
  * Placeholder for a Krosstalk client side method.  Will be replaced by the compiler plugin.
+ *
+ * [requestHeaders] will be added to the request (along with request headers added anywhere else).
  */
 @OptIn(InternalKrosstalkApi::class)
 public suspend fun krosstalkCall(requestHeaders: Headers): Nothing =
@@ -50,6 +54,9 @@ public suspend fun krosstalkCall(requestHeaders: Headers): Nothing =
 
 /**
  * Placeholder for a Krosstalk client side method.  Will be replaced by the compiler plugin.
+ *
+ * [scopes] are additional scopes to apply to the call.
+ * Passing an instance of a scope already specified by a parameter **will cause a [DuplicateScopeException] when the method is called.**
  */
 @OptIn(InternalKrosstalkApi::class)
 public suspend fun krosstalkCall(vararg scopes: ScopeInstance<*>): Nothing =
@@ -57,6 +64,9 @@ public suspend fun krosstalkCall(vararg scopes: ScopeInstance<*>): Nothing =
 
 /**
  * Placeholder for a Krosstalk client side method.  Will be replaced by the compiler plugin.
+ *
+ * [scopes] are additional scopes to apply to the call.
+ * Passing an instance of a scope already specified by a parameter **will cause a [DuplicateScopeException] when the method is called.**
  */
 @OptIn(InternalKrosstalkApi::class)
 public suspend fun krosstalkCall(scopes: Iterable<ScopeInstance<*>>): Nothing =
@@ -64,20 +74,34 @@ public suspend fun krosstalkCall(scopes: Iterable<ScopeInstance<*>>): Nothing =
 
 /**
  * Placeholder for a Krosstalk client side method.  Will be replaced by the compiler plugin.
+ *
+ * [serverUrl] will override the [KrosstalkClient.serverUrl] if non-null, and be overridden by [ServerURL] parameters in turn.
+ *
+ * [requestHeaders] will be added to the request (along with request headers added anywhere else).
+ *
+ * [scopes] are additional scopes to apply to the call.
+ * Passing an instance of a scope already specified by a parameter **will cause a [DuplicateScopeException] when the method is called.**
  */
 @OptIn(InternalKrosstalkApi::class)
 public suspend fun krosstalkCall(
     serverUrl: String? = null,
-    headers: Headers = headersOf(),
+    requestHeaders: Headers = headersOf(),
     scopes: Iterable<ScopeInstance<*>> = emptyList()
 ): Nothing =
     throw KrosstalkException.CompilerError("Should have been replaced with a krosstalk call during compilation")
 
 /**
  * Placeholder for a Krosstalk client side method.  Will be replaced by the compiler plugin.
+ *
+ * [serverUrl] will override the [KrosstalkClient.serverUrl] if non-null, and be overridden by [ServerURL] parameters in turn.
+ *
+ * [requestHeaders] will be added to the request (along with request headers added anywhere else).
+ *
+ * [scopes] are additional scopes to apply to the call.
+ * Passing an instance of a scope already specified by a parameter **will cause a [DuplicateScopeException] when the method is called.**
  */
 @OptIn(InternalKrosstalkApi::class)
-public suspend fun krosstalkCall(serverUrl: String? = null, headers: Headers = headersOf(), vararg scopes: ScopeInstance<*>): Nothing =
+public suspend fun krosstalkCall(serverUrl: String? = null, requestHeaders: Headers = headersOf(), vararg scopes: ScopeInstance<*>): Nothing =
     throw KrosstalkException.CompilerError("Should have been replaced with a krosstalk call during compilation")
 
 @InternalKrosstalkApi
@@ -107,6 +131,11 @@ public class WrongScopeTypeException @InternalKrosstalkApi constructor(
     public val scope: Scope,
     public val required: KType
 ) : KrosstalkException("krosstalkCall scope $scope is not of client type $required")
+
+@OptIn(InternalKrosstalkApi::class)
+public class DuplicateScopeException @InternalKrosstalkApi constructor(
+    public val scope: Scope
+) : KrosstalkException("krosstalkCall scope $scope was already specified by a parameter")
 
 @KrosstalkPluginApi
 @InternalKrosstalkApi
@@ -152,6 +181,12 @@ internal suspend inline fun <T, K, reified C : ClientScope<*>> K.call(
 
     val serverUrl = method.serverUrlParam?.let { rawArguments.getValue(it) as String? } ?: callServerUrl ?: this.serverUrl
 
+    val paramScopes = methodScopes.map { it.scope }.toSet()
+    callScopes?.map { it.scope }?.forEach {
+        if (it in paramScopes)
+            throw DuplicateScopeException(it)
+    }
+
     val scopes = methodScopes + callScopes?.map { toAppliedScopeWithType(it) }.orEmpty()
 
     val arguments = rawArguments.filterValues {
@@ -187,7 +222,7 @@ internal suspend inline fun <T, K, reified C : ClientScope<*>> K.call(
             serverUrl.trimEnd('/') + "/" + endpoint.trimStart('/'),
             method.httpMethod,
             method.contentType ?: serialization.contentType,
-            requestHeaders.orEmpty(),
+            requestHeaders,
             if (bodyArguments.isEmpty()) null else serializedBody,
             scopes
         )

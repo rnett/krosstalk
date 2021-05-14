@@ -189,7 +189,6 @@ public annotation class RespondWithHeaders
 @TopLevelOnly
 public annotation class Optional
 
-//TODO see if I can replace this with passing the server url to krosstalkCall().  Would need an @Ignore or similar
 /**
  * Marks a `String` or `String?` parameter as the server url.  This will override the server url set in the krosstalk client if it is non null.
  *
@@ -219,3 +218,17 @@ public annotation class ServerURL
 @MustBeDocumented
 @TopLevelOnly
 public annotation class RequestHeaders
+
+/**
+ * Don't pass a parameter, and instead use `null` or the default on the server.
+ * The marked parameter must be nullable or have a default value.
+ *
+ * Default values that reference other parameters will cause errors.
+ *
+ * You **can not** use ignored parameters in [KrosstalkEndpoint].
+ */
+@Target(AnnotationTarget.VALUE_PARAMETER)
+@Retention(AnnotationRetention.BINARY)
+@MustBeDocumented
+@TopLevelOnly
+public annotation class Ignore

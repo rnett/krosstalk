@@ -351,4 +351,17 @@ class Tests {
         }
         assertEquals(411, lastStatusCode)
     }
+
+    @Test
+    fun testHeadersInCall() = GlobalScope.promise {
+        assertEquals("", withRequestHeadersInCall())
+        assertEquals("2", lastHeaders?.get("test")?.firstOrNull())
+    }
+
+    @Test
+    fun testHeadersInCallAndParam() = GlobalScope.promise {
+        val result = withRequestHeadersInCallAndParam(headersOf("b" to "2"), "a" to "b")
+        assertEquals("call", result.first)
+        assertEquals("2", result.second)
+    }
 }
