@@ -2,6 +2,8 @@ package com.rnett.krosstalk.server.plugin
 
 import com.rnett.krosstalk.Headers
 import com.rnett.krosstalk.InternalKrosstalkApi
+import com.rnett.krosstalk.KROSSTALK_THROW_EXCEPTION_HEADER_NAME
+import com.rnett.krosstalk.KROSSTALK_UNCAUGHT_EXCEPTION_HEADER_NAME
 import com.rnett.krosstalk.Krosstalk
 import com.rnett.krosstalk.KrosstalkPluginApi
 import com.rnett.krosstalk.MethodDefinition
@@ -13,6 +15,7 @@ import com.rnett.krosstalk.result.KrosstalkHttpError
 import com.rnett.krosstalk.result.KrosstalkResult
 import com.rnett.krosstalk.result.KrosstalkServerException
 import com.rnett.krosstalk.server.KrosstalkServer
+import com.rnett.krosstalk.withHeader
 import kotlin.contracts.InvocationKind
 import kotlin.contracts.contract
 
@@ -60,20 +63,39 @@ internal class ResponseContext<K>(
     }
 
     //TODO something in plaintext for non-krosstalk servers?  JSON serialize the exception maybe.  I can just use Kotlinx here too, rather than getting the serializer
-    internal suspend inline fun respondServerException(exception: KrosstalkResult.ServerException) {
+    internal suspend inline fun respondServerException(
+        exception: KrosstalkResult.ServerException,
+        throwing: Boolean = false,
+        uncaught: Boolean = false
+    ) {
         respond(
             500,
-            "application/octet-stream",
-            emptyMap(),
+            krosstalk.urlSerialization.contentType,
+            responseHeaders.let {
+                if (throwing)
+                    it.withHeader(KROSSTALK_THROW_EXCEPTION_HEADER_NAME, "true")
+                else
+                    it
+            }.let {
+                if (uncaught)
+                    it.withHeader(KROSSTALK_UNCAUGHT_EXCEPTION_HEADER_NAME, "true")
+                else
+                    it
+            },
             krosstalk.serializeServerException(exception.withIncludeStackTrace(method.includeStacktrace))
         )
     }
 
-    internal suspend inline fun respondHttpError(error: KrosstalkResult.HttpError) {
+    internal suspend inline fun respondHttpError(error: KrosstalkResult.HttpError, throwing: Boolean = false) {
         respond(
             error.statusCode,
             "text/plain; charset=utf-8",
-            emptyMap(),
+            responseHeaders.let {
+                if (throwing)
+                    it.withHeader(KROSSTALK_THROW_EXCEPTION_HEADER_NAME, "true")
+                else
+                    it
+            },
             (error.message ?: "").encodeToByteArray()
         )
     }
@@ -155,16 +177,16 @@ public suspend fun <K> K.handle(
 
         if (caughtResult.isFailure) {
             when (val exception = caughtResult.exceptionOrNull()!!) {
-                is KrosstalkHttpError -> respondHttpError(exception.httpError)
+                is KrosstalkHttpError -> respondHttpError(exception.httpError, true)
                 is KrosstalkServerException -> {
-                    respondServerException(exception.exception)
+                    respondServerException(exception.exception, true)
                     val t = exception.exception.throwable
                     if (method.propagateServerExceptions && t != null) {
                         handleException(t)
                     }
                 }
                 else -> {
-                    respondServerException(KrosstalkResult.ServerException(exception, true))
+                    respondServerException(KrosstalkResult.ServerException(exception, true), throwing = true, uncaught = true)
                     throw exception
                 }
             }

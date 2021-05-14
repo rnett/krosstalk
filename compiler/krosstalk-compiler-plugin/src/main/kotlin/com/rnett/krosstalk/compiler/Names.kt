@@ -79,6 +79,14 @@ object Krosstalk : RootPackage(krosstalkPackage) {
 
     object Result : PackageRef() {
         object KrosstalkResult : ClassRef() {
+            //TODO allow returning any subclass of KrosstalkResult
+            val Success by Class()
+            val HttpError by Class()
+            val ServerException by Class()
+
+            val SuccessOrHttpError by Class()
+            val SuccessOrServerException by Class()
+            val Failure by Class()
         }
     }
 

@@ -1,6 +1,8 @@
 package com.rnett.krosstalk.client_test
 
 import com.rnett.krosstalk.ktor.client.auth.invoke
+import com.rnett.krosstalk.result.httpErrorOrNull
+import com.rnett.krosstalk.result.valueOrNull
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.promise
 import kotlin.test.Test

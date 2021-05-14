@@ -2,6 +2,13 @@ package com.rnett.krosstalk.fullstack_test
 
 import com.rnett.krosstalk.ServerDefault
 import com.rnett.krosstalk.ktor.client.auth.invoke
+import com.rnett.krosstalk.result.KrosstalkHttpError
+import com.rnett.krosstalk.result.KrosstalkUncaughtServerException
+import com.rnett.krosstalk.result.httpErrorOrNull
+import com.rnett.krosstalk.result.isServerException
+import com.rnett.krosstalk.result.isSuccess
+import com.rnett.krosstalk.result.serverExceptionOrNull
+import com.rnett.krosstalk.result.valueOrNull
 import io.ktor.client.utils.EmptyContent
 import io.ktor.http.HttpMethod
 import kotlinx.coroutines.GlobalScope
@@ -10,6 +17,8 @@ import kotlin.test.Test
 import kotlin.test.assertEquals
 import kotlin.test.assertNotEquals
 import kotlin.test.assertNotNull
+import kotlin.test.assertTrue
+import kotlin.test.fail
 
 class Tests {
 
@@ -114,12 +123,14 @@ class Tests {
 
     @Test
     fun testWithResult() = GlobalScope.promise {
-        testKrosstalkResultMatching()
+        CommonTests.krosstalkResultMatching()
+        assertEquals(500, lastStatusCode)
     }
 
     @Test
     fun testWithResultCatching() = GlobalScope.promise {
-        testKrosstalkResultCatchingMatching()
+        CommonTests.krosstalkResultCatchingMatching()
+        assertEquals(422, lastStatusCode)
     }
 
     @Test
@@ -247,5 +258,96 @@ class Tests {
     fun testResultObject() = GlobalScope.promise {
         assertEquals(ExpectObject, withResultObject(2).valueOrNull)
         assertNotNull(withResultObject(-2).serverExceptionOrNull)
+    }
+
+    @Test
+    fun testSuccessOrHttpError() = GlobalScope.promise {
+        CommonTests.krosstalkResultSuccessOrHttpError()
+        assertEquals(411, lastStatusCode)
+    }
+
+    @Test
+    fun testSuccessOrServerException() = GlobalScope.promise {
+        CommonTests.krosstalkResultSuccessOrServerException()
+        assertEquals(500, lastStatusCode)
+    }
+
+    @Test
+    fun testHttpError() = GlobalScope.promise {
+        CommonTests.krosstalkResultHttpError()
+        assertEquals(404, lastStatusCode)
+    }
+
+    @Test
+    fun testHttpErrorWithHeaders() = GlobalScope.promise {
+        val result = withHttpErrorWithHeaders(2)
+        assertEquals("test3", result.headers["test"]?.firstOrNull())
+        assertEquals(416, result.value.httpErrorOrNull?.statusCode)
+        assertEquals(416, lastStatusCode)
+        assertEquals("Test", result.value.httpErrorOrNull?.message)
+    }
+
+    @Test
+    fun testSuccessOrServerExceptionWithHeaders() = GlobalScope.promise {
+        val result = withSuccessOrServerExceptionWithHeaders(2)
+        assertTrue(result.isSuccess())
+        assertEquals("test2", result.valueOrNull?.headers?.get("test")?.firstOrNull())
+        assertEquals(4, result.valueOrNull?.value)
+
+        val errorResult = withSuccessOrServerExceptionWithHeaders(-2)
+        assertTrue(errorResult.isServerException())
+        assertEquals("IllegalStateException", errorResult.classSimpleName)
+        assertEquals(500, lastStatusCode)
+    }
+
+    @Test
+    fun testNonKrosstalkHttpError() = GlobalScope.promise {
+        CommonTests.nonKrosstalkHttpError()
+        assertEquals(411, lastStatusCode)
+    }
+
+    @Test
+    fun testNonKrosstalkServerException() = GlobalScope.promise {
+        CommonTests.nonKrosstalkServerException()
+        assertEquals(500, lastStatusCode)
+    }
+
+    @Test
+    fun testNonKrosstalkUncaughtException() = GlobalScope.promise {
+        assertEquals(4, withNonKrosstalkUncaughtException(2))
+        try {
+            withNonKrosstalkUncaughtException(-2)
+            fail("No exception")
+        } catch (e: KrosstalkUncaughtServerException) {
+            assertEquals("java.lang.IllegalStateException", e.exception.className)
+            assertEquals("Negative n = -2", e.exception.message)
+        }
+        assertEquals(500, lastStatusCode)
+    }
+
+    @Test
+    fun testUncaughtExceptionOutsideKrosstalkResult() = GlobalScope.promise {
+        assertEquals(4, withUncaughtExceptionOutsideKrosstalkResult(2).valueOrNull)
+        try {
+            withUncaughtExceptionOutsideKrosstalkResult(-2)
+            fail("No exception")
+        } catch (e: KrosstalkUncaughtServerException) {
+            assertEquals("java.lang.IllegalStateException", e.exception.className)
+            assertEquals("Negative n = -2", e.exception.message)
+        }
+        assertEquals(500, lastStatusCode)
+    }
+
+    @Test
+    fun testHttpErrorOutsideKrosstalkResult() = GlobalScope.promise {
+        assertEquals(4, withHttpErrorOutsideKrosstalkResult(2).valueOrNull)
+        try {
+            withHttpErrorOutsideKrosstalkResult(-2)
+            fail("No exception")
+        } catch (e: KrosstalkHttpError) {
+            assertEquals(411, e.httpError.statusCode)
+            assertEquals("Negative n = -2", e.httpError.message)
+        }
+        assertEquals(411, lastStatusCode)
     }
 }

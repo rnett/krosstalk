@@ -1,5 +1,11 @@
 package com.rnett.krosstalk
 
+@InternalKrosstalkApi
+public const val KROSSTALK_THROW_EXCEPTION_HEADER_NAME: String = "Krosstalk-Throw-Exception"
+
+@InternalKrosstalkApi
+public const val KROSSTALK_UNCAUGHT_EXCEPTION_HEADER_NAME: String = "Krosstalk-Uncaught-Exception"
+
 //TODO make own class so I can use proper merge w/ plus, etc.  Case-insensitivity, too
 public typealias Headers = Map<String, List<String>>
 public typealias MutableHeaders = MutableMap<String, List<String>>
@@ -11,6 +17,9 @@ public infix fun MutableHeaders.addHeadersFrom(other: Headers) {
         this[k] = this[k].orEmpty() + v
     }
 }
+
+@InternalKrosstalkApi
+public fun Headers.withHeader(key: String, value: String): Headers = this.plus(key to this.getOrElse(key) { emptyList() } + value)
 
 @Suppress("unused")
 @OptIn(InternalKrosstalkApi::class)

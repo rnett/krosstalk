@@ -148,7 +148,44 @@ for an overview (click on an annotation to see the full docs).
 
 ### Error Handling
 
-TODO
+There are two separate modes for error handling: using exceptions, like normal, and using `@ExplicitResult` and
+returning a subclass of `KrosstalkResult`. In both, throwing `KrosstalkHttpError` or `KrosstalkServerException`
+(using `throwKrosstalkHttpError` and `throwKrosstalkServerException`) will result in an error response being sent, and
+the exception being re-thrown on the client. However, `@ExplicitResult` will often include those in its return value. In
+this cause, the error response will still be sent, but the exception will be part of the client's return value like on
+the server instead of being re-thrown.
+
+If you throw an exception that is not `KrosstalkHttpError` or `KrosstalkServerException` **outside** of a
+`runKrosstalkCatching` block or some other block that would wrap it in a `KrosstalkServerException`, **the behavior of
+the method when called on the client and server will differ**. If called on the server, the original exception will be
+thrown, while on the client, a `KrosstalkUncaughtServerException` wrapping the original exception will be thrown. This
+is unavoidable, since exceptions can't be serialized.
+
+As you can see, the entire method should almost always be wrapped in `runKrosstalkCatching`. Methods
+like `KrosstalkResult<T>.catchAsHttpError` or `when` blocks can be used to convert `ServerException`s to
+`HttpError`s.  `ServerException`s should generally be treated as an exceptional state, while `HttpError` is a less fatal
+error. Helper methods like `KrosstalkResult<T>.handleHttpError` can be used to selectively handle error codes, so a
+pattern like:
+
+```kotlin
+@KrosstalkMethod(MyKrosstalk::class)
+@ExplicitResult
+private expect fun _errorFunction(n: Int): KrosstalkResult<Int>
+
+fun errorFunction(n: Int): Int? = _errorFunction(n)
+  .throwOnServerException()
+  .handleHttpError(404) { null }
+  .valueOrThrow
+
+// server
+private actual fun _errorFunction(n: Int): KrosstalkResult<Int> = runKrosstalkCatching {
+  ...
+}.catchAsHttpError(NoSuchElementException::class, 404)
+```
+
+is fairly common. The server part can be omitted if the server code is changed to throw `KrosstalkHttpError`
+instead of `NoSuchElementException`, i.e. by using `map[key] ?: throwKrosstalkHttpError(404)` instead
+of `map.getValue(key)`.
 
 ## Scopes
 

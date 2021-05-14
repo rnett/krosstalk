@@ -1,13 +1,20 @@
 package com.rnett.krosstalk.fullstack_test
 
-import com.rnett.krosstalk.*
+import com.rnett.krosstalk.Headers
+import com.rnett.krosstalk.Krosstalk
+import com.rnett.krosstalk.Scope
+import com.rnett.krosstalk.ScopeInstance
+import com.rnett.krosstalk.ServerDefault
+import com.rnett.krosstalk.WithHeaders
 import com.rnett.krosstalk.client.KrosstalkClient
 import com.rnett.krosstalk.client.krosstalkCall
 import com.rnett.krosstalk.ktor.client.KtorClient
 import com.rnett.krosstalk.ktor.client.KtorClientScope
 import com.rnett.krosstalk.ktor.client.auth.KtorClientBasicAuth
+import com.rnett.krosstalk.result.KrosstalkResult
 import com.rnett.krosstalk.serialization.KotlinxBinarySerializationHandler
 import io.ktor.client.HttpClient
+import io.ktor.client.features.HttpResponseValidator
 import io.ktor.client.features.logging.LogLevel
 import io.ktor.client.features.logging.Logging
 import io.ktor.http.ContentType
@@ -30,6 +37,9 @@ internal var lastHttpMethod: HttpMethod by Delegates.notNull()
 internal var lastContentType: ContentType? = null
     private set
 
+internal var lastStatusCode: Int? = null
+    private set
+
 actual object MyKrosstalk : Krosstalk(), KrosstalkClient<KtorClientScope<*>> {
     actual override val serialization = KotlinxBinarySerializationHandler(Cbor { })
     override val serverUrl: String = "http://localhost:8080"
@@ -38,6 +48,11 @@ actual object MyKrosstalk : Krosstalk(), KrosstalkClient<KtorClientScope<*>> {
         baseClient = HttpClient().config {
             Logging {
                 level = LogLevel.ALL
+            }
+            HttpResponseValidator {
+                validateResponse {
+                    lastStatusCode = it.status.value
+                }
             }
         },
         baseRequest = {
@@ -130,3 +145,23 @@ actual suspend fun withHeadersReturnObject(n: Int): WithHeaders<ExpectObject> = 
 actual suspend fun withRequestHeaders(n: Int, h: Headers): Int = krosstalkCall()
 
 actual suspend fun withResultObject(n: Int): KrosstalkResult<ExpectObject> = krosstalkCall()
+
+actual suspend fun withSuccessOrHttpError(n: Int): KrosstalkResult.SuccessOrHttpError<Int> = krosstalkCall()
+
+actual suspend fun withSuccessOrServerException(n: Int): KrosstalkResult.SuccessOrServerException<Int> = krosstalkCall()
+
+actual suspend fun withHttpError(n: Int): KrosstalkResult.HttpError = krosstalkCall()
+
+actual suspend fun withHttpErrorWithHeaders(n: Int): WithHeaders<KrosstalkResult.HttpError> = krosstalkCall()
+
+actual suspend fun withSuccessOrServerExceptionWithHeaders(n: Int): KrosstalkResult.SuccessOrServerException<WithHeaders<Int>> = krosstalkCall()
+
+actual suspend fun withNonKrosstalkHttpError(n: Int): Int = krosstalkCall()
+
+actual suspend fun withNonKrosstalkServerException(n: Int): Int = krosstalkCall()
+
+actual suspend fun withNonKrosstalkUncaughtException(n: Int): Int = krosstalkCall()
+
+actual suspend fun withUncaughtExceptionOutsideKrosstalkResult(n: Int): KrosstalkResult<Int> = krosstalkCall()
+
+actual suspend fun withHttpErrorOutsideKrosstalkResult(n: Int): KrosstalkResult<Int> = krosstalkCall()

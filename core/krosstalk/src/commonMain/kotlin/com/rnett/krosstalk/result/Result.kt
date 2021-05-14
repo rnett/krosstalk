@@ -42,6 +42,13 @@ public class KrosstalkServerException(public val exception: KrosstalkResult.Serv
     KrosstalkException("KrosstalkResult is exception $exception")
 
 /**
+ * An exception representing an exception on the server side (i.e. a HTTP 500 response, but with more information).
+ */
+@OptIn(InternalKrosstalkApi::class)
+public class KrosstalkUncaughtServerException @InternalKrosstalkApi constructor(public val exception: KrosstalkResult.ServerException) :
+    KrosstalkException("KrosstalkResult is exception $exception")
+
+/**
  * Throw a [KrosstalkServerException].
  *
  * Note that [includeStackTrace] will be overridden by a `false` value specified in a method's configuration,
@@ -191,8 +198,7 @@ public sealed interface KrosstalkResult<out T> {
         @InternalKrosstalkApi val throwable: Throwable? = null,
     ) : Failure, SuccessOrServerException<Nothing> {
 
-        @InternalKrosstalkApi
-        public constructor(throwable: Throwable, includeStacktrace: Boolean) : this(
+        public constructor(throwable: Throwable, includeStacktrace: Boolean = true) : this(
             getClassName(throwable::class),
             throwable::class.simpleName,
             throwable.message,
@@ -361,7 +367,6 @@ public fun <T> KrosstalkResult<T>.throwOnHttpError(): KrosstalkResult.SuccessOrS
  */
 public fun <T> KrosstalkResult<T>.throwOnServerException(): KrosstalkResult.SuccessOrHttpError<T> {
     contract { returns() implies (this@throwOnServerException !is KrosstalkResult.ServerException) }
-
     if (this is KrosstalkResult.ServerException) {
         throwFailureException()
     }

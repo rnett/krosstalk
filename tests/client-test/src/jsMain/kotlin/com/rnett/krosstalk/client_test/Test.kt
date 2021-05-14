@@ -1,14 +1,18 @@
 package com.rnett.krosstalk.client_test
 
 import com.rnett.krosstalk.Krosstalk
-import com.rnett.krosstalk.KrosstalkResult
 import com.rnett.krosstalk.ScopeInstance
-import com.rnett.krosstalk.annotations.*
+import com.rnett.krosstalk.annotations.EmptyBody
+import com.rnett.krosstalk.annotations.ExplicitResult
+import com.rnett.krosstalk.annotations.KrosstalkEndpoint
+import com.rnett.krosstalk.annotations.KrosstalkMethod
+import com.rnett.krosstalk.annotations.ServerURL
 import com.rnett.krosstalk.client.KrosstalkClient
 import com.rnett.krosstalk.client.krosstalkCall
 import com.rnett.krosstalk.ktor.client.KtorClient
 import com.rnett.krosstalk.ktor.client.KtorClientScope
 import com.rnett.krosstalk.ktor.client.auth.KtorClientBasicAuth
+import com.rnett.krosstalk.result.KrosstalkResult
 import com.rnett.krosstalk.serialization.KotlinxJsonObjectSerializationHandler
 import io.ktor.client.HttpClient
 import kotlinx.serialization.json.Json

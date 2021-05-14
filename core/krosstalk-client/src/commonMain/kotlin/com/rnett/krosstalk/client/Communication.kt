@@ -2,6 +2,8 @@ package com.rnett.krosstalk.client
 
 import com.rnett.krosstalk.Headers
 import com.rnett.krosstalk.InternalKrosstalkApi
+import com.rnett.krosstalk.KROSSTALK_THROW_EXCEPTION_HEADER_NAME
+import com.rnett.krosstalk.KROSSTALK_UNCAUGHT_EXCEPTION_HEADER_NAME
 import com.rnett.krosstalk.Krosstalk
 import com.rnett.krosstalk.KrosstalkException
 import com.rnett.krosstalk.KrosstalkPluginApi
@@ -12,6 +14,9 @@ import com.rnett.krosstalk.client.plugin.AppliedClientScope
 import com.rnett.krosstalk.client.plugin.ClientScope
 import com.rnett.krosstalk.isNone
 import com.rnett.krosstalk.result.KrosstalkResult
+import com.rnett.krosstalk.result.KrosstalkUncaughtServerException
+import com.rnett.krosstalk.result.isFailure
+import com.rnett.krosstalk.result.isServerException
 import com.rnett.krosstalk.result.valueOrThrow
 import kotlin.reflect.KClass
 
@@ -133,6 +138,17 @@ internal suspend inline fun <T, K, reified C : ClientScope<*>> K.call(
                 KrosstalkResult.HttpError(result.statusCode, result.stringBody)
             }
         }
+
+    if (wrappedResult.isFailure() && result.headers[KROSSTALK_THROW_EXCEPTION_HEADER_NAME.lowercase()].orEmpty()
+            .any { it.toBooleanStrictOrNull() == true }
+    ) {
+        if (wrappedResult.isServerException() && result.headers[KROSSTALK_UNCAUGHT_EXCEPTION_HEADER_NAME.lowercase()].orEmpty()
+                .any { it.toBooleanStrictOrNull() == true }
+        )
+            throw KrosstalkUncaughtServerException(wrappedResult as KrosstalkResult.ServerException)
+        else
+            wrappedResult.throwFailureException()
+    }
 
     return if (method.useExplicitResult) {
         wrappedResult

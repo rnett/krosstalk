@@ -6,6 +6,8 @@ tasks.create("pingPong") {
     val pingServer = tasks.getByPath("ping:startAllTestsServer") as com.github.psxpaul.task.JavaExecFork
     val pongServer = tasks.getByPath("pong:startAllTestsServer") as com.github.psxpaul.task.JavaExecFork
 
+    dependsOn("pong:build", "ping:build")
+
     group = "verification"
 
     doLast {

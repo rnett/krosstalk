@@ -1,12 +1,25 @@
 package com.rnett.krosstalk.fullstack_test
 
-import com.rnett.krosstalk.*
+import com.rnett.krosstalk.Headers
+import com.rnett.krosstalk.Krosstalk
+import com.rnett.krosstalk.Scope
+import com.rnett.krosstalk.ScopeInstance
+import com.rnett.krosstalk.ServerDefault
+import com.rnett.krosstalk.WithHeaders
 import com.rnett.krosstalk.ktor.server.KtorServer
 import com.rnett.krosstalk.ktor.server.KtorServerScope
 import com.rnett.krosstalk.ktor.server.auth.KtorServerBasicAuth
 import com.rnett.krosstalk.ktor.server.defineKtor
+import com.rnett.krosstalk.result.KrosstalkResult
+import com.rnett.krosstalk.result.catchKrosstalkExceptions
+import com.rnett.krosstalk.result.runKrosstalkCatching
+import com.rnett.krosstalk.result.throwKrosstalkHttpError
+import com.rnett.krosstalk.result.throwKrosstalkServerException
+import com.rnett.krosstalk.result.throwOnServerException
+import com.rnett.krosstalk.result.toKrosstalkResult
 import com.rnett.krosstalk.serialization.KotlinxBinarySerializationHandler
 import com.rnett.krosstalk.server.KrosstalkServer
+import com.rnett.krosstalk.server.result.catchAsHttpError
 import com.rnett.krosstalk.server.value
 import io.ktor.application.install
 import io.ktor.auth.BasicAuthenticationProvider
@@ -97,7 +110,7 @@ actual suspend fun withResultCatching(n: Int): KrosstalkResult<Int> = runKrossta
         throw MyException("Can't have n < 0")
 
     n
-}.catchAsHttpStatusCode<MyException> { 422 }
+}.catchAsHttpError(MyException::class, 422)
 
 actual suspend fun withOverload(n: Int): String = n.toString()
 
@@ -152,12 +165,13 @@ actual suspend fun withHeadersBasic(n: Int): WithHeaders<String> =
     WithHeaders(n.toString(), mapOf("test" to listOf("value")))
 
 actual suspend fun withHeadersOutsideResult(n: Int): WithHeaders<KrosstalkResult<String>> =
-    WithHeaders(runKrosstalkCatching {
-        if (n < 0)
-            throw MyException("Can't have n < 0")
+    WithHeaders(
+        runKrosstalkCatching {
+            if (n < 0)
+                throw MyException("Can't have n < 0")
 
-        n.toString()
-    }.catchAsHttpStatusCode<MyException> { 422 },
+            n.toString()
+        }.catchAsHttpError(MyException::class, 422),
         mapOf("test" to listOf("value"))
     )
 
@@ -166,7 +180,7 @@ actual suspend fun withHeadersInsideResult(n: Int): KrosstalkResult<WithHeaders<
         throw MyException("Can't have n < 0")
 
     WithHeaders(n.toString(), mapOf("test" to listOf("value")))
-}.catchAsHttpStatusCode<MyException> { 422 }
+}.catchAsHttpError(MyException::class, 422)
 
 actual suspend fun withHeadersReturnObject(n: Int): WithHeaders<ExpectObject> {
     return WithHeaders(ExpectObject, mapOf("value" to listOf(n.toString())))
@@ -181,4 +195,72 @@ actual suspend fun withResultObject(n: Int): KrosstalkResult<ExpectObject> = run
         throw MyException("Can't have n < 0")
 
     ExpectObject
+}
+
+actual suspend fun withSuccessOrHttpError(n: Int): KrosstalkResult.SuccessOrHttpError<Int> = catchKrosstalkExceptions {
+    if (n < 0)
+        throwKrosstalkHttpError(411, "Negative n = $n")
+
+    n * 2
+}.throwOnServerException()
+
+actual suspend fun withSuccessOrServerException(n: Int): KrosstalkResult.SuccessOrServerException<Int> {
+    if (n < 0)
+        return KrosstalkResult.ServerException(IllegalStateException("Negative n = $n"))
+
+    return KrosstalkResult.Success(n * 2)
+}
+
+actual suspend fun withHttpError(n: Int): KrosstalkResult.HttpError {
+    return KrosstalkResult.HttpError(404, "Hide and Seek")
+}
+
+actual suspend fun withHttpErrorWithHeaders(n: Int): WithHeaders<KrosstalkResult.HttpError> {
+    return WithHeaders(KrosstalkResult.HttpError(416, "Test"), mapOf("test" to listOf("test3")))
+}
+
+actual suspend fun withSuccessOrServerExceptionWithHeaders(n: Int): KrosstalkResult.SuccessOrServerException<WithHeaders<Int>> {
+    if (n < 0)
+        return KrosstalkResult.ServerException(IllegalStateException("Negative n = $n"))
+
+    return KrosstalkResult.Success(WithHeaders(n * 2, mapOf("test" to listOf("test2"))))
+}
+
+actual suspend fun withNonKrosstalkHttpError(n: Int): Int {
+    if (n < 0)
+        throwKrosstalkHttpError(411, "Negative n = $n")
+
+    return n * 2
+}
+
+actual suspend fun withNonKrosstalkServerException(n: Int): Int {
+    if (n < 0)
+        throwKrosstalkServerException(IllegalStateException("Negative n = $n"))
+
+    return n * 2
+}
+
+actual suspend fun withNonKrosstalkUncaughtException(n: Int): Int {
+    if (n < 0)
+        error("Negative n = $n")
+
+    return n * 2
+}
+
+actual suspend fun withUncaughtExceptionOutsideKrosstalkResult(n: Int): KrosstalkResult<Int> {
+    if (n < 0)
+        error("Negative n = $n")
+
+    return runKrosstalkCatching {
+        n * 2
+    }
+}
+
+actual suspend fun withHttpErrorOutsideKrosstalkResult(n: Int): KrosstalkResult<Int> {
+    if (n < 0)
+        throwKrosstalkHttpError(411, "Negative n = $n")
+
+    return runKrosstalkCatching {
+        n * 2
+    }
 }

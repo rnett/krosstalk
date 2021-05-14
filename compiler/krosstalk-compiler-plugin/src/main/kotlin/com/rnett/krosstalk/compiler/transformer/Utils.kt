@@ -18,9 +18,12 @@ import org.jetbrains.kotlin.ir.util.fqNameWhenAvailable
 import org.jetbrains.kotlin.ir.util.parentAsClass
 import org.jetbrains.kotlin.name.FqName
 import org.jetbrains.kotlin.name.Name
+import org.jetbrains.kotlin.utils.addToStdlib.safeAs
 import kotlin.contracts.ExperimentalContracts
 import kotlin.contracts.InvocationKind
 import kotlin.contracts.contract
+
+fun IrType.hasTypeArgument(idx: Int) = (safeAs<IrSimpleType>()?.arguments?.lastIndex ?: -1) >= idx
 
 fun IrType.allTypes(): List<IrType> {
     if (this !is IrSimpleType) return emptyList()

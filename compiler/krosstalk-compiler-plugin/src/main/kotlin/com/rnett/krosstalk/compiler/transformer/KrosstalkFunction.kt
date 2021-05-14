@@ -49,10 +49,12 @@ import org.jetbrains.kotlin.ir.expressions.IrExpression
 import org.jetbrains.kotlin.ir.expressions.IrExpressionBody
 import org.jetbrains.kotlin.ir.types.IrType
 import org.jetbrains.kotlin.ir.types.classOrNull
+import org.jetbrains.kotlin.ir.types.defaultType
 import org.jetbrains.kotlin.ir.types.impl.IrSimpleTypeImpl
 import org.jetbrains.kotlin.ir.types.impl.IrStarProjectionImpl
 import org.jetbrains.kotlin.ir.types.impl.IrTypeBase
 import org.jetbrains.kotlin.ir.types.isNullable
+import org.jetbrains.kotlin.ir.types.isSubtypeOfClass
 import org.jetbrains.kotlin.ir.types.makeNotNull
 import org.jetbrains.kotlin.ir.types.makeNullable
 import org.jetbrains.kotlin.ir.types.typeWith
@@ -74,6 +76,8 @@ import kotlin.reflect.KType
 @OptIn(ExperimentalStdlibApi::class, InternalKrosstalkApi::class, KrosstalkPluginApi::class)
 class KrosstalkFunction(val declaration: IrSimpleFunction, val methodTransformer: KrosstalkMethodTransformer) : HasContext by methodTransformer,
     KnowsCurrentFile by methodTransformer {
+
+    fun IrType.isKrosstalkResultType() = this.isSubtypeOfClass(Krosstalk.Result.KrosstalkResult())
 
     val messageCollector = methodTransformer.messageCollector
 
@@ -200,13 +204,22 @@ class KrosstalkFunction(val declaration: IrSimpleFunction, val methodTransformer
 
     private fun IrType.unwrapClassifier(klass: ClassRef) = if (this.isClassifierOf(klass)) typeArgument(0) else this
 
+    private fun IrType.unwrapKrosstalkResult() = if (this.isKrosstalkResultType()) {
+        if (this.hasTypeArgument(0))
+            typeArgument(0)
+        else
+            context.irBuiltIns.unitType
+    } else {
+        this
+    }
+
     val returnDataType by lazy {
         val type = declaration.returnType
 
-        if (type.isClassifierOf(Krosstalk.Result.KrosstalkResult)) {
-            type.typeArgument(0).unwrapClassifier(Krosstalk.WithHeaders)
+        if (type.isKrosstalkResultType()) {
+            type.unwrapKrosstalkResult().unwrapClassifier(Krosstalk.WithHeaders)
         } else if (type.isClassifierOf(Krosstalk.WithHeaders)) {
-            type.typeArgument(0).unwrapClassifier(Krosstalk.Result.KrosstalkResult)
+            type.typeArgument(0).unwrapKrosstalkResult()
         } else
             type
     }
@@ -214,7 +227,7 @@ class KrosstalkFunction(val declaration: IrSimpleFunction, val methodTransformer
     val isWithHeaders by lazy {
         val type = declaration.returnType
         type.isClassifierOf(Krosstalk.WithHeaders) ||
-                (type.isClassifierOf(Krosstalk.Result.KrosstalkResult) && type.typeArgument(0)
+                (type.isKrosstalkResultType() && type.hasTypeArgument(0) && type.typeArgument(0)
                     .isClassifierOf(Krosstalk.WithHeaders))
     }
 
@@ -228,9 +241,9 @@ class KrosstalkFunction(val declaration: IrSimpleFunction, val methodTransformer
 
     val isKrosstalkResult by lazy {
         val type = declaration.returnType
-        type.isClassifierOf(Krosstalk.Result.KrosstalkResult) ||
+        type.isKrosstalkResultType() ||
                 (type.isClassifierOf(Krosstalk.WithHeaders) && type.typeArgument(0)
-                    .isClassifierOf(Krosstalk.Result.KrosstalkResult))
+                    .isKrosstalkResultType())
     }
 
     val returnObject by lazy {
@@ -300,7 +313,7 @@ class KrosstalkFunction(val declaration: IrSimpleFunction, val methodTransformer
                         "when used with KrosstalkResult (either order is valid).", declaration
             )
         }
-        if (Krosstalk.Result.KrosstalkResult() in allReturnTypeArgs) {
+        if (allReturnTypeArgs.keys.filterNotNull().any { it.defaultType.isKrosstalkResultType() }) {
             messageCollector.reportError(
                 "Can't use KrosstalkResult in return type except for top level or second level " +
                         "when used with WithHeaders (either order is valid).", declaration

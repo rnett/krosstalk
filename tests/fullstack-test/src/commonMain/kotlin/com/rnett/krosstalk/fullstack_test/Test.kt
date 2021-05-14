@@ -2,7 +2,6 @@ package com.rnett.krosstalk.fullstack_test
 
 import com.rnett.krosstalk.Headers
 import com.rnett.krosstalk.Krosstalk
-import com.rnett.krosstalk.KrosstalkResult
 import com.rnett.krosstalk.Scope
 import com.rnett.krosstalk.ScopeInstance
 import com.rnett.krosstalk.ServerDefault
@@ -17,6 +16,7 @@ import com.rnett.krosstalk.annotations.RequestHeaders
 import com.rnett.krosstalk.annotations.RespondWithHeaders
 import com.rnett.krosstalk.krosstalkPrefix
 import com.rnett.krosstalk.methodName
+import com.rnett.krosstalk.result.KrosstalkResult
 import com.rnett.krosstalk.serialization.KotlinxBinarySerializationHandler
 import kotlinx.serialization.Serializable
 
@@ -167,11 +167,50 @@ expect suspend fun withHeadersInsideResult(n: Int): KrosstalkResult<WithHeaders<
 @KrosstalkMethod(MyKrosstalk::class)
 expect suspend fun withHeadersReturnObject(n: Int): WithHeaders<ExpectObject>
 
-//TODO KrosstalkResult + object
-
 @KrosstalkMethod(MyKrosstalk::class)
 expect suspend fun withRequestHeaders(n: Int, @RequestHeaders h: Headers): Int
 
 @KrosstalkMethod(MyKrosstalk::class)
 @ExplicitResult
 expect suspend fun withResultObject(n: Int): KrosstalkResult<ExpectObject>
+
+@KrosstalkMethod(MyKrosstalk::class)
+@ExplicitResult
+expect suspend fun withSuccessOrHttpError(n: Int): KrosstalkResult.SuccessOrHttpError<Int>
+
+@KrosstalkMethod(MyKrosstalk::class)
+@ExplicitResult
+expect suspend fun withSuccessOrServerException(n: Int): KrosstalkResult.SuccessOrServerException<Int>
+
+@KrosstalkMethod(MyKrosstalk::class)
+@ExplicitResult
+expect suspend fun withHttpError(n: Int): KrosstalkResult.HttpError
+
+@KrosstalkMethod(MyKrosstalk::class)
+@ExplicitResult
+@RespondWithHeaders
+expect suspend fun withHttpErrorWithHeaders(n: Int): WithHeaders<KrosstalkResult.HttpError>
+
+@KrosstalkMethod(MyKrosstalk::class)
+@ExplicitResult
+@RespondWithHeaders
+expect suspend fun withSuccessOrServerExceptionWithHeaders(n: Int): KrosstalkResult.SuccessOrServerException<WithHeaders<Int>>
+
+@KrosstalkMethod(MyKrosstalk::class)
+expect suspend fun withNonKrosstalkHttpError(n: Int): Int
+
+@KrosstalkMethod(MyKrosstalk::class)
+expect suspend fun withNonKrosstalkServerException(n: Int): Int
+
+@KrosstalkMethod(MyKrosstalk::class)
+expect suspend fun withNonKrosstalkUncaughtException(n: Int): Int
+
+@ExplicitResult
+@KrosstalkMethod(MyKrosstalk::class)
+expect suspend fun withUncaughtExceptionOutsideKrosstalkResult(n: Int): KrosstalkResult<Int>
+
+@ExplicitResult
+@KrosstalkMethod(MyKrosstalk::class)
+expect suspend fun withHttpErrorOutsideKrosstalkResult(n: Int): KrosstalkResult<Int>
+
+
