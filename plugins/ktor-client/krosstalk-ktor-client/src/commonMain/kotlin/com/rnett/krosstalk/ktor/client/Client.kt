@@ -80,7 +80,7 @@ public class KtorClient(
             client.request<HttpResponse>(urlString = url) {
                 if (body != null)
                     this.body = body
-                this.method = HttpMethod(httpMethod.toUpperCase())
+                this.method = HttpMethod(httpMethod.uppercase())
 
                 // base request configuration
                 baseRequest()

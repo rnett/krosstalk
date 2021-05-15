@@ -19,7 +19,7 @@ private const val baseUrlLegalRegex = "-a-zA-Z0-9._*~'()!"
 public fun String.urlEncode(legal: String = baseUrlLegalRegex): String {
     val regex = Regex("[^$legal]")
     return this.replace(regex) {
-        "%" + it.value[0].toByte().toUByte().toString(16).toUpperCase().let {
+        "%" + it.value[0].code.toUByte().toString(16).uppercase().let {
             if (it.length == 1)
                 "0$it"
             else
@@ -32,6 +32,6 @@ public fun String.urlEncode(legal: String = baseUrlLegalRegex): String {
 @InternalKrosstalkApi
 public fun String.urlDecode(): String {
     return Regex("%([0-9A-F]{2})").replace(this) {
-        it.groupValues[1].toUByte(16).toByte().toChar().toString()
+        it.groupValues[1].toUByte(16).toInt().toChar().toString()
     }
 }
