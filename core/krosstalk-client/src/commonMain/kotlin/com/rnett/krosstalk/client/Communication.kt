@@ -16,6 +16,7 @@ import com.rnett.krosstalk.annotations.ServerURL
 import com.rnett.krosstalk.client.plugin.AppliedClientScope
 import com.rnett.krosstalk.client.plugin.ClientScope
 import com.rnett.krosstalk.client.plugin.toAppliedScope
+import com.rnett.krosstalk.deserializeServerException
 import com.rnett.krosstalk.headersOf
 import com.rnett.krosstalk.isNone
 import com.rnett.krosstalk.result.KrosstalkResult
@@ -247,11 +248,11 @@ internal suspend inline fun <T, K, reified C : ClientScope<*>> K.call(
             }
         }
 
-    if (wrappedResult.isFailure() && result.headers[KROSSTALK_THROW_EXCEPTION_HEADER_NAME.lowercase()].orEmpty()
-            .any { it.toBooleanStrictOrNull() == true }
+    if (wrappedResult.isFailure() &&
+        result.headers.anyOf(KROSSTALK_THROW_EXCEPTION_HEADER_NAME) { it.toBooleanStrictOrNull() == true }
     ) {
-        if (wrappedResult.isServerException() && result.headers[KROSSTALK_UNCAUGHT_EXCEPTION_HEADER_NAME.lowercase()].orEmpty()
-                .any { it.toBooleanStrictOrNull() == true }
+        if (wrappedResult.isServerException() &&
+            result.headers.anyOf(KROSSTALK_UNCAUGHT_EXCEPTION_HEADER_NAME) { it.toBooleanStrictOrNull() == true }
         )
             throw KrosstalkUncaughtServerException(wrappedResult as KrosstalkResult.ServerException)
         else

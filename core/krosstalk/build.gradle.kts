@@ -12,7 +12,7 @@ kotlin {
         val commonMain by getting {
             dependencies {
                 api(project(":core:krosstalk-core"))
-                implementation("org.jetbrains.kotlinx:kotlinx-serialization-core:${Dependencies.serialization}")
+                implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:${Dependencies.serialization}")
             }
         }
 

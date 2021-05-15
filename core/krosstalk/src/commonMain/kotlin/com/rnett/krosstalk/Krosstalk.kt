@@ -9,6 +9,7 @@ import com.rnett.krosstalk.serialization.plugin.SerializationHandler
 import com.rnett.krosstalk.serialization.plugin.getArgumentSerializers
 import com.rnett.krosstalk.serialization.plugin.getMethodSerializer
 import com.rnett.krosstalk.server.plugin.ImmutableWantedScopes
+import kotlinx.serialization.json.Json
 
 
 //TODO track empty body, throw if not empty?
@@ -82,6 +83,18 @@ public class MissingMethodException @PublishedApi internal constructor(public va
     KrosstalkException.CompilerError(
         "Krosstalk $krosstalkObject does not have a registered method named $methodName.  Known methods: ${krosstalkObject.methods}."
     )
+
+private val serverExceptionSerializer = KrosstalkResult.ServerException.serializer()
+private val serverExceptionJson = Json { }
+
+@InternalKrosstalkApi
+public fun serializeServerException(exception: KrosstalkResult.ServerException): ByteArray =
+    serverExceptionJson.encodeToString(serverExceptionSerializer, exception).encodeToByteArray()
+
+@InternalKrosstalkApi
+public fun deserializeServerException(exception: ByteArray): KrosstalkResult.ServerException =
+    serverExceptionJson.decodeFromString(serverExceptionSerializer, exception.decodeToString())
+
 //TODO import from other
 //TODO maybe add serializer type?
 
@@ -117,16 +130,6 @@ public abstract class Krosstalk {
     internal fun addScope(scope: Scope) {
         _scopes.add(scope)
     }
-
-    @OptIn(InternalKrosstalkApi::class)
-    private val serverExceptionSerializer by lazy { urlSerialization.getMethodSerializer<KrosstalkResult.ServerException>() }
-
-    @InternalKrosstalkApi
-    public fun serializeServerException(exception: KrosstalkResult.ServerException): ByteArray = serverExceptionSerializer.serializeToBytes(exception)
-
-    @InternalKrosstalkApi
-    public fun deserializeServerException(exception: ByteArray): KrosstalkResult.ServerException =
-        serverExceptionSerializer.deserializeFromBytes(exception)
 
     @OptIn(InternalKrosstalkApi::class)
     @PublishedApi

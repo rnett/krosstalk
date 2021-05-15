@@ -15,6 +15,7 @@ import com.rnett.krosstalk.mutableHeadersOf
 import com.rnett.krosstalk.result.KrosstalkHttpError
 import com.rnett.krosstalk.result.KrosstalkResult
 import com.rnett.krosstalk.result.KrosstalkServerException
+import com.rnett.krosstalk.serializeServerException
 import com.rnett.krosstalk.server.KrosstalkServer
 import kotlin.contracts.InvocationKind
 import kotlin.contracts.contract
@@ -58,7 +59,6 @@ internal class ResponseContext<K>(
 
     val responseHeaders = mutableHeadersOf()
 
-    //TODO something in plaintext for non-krosstalk servers?  JSON serialize the exception maybe.  I can just use Kotlinx here too, rather than getting the serializer
     internal suspend inline fun respondServerException(
         exception: KrosstalkResult.ServerException,
         throwing: Boolean = false,
@@ -66,14 +66,14 @@ internal class ResponseContext<K>(
     ) {
         respond(
             500,
-            krosstalk.urlSerialization.contentType,
+            "text/plain; charset=utf-8",
             responseHeaders.addHeaders {
                 if (throwing)
                     this[KROSSTALK_THROW_EXCEPTION_HEADER_NAME] = "true"
                 if (uncaught)
                     this[KROSSTALK_UNCAUGHT_EXCEPTION_HEADER_NAME] = "true"
             },
-            krosstalk.serializeServerException(exception.withIncludeStackTrace(method.includeStacktrace))
+            serializeServerException(exception.withIncludeStackTrace(method.includeStacktrace))
         )
     }
 

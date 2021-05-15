@@ -2,12 +2,14 @@ package com.rnett.krosstalk
 
 import kotlin.contracts.InvocationKind
 import kotlin.contracts.contract
+import kotlin.jvm.JvmInline
 
 @OptIn(InternalKrosstalkApi::class)
 public class UnrealizedServerDefaultException @InternalKrosstalkApi constructor() :
     KrosstalkException("ServerDefault was not realized on the server side, this should be impossible.")
 
-public class ServerDefault<out T> @PublishedApi internal constructor(@PublishedApi internal val _value: Any?) {
+@JvmInline
+public value class ServerDefault<out T> @PublishedApi internal constructor(@PublishedApi internal val _value: Any?) {
 
     @OptIn(InternalKrosstalkApi::class)
     public inline val value: T
