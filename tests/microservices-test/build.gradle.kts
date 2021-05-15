@@ -24,5 +24,6 @@ tasks.create("pingPong") {
 }
 
 tasks.create("allTests") {
+    group = "verification"
     dependsOn("pingPong")
 }

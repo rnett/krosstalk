@@ -14,6 +14,7 @@ import com.rnett.krosstalk.methodName
 import com.rnett.plugin.ir.HasContext
 import com.rnett.plugin.ir.KnowsCurrentFile
 import com.rnett.plugin.ir.addAnonymousInitializer
+import com.rnett.plugin.ir.hasTypeArgument
 import com.rnett.plugin.ir.irJsExprBody
 import com.rnett.plugin.ir.irTypeOf
 import com.rnett.plugin.ir.raiseTo
@@ -510,7 +511,7 @@ class KrosstalkFunction(val declaration: IrSimpleFunction, val methodTransformer
         }
     }
 
-    fun IrBuilderWithScope.buildCallLambda(): IrSimpleFunction {
+    private fun IrBuilderWithScope.buildCallLambda(): IrSimpleFunction {
 
         fun IrSimpleFunction.addCallMethodParameters(): Pair<IrValueParameter, IrValueParameter> {
             val args = addValueParameter {
@@ -518,7 +519,7 @@ class KrosstalkFunction(val declaration: IrSimpleFunction, val methodTransformer
                 type = IrSimpleTypeImpl(
                     Kotlin.Collections.Map(),
                     false,
-                    listOf(methodTransformer.stringType as IrTypeBase, IrStarProjectionImpl),
+                    listOf(context.irBuiltIns.stringType as IrTypeBase, IrStarProjectionImpl),
                     emptyList()
                 )
             }
@@ -659,7 +660,7 @@ class KrosstalkFunction(val declaration: IrSimpleFunction, val methodTransformer
         }
     }
 
-    fun addToKrosstalkClass() {
+    private fun addToKrosstalkClass() {
         if (krosstalkClass.declaration.isExpect) return
 
         krosstalkClass.declaration.addAnonymousInitializer {
@@ -717,7 +718,7 @@ class KrosstalkFunction(val declaration: IrSimpleFunction, val methodTransformer
                                 putValueArgument(
                                     0,
                                     stdlib.collections.mapOf(
-                                        methodTransformer.stringType,
+                                        context.irBuiltIns.stringType,
                                         Kotlin.Reflect.KType().typeWith(),
                                         parameterMap
                                     )
@@ -763,13 +764,13 @@ class KrosstalkFunction(val declaration: IrSimpleFunction, val methodTransformer
                         // optionalParameters
                         addValueArgument(
                             optionalParameters.map { it.krosstalkName.asConst() }
-                                .let { stdlib.collections.setOf(methodTransformer.stringType, it) }
+                                .let { stdlib.collections.setOf(context.irBuiltIns.stringType, it) }
                         )
 
                         // serverDefaultParameters
                         addValueArgument(
                             serverDefaultParameters.map { it.krosstalkName.asConst() }
-                                .let { stdlib.collections.setOf(methodTransformer.stringType, it) }
+                                .let { stdlib.collections.setOf(context.irBuiltIns.stringType, it) }
                         )
 
                         // object params
@@ -780,7 +781,7 @@ class KrosstalkFunction(val declaration: IrSimpleFunction, val methodTransformer
                                     it.constantObject!!.symbol
                                 )
                             }
-                                .let { stdlib.collections.mapOf(methodTransformer.stringType, context.irBuiltIns.anyNType, it) }
+                                .let { stdlib.collections.mapOf(context.irBuiltIns.stringType, context.irBuiltIns.anyNType, it) }
                         )
 
                         // object return
@@ -810,7 +811,7 @@ class KrosstalkFunction(val declaration: IrSimpleFunction, val methodTransformer
         }
     }
 
-    fun addCallMethodBody() {
+    private fun addCallMethodBody() {
         if (!krosstalkClass.isClient)
             return
 
@@ -865,7 +866,7 @@ class KrosstalkFunction(val declaration: IrSimpleFunction, val methodTransformer
                 putValueArgument(0, calculateName().asConst())
                 putValueArgument(
                     1, stdlib.collections.mapOf(
-                        methodTransformer.stringType,
+                        context.irBuiltIns.stringType,
                         context.irBuiltIns.anyType.makeNullable(),
                         argumentsMap
                     )

@@ -14,7 +14,6 @@ import org.jetbrains.kotlin.ir.IrStatement
 import org.jetbrains.kotlin.ir.ObsoleteDescriptorBasedAPI
 import org.jetbrains.kotlin.ir.builders.IrBuilderWithScope
 import org.jetbrains.kotlin.ir.builders.irCall
-import org.jetbrains.kotlin.ir.declarations.IrAnonymousInitializer
 import org.jetbrains.kotlin.ir.declarations.IrClass
 import org.jetbrains.kotlin.ir.declarations.IrFunction
 import org.jetbrains.kotlin.ir.declarations.IrSimpleFunction
@@ -22,7 +21,11 @@ import org.jetbrains.kotlin.ir.expressions.IrBody
 import org.jetbrains.kotlin.ir.expressions.IrExpression
 import org.jetbrains.kotlin.ir.types.IrType
 import org.jetbrains.kotlin.ir.types.isSubtypeOf
-import org.jetbrains.kotlin.ir.util.*
+import org.jetbrains.kotlin.ir.util.defaultType
+import org.jetbrains.kotlin.ir.util.hasAnnotation
+import org.jetbrains.kotlin.ir.util.isAnonymousObject
+import org.jetbrains.kotlin.ir.util.isObject
+import org.jetbrains.kotlin.ir.util.referenceFunction
 import org.jetbrains.kotlin.name.FqName
 import org.jetbrains.kotlin.resolve.multiplatform.findExpects
 import kotlin.math.absoluteValue
@@ -33,9 +36,6 @@ class KrosstalkMethodTransformer(
     messageCollector: MessageCollector,
 ) : IrTransformer(context, messageCollector) {
 
-    val stringType = context.irBuiltIns.stringType
-
-    val addedInitalizers = mutableMapOf<FqName, IrAnonymousInitializer>()
     val seenNames = mutableMapOf<FqName, MutableSet<String>>()
 
     fun IrFunction.paramHash() = this.symbol.signature!!.hashCode().absoluteValue.toString(36)
@@ -56,7 +56,7 @@ class KrosstalkMethodTransformer(
         default: IrBody?,
         nullError: String,
         typeError: String,
-        keyType: IrType = stringType,
+        keyType: IrType = context.irBuiltIns.stringType,
     ) =
         irCall(Krosstalk.getValueAsOrError(), type).apply {
             putTypeArgument(0, keyType)
@@ -88,12 +88,12 @@ class KrosstalkMethodTransformer(
     override fun visitSimpleFunction(declaration: IrSimpleFunction): IrStatement {
 
         if (declaration.isExpect) {
-            if (declaration.annotations.hasAnnotation(Krosstalk.Annotations.KrosstalkMethod.fqName))
+            if (declaration.hasAnnotation(Krosstalk.Annotations.KrosstalkMethod.fqName))
                 KrosstalkFunction(declaration, this).check()
             return super.visitSimpleFunction(declaration)
         }
 
-        var isKrosstalk: Boolean = declaration.annotations.hasAnnotation(Krosstalk.Annotations.KrosstalkMethod.fqName)
+        var isKrosstalk: Boolean = declaration.hasAnnotation(Krosstalk.Annotations.KrosstalkMethod.fqName)
 
         if (declaration.descriptor.isActual) {
             val expect = context.symbolTable.referenceFunction(
