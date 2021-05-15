@@ -11,6 +11,7 @@ import kotlinx.serialization.Serializable
 import kotlinx.serialization.Transient
 import kotlin.contracts.InvocationKind
 import kotlin.contracts.contract
+import kotlin.jvm.JvmInline
 import kotlin.reflect.KClass
 
 /**
@@ -153,7 +154,15 @@ public sealed interface KrosstalkResult<out T> {
     /**
      * A successful [KrosstalkResult].
      */
-    public data class Success<out T>(val value: T) : KrosstalkResult<T>, SuccessOrHttpError<T>, SuccessOrServerException<T>
+    @JvmInline
+    public value class Success<out T> private constructor(@PublishedApi internal val _value: Any?) : KrosstalkResult<T>, SuccessOrHttpError<T>,
+        SuccessOrServerException<T> {
+        public companion object {
+            public operator fun <T> invoke(value: T): Success<T> = Success(value)
+        }
+
+        public inline val value: T get() = _value as T
+    }
 
     /**
      * The HTTP error [KrosstalkResult], containing the HTTP status code and an optional message.

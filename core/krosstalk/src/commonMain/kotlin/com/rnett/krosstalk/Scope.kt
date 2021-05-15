@@ -13,7 +13,7 @@ public interface Scope {
     public val canBeOptional: Boolean get() = true
 }
 
-
+//TODO make value classes
 public sealed class ScopeInstance<T : Scope> {
     public abstract val scope: T
 

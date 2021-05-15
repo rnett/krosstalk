@@ -13,6 +13,7 @@ import com.rnett.krosstalk.urlDecode
 import com.rnett.krosstalk.urlEncode
 import kotlin.reflect.KType
 
+//TODO use value classes
 
 /**
  * A serializer was missing for an argument.
