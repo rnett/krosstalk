@@ -10,32 +10,7 @@ The reason this artifact is separate is to allow for defining a common interface
 Kotlin's `expect-actual` mechanism can be used to force client and server methods to have the same signature, and
 configuration annotations can be placed on the `expect` methods.
 
-To define a Krosstalk object, create an object that inherits from `Krosstalk`. This object acts as a regristry for
-Krosstalk RPC methods you define, and provides a common point to configure things like the serialization handler, and
-the url prefix. Krosstalk client and server objects additionally inherit from `KrosstalkClient` or `KrosstalkServer`,
-respectively, which provide additional configuration options.
-
-A minimal example of an `expect` Krosstalk object looks like this:
-
-```kotlin
-expect object MyKrosstalk : Krosstalk {
-    override val serialization: KotlinxBinarySerializationHandler
-
-    object Auth : Scope
-}
-```
-
-Methods can then be defined like:
-
-```kotlin
-@KrosstalkMethod(MyKrosstalk::class)
-expect suspend fun basicTest(data: Data): List<String>
-```
-
-If you are using an `expect` Krosstalk, all configuration annotations should be used on the `expect` method, not
-the `actual`s. Configuring the `actuals` will result in a compiler error.
-
-For configuration options, see the annotations in [com.rnett.annotations].
+For usage instructions, see the [github readme]($GITHUB_ROOT#readme).
 
 # Package com.rnett.krosstalk
 
@@ -45,6 +20,10 @@ The main package. See module description.
 
 Annotations that can be used to configure Krosstalk methods.
 
+# Package com.rnett.krosstalk.result
+
+APIs for `KrosstalkResult`. See [the instructions on error handling]($GITHUB_ROOT#error-handling).
+
 # Package com.rnett.krosstalk.serialization
 
 Serialization APIs.
@@ -52,6 +31,8 @@ Serialization APIs.
 # Package com.rnett.krosstalk.serialization.plugin
 
 APIs necessary to define serialization plugins. Look at the Kotlinx serialization plugin for examples.
+
+For instructions on writing plugins, see [WRITING_PLUGINS.md](./../../WRITING_PLUGINS.md#writing-krosstalk-plugins).
 
 # Package com.rnett.krosstalk.client
 

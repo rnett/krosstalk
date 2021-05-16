@@ -6,31 +6,9 @@ import com.rnett.plugin.naming.PackageRef
 import com.rnett.plugin.naming.RootPackage
 import com.rnett.plugin.naming.function
 import com.rnett.plugin.naming.primaryConstructor
-import org.jetbrains.kotlin.ir.util.render
 
 const val krosstalkPackage = "com.rnett.krosstalk"
 const val annotationPackage = "${krosstalkPackage}.annotations"
-
-//TODO add Throwable, props + methods to compiler plugin utils
-
-object KotlinAddons : RootPackage("kotlin") {
-    val throwablePrintStackTrace = function("printStackTrace") {
-        numParameters = 0
-        extensionReceiver = {
-            it.type.render() == "kotlin.Throwable"
-        }
-    }
-
-    object Triple : ClassRef() {
-        val new by primaryConstructor()
-    }
-
-    object Reflect : PackageRef() {
-        object KClass : ClassRef() {
-            val isInstance by function()
-        }
-    }
-}
 
 object Krosstalk : RootPackage(krosstalkPackage) {
     object Annotations : PackageRef() {
