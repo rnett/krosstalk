@@ -2,7 +2,6 @@ package com.rnett.krosstalk.compiler.transformer
 
 import com.rnett.krosstalk.InternalKrosstalkApi
 import com.rnett.krosstalk.KrosstalkPluginApi
-import com.rnett.krosstalk.compiler.KotlinAddons
 import com.rnett.krosstalk.compiler.Krosstalk
 import com.rnett.plugin.ir.IrTransformer
 import com.rnett.plugin.ir.withValueArguments
@@ -39,14 +38,6 @@ class KrosstalkMethodTransformer(
     val seenNames = mutableMapOf<FqName, MutableSet<String>>()
 
     fun IrFunction.paramHash() = this.symbol.signature!!.hashCode().absoluteValue.toString(36)
-
-    val tripleTypes by lazy {
-        listOf(
-            KotlinAddons.Reflect.KClass.resolveTypeWith(),
-            context.irBuiltIns.intType,
-            context.irBuiltIns.stringType
-        )
-    }
 
     fun IrBuilderWithScope.getValueOrError(
         methodName: String,
