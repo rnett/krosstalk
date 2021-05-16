@@ -103,7 +103,7 @@ tasks.create<com.github.psxpaul.task.JavaExecFork>("startAllTestsServer") {
 }
 
 
-tasks.create<com.github.psxpaul.task.JavaExecFork>("startLocalTestServer") {
+val startLocalTestServer = tasks.create<com.github.psxpaul.task.JavaExecFork>("startLocalTestServer") {
     group = "verification"
 
     classpath = sourceSets.main.get().runtimeClasspath
@@ -114,4 +114,10 @@ tasks.create<com.github.psxpaul.task.JavaExecFork>("startLocalTestServer") {
     stopAfter = tasks["clientTest"]
 
     tasks["clientTest"].dependsOn(this)
+}
+
+tasks.getByName("clientTest") {
+    doLast {
+        startLocalTestServer.stop()
+    }
 }
