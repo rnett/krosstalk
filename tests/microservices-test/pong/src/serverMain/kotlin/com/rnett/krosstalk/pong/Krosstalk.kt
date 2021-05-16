@@ -22,7 +22,7 @@ internal actual object PongKrosstalk : Krosstalk(), KtorKrosstalkServer {
 }
 
 fun startServer() {
-    embeddedServer(CIO, 8084, "localhost") {
+    embeddedServer(CIO, 8085, "localhost") {
         install(CORS) {
             anyHost()
         }

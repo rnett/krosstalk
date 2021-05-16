@@ -6,7 +6,7 @@ plugins {
 description = "Krosstalk runtime library"
 
 kotlin {
-    allTargets()
+    allTargets(project)
     sourceSets {
         val commonMain by getting {
             dependencies {

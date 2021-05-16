@@ -5,7 +5,7 @@ plugins {
 description = "Kotlinx-serialization support for Krosstalk"
 
 kotlin {
-    allTargets()
+    allTargets(project)
     sourceSets {
         val commonMain by getting {
             dependencies {

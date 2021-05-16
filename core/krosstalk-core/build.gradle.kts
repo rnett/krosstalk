@@ -5,7 +5,7 @@ plugins {
 description = "Common parts Krosstalk runtime library used by both the runtime and compiler plugin"
 
 kotlin {
-    allTargets()
+    allTargets(project)
     sourceSets {
         val jvmTest by getting {
             dependencies {

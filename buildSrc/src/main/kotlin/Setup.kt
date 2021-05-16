@@ -1,6 +1,11 @@
 import org.gradle.api.GradleException
+import org.gradle.api.Project
 import org.gradle.api.attributes.java.TargetJvmVersion
+import org.gradle.api.publish.PublishingExtension
+import org.gradle.api.publish.maven.tasks.AbstractPublishToMaven
+import org.gradle.kotlin.dsl.getByType
 import org.gradle.kotlin.dsl.invoke
+import org.gradle.kotlin.dsl.withType
 import org.jetbrains.kotlin.gradle.dsl.KotlinJvmProjectExtension
 import org.jetbrains.kotlin.gradle.dsl.KotlinMultiplatformExtension
 import org.jetbrains.kotlin.gradle.plugin.LanguageSettingsBuilder
@@ -9,7 +14,11 @@ inline fun LanguageSettingsBuilder.commonSettings() {
     useExperimentalAnnotation("kotlin.RequiresOptIn")
 }
 
-inline fun KotlinMultiplatformExtension.allTargets() {
+fun Project.test() {
+    this
+}
+
+inline fun KotlinMultiplatformExtension.allTargets(project: Project) {
     jvm {
         //TODO remove once KT-36942 and KT-35003 are fixed
         attributes {
@@ -48,6 +57,8 @@ inline fun KotlinMultiplatformExtension.allTargets() {
         else -> throw GradleException("Host OS is not supported in Kotlin/Native.")
     }
 
+    val publicationsFromMainHost = setOf("jvm", "js", "kotlinMultiplatform", "native")
+
     sourceSets {
         if (isMacOs) {
             val commonMain = getByName("commonMain")
@@ -55,10 +66,25 @@ inline fun KotlinMultiplatformExtension.allTargets() {
             create("nativeMain") {
                 dependsOn(commonMain)
 
-                getByName("macosX64").dependsOn(this)
-                getByName("ios").dependsOn(this)
-                getByName("tvos").dependsOn(this)
-                getByName("watchos").dependsOn(this)
+                getByName("macosX64Main").dependsOn(this)
+                getByName("iosMain").dependsOn(this)
+                getByName("tvosMain").dependsOn(this)
+                getByName("watchosMain").dependsOn(this)
+            }
+        }
+    }
+
+    with(project) {
+        afterEvaluate {
+            extensions.getByType<PublishingExtension>().apply {
+                publications {
+                    matching { it.name in publicationsFromMainHost }.all {
+                        val targetPublication = this@all
+                        tasks.withType<AbstractPublishToMaven>()
+                            .matching { it.publication == targetPublication }
+                            .configureEach { onlyIf { findProperty("isMainHost") == "true" } }
+                    }
+                }
             }
         }
     }
