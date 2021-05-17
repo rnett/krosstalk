@@ -3,15 +3,15 @@ plugins {
     id("org.jetbrains.kotlin.plugin.serialization")
 }
 
-
-description = "Krosstalk runtime library"
+niceModuleName = "Krosstalk Core"
+description = "The core (client or server) APIs of Krosstalk, including everything neccessary for expect Krosstalks."
 
 kotlin {
     allTargets(project)
     sourceSets {
         val commonMain by getting {
             dependencies {
-                api(project(":core:krosstalk-core"))
+                api(project(":core:krosstalk-base"))
                 implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:${Dependencies.serialization}")
             }
         }

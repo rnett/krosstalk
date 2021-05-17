@@ -17,11 +17,11 @@ with [instructions on how to write your own](./WRITING_PLUGINS.md).
 
 * Gradle plugin (required): `com.rnett.krosstalk` for the `plugins` block. Full coordinates
   are `com.github.rnett.krosstalk:krosstalk-gradle-plugin`.
-* Common:`com.github.rnett.krosstalk:krosstalk`
+* Core:`com.github.rnett.krosstalk:krosstalk`
 * Client: `com.github.rnett.krosstalk:krosstalk-client`
 * Server: `com.github.rnett.krosstalk:krosstalk-server`
 
-Any common source set defining an `expect` Krosstalk object will need to depend on the common artifact. The client and
+Any common source set defining an `expect` Krosstalk object will need to depend on the core artifact. The client and
 server artifacts will generally be inherited from plugins.
 
 The Krosstalk compiler plugin will automatically not apply to source sets that don't

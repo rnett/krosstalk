@@ -2,7 +2,7 @@ plugins {
     kotlin("multiplatform")
 }
 
-description = "Basic Ktor server support for Krosstalk"
+description = "Ktor client plugin for Krosstalk"
 
 kotlin {
     allTargets(project, true)

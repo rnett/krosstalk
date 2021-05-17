@@ -3,7 +3,7 @@ plugins {
     id("org.jetbrains.kotlin.plugin.serialization")
 }
 
-description = "Krosstalk runtime library"
+description = "The server-specific APIs of Krosstalk, including KrosstalkServer."
 
 kotlin {
     allTargets(project)

@@ -14,7 +14,7 @@ rootProject.name = "krosstalk-parent"
 
 include(
     "core",
-    "core:krosstalk", "core:krosstalk-core",
+    "core:krosstalk", "core:krosstalk-base",
     "core:krosstalk-client", "core:krosstalk-server",
     "compiler:krosstalk-compiler-plugin", "compiler:krosstalk-gradle-plugin"
 )

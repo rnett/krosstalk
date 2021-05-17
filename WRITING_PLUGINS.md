@@ -2,7 +2,7 @@
 
 Plugin definition APIs are generally marked with `@KrosstalkPluginApi` and defined in `*.plugin` packages. The
 `KrosstalkPluginApi` annotation should **not** be propagated to users of your plugin. Serialization, client, and server
-plugins should depend on the common, client, and server artifacts, respectively, and expose those dependencies (i.e.
+plugins should depend on the core, client, and server artifacts, respectively, and expose those dependencies (i.e.
 use `api()`).
 
 **If you write a plugin, please strongly consider contributing it, either via a PR or in your own repo.**  Even if it's
@@ -333,7 +333,7 @@ These methods then must be used by our server handler's registration method. Sin
 registration method will generally get it's information from a `Krosstalk` object directly, using `Krosstalk. methods`
 and `Krosstalk.serverScopes`.  `KrosstalkServer.scopesAsType` is also helpful to convert a method's list of scopes to
 scopes of the plugin's type (this is enforced at compile time). A
-method's `Endpoint` ([docs](https://rnett.github.io/krosstalk/release/core/krosstalk-core/-krosstalk%20-core/com.rnett.krosstalk.endpoint/-endpoint/index.html))
+method's `Endpoint` ([docs](https://rnett.github.io/krosstalk/release/core/krosstalk-base/-krosstalk%20-core/com.rnett.krosstalk.endpoint/-endpoint/index.html))
 can be used for resolution. It has its own custom URL resolver that extracts parameters, called using `Endpoint.resolve`
 . You can also get a resolution tree (`Endpoint.resolveTree`) or a list of all possible
 resolutions (`Endpoint. allResolvePaths`) but neither of those have resolve methods (yet) so using `Endpoint.resolve` is

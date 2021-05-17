@@ -2,6 +2,7 @@ plugins {
     kotlin("multiplatform")
 }
 
+niceModuleName = "Krosstalk Kotlinx-serialization"
 description = "Kotlinx-serialization support for Krosstalk"
 
 kotlin {

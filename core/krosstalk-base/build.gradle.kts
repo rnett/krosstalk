@@ -2,7 +2,7 @@ plugins {
     kotlin("multiplatform")
 }
 
-description = "Common parts Krosstalk runtime library used by both the runtime and compiler plugin"
+description = "The parts of Krosstalk that are used in both the runtime and compiler plugin."
 
 kotlin {
     allTargets(project)

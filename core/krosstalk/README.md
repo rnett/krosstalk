@@ -36,8 +36,8 @@ For instructions on writing plugins, see [WRITING_PLUGINS.md](./../../WRITING_PL
 
 # Package com.rnett.krosstalk.client
 
-APIs that need to be accessible to common code, but are only used by clients.
+APIs that need to be accessible to core code, but are only used by clients.
 
 # Package com.rnett.krosstalk.server
 
-APIs that need to be accessible to common code, but are only used by servers.
+APIs that need to be accessible to core code, but are only used by servers.

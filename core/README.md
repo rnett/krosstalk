@@ -2,8 +2,8 @@
 
 These docs are for the core artifacts of Krosstalk:
 
-* `krosstalk-core`: APIs shared between the runtime and compiler plugin
-* `krosstalk`: The common API.
+* `krosstalk-base`: APIs shared between the runtime and compiler plugin
+* `krosstalk`: The core API.
 * `krosstalk-server`: The server API.
 * `krosstalk-client`: The client API.
 

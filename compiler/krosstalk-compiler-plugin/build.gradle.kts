@@ -2,14 +2,13 @@ plugins {
     kotlin("jvm")
     kotlin("kapt")
     id("com.github.rnett.compiler-plugin-utils") version Dependencies.compilerPluginUtils
-    `maven-publish` apply true
 }
 
 description = "Krosstalk Kotlin compiler plugin"
 
 dependencies {
     implementation(kotlin("reflect"))
-    implementation(project(":core:krosstalk-core"))
+    implementation(project(":core:krosstalk-base"))
     compileOnly("org.jetbrains.kotlin:kotlin-compiler-embeddable:${Dependencies.kotlin}")
 
     implementation("com.github.rnett.compiler-plugin-utils:compiler-plugin-utils:${Dependencies.compilerPluginUtils}")

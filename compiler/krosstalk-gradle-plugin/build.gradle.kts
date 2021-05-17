@@ -3,8 +3,8 @@ plugins {
     kotlin("jvm")
     kotlin("kapt")
     id("com.github.gmazzo.buildconfig")
-    id("com.gradle.plugin-publish")
     `maven-publish`
+    id("com.gradle.plugin-publish")
 }
 
 description = "Krosstalk gradle plugin, for serving the compiler plugin"

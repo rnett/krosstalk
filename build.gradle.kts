@@ -29,7 +29,45 @@ allprojects {
         apply(plugin = "org.jetbrains.dokka")
 
     if (willPublish)
-        afterEvaluate { apply(plugin = "com.vanniktech.maven.publish") }
+        afterEvaluate {
+            apply(plugin = "org.gradle.maven-publish")
+
+            val project = this
+
+            if ("gradle-plugin" !in this.name) {
+                apply(plugin = "com.vanniktech.maven.publish")
+                extensions.getByType<com.vanniktech.maven.publish.MavenPublishBaseExtension>().apply {
+                    pom{
+                        name.set(project.niceModuleName)
+                        description.set(project.description ?: "Krosstalk module")
+                        inceptionYear.set("2021")
+                        url.set("https://github.com/rnett/krosstalk/")
+
+                        licenses {
+                            license {
+                                name.set("The Apache Software License, Version 2.0")
+                                url.set("https://www.apache.org/licenses/LICENSE-2.0.txt")
+                                distribution.set("repo")
+                            }
+                        }
+
+                        scm {
+                            url.set("https://github.com/rnett/krosstalk.git")
+                            connection.set("scm:git:git://github.com/rnett/krosstalk.git")
+                            developerConnection.set("scm:git:ssh://git@github.com/rnett/krosstalk.git")
+                        }
+
+                        developers {
+                            developer {
+                                id.set("rnett")
+                                name.set("Ryan Nett")
+                                url.set("https://github.com/rnett/")
+                            }
+                        }
+                    }
+                }
+            }
+        }
 
     afterEvaluate {
         val project = this
@@ -53,7 +91,7 @@ allprojects {
                     else -> return@withType
                 }
 
-                moduleName.set(dokkaModuleName)
+                moduleName.set(niceModuleName)
                 moduleVersion.set(version.toString())
 
                 dokkaSourceSets.configureEach {
