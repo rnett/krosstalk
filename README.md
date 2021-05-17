@@ -1,6 +1,7 @@
 # Krosstalk: Expect/Actual RPC call autowiring
 
-[ ![Download](https://api.bintray.com/packages/rnett/krosstalk/krosstalk/images/download.svg) ](https://bintray.com/rnett/krosstalk/krosstalk/_latestVersion)
+![Maven Central](https://img.shields.io/maven-central/v/com.github.rnett.compiler-plugin-utils/compiler-plugin-utils)
+[![Sonatype Nexus (Snapshots)](https://img.shields.io/nexus/s/com.github.rnett.compiler-plugin-utils/compiler-plugin-utils?server=https%3A%2F%2Foss.sonatype.org)](https://oss.sonatype.org/content/repositories/snapshots/com/github/rnett/compiler-plugin-utils/)
 [![License](https://img.shields.io/badge/License-Apache%202.0-yellowgreen.svg)](https://opensource.org/licenses/Apache-2.0)
 
 Krosstalk allows you to easily create RPC methods using pure kotlin. Client, server, and serialization implementations
