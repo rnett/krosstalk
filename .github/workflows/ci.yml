@@ -31,6 +31,22 @@ jobs:
       - name: Run Integraiton Tests
         run: (cd tests && ./gradlew allTests --no-parallel)
 
+      - id: install_gpg_key
+        if: github.ref == 'refs/heads/main'
+        name: Install gpg secret key
+        uses: rnett/import-gpg-key@v1.1
+        with:
+          secret-key: ${{ secrets.OSSRH_GPG_SECRET_KEY }}
+          export-secring: true
+
+      - name: Publish
+        if: github.ref == 'refs/heads/main'
+        env:
+          ORG_GRADLE_PROJECT_mavenCentralRepositoryPassword: ${{ secrets.SONATYPE_PASSWORD }}
+          ORG_GRADLE_PROJECT_mavenCentralRepositoryUsername: ${{ secrets.SONATYPE_USERNAME }}
+          GRADLE_OPTS: -Xmx2048m -XX:MaxPermSize=512m
+        run: ./gradlew publish --no-daemon --no-parallel -Psigning.keyId=${{steps.install_gpg_key.outputs.key-id}} -Psigning.secretKeyRingFile=/home/runner/.gnupg/secring.gpg -Psigning.password=${{ secrets.OSSRH_GPG_KEY_PASSWORD }}
+
   publish-mac:
     runs-on: macos-latest
     steps:
@@ -54,6 +70,15 @@ jobs:
       - name: Run Integraiton Tests
         run: (cd tests && ./gradlew allTests --no-parallel)
 
+      - name: Publish
+        if: github.ref == 'refs/heads/main'
+        env:
+          ORG_GRADLE_PROJECT_mavenCentralRepositoryPassword: ${{ secrets.SONATYPE_PASSWORD }}
+          ORG_GRADLE_PROJECT_mavenCentralRepositoryUsername: ${{ secrets.SONATYPE_USERNAME }}
+          ORG_GRADLE_PROJECT_signingInMemoryKey: ${{ secrets.OSSRH_GPG_SECRET_KEY }}
+          GRADLE_OPTS: -Xmx2048m -XX:MaxPermSize=512m
+        run: ./gradlew publish --no-daemon --no-parallel
+
   publish-windows:
     runs-on: windows-latest
     steps:
@@ -76,6 +101,16 @@ jobs:
 
       - name: Run Integraiton Tests
         run: (cd tests && ./gradlew allTests --no-parallel)
+
+      - name: Publish
+        if: github.ref == 'refs/heads/main'
+        env:
+          ORG_GRADLE_PROJECT_mavenCentralRepositoryPassword: ${{ secrets.SONATYPE_PASSWORD }}
+          ORG_GRADLE_PROJECT_mavenCentralRepositoryUsername: ${{ secrets.SONATYPE_USERNAME }}
+          ORG_GRADLE_PROJECT_signingInMemoryKey: ${{ secrets.OSSRH_GPG_SECRET_KEY }}
+          GRADLE_OPTS: -Xmx2048m -XX:MaxPermSize=512m
+        run: ./gradlew publish --no-daemon --no-parallel
+
 
   publish-docs:
     runs-on: ubuntu-latest
@@ -119,23 +154,6 @@ jobs:
 
       - name: Generate HTML Docs
         run: ./gradlew dokkaHtmlMultiModule -PgitBranch=$GITHUB_SHA -PcoreVersionDir=past-docs/old-releases/core -PpluginVersionDir=past-docs/old-releases/plugins
-
-
-      #      - id: install_gpg_key
-      #        if: github.ref == 'refs/heads/main'
-      #        name: Install gpg secret key
-      #        uses: rnett/import-gpg-key@v1.1
-      #        with:
-      #          secret-key: ${{ secrets.OSSRH_GPG_SECRET_KEY }}
-      #          export-secring: true
-      #      - name: Publish
-      #        if: github.ref == 'refs/heads/main'
-      #        env:
-      #          ORG_GRADLE_PROJECT_mavenCentralRepositoryPassword: ${{ secrets.SONATYPE_PASSWORD }}
-      #          ORG_GRADLE_PROJECT_mavenCentralRepositoryUsername: ${{ secrets.SONATYPE_USERNAME }}
-      #          GRADLE_OPTS: -Xmx2048m -XX:MaxPermSize=512m
-      #        run: ./gradlew publish --no-daemon --no-parallel -Psigning.keyId=${{steps.install_gpg_key.outputs.key-id}} -Psigning.secretKeyRingFile=/home/runner/.gnupg/secring.gpg -Psigning.password=${{ secrets.OSSRH_GPG_KEY_PASSWORD }}
-
       - name: Stop gradle daemon
         run: ./gradlew --stop
 

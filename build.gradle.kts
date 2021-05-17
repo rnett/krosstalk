@@ -36,8 +36,9 @@ allprojects {
 
             if ("gradle-plugin" !in this.name) {
                 apply(plugin = "com.vanniktech.maven.publish")
+
                 extensions.getByType<com.vanniktech.maven.publish.MavenPublishBaseExtension>().apply {
-                    pom{
+                    pom {
                         name.set(project.niceModuleName)
                         description.set(project.description ?: "Krosstalk module")
                         inceptionYear.set("2021")

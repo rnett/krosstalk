@@ -5,6 +5,7 @@ plugins {
     id("com.github.gmazzo.buildconfig")
     `maven-publish`
     id("com.gradle.plugin-publish")
+    //TODO publish, see https://github.com/vanniktech/gradle-maven-publish-plugin/issues/256
 }
 
 description = "Krosstalk gradle plugin, for serving the compiler plugin"

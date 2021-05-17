@@ -20,6 +20,10 @@
       <module name="krosstalk-parent.core.krosstalk-client-sdk.commonTest" target="1.8" />
       <module name="krosstalk-parent.core.krosstalk-client-sdk.jvmMain" target="1.8" />
       <module name="krosstalk-parent.core.krosstalk-client-sdk.jvmTest" target="1.8" />
+      <module name="krosstalk-parent.core.krosstalk-core.commonMain" target="1.8" />
+      <module name="krosstalk-parent.core.krosstalk-core.commonTest" target="1.8" />
+      <module name="krosstalk-parent.core.krosstalk-core.jvmMain" target="1.8" />
+      <module name="krosstalk-parent.core.krosstalk-core.jvmTest" target="1.8" />
       <module name="krosstalk-parent.core.krosstalk-server-sdk.commonMain" target="1.8" />
       <module name="krosstalk-parent.core.krosstalk-server-sdk.commonTest" target="1.8" />
       <module name="krosstalk-parent.core.krosstalk-server-sdk.jvmMain" target="1.8" />
