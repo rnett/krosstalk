@@ -82,7 +82,7 @@ inline fun KotlinMultiplatformExtension.allTargets(project: Project, noWatchOsX6
 
         val nativeTest = create("nativeTest") {
             dependsOn(commonTest)
-            dependsOn(nativeMain)
+            requiresVisibilityOf(nativeMain)
 
             nativeTargets.map { it.name + "Test" }.forEach {
                 sourceSets.getByName(it).dependsOn(this)
