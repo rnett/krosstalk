@@ -38,8 +38,10 @@ allprojects {
                 apply(plugin = "com.vanniktech.maven.publish")
 
                 extensions.getByType<com.vanniktech.maven.publish.MavenPublishBaseExtension>().apply {
-                    val stagingProfileId = project.findProperty("sonatypeRepositoryId")?.toString()
-                    publishToMavenCentral(com.vanniktech.maven.publish.SonatypeHost.DEFAULT, stagingProfileId)
+                    if (!version.toString().toLowerCase().endsWith("snapshot")) {
+                        val stagingProfileId = project.findProperty("sonatypeRepositoryId")?.toString()
+                        publishToMavenCentral(com.vanniktech.maven.publish.SonatypeHost.DEFAULT, stagingProfileId)
+                    }
 
                     pom {
                         name.set(project.niceModuleName)
