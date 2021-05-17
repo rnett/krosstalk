@@ -39,12 +39,12 @@ jobs:
   create_staging_repository:
     runs-on: ubuntu-latest
     needs: is-snapshot
-    if: needs.is-snapshot.outputs.snapshot == false
     name: Create staging repository
     outputs:
       repository_id: ${{ steps.create.outputs.repository_id }}
     steps:
       - id: create
+        if: needs.is-snapshot.outputs.snapshot == false
         uses: nexus-actions/create-nexus-staging-repo@main
         with:
           username: ${{ secrets.SONATYPE_USERNAME }}
