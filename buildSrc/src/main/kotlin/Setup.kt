@@ -14,6 +14,7 @@ inline fun LanguageSettingsBuilder.commonSettings() {
     useExperimentalAnnotation("kotlin.RequiresOptIn")
 }
 
+@OptIn(ExperimentalStdlibApi::class)
 inline fun KotlinMultiplatformExtension.allTargets(project: Project, noWatchOsX64: Boolean = false) {
     jvm {
         //TODO remove once KT-36942 and KT-35003 are fixed
@@ -23,7 +24,6 @@ inline fun KotlinMultiplatformExtension.allTargets(project: Project, noWatchOsX6
         compilations.all {
             kotlinOptions {
                 jvmTarget = "1.8"
-                useIR = true
                 //TODO remove once KT-36942 and KT-35003 are fixed
                 compileJavaTaskProvider?.get()?.apply {
                     targetCompatibility = "1.8"
@@ -42,33 +42,31 @@ inline fun KotlinMultiplatformExtension.allTargets(project: Project, noWatchOsX6
     val isMingwX64 = hostOs.startsWith("Windows")
     val isMacOs = hostOs == "Mac OS X"
 
-    val macPrefixes = setOf("macos", "ios", "tvos", "watchos")
+    val nativeTargets = when {
+        isMacOs -> listOf(
+            macosX64(),
 
-    when {
-        isMacOs -> {
-            macosX64()
+            iosArm32(),
+            iosArm64(),
+            iosX64(),
 
-            iosArm32()
-            iosArm64()
-            iosX64()
+            tvosArm64(),
+            tvosX64(),
 
-            tvosArm64()
-            tvosX64()
-
-            watchosArm32()
-            watchosArm64()
+            watchosArm32(),
+            watchosArm64(),
             watchosX86()
-
+        ) + buildList {
             if (!noWatchOsX64) {
-                watchosX64()
+                add(watchosX64())
             }
         }
-        hostOs == "Linux" -> linuxX64("native")
-        isMingwX64 -> mingwX64("native")
+        hostOs == "Linux" -> listOf(linuxX64())
+        isMingwX64 -> listOf(mingwX64())
         else -> throw GradleException("Host OS is not supported in Kotlin/Native.")
     }
 
-    val publicationsFromMainHost = setOf("jvm", "js", "kotlinMultiplatform", "native")
+    val publicationsFromMainHost = setOf("jvm", "js", "kotlinMultiplatform")
 
     sourceSets {
         if (isMacOs) {
@@ -77,11 +75,8 @@ inline fun KotlinMultiplatformExtension.allTargets(project: Project, noWatchOsX6
             val nativeMain = create("nativeMain") {
                 dependsOn(commonMain)
 
-                sourceSets.filter { sourceSet ->
-                    macPrefixes.any { sourceSet.name.startsWith(it) }
-                            && "Main" in sourceSet.name
-                }.forEach {
-                    it.dependsOn(this)
+                nativeTargets.map { it.name + "Main" }.forEach {
+                    sourceSets.getByName(it).dependsOn(this)
                 }
             }
         }
@@ -118,7 +113,6 @@ inline fun KotlinJvmProjectExtension.irAndJava8() {
         compilations.all {
             kotlinOptions {
                 jvmTarget = "1.8"
-                useIR = true
                 //TODO remove once KT-36942 and KT-35003 are fixed
                 compileJavaTaskProvider.get().apply {
                     targetCompatibility = "1.8"
