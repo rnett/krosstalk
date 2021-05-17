@@ -37,6 +37,8 @@ allprojects {
             if ("gradle-plugin" !in this.name) {
                 apply(plugin = "com.vanniktech.maven.publish")
 
+                println("Has signing key: ${project.findProperty("signingInMemoryKey") != null}")
+
                 extensions.getByType<com.vanniktech.maven.publish.MavenPublishBaseExtension>().apply {
                     if (!version.toString().toLowerCase().endsWith("snapshot")) {
                         val stagingProfileId = project.findProperty("sonatypeRepositoryId")?.toString()
