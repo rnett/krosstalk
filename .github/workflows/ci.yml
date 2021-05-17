@@ -45,7 +45,7 @@ jobs:
     steps:
       - id: create
         if: needs.is-snapshot.outputs.snapshot == false
-        uses: nexus-actions/create-nexus-staging-repo@main
+        uses: nexus-actions/create-nexus-staging-repo@v1.1
         with:
           username: ${{ secrets.SONATYPE_USERNAME }}
           password: ${{ secrets.SONATYPE_PASSWORD }}
@@ -154,14 +154,14 @@ jobs:
     steps:
       - name: Discard
         if: ${{ needs.publish-docs.result != 'success' }}
-        uses: nexus-actions/drop-nexus-staging-repo@main
+        uses: nexus-actions/drop-nexus-staging-repo@v1
         with:
           username: ${{ secrets.SONATYPE_USERNAME }}
           password: ${{ secrets.SONATYPE_PASSWORD }}
           staging_repository_id: ${{ needs.create_staging_repository.outputs.repository-id }}
       - name: Release
         if: ${{ needs.publish-docs.result == 'success' }}
-        uses: nexus-actions/release-nexus-staging-repo@main
+        uses: nexus-actions/release-nexus-staging-repo@v1.1
         with:
           username: ${{ secrets.SONATYPE_USERNAME }}
           password: ${{ secrets.SONATYPE_PASSWORD }}
