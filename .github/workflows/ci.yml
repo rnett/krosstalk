@@ -86,7 +86,7 @@ jobs:
           ORG_GRADLE_PROJECT_mavenCentralPassword: ${{ secrets.SONATYPE_PASSWORD }}
           ORG_GRADLE_PROJECT_signingInMemoryKey: ${{ secrets.OSSRH_GPG_SECRET_KEY }}
           ORG_GRADLE_PROJECT_sonatypeRepositoryId: ${{ needs.create_staging_repository.outputs.repository_id }}
-          GRADLE_OPTS: -Xmx2048m
+          GRADLE_OPTS: -Xmx4096m
         run: ./gradlew publish --no-daemon --no-parallel
 
 

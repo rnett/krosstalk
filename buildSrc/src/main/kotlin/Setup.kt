@@ -69,15 +69,23 @@ inline fun KotlinMultiplatformExtension.allTargets(project: Project, noWatchOsX6
     val publicationsFromMainHost = setOf("jvm", "js", "kotlinMultiplatform")
 
     sourceSets {
-        if (isMacOs) {
-            val commonMain = getByName("commonMain")
+        val commonMain = getByName("commonMain")
+        val commonTest = getByName("commonTest")
 
-            val nativeMain = create("nativeMain") {
-                dependsOn(commonMain)
+        val nativeMain = create("nativeMain") {
+            dependsOn(commonMain)
 
-                nativeTargets.map { it.name + "Main" }.forEach {
-                    sourceSets.getByName(it).dependsOn(this)
-                }
+            nativeTargets.map { it.name + "Main" }.forEach {
+                sourceSets.getByName(it).dependsOn(this)
+            }
+        }
+
+        val nativeTest = create("nativeTest") {
+            dependsOn(commonTest)
+            dependsOn(nativeMain)
+
+            nativeTargets.map { it.name + "Test" }.forEach {
+                sourceSets.getByName(it).dependsOn(this)
             }
         }
     }
@@ -91,7 +99,10 @@ inline fun KotlinMultiplatformExtension.allTargets(project: Project, noWatchOsX6
                         tasks.withType<AbstractPublishToMaven>()
                             .matching { it.publication == targetPublication }
                             .configureEach {
-                                onlyIf { isMingwX64 }
+                                onlyIf {
+                                    // only publish shared artifacts from windows
+                                    isMingwX64
+                                }
                             }
                     }
                 }
