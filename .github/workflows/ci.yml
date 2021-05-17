@@ -148,7 +148,7 @@ jobs:
         with:
           from: core/build/dokka/htmlMultiModule
           publish-to: '$latest/core,!old-releases/core/$version'
-          version: ${{ needs.find-version.outputs.match }}
+          version: ${{ needs.find-version.outputs.version }}
           restore: true
           message: Update Core docs for $version
 
@@ -158,7 +158,7 @@ jobs:
         with:
           from: plugins/build/dokka/htmlMultiModule
           publish-to: '$latest/plugins,!old-releases/plugins/$version'
-          version: ${{ needs.find-version.outputs.match }}
+          version: ${{ needs.find-version.outputs.version }}
           restore: 'false'
           message: Update Plugin docs for $version
 
