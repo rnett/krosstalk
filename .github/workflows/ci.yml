@@ -74,7 +74,7 @@ jobs:
         run: ./gradlew :core:krosstalk:outgoingVariants
 
       - name: Build and Unit Test
-        run: ./gradlew build -DRELEASE_SIGNING_ENABLED=false # test allTests
+        run: ./gradlew build -DRELEASE_SIGNING_ENABLED=false test allTests
 
       - name: Run Integraiton Tests
         run: (cd tests && ./gradlew allTests --no-parallel)
