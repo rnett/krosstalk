@@ -52,78 +52,11 @@ jobs:
           staging_profile_id: ${{ secrets.SONATYPE_PROFILE_ID }}
           description: Krosstalk ${{ github.repository }}/${{ github.workflow }}#${{ github.run_number }}
 
-  publish-linux:
-    runs-on: ubuntu-latest
-    needs: create_staging_repository
-    steps:
-      - uses: actions/checkout@v2
-      - name: Set up JDK 15
-        uses: actions/setup-java@v1
-        with:
-          java-version: 15
-
-      - name: Grant execute permission for gradlew
-        run: |
-          chmod +x gradlew
-          chmod +x tests/gradlew
-
-      - name: List variants
-        run: ./gradlew :core:krosstalk:outgoingVariants
-
-      - name: Build and Unit Test
-        run: ./gradlew build -DRELEASE_SIGNING_ENABLED=false # test allTests
-
-      - name: Run Integraiton Tests
-        run: (cd tests && ./gradlew allTests --no-parallel)
-
-      - name: Publish
-        if: github.ref == 'refs/heads/main'
-        env:
-          ORG_GRADLE_PROJECT_mavenCentralUsername: ${{ secrets.SONATYPE_USERNAME }}
-          ORG_GRADLE_PROJECT_mavenCentralPassword: ${{ secrets.SONATYPE_PASSWORD }}
-          ORG_GRADLE_PROJECT_signingInMemoryKey: ${{ secrets.OSSRH_GPG_SECRET_KEY }}
-          ORG_GRADLE_PROJECT_signingInMemoryPassword: ""
-          ORG_GRADLE_PROJECT_sonatypeRepositoryId: ${{ needs.create_staging_repository.outputs.repository_id }}
-          GRADLE_OPTS: -Xmx2048m -XX:MaxPermSize=512m
-        run: ./gradlew publish --no-daemon --no-parallel
-
-  publish-mac:
-    runs-on: macos-latest
-    needs: create_staging_repository
-    steps:
-      - uses: actions/checkout@v2
-      - name: Set up JDK 15
-        uses: actions/setup-java@v1
-        with:
-          java-version: 15
-
-      - name: Grant execute permission for gradlew
-        run: |
-          chmod +x gradlew
-          chmod +x tests/gradlew
-
-      - name: List variants
-        run: ./gradlew :core:krosstalk:outgoingVariants
-
-      - name: Build and Unit Test
-        run: ./gradlew build -DRELEASE_SIGNING_ENABLED=false # test allTests
-
-      - name: Run Integraiton Tests
-        run: (cd tests && ./gradlew allTests --no-parallel)
-
-      - name: Publish
-        if: github.ref == 'refs/heads/main'
-        env:
-          ORG_GRADLE_PROJECT_mavenCentralUsername: ${{ secrets.SONATYPE_USERNAME }}
-          ORG_GRADLE_PROJECT_mavenCentralPassword: ${{ secrets.SONATYPE_PASSWORD }}
-          ORG_GRADLE_PROJECT_signingInMemoryKey: ${{ secrets.OSSRH_GPG_SECRET_KEY }}
-          ORG_GRADLE_PROJECT_signingInMemoryPassword: ""
-          ORG_GRADLE_PROJECT_sonatypeRepositoryId: ${{ needs.create_staging_repository.outputs.repository_id }}
-          GRADLE_OPTS: -Xmx2048m -XX:MaxPermSize=512m
-        run: ./gradlew publish --no-daemon --no-parallel
-
-  publish-windows:
-    runs-on: windows-latest
+  publish:
+    strategy:
+      matrix:
+        os: [ ubuntu-latest, macos-latest, windows-latest ]
+    runs-on: ${{ matrix.os }}
     needs: create_staging_repository
     steps:
       - uses: actions/checkout@v2
@@ -160,9 +93,7 @@ jobs:
 
   publish-docs:
     runs-on: ubuntu-latest
-    needs: [ is-snapshot, publish-linux, publish-mac, publish-windows ]
-    outputs:
-      version: (endsWith(${{ steps.get_version.outputs.match }}, 'SNAPSHOT') || endsWith(${{ steps.get_version.outputs.match }}, 'snapshot'))
+    needs: [ is-snapshot, publish ]
 
     steps:
       - uses: actions/checkout@v2
@@ -218,7 +149,7 @@ jobs:
 
   finalize:
     runs-on: ubuntu-latest
-    needs: [ create_staging_repository, publish-linux, publish-windows, publish-mac, publish-docs ]
+    needs: [ create_staging_repository, is-snapshot, publish, publish-docs ]
     if: ${{ always() && needs.create_staging_repository.result == 'success' && needs.is-snapshot.outputs.snapshot == false }}
     steps:
       - name: Discard
