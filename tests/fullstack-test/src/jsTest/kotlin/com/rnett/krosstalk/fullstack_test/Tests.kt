@@ -364,4 +364,10 @@ class Tests {
         assertEquals("call", result.first)
         assertEquals("2", result.second)
     }
+
+    @Test
+    fun testIgnored() = GlobalScope.promise {
+        assertEquals("test", withIgnored())
+        assertEquals("test", withIgnored("2"))
+    }
 }

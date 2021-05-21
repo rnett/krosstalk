@@ -181,3 +181,5 @@ actual suspend fun withRequestHeadersInCallAndParam(
     headers: Headers,
     keys: Pair<String, String>
 ): Pair<String?, String?> = krosstalkCall(headersOf(keys.first to "call"))
+
+actual suspend fun withIgnored(test: String): String = krosstalkCall()

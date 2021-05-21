@@ -204,7 +204,7 @@ internal suspend inline fun <T, K, reified C : ClientScope<*>> K.call(
     val (endpoint, usedInUrl) = method.endpoint.fillWithArgs(
         methodName,
         rawArguments.keys,
-        arguments.filter { it.value != null }.keys
+        arguments.filter { it.value != null }.keys //TODO should I only remove nulls if the param is optional?
     ) {
         if (rawArguments[it].let { it is ServerDefault<*> && it.isNone() })
             throw ServerDefaultInEndpointException(methodName, it)

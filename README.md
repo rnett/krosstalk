@@ -10,6 +10,11 @@ are plugable, and Kotlin's expect-actual modifiers can be used to ensure that cl
 Ktor client and server and Kotlinx Serialization plugins are provided, along
 with [instructions on how to write your own](./WRITING_PLUGINS.md).
 
+### Compatibility
+
+Krosstalk is currently not compatible with Compose, because their compiler plugin does some weird stuff. To get around
+this, put all your Krosstalk stuff in other modules and depend on it in the modules with the compiler plugin applied.
+
 ## Artifacts
 
 ### Core ([Docs](https://rnett.github.io/krosstalk/release/core/index.html))
@@ -134,7 +139,7 @@ The `KrosstalkClient` and `KrosstalkServer` interfaces also require you to provi
 server plugin, respectively. Plugins usually define their own interface or typealias that does this, i.e.
 `KtorKrosstalkClient`. Scopes are a mechanism to allow clients to modify requests depending on arguments and to allow
 servers to selectively match and extract data from requests. As such, their implementation will be plugin specific,
-requiring you to specify the scope type. More on that later.
+requiring you to specify the scope type. See the [Scope section](#scopes) for details.
 
 ## Methods
 
@@ -145,7 +150,11 @@ handler of their Krosstalk object. Methods can be further configured using the a
 `com.rnett.krosstalk.annotations`. All configuration (including the `KrosstalkMethod` annotation) should be done on the
 `expect` methods when using a common Krosstalk. I suggest reading
 over [the docs of `com.rnett.krosstalk. annotations`](https://rnett.github.io/krosstalk/release/core/krosstalk/-krosstalk/com.rnett.krosstalk.annotations/index.html)
-for an overview (click on an annotation to see the full docs).
+for the details (click on an annotation to see the full docs) of what each annotation does; an overview of what is
+possible is provided below. Looking over
+[the common tests](tests/fullstack-test/src/commonMain/kotlin/com/rnett/krosstalk/fullstack_test/Test.kt) and
+[the client tests](tests/client-test/src/jsMain/kotlin/com/rnett/krosstalk/client_test/Test.kt) should give you an idea
+of what is possible, too.
 
 ### Error Handling
 
@@ -201,6 +210,105 @@ private actual fun _errorFunction(n: Int): KrosstalkResult<Int> = runKrosstalkCa
 is fairly common. The server part can be omitted if the server code is changed to throw `KrosstalkHttpError`
 instead of `NoSuchElementException`, i.e. by using `map[key] ?: throwKrosstalkHttpError(404)` instead
 of `map.getValue(key)`.
+
+### Endpoints
+
+The endpoint a method uses (the relative URL and the HTTP method) can be configured using `@KrosstalkEndpoint`. The
+annotation takes the HTTP method and content type, and a template for the endpoint (which should be a relative URL).  
+The template allows parameters to be used in the endpoint, using the following syntax:
+
+* Literals: text, plus `$krosstalkPrefix` to use the Krosstalk object's prefix value, and `$methodName` to use the
+  method's name plus the argument hash unless disabled in `@KrosstalkMethod`.
+* Parameter: `{name}` - encodes the value of the parameter with that name.
+* Parameter with name: `{{name}}` - is desugared into `/name/{name}` or `name={name}` depending on the URL region.
+* Optional: `[?name:...]` - Evaluates to the body (`...`) if `name` is present (not null and not a default
+  `ServerDefault`), otherwise is empty. The body must be complete segments (i.e. between `/`s in the body, or
+  complete `key=value` int he tailcard).
+* Optional parameter with name: `{{?name}}` - desugars to `[?name:{{name}}]`.
+
+Parameter names must be a parameter of the method, `$instanceReceiver` if an instance/dispatch receiver is present, or
+`$extensionReceiver` if an extension receiver is present.  **Endpoint templates are checked for correctness at compile
+time.**  You can't use "special" parameters (`@Ignored`, `@RequestHeaders`, `@ServerURL`) in the endpoint.
+
+The default endpoint is `$krosstalkPrefix/$methodName`. A standard example
+is `$krosstalkPrefix/$methodName/?{{a}}&{ {b}}` aka `$krosstalkPrefix/$methodName/?a={a}&b={b}`. Almost all endpoints
+should start with `$krosstalkPrefix/$methodName`.
+
+Note that in all strings here, the `$` should be escaped in Kotlin. However, we provide constants with the same names,
+so you can safely use `$krosstalkName` or `\$krosstalkName`, as long as the first one resolves to our constant.
+
+URL parameters are serialized using the Krosstalk object's `urlSerialization`, which is `serialization` by default.
+
+Parameters that are in the URL whenever they are not null will be passed only there and not in the body.
+
+`@EmptyBody` ensures that all parameters are passed in the URL, and is required to use the `GET` method unless there are
+no parameters.
+
+`contentType` may be empty, in which case the serialization handler's content type is used.
+
+### Optionals/Defaults
+
+Optionals and default values can be handled in two ways: `@Optional` and `@ServerDefault`, both of which are annotations
+on the parameters.  `@Optional` is easier to use, but uses `null` to encode "not present", and so doesn't work for
+nullable data.  `@ServerDefault` does.
+
+`@Optional` and `@ServerDefault` are "present" when a non-null or non-default value is specified, respectively.  
+They can be used in endpoints (and as the predicate for optional blocks), but must not be used when they are not
+present (i.e. they must be gated behind an optional).
+
+When `@Optional` and `@ServerDefault` parameters are not present, they are not passed at all, and the server uses
+`null` or the default, respectively.
+
+`@ServerDefault` parameters must be of the `ServerDefault` type. This is essentially an optional type, but the
+`None` is hidden. The compiler plugin will replace the default value of the parameter with `None` on the client side,
+which will lead to it not being passed and the default being evaluated on the server.
+
+### Objects
+
+Object parameters, receivers, and return values are not passed by default.  **Note though, if the type of a parameter is
+an abstract class, object subclasses will still be passed.**  This only happens when the compiler can prove that the
+value will always be the same object. Objects are also ignored by the serialization logic, so not having serializers on
+them will not cause issues.
+
+This can be overridden using the `@PassObjects` annotation. By default, it only applies to parameters and receivers, but
+if `returnToo` is true it applies to return values as well.
+
+### Response Headers
+
+To pass or get the response headers, return `WithHeaders<T>` and use `@RespondWithHeaders`. This wraps your result type
+and adds a `Headers` object. Any headers set in the return value on the server will be added to the response, and the
+value of the headers on the client will be parsed from the actual response headers.
+
+This plays nice with `KrosstalkResult` for error handling. You can either have `WithHeaders<KrosstalkResult<T>>` to get
+the headers on all responses, or `KrosstalkResult<WithHeaders<T>>` to only get the headers on success.
+
+### Request Headers
+
+To send request headers, mark a parameter of type `Headers` with `@RequestHeaders`. It can't be used in endpoints.  
+The value on the server will be parsed from the actual request headers.
+
+### Server URL
+
+To send request headers, mark a parameter of type `String` or `String?` with `@ServerURL`. It can't be used in
+endpoints. If the argument is `null`, the server url from the `krosstalkCall()` or the Krosstalk object will be used (in
+that order of precedence).
+
+The value on the server will be parsed from the actual server url. The value will depend on your server implementation (
+and plugin) and hosting setup, so depending on it is unwise.
+
+### Ignore
+
+`@Ignore` can be applied to a nullable parameter or one with a default value. The argument then won't be passed (or
+serialized), and `null` or the default will be used on the server, respectively.
+
+This is mainly useful for parameters used in `krosstalkCall()`.
+
+### `krosstalkCall()` arguments
+
+The request headers, server url, and additional scopes can all be specified as arguments to `krosstalkCall()`. The
+request headers will be added to any specified with `@RequestHeaders`. The server url will be overridden by any
+non-null `@ServerURL` parameters, and fall back to the Krosstalk object's server url if null. Specifying any scopes that
+are also specified by scope parameters will result in a runtime error when the method is called.
 
 ## Scopes
 
@@ -303,3 +411,20 @@ fun main() {
 }
 ```
 
+## Resolution helpers
+
+Microservices are a rather common use case of RPC, and to better support them, we provide some resolution helpers,
+visable in the [microservices test](tests/microservices-test). These help manage dependencies, and can be seen in the
+test's [buildscripts](tests/microservices-test/ping/build.gradle.kts) (each microservice's server depends on the other's
+client).
+
+Generally, for a microservice, you will want to have a common module with the Krosstalk and data definitions, a client
+module with just the Krosstalk client methods (and any other helpers for them), and a server module with the actual
+implementation. Often, these will all be JVM modules (like in the test). However, Kotlin does not yet provide a good way
+to distinguish between source sets when using `project()` dependencies. This is where our helpers come in.
+
+To declare a module as the krosstalk client or server module, call `krosstalkClient()` or `krosstalkServer()` in its
+Kotlin target configuration, respectively. Then, to depend on one or the other, use `project().krosstalkClient()
+` or `.krosstalkServer()`, respectively. Gradle handles circular dependencies well, so having two microservices where
+each's server depends on the other's client works well. Again, you can see this in action in the microservice test (the
+buildscripts are the interesting part).

@@ -276,3 +276,5 @@ actual suspend fun withRequestHeadersInCallAndParam(
 ): Pair<String?, String?> {
     return headers[keys.first]?.firstOrNull() to headers[keys.second]?.firstOrNull()
 }
+
+actual suspend fun withIgnored(test: String): String = test

@@ -9,6 +9,7 @@ import com.rnett.krosstalk.WithHeaders
 import com.rnett.krosstalk.annotations.EmptyBody
 import com.rnett.krosstalk.annotations.ExceptionHandling
 import com.rnett.krosstalk.annotations.ExplicitResult
+import com.rnett.krosstalk.annotations.Ignore
 import com.rnett.krosstalk.annotations.KrosstalkEndpoint
 import com.rnett.krosstalk.annotations.KrosstalkMethod
 import com.rnett.krosstalk.annotations.Optional
@@ -220,4 +221,7 @@ expect suspend fun withRequestHeadersInCall(): String
 
 @KrosstalkMethod(MyKrosstalk::class)
 expect suspend fun withRequestHeadersInCallAndParam(@RequestHeaders headers: Headers, keys: Pair<String, String>): Pair<String?, String?>
+
+@KrosstalkMethod(MyKrosstalk::class)
+expect suspend fun withIgnored(@Ignore test: String = "test"): String
 

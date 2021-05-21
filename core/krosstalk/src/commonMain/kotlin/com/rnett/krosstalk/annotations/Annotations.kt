@@ -49,6 +49,7 @@ internal annotation class TopLevelOnly
 @TopLevelOnly
 public annotation class KrosstalkMethod(val klass: KClass<out Krosstalk>, val noParamHash: Boolean = false)
 
+//TODO update docs, only Optional or ServerDefault can be used in optionals
 /**
  * Specifies an endpoint for the krosstalk method to use.
  * [endpoint] should be a http-formatted string of the (relative) pathname and query string, i.e. `"/items/?id={id}"`.
