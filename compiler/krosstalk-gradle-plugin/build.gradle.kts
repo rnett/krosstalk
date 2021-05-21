@@ -4,7 +4,7 @@ plugins {
     kotlin("kapt")
     id("com.github.gmazzo.buildconfig")
     `maven-publish`
-    id("com.gradle.plugin-publish")
+//    id("com.gradle.plugin-publish")
     //TODO publish, see https://github.com/vanniktech/gradle-maven-publish-plugin/issues/256
 }
 
@@ -45,8 +45,8 @@ java {
     targetCompatibility = JavaVersion.VERSION_1_8
 }
 
-pluginBundle {
-    website = "https://github.com/rnett/krosstalk"
-    vcsUrl = "https://github.com/rnett/krosstalk.git"
-    tags = listOf("kotlin", "js", "server", "api")
-}
+//pluginBundle {
+//    website = "https://github.com/rnett/krosstalk"
+//    vcsUrl = "https://github.com/rnett/krosstalk.git"
+//    tags = listOf("kotlin", "js", "server", "api")
+//}

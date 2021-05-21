@@ -11,8 +11,8 @@ plugins {
 }
 
 allprojects {
-    version = "0.2.10-SNAPSHOT"
 
+    version = "0.2.11-SNAPSHOT"
     group = "com.github.rnett.krosstalk"
 
     repositories {
@@ -34,41 +34,39 @@ allprojects {
 
             val project = this
 
-            if ("gradle-plugin" !in this.name) {
-                apply(plugin = "com.vanniktech.maven.publish")
+            apply(plugin = "com.vanniktech.maven.publish")
 
-                extensions.getByType<com.vanniktech.maven.publish.MavenPublishBaseExtension>().apply {
-                    if (!version.toString().toLowerCase().endsWith("snapshot")) {
-                        val stagingProfileId = project.findProperty("sonatypeRepositoryId")?.toString()
-                        publishToMavenCentral(com.vanniktech.maven.publish.SonatypeHost.DEFAULT, stagingProfileId)
+            extensions.getByType<com.vanniktech.maven.publish.MavenPublishBaseExtension>().apply {
+                if (!version.toString().toLowerCase().endsWith("snapshot")) {
+                    val stagingProfileId = project.findProperty("sonatypeRepositoryId")?.toString()
+                    publishToMavenCentral(com.vanniktech.maven.publish.SonatypeHost.DEFAULT, stagingProfileId)
+                }
+
+                pom {
+                    name.set(project.niceModuleName)
+                    description.set(project.description ?: "Krosstalk module")
+                    inceptionYear.set("2021")
+                    url.set("https://github.com/rnett/krosstalk/")
+
+                    licenses {
+                        license {
+                            name.set("The Apache Software License, Version 2.0")
+                            url.set("https://www.apache.org/licenses/LICENSE-2.0.txt")
+                            distribution.set("repo")
+                        }
                     }
 
-                    pom {
-                        name.set(project.niceModuleName)
-                        description.set(project.description ?: "Krosstalk module")
-                        inceptionYear.set("2021")
-                        url.set("https://github.com/rnett/krosstalk/")
+                    scm {
+                        url.set("https://github.com/rnett/krosstalk.git")
+                        connection.set("scm:git:git://github.com/rnett/krosstalk.git")
+                        developerConnection.set("scm:git:ssh://git@github.com/rnett/krosstalk.git")
+                    }
 
-                        licenses {
-                            license {
-                                name.set("The Apache Software License, Version 2.0")
-                                url.set("https://www.apache.org/licenses/LICENSE-2.0.txt")
-                                distribution.set("repo")
-                            }
-                        }
-
-                        scm {
-                            url.set("https://github.com/rnett/krosstalk.git")
-                            connection.set("scm:git:git://github.com/rnett/krosstalk.git")
-                            developerConnection.set("scm:git:ssh://git@github.com/rnett/krosstalk.git")
-                        }
-
-                        developers {
-                            developer {
-                                id.set("rnett")
-                                name.set("Ryan Nett")
-                                url.set("https://github.com/rnett/")
-                            }
+                    developers {
+                        developer {
+                            id.set("rnett")
+                            name.set("Ryan Nett")
+                            url.set("https://github.com/rnett/")
                         }
                     }
                 }
