@@ -5,7 +5,7 @@ plugins {
     id("com.github.gmazzo.buildconfig")
     `maven-publish`
 //    id("com.gradle.plugin-publish")
-    //TODO publish, see https://github.com/vanniktech/gradle-maven-publish-plugin/issues/256
+    //TODO publish to portal, see https://github.com/vanniktech/gradle-maven-publish-plugin/issues/256
 }
 
 description = "Krosstalk gradle plugin, for serving the compiler plugin"
@@ -48,5 +48,5 @@ java {
 //pluginBundle {
 //    website = "https://github.com/rnett/krosstalk"
 //    vcsUrl = "https://github.com/rnett/krosstalk.git"
-//    tags = listOf("kotlin", "js", "server", "api")
+//    tags = listOf("kotlin", "js", "RPC", "server", "api")
 //}

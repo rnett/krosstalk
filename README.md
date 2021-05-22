@@ -221,10 +221,11 @@ The template allows parameters to be used in the endpoint, using the following s
   method's name plus the argument hash unless disabled in `@KrosstalkMethod`.
 * Parameter: `{name}` - encodes the value of the parameter with that name.
 * Parameter with name: `{{name}}` - is desugared into `/name/{name}` or `name={name}` depending on the URL region.
-* Optional: `[?name:...]` - Evaluates to the body (`...`) if `name` is present (not null and not a default
-  `ServerDefault`), otherwise is empty. The body must be complete segments (i.e. between `/`s in the body, or
-  complete `key=value` int he tailcard).
-* Optional parameter with name: `{{?name}}` - desugars to `[?name:{{name}}]`.
+* Optional: `[?name:...]` - Evaluates to the body (`...`) if `name` is present (not null if `name` is `@Optional` or not
+  a default if `name` is `@ServerDefault`), otherwise is empty. The body must be complete segments (i.e. between `/`s in
+  the body, or complete `key=value` int he tailcard).  `name` must be `@Optional` or `@ServerDefault`.
+* Optional parameter with name: `{{?name}}` - desugars to `[?name:{{name}}]`.  `name` must be `@Optional`
+  or `@ServerDefault`.
 
 Parameter names must be a parameter of the method, `$instanceReceiver` if an instance/dispatch receiver is present, or
 `$extensionReceiver` if an extension receiver is present.  **Endpoint templates are checked for correctness at compile

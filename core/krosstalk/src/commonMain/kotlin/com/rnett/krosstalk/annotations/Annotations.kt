@@ -57,9 +57,12 @@ public annotation class KrosstalkMethod(val klass: KClass<out Krosstalk>, val no
  * * Literals
  * * Parameters: `{param}`.
  * * Parameter with name: `{{param}}`, becomes `/param/{param}` or `param={param}` depending on location.
- * * Optional: `[?param:...]`.  Evaluates to the body (`...`) if param is not null, empty otherwise.  Contents are treated as full segments, i.e.
- * `my[?param:id]={param2}` is not allowed.
- * * Optional named parameter: `{{?param}}`, becomes `{{param}}` if param is non-null, empty otherwise.
+ * * Optional: `[?param:...]`.  Evaluates to the body (`...`) if param is present (not null if `name` is `@Optional` or not
+ *   a default if `name` is `@ServerDefault`), empty otherwise.  Contents are treated as full segments, i.e.
+ *   `my[?param:id]={param2}` is not allowed.
+ * * Optional named parameter: `{{?param}}`, becomes `{{param}}` if param is present, empty otherwise.
+ *
+ * For both optionals, `param` must either be `@Optional` or `@ServerDefault`.
  *
  * Valid parameter names are the method parameters, [instanceReceiver] if it has an instance/dispatch receiver,
  * [extensionReceiver] if it has a extension receiver.
