@@ -5,7 +5,7 @@ plugins {
     kotlin("multiplatform")
     id("org.jetbrains.kotlin.plugin.serialization")
     application
-    id("com.rnett.krosstalk")
+    id("com.github.rnett.krosstalk")
     id("com.github.hesch.execfork")
 }
 

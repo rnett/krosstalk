@@ -3,7 +3,7 @@ plugins {
     kotlin("jvm") version "1.5.0" apply false
     id("org.jetbrains.kotlin.plugin.serialization") version "1.5.0" apply false
     id("org.jetbrains.compose") version "0.4.0-build183" apply false
-    id("com.rnett.krosstalk")
+    id("com.github.rnett.krosstalk")
     id("com.github.hesch.execfork") version "0.1.15"
 }
 
