@@ -14,6 +14,12 @@ inline fun LanguageSettingsBuilder.commonSettings() {
     useExperimentalAnnotation("kotlin.RequiresOptIn")
 }
 
+val hostOs: String get() = System.getProperty("os.name")
+val isMingwX64 get() = hostOs.startsWith("Windows")
+val isMacOs get() = hostOs == "Mac OS X"
+
+val isMainHost get() = isMingwX64
+
 @OptIn(ExperimentalStdlibApi::class)
 inline fun KotlinMultiplatformExtension.allTargets(project: Project, noWatchOsX64: Boolean = false) {
     jvm {
@@ -37,10 +43,6 @@ inline fun KotlinMultiplatformExtension.allTargets(project: Project, noWatchOsX6
         browser()
         nodejs()
     }
-
-    val hostOs = System.getProperty("os.name")
-    val isMingwX64 = hostOs.startsWith("Windows")
-    val isMacOs = hostOs == "Mac OS X"
 
     val nativeTargets = when {
         isMacOs -> listOf(
@@ -90,6 +92,10 @@ inline fun KotlinMultiplatformExtension.allTargets(project: Project, noWatchOsX6
         }
     }
 
+    sourceSets.all {
+        languageSettings.commonSettings()
+    }
+
     with(project) {
         afterEvaluate {
             extensions.getByType<PublishingExtension>().apply {
@@ -100,22 +106,17 @@ inline fun KotlinMultiplatformExtension.allTargets(project: Project, noWatchOsX6
                             .matching { it.publication == targetPublication }
                             .configureEach {
                                 onlyIf {
-                                    // only publish shared artifacts from windows
-                                    isMingwX64
+                                    isMainHost
                                 }
                             }
                     }
                 }
             }
         }
-
-        sourceSets.all {
-            languageSettings.commonSettings()
-        }
     }
 }
 
-inline fun KotlinJvmProjectExtension.irAndJava8() {
+inline fun KotlinJvmProjectExtension.irAndJava8(project: Project) {
     target {
         //TODO remove once KT-36942 and KT-35003 are fixed
         attributes {
@@ -133,6 +134,25 @@ inline fun KotlinJvmProjectExtension.irAndJava8() {
         }
         sourceSets.all {
             languageSettings.commonSettings()
+        }
+    }
+
+    with(project) {
+        afterEvaluate {
+            extensions.getByType<PublishingExtension>().apply {
+                publications {
+                    all {
+                        val targetPublication = this@all
+                        tasks.withType<AbstractPublishToMaven>()
+                            .matching { it.publication == targetPublication }
+                            .configureEach {
+                                onlyIf {
+                                    isMainHost
+                                }
+                            }
+                    }
+                }
+            }
         }
     }
 }

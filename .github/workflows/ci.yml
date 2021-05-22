@@ -26,11 +26,11 @@ jobs:
           chmod +x gradlew
           chmod +x tests/gradlew
 
-  #      - name: Build and Unit Test
-  #        run: ./gradlew build -DRELEASE_SIGNING_ENABLED=false test allTests
+      - name: Build and Unit Test
+        run: ./gradlew build -DRELEASE_SIGNING_ENABLED=false test allTests
 
-  #      - name: Run Integraiton Tests
-  #        run: (cd tests && ./gradlew allTests --no-parallel)
+      - name: Run Integraiton Tests
+        run: (cd tests && ./gradlew allTests --no-parallel)
 
   find-version:
     runs-on: ubuntu-latest

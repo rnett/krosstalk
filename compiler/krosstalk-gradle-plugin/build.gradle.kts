@@ -19,7 +19,7 @@ dependencies {
     kapt("com.google.auto.service:auto-service:${Dependencies.autoService}")
 }
 
-kotlin.irAndJava8()
+kotlin.irAndJava8(this)
 
 buildConfig {
     val project = project(":compiler:krosstalk-compiler-plugin")
