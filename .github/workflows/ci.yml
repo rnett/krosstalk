@@ -61,7 +61,7 @@ jobs:
 
   create_staging_repository:
     runs-on: ubuntu-latest
-    needs: [ find-version, tests ]
+    needs: [ find-version, test ]
     name: Create staging repository
     outputs:
       repository_id: ${{ steps.create.outputs.repository_id }}
