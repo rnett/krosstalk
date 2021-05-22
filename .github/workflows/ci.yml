@@ -49,7 +49,7 @@ jobs:
           echo "Snapshot string: ${{ needs.find-version.outputs.snapshot }}"
           echo "Is release: ${{ needs.find-version.outputs.snapshot == 'false' }}"
       - id: create
-        if: needs.find-version.outputs.snapshot == false
+        if: needs.find-version.outputs.snapshot == 'false'
         uses: nexus-actions/create-nexus-staging-repo@v1.1
         with:
           username: ${{ secrets.SONATYPE_USERNAME }}
@@ -126,7 +126,7 @@ jobs:
           chmod +x tests/gradlew
 
       - name: Clone past docs for release
-        if: needs.find-version.outputs.snapshot == false
+        if: needs.find-version.outputs.snapshot == 'false'
         run: |
           git fetch
           git clone --depth 1 https://github.com/rnett/krosstalk.git --branch gh-pages --single-branch past-docs
@@ -169,7 +169,7 @@ jobs:
   finalize:
     runs-on: ubuntu-latest
     needs: [ create_staging_repository, find-version, publish, publish-docs ]
-    if: ${{ always() && needs.create_staging_repository.result == 'success' && needs.find-version.outputs.snapshot == false }}
+    if: ${{ always() && needs.create_staging_repository.result == 'success' && needs.find-version.outputs.snapshot == 'false' }}
     steps:
       - name: Discard
         if: ${{ needs.publish-docs.result != 'success' }}
