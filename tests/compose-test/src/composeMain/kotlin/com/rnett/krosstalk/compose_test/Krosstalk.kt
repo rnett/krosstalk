@@ -1,7 +1,6 @@
 package com.rnett.krosstalk.compose_test
 
 import com.rnett.krosstalk.Krosstalk
-import com.rnett.krosstalk.KrosstalkResult
 import com.rnett.krosstalk.Scope
 import com.rnett.krosstalk.ScopeInstance
 import com.rnett.krosstalk.client.krosstalkCall
@@ -9,6 +8,8 @@ import com.rnett.krosstalk.ktor.client.KtorClient
 import com.rnett.krosstalk.ktor.client.KtorKrosstalkClient
 import com.rnett.krosstalk.ktor.client.auth.KtorClientBasicAuth
 import com.rnett.krosstalk.ktor.client.auth.invoke
+import com.rnett.krosstalk.result.KrosstalkResult
+import com.rnett.krosstalk.result.isSuccess
 import com.rnett.krosstalk.serialization.KotlinxBinarySerializationHandler
 import io.ktor.client.HttpClient
 import io.ktor.client.engine.apache.Apache

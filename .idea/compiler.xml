@@ -111,12 +111,6 @@
       <module name="tests.client-tests.commonTest" target="1.8" />
       <module name="tests.client-tests.jvmMain" target="1.8" />
       <module name="tests.client-tests.jvmTest" target="1.8" />
-      <module name="tests.compose-test.commonMain" target="1.8" />
-      <module name="tests.compose-test.commonTest" target="1.8" />
-      <module name="tests.compose-test.composeMain" target="1.8" />
-      <module name="tests.compose-test.composeTest" target="1.8" />
-      <module name="tests.compose-test.serverMain" target="1.8" />
-      <module name="tests.compose-test.serverTest" target="1.8" />
       <module name="tests.fullstack-tests.commonMain" target="1.8" />
       <module name="tests.fullstack-tests.commonTest" target="1.8" />
       <module name="tests.fullstack-tests.jvmMain" target="1.8" />

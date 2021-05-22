@@ -1,12 +1,13 @@
 package com.rnett.krosstalk.compose_test
 
 import com.rnett.krosstalk.Krosstalk
-import com.rnett.krosstalk.KrosstalkResult
 import com.rnett.krosstalk.Scope
 import com.rnett.krosstalk.ScopeInstance
 import com.rnett.krosstalk.annotations.ExplicitResult
 import com.rnett.krosstalk.annotations.KrosstalkMethod
+import com.rnett.krosstalk.result.KrosstalkResult
 import com.rnett.krosstalk.serialization.KotlinxBinarySerializationHandler
+
 
 expect object TodoKrosstalk : Krosstalk {
     override val serialization: KotlinxBinarySerializationHandler

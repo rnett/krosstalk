@@ -14,6 +14,7 @@ with [instructions on how to write your own](./WRITING_PLUGINS.md).
 
 Krosstalk is currently not compatible with Compose, because their compiler plugin does some weird stuff. To get around
 this, put all your Krosstalk stuff in other modules and depend on it in the modules with the compiler plugin applied.
+[Tracked issue](https://issuetracker.google.com/issues/185609826).
 
 ## Artifacts
 
