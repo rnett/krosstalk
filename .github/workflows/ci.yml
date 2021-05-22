@@ -47,7 +47,7 @@ jobs:
       - name: Print version
         run: |
           echo "Snapshot string: ${{ needs.find-version.outputs.snapshot }}"
-          echo "Is snapshot: ${{ needs.find-version.outputs.snapshot == false }}"
+          echo "Is release: ${{ needs.find-version.outputs.snapshot == 'false' }}"
       - id: create
         if: needs.find-version.outputs.snapshot == false
         uses: nexus-actions/create-nexus-staging-repo@v1.1
