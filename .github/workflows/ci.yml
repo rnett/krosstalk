@@ -13,7 +13,7 @@ jobs:
   find-version:
     runs-on: ubuntu-latest
     outputs:
-      snapshot: ${{ (endsWith(${{ steps.get_version.outputs.match }}, 'SNAPSHOT') || endsWith(${{ steps.get_version.outputs.match }}, 'snapshot')) }}
+      snapshot: ${{ (endsWith(steps.get_version.outputs.match, 'SNAPSHOT') || endsWith(steps.get_version.outputs.match, 'snapshot')) }}
       version: ${{ steps.get_version.outputs.match }}
 
     steps:
