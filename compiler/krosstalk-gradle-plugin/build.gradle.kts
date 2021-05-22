@@ -32,7 +32,7 @@ buildConfig {
 gradlePlugin {
     plugins {
         create("krosstalkPlugin") {
-            id = "com.rnett.krosstalk"
+            id = "com.github.rnett.krosstalk"
             displayName = "Krosstalk Plugin"
             description = "Krosstalk Kotlin Compiler plugin"
             implementationClass = "com.rnett.krosstalk.KrosstalkGradlePlugin"
