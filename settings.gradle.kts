@@ -16,7 +16,7 @@ include(
     "core",
     "core:krosstalk", "core:krosstalk-base",
     "core:krosstalk-client", "core:krosstalk-server",
-    "compiler:krosstalk-compiler-plugin", "compiler:krosstalk-gradle-plugin"
+    "compiler:krosstalk-compiler-plugin", "compiler:krosstalk-compiler-plugin-native", "compiler:krosstalk-gradle-plugin"
 )
 
 include(

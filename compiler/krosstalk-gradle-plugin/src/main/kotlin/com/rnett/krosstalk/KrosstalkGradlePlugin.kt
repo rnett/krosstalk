@@ -21,5 +21,11 @@ class KrosstalkGradlePlugin : KotlinCompilerPluginSupportPlugin {
         BuildConfig.PROJECT_VERSION
     )
 
+    override fun getPluginArtifactForNative(): SubpluginArtifact = SubpluginArtifact(
+        BuildConfig.PROJECT_GROUP_ID,
+        BuildConfig.PROJECT_ARTIFACT_ID + "-native",
+        BuildConfig.PROJECT_VERSION
+    )
+
     override fun isApplicable(kotlinCompilation: KotlinCompilation<*>): Boolean = true
 }
