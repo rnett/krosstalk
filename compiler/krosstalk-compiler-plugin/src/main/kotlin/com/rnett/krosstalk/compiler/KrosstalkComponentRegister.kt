@@ -16,7 +16,7 @@ fun log(it: Any?) = logFile.appendText(it.toString() + "\n")
 fun log(key: String, it: Any?) = log("$key: $it")
 
 @AutoService(ComponentRegistrar::class)
-class KrosstalkComponentRegistar : ComponentRegistrar {
+class KrosstalkComponentRegister : ComponentRegistrar {
     override fun registerProjectComponents(project: MockProject, configuration: CompilerConfiguration) {
         IrGenerationExtension.registerExtension(project, KrosstalkIrGenerationExtension(configuration.messageCollector))
     }

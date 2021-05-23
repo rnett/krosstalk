@@ -25,7 +25,10 @@ import io.ktor.utils.io.core.use
 @KrosstalkPluginApi
 internal fun <D> AppliedClientScope<KtorClientScope<D>, *>.configureClient(client: HttpClientConfig<*>) {
     client.apply {
-        scope.apply { configureClient(data as D) }
+        scope.apply {
+            @Suppress("UNCHECKED_CAST")
+            configureClient(data as D)
+        }
     }
 }
 
@@ -35,6 +38,7 @@ internal fun <D> AppliedClientScope<KtorClientScope<D>, *>.configureClient(clien
 @KrosstalkPluginApi
 internal fun <D> AppliedClientScope<KtorClientScope<D>, *>.configureRequest(request: HttpRequestBuilder) {
     request.apply {
+        @Suppress("UNCHECKED_CAST")
         scope.apply { configureRequest(data as D) }
     }
 }

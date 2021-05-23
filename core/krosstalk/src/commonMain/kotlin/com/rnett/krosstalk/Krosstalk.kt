@@ -1,6 +1,6 @@
 package com.rnett.krosstalk
 
-import com.rnett.krosstalk.annotations.ExplicitResult
+import com.rnett.krosstalk.annotations.ExceptionHandling
 import com.rnett.krosstalk.endpoint.Endpoint
 import com.rnett.krosstalk.result.KrosstalkResult
 import com.rnett.krosstalk.serialization.MethodSerialization
@@ -14,7 +14,7 @@ import kotlinx.serialization.json.Json
 
 //TODO track empty body, throw if not empty?
 /**
- * All the Krosstalk metedata associated with a krosstalk method.
+ * All the Krosstalk metadata associated with a krosstalk method.
  *
  * @property name the method name
  * @property endpoint the method endpoint
@@ -23,8 +23,8 @@ import kotlinx.serialization.json.Json
  * @property requiredScopes scopes required by the method
  * @property optionalParameters scopes optionally used by the method
  * @property useExplicitResult whether the result is wrapped in a [KrosstalkResult]
- * @property includeStacktrace whether any [ServerException]s should include the exception stack trace
- * @property propagateServerExceptions whether [ExplicitResult.propagateServerExceptions] is set
+ * @property includeStacktrace whether any [KrosstalkResult.ServerException]s should include the exception stack trace
+ * @property propagateServerExceptions whether [ExceptionHandling.propagateServerExceptions] is set
  * @property optionalParameters parameters marked as optional
  * @property serverDefaultParameters parameters using [ServerDefault]
  * @property objectParameters parameters that are objects and shouldn't be transfered
@@ -169,10 +169,10 @@ public abstract class Krosstalk {
         }
 
 
-        val endpoint = Endpoint(endpoint, methodName, prefix)
+        val builtEndpoint = Endpoint(endpoint, methodName, prefix)
         _methods[methodName] = MethodDefinition(
             methodName,
-            endpoint,
+            builtEndpoint,
             method,
             contentType.ifBlank { null },
             requiredScopes,
@@ -191,7 +191,7 @@ public abstract class Krosstalk {
             types,
             MethodSerialization(
                 serialization.getArgumentSerializers(types),
-                endpoint.allReferencedParameters().associateWith { urlSerialization.getMethodSerializer<Any?>(types.paramTypes.getValue(it)) },
+                builtEndpoint.allReferencedParameters().associateWith { urlSerialization.getMethodSerializer<Any?>(types.paramTypes.getValue(it)) },
                 types.resultType?.let(serialization::getMethodSerializer)
             ),
             call

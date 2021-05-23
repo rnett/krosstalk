@@ -3,8 +3,11 @@ package com.rnett.krosstalk.serialization
 import com.rnett.krosstalk.InternalKrosstalkApi
 import com.rnett.krosstalk.KrosstalkException
 import com.rnett.krosstalk.KrosstalkPluginApi
+import com.rnett.krosstalk.ServerDefault
+import com.rnett.krosstalk.WithHeaders
 import com.rnett.krosstalk.extensionReceiver
 import com.rnett.krosstalk.instanceReceiver
+import com.rnett.krosstalk.result.KrosstalkResult
 import com.rnett.krosstalk.serialization.plugin.ArgumentSerializers
 import com.rnett.krosstalk.serialization.plugin.SerializationHandler
 import com.rnett.krosstalk.serialization.plugin.SerializedFormatTransformer
@@ -32,7 +35,7 @@ public class MissingSerializerException @InternalKrosstalkApi constructor(
  * All necessary types for a method.
  * Instance and extension receiver serializers are in the [paramTypes] map with keys [instanceReceiver] and [extensionReceiver], respectively, but can be accessed through their accessors.
  *
- * [KrosstalkResult] return types and [KrosstalkOptional] parameters will be stored as their type params.
+ * [KrosstalkResult] and [WithHeaders] return types and [ServerDefault] parameters will be stored as their type params.
  */
 @InternalKrosstalkApi
 public data class MethodTypes(

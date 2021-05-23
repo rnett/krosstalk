@@ -22,7 +22,7 @@ public inline fun <T, R> KrosstalkResult.SuccessOrHttpError<T>.foldHttpError(
 }
 
 /**
- * If this is a [HttpError], throw [KrosstalkResultHttpError].
+ * If this is a [KrosstalkResult.HttpError], throw [KrosstalkHttpError].
  */
 public fun <T> KrosstalkResult.SuccessOrHttpError<T>.throwOnHttpError(): T {
     contract {
@@ -45,7 +45,7 @@ public inline fun <R, T : R> KrosstalkResult.SuccessOrHttpError<T>.getOrElseHttp
     foldHttpError({ it.value }, onHttpError)
 
 /**
- * Recover from all http errors.  Note that exceptions will not be caught, so [HttpError.throwFailureException] can be used
+ * Recover from all http errors.  Note that exceptions will not be caught, so [KrosstalkResult.HttpError.throwFailureException] can be used
  * to throw on unhandled http errors.
  */
 public inline fun <R, T : R> KrosstalkResult.SuccessOrHttpError<T>.recoverHttpErrors(onHttpError: (KrosstalkResult.HttpError) -> R): R =

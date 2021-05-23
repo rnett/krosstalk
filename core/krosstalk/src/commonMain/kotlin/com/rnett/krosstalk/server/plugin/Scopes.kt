@@ -35,19 +35,26 @@ public class ImmutableWantedScopes internal constructor(values: Map<ServerScope<
 
     @OptIn(InternalKrosstalkApi::class)
     @PublishedApi
+    @Suppress("DEPRECATION", "UNCHECKED_CAST")
     internal fun <T : ServerScope<D>, D> getRequiredInstance(scope: T, methodName: String): ScopeInstance<T> =
         if (scope in values) ScopeInstance.Server(values[scope] as D, scope) else throw MissingScopeException(scope, methodName)
 
     @OptIn(InternalKrosstalkApi::class)
     @PublishedApi
+    @Suppress("DEPRECATED")
     internal fun <T : ServerScope<D>, D> getOptionalInstance(scope: T): ScopeInstance<T>? =
-        getOptional(scope)?.let { ScopeInstance.Server(it, scope) }
+        getOptional(scope)?.let {
+            ScopeInstance.Server(it, scope)
+        }
 
+    @Suppress("UNCHECKED_CAST")
     override operator fun <T : ServerScope<D>, D> get(scope: T): D =
         if (scope in values) values[scope] as D else throw MissingScopeException(scope)
 
+    @Suppress("UNCHECKED_CAST")
     override fun <T : ServerScope<D>, D> getOptional(scope: T): D? = values[scope] as D?
 
+    @Suppress("UNCHECKED_CAST")
     override fun <T : ServerScope<D>, D> getOrElse(scope: T, default: D): D =
         if (scope in values) values[scope] as D else default
 
@@ -58,11 +65,15 @@ public class ImmutableWantedScopes internal constructor(values: Map<ServerScope<
 @KrosstalkPluginApi
 public class MutableWantedScopes : WantedScopes {
     private val values = mutableMapOf<ServerScope<*>, Any?>()
+
+    @Suppress("UNCHECKED_CAST")
     override operator fun <T : ServerScope<D>, D> get(scope: T): D =
         if (scope in values) values[scope] as D else throw MissingScopeException(scope)
 
+    @Suppress("UNCHECKED_CAST")
     override fun <T : ServerScope<D>, D> getOptional(scope: T): D? = values[scope] as D?
 
+    @Suppress("UNCHECKED_CAST")
     override fun <T : ServerScope<D>, D> getOrElse(scope: T, default: D): D =
         if (scope in values) values[scope] as D else default
 

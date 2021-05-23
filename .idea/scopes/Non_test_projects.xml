@@ -1,0 +1,3 @@
+<component name="DependencyValidationManager">
+  <scope name="Non-test projects" pattern="file:*/&amp;&amp;!file[tests]:*/&amp;&amp;!file[tests.client-test]:*/&amp;&amp;!file[tests.compose-test]:*/&amp;&amp;!file[tests.fullstack-test]:*/&amp;&amp;!file[tests.microservices-test]:*/&amp;&amp;!file[tests.microservices-test.ping]:*/&amp;&amp;!file[tests.microservices-test.pong]:*/" />
+</component>

@@ -23,7 +23,7 @@ public inline fun <T, R> KrosstalkResult.SuccessOrServerException<T>.foldServerE
 }
 
 /**
- * If this is a [ServerException], throw [KrosstalkServerException].
+ * If this is a [KrosstalkResult.ServerException], throw [KrosstalkServerException].
  */
 public fun <T> KrosstalkResult.SuccessOrServerException<T>.throwOnServerException(): T {
     contract {
@@ -46,7 +46,7 @@ public inline fun <R, T : R> KrosstalkResult.SuccessOrServerException<T>.getOrEl
     foldServerException({ it.value }, onServerException)
 
 /**
- * Recover from all server exceptions.  Note that exceptions will not be caught, so [ServerException.throwFailureException] can be used
+ * Recover from all server exceptions.  Note that exceptions will not be caught, so [KrosstalkResult.ServerException.throwFailureException] can be used
  * to throw on unhandled server exceptions.
  */
 public inline fun <R, T : R> KrosstalkResult.SuccessOrServerException<T>.recoverServerExceptions(onServerException: (KrosstalkResult.ServerException) -> R): R =
@@ -68,7 +68,7 @@ public inline fun <R, T : R> KrosstalkResult.SuccessOrServerException<T>.handleS
     }
 
 /**
- * Handle server exceptions with a [ServerException.className] of [className].
+ * Handle server exceptions with a [KrosstalkResult.ServerException.className] of [className].
  */
 public inline fun <R, T : R> KrosstalkResult.SuccessOrServerException<T>.handleServerException(
     className: String,

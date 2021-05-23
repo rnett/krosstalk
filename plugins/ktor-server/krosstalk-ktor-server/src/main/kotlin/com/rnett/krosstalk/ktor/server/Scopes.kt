@@ -39,7 +39,7 @@ public interface KtorServerScope<S : Any> : ServerScope<S> {
  * A Ktor server scope that only reads headers.
  */
 public interface KtorServerHeaderScope<T : Any> : KtorServerScope<T> {
-    public abstract fun getValue(headers: Headers): T?
+    public fun getValue(headers: Headers): T?
 
     override fun getData(call: ApplicationCall): T? {
         return getValue(call.request.headers)

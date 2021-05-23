@@ -14,8 +14,10 @@ public value class ServerDefault<out T> @PublishedApi internal constructor(@Publ
     @OptIn(InternalKrosstalkApi::class)
     public inline val value: T
         get(): T {
+            @Suppress("DEPRECATION")
             if (isNone())
                 throw UnrealizedServerDefaultException()
+            @Suppress("UNCHECKED_CAST")
             return _value as T
         }
 

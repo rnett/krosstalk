@@ -4,7 +4,7 @@ plugins {
 }
 
 niceModuleName = "Krosstalk Core"
-description = "The core (client or server) APIs of Krosstalk, including everything neccessary for expect Krosstalks."
+description = "The core (client or server) APIs of Krosstalk, including everything necessary for expect Krosstalks."
 
 kotlin {
     allTargets(project)

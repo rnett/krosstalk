@@ -15,7 +15,6 @@ import com.rnett.krosstalk.WithHeaders
 import com.rnett.krosstalk.annotations.ServerURL
 import com.rnett.krosstalk.client.plugin.AppliedClientScope
 import com.rnett.krosstalk.client.plugin.ClientScope
-import com.rnett.krosstalk.client.plugin.toAppliedScope
 import com.rnett.krosstalk.deserializeServerException
 import com.rnett.krosstalk.headersOf
 import com.rnett.krosstalk.isNone
@@ -142,8 +141,10 @@ public class DuplicateScopeException @InternalKrosstalkApi constructor(
 @InternalKrosstalkApi
 @PublishedApi
 internal fun <T> MethodDefinition<T>.getReturnValue(data: ByteArray): T = if (returnObject != null) {
+    @Suppress("UNCHECKED_CAST")
     returnObject as T
 } else {
+    @Suppress("UNCHECKED_CAST")
     serialization.deserializeReturnValue(data) as T
 }
 
@@ -156,6 +157,7 @@ internal fun Any?.withHeadersIf(withHeaders: Boolean, headers: Headers): Any? =
 internal inline fun <reified C : ClientScope<*>> KrosstalkClient<C>.toAppliedScopeWithType(scope: ScopeInstance<*>): AppliedClientScope<C, *> {
     if (scope.scope !is C)
         throw WrongScopeTypeException(scope.scope, typeOf<C>())
+    @Suppress("UNCHECKED_CAST")
     return (scope as ScopeInstance<C>).toAppliedScope()!!
 }
 
@@ -190,6 +192,7 @@ internal suspend inline fun <T, K, reified C : ClientScope<*>> K.call(
 
     val scopes = methodScopes + callScopes?.map { toAppliedScopeWithType(it) }.orEmpty()
 
+    @Suppress("DEPRECATION")
     val arguments = rawArguments.filterValues {
         !(it is ServerDefault<*> && it.isNone())
     }.filterKeys {
@@ -206,6 +209,7 @@ internal suspend inline fun <T, K, reified C : ClientScope<*>> K.call(
         rawArguments.keys,
         arguments.filter { it.value != null }.keys //TODO should I only remove nulls if the param is optional?
     ) {
+        @Suppress("UNCHECKED_CAST", "DEPRECATION")
         if (rawArguments[it].let { it is ServerDefault<*> && it.isNone() })
             throw ServerDefaultInEndpointException(methodName, it)
 
@@ -259,6 +263,7 @@ internal suspend inline fun <T, K, reified C : ClientScope<*>> K.call(
             wrappedResult.throwFailureException()
     }
 
+    @Suppress("UNCHECKED_CAST")
     return if (method.useExplicitResult) {
         wrappedResult
     } else {

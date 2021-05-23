@@ -17,7 +17,7 @@ public const val stringContentType: String = "text/plain; charset=utf-8"
  * and turning [S]s into [ByteArray]s and [String]s and visa versa.
  *
  * Requires manual serialization of the argument maps for support for things like putting them in a JSON object.
- * To have each argument automatically serialized use [StringArgumentSerializationHandler] or [BinaryArgumentSerializationHandler].
+ * To have each argument automatically serialized use [ArgumentSerializationHandler].
  *
  */
 @OptIn(KrosstalkPluginApi::class)
@@ -64,7 +64,7 @@ public interface SerializationHandler<S> {
 public abstract class BaseSerializationHandler<S>(override val transformer: SerializedFormatTransformer<S>) : SerializationHandler<S>
 
 /**
- * A [StringSerializationHandler] that automatically serializes/deserializes each argument before calling [serializeArguments]/[deserializeArguments].
+ * A [SerializationHandler] that automatically serializes/deserializes each argument before calling [serializeArguments]/[deserializeArguments].
  */
 @KrosstalkPluginApi
 public abstract class ArgumentSerializationHandler<S>(transformer: SerializedFormatTransformer<S>) : BaseSerializationHandler<S>(transformer) {
@@ -93,6 +93,7 @@ public abstract class ArgumentSerializationHandler<S>(transformer: SerializedFor
  */
 @InternalKrosstalkApi
 @OptIn(ExperimentalStdlibApi::class, KrosstalkPluginApi::class)
+@Suppress("UNCHECKED_CAST")
 internal inline fun <reified T> SerializationHandler<*>.getMethodSerializer() = TransformedSerializer(
     transformer as SerializedFormatTransformer<Any?>,
     getSerializer(typeOf<T>()) as Serializer<T, Any?>
@@ -103,6 +104,7 @@ internal inline fun <reified T> SerializationHandler<*>.getMethodSerializer() = 
  */
 @InternalKrosstalkApi
 @OptIn(ExperimentalStdlibApi::class, KrosstalkPluginApi::class)
+@Suppress("UNCHECKED_CAST")
 internal fun <T> SerializationHandler<*>.getMethodSerializer(type: KType) = TransformedSerializer(
     transformer as SerializedFormatTransformer<Any?>,
     getSerializer(type) as Serializer<T, Any?>

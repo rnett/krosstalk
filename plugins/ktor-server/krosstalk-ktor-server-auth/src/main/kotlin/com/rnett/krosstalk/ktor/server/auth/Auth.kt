@@ -4,7 +4,21 @@ import com.rnett.krosstalk.ktor.server.KtorServerScope
 import io.ktor.application.Application
 import io.ktor.application.ApplicationCall
 import io.ktor.application.install
-import io.ktor.auth.*
+import io.ktor.auth.Authentication
+import io.ktor.auth.BasicAuthenticationProvider
+import io.ktor.auth.DigestAuthenticationProvider
+import io.ktor.auth.DigestCredential
+import io.ktor.auth.FormAuthenticationProvider
+import io.ktor.auth.OAuthAccessTokenResponse
+import io.ktor.auth.OAuthAuthenticationProvider
+import io.ktor.auth.Principal
+import io.ktor.auth.authenticate
+import io.ktor.auth.authentication
+import io.ktor.auth.basic
+import io.ktor.auth.digest
+import io.ktor.auth.digestAuthenticationCredentials
+import io.ktor.auth.form
+import io.ktor.auth.oauth
 import io.ktor.routing.Route
 import kotlin.random.Random
 
@@ -44,6 +58,7 @@ public abstract class KtorServerAuth<T : Any>(public val authName: String? = ran
  * A base class for defining an authentication scope that sets a principal to `call.authentication.principal`.
  */
 public abstract class KtorServerPrincipalAuth<T : Principal>(authName: String?) : KtorServerAuth<T>(authName) {
+    @Suppress("UNCHECKED_CAST")
     override fun getData(call: ApplicationCall): T? = call.authentication.principal as T?
 }
 

@@ -24,7 +24,7 @@ public class KrosstalkHttpError(public val httpError: KrosstalkResult.HttpError)
         if (httpError.statusCodeName != null)
             append(": ${httpError.statusCodeName}")
 
-        if (httpError.message != null && !httpError.message.isBlank())
+        if (httpError.message != null && httpError.message.isNotBlank())
             append(", with message: ${httpError.message}")
     })
 
@@ -161,7 +161,9 @@ public sealed interface KrosstalkResult<out T> {
             public operator fun <T> invoke(value: T): Success<T> = Success(value)
         }
 
-        public inline val value: T get() = _value as T
+        @Suppress("UNCHECKED_CAST")
+        public inline val value: T
+            get() = _value as T
     }
 
     /**
@@ -230,12 +232,12 @@ public sealed interface KrosstalkResult<out T> {
     }
 
     /**
-     * A [KrosstalkResult] with no [ServerException]s
+     * A [KrosstalkResult] with no [KrosstalkResult.ServerException]s
      */
     public sealed interface SuccessOrHttpError<out T> : KrosstalkResult<T>
 
     /**
-     * A [KrosstalkResult] with no [HttpError]
+     * A [KrosstalkResult] with no [KrosstalkResult.HttpError]
      */
     public sealed interface SuccessOrServerException<out T> : KrosstalkResult<T>
 }
@@ -347,7 +349,7 @@ public inline fun <T, R> KrosstalkResult<T>.map(transform: (T) -> R): KrosstalkR
 }
 
 /**
- * If this is a [HttpError], throw [KrosstalkHttpError].  If this is a [ServerException], throw [KrosstalkServerException].
+ * If this is a [KrosstalkResult.HttpError], throw [KrosstalkHttpError].  If this is a [KrosstalkResult.ServerException], throw [KrosstalkServerException].
  */
 public fun <T> KrosstalkResult<T>.throwOnFailure(): T {
     contract { returns() implies (this@throwOnFailure is KrosstalkResult.Success<T>) }
@@ -360,7 +362,7 @@ public fun <T> KrosstalkResult<T>.throwOnFailure(): T {
 }
 
 /**
- * If this is a [HttpError], throw [KrosstalkHttpError].
+ * If this is a [KrosstalkResult.HttpError], throw [KrosstalkHttpError].
  */
 public fun <T> KrosstalkResult<T>.throwOnHttpError(): KrosstalkResult.SuccessOrServerException<T> {
     contract { returns() implies (this@throwOnHttpError !is KrosstalkResult.HttpError) }
@@ -372,7 +374,7 @@ public fun <T> KrosstalkResult<T>.throwOnHttpError(): KrosstalkResult.SuccessOrS
 }
 
 /**
- * If this is a [ServerException], throw [KrosstalkServerException].
+ * If this is a [KrosstalkResult.ServerException], throw [KrosstalkServerException].
  */
 public fun <T> KrosstalkResult<T>.throwOnServerException(): KrosstalkResult.SuccessOrHttpError<T> {
     contract { returns() implies (this@throwOnServerException !is KrosstalkResult.ServerException) }
@@ -422,7 +424,7 @@ public inline fun <R, T : R> KrosstalkResult<T>.getOrDefault(onServerException: 
 )
 
 /**
- * Recover from all server exceptions.  Note that exceptions will not be caught, so [ServerException.throwFailureException] can be used
+ * Recover from all server exceptions.  Note that exceptions will not be caught, so [KrossalkResult.ServerException.throwFailureException] can be used
  * to throw on unhandled server exceptions.
  */
 public inline fun <R, T : R> KrosstalkResult<T>.recoverServerExceptions(onServerException: (KrosstalkResult.ServerException) -> R): KrosstalkResult.SuccessOrHttpError<R> =
@@ -444,7 +446,7 @@ public inline fun <R, T : R> KrosstalkResult<T>.handleServerException(
     }
 
 /**
- * Handle server exceptions with a [ServerException.className] of [className].
+ * Handle server exceptions with a [KrossalkResult.ServerException.className] of [className].
  */
 public inline fun <R, T : R> KrosstalkResult<T>.handleServerException(
     className: String,
@@ -452,7 +454,7 @@ public inline fun <R, T : R> KrosstalkResult<T>.handleServerException(
 ): KrosstalkResult<R> = handleServerException({ it.className == className }, onServerException)
 
 /**
- * Recover from all http errors.  Note that exceptions will not be caught, so [HttpError.throwFailureException] can be used
+ * Recover from all http errors.  Note that exceptions will not be caught, so [KrossalkResult.HttpError.throwFailureException] can be used
  * to throw on unhandled http errors.
  */
 public inline fun <R, T : R> KrosstalkResult<T>.recoverHttpErrors(onHttpError: (KrosstalkResult.HttpError) -> R): KrosstalkResult.SuccessOrServerException<R> =
@@ -515,7 +517,7 @@ public inline fun <T> KrosstalkResult<T>.handleServerExceptionAsHttpError(
 ): KrosstalkResult<T> = handleServerExceptionAsHttpError({ it.className == className }, onServerException)
 
 /**
- * Handle server exceptions matching [filter] as http errors with status code [statusCode] and a message of [ServerException.asString].
+ * Handle server exceptions matching [filter] as http errors with status code [statusCode] and a message of [KrossalkResult.ServerException.asString].
  */
 public inline fun <T> KrosstalkResult<T>.handleServerExceptionAsHttpError(
     filter: (KrosstalkResult.ServerException) -> Boolean,
@@ -525,7 +527,7 @@ public inline fun <T> KrosstalkResult<T>.handleServerExceptionAsHttpError(
 
 
 /**
- * Handle server exceptions with class names of [className] as http errors with status code [statusCode] and a message of [ServerException.asString].
+ * Handle server exceptions with class names of [className] as http errors with status code [statusCode] and a message of [KrossalkResult.ServerException.asString].
  */
 public inline fun <T> KrosstalkResult<T>.handleServerExceptionAsHttpError(className: String, statusCode: Int): KrosstalkResult<T> =
     handleServerExceptionAsHttpError({ it.className == className }, statusCode)

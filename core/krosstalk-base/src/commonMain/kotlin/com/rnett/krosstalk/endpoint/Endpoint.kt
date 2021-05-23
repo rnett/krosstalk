@@ -1,6 +1,12 @@
 package com.rnett.krosstalk.endpoint
 
-import com.rnett.krosstalk.*
+import com.rnett.krosstalk.InternalKrosstalkApi
+import com.rnett.krosstalk.KrosstalkException
+import com.rnett.krosstalk.KrosstalkPluginApi
+import com.rnett.krosstalk.extensionReceiver
+import com.rnett.krosstalk.instanceReceiver
+import com.rnett.krosstalk.krosstalkPrefix
+import com.rnett.krosstalk.methodName
 
 internal val valueRegex = Regex("\\{([^}]+?)\\}")
 internal val optionalRegex = Regex("\\[(\\w+):([^\\]]+?)\\]")
@@ -46,8 +52,8 @@ internal sealed class EndpointPreprocessor {
     companion object {
         val preprocessors = listOf<EndpointPreprocessor>(FullParamPreprocessor)
 
-        fun preProcessUrlParts(text: String) = preprocessors.fold(text) { text, it -> it.preProcessUrlParts(text) }
-        fun preProcessQueryParams(text: String) = preprocessors.fold(text) { text, it -> it.preProcessQueryParams(text) }
+        fun preProcessUrlParts(text: String) = preprocessors.fold(text) { all, it -> it.preProcessUrlParts(all) }
+        fun preProcessQueryParams(text: String) = preprocessors.fold(text) { all, it -> it.preProcessQueryParams(all) }
     }
 }
 
@@ -214,14 +220,25 @@ public data class Endpoint(
 
     @PublishedApi
     internal inline fun mapQueryParameters(transform: (String, EndpointQueryParameter) -> EndpointQueryParameter?): Endpoint =
-        Endpoint(urlParts, EndpointRegion(queryParameters.mapValues {
-            transform(it.key, it.value)
-        }.filterValues { it != null } as Map<String, EndpointQueryParameter>))
+        Endpoint(urlParts, EndpointRegion(
+            queryParameters.mapValues {
+                transform(it.key, it.value)
+            }.filterValues { it != null }.let {
+                @Suppress("UNCHECKED_CAST")
+                it as Map<String, EndpointQueryParameter>
+            })
+        )
 
     @PublishedApi
     internal inline fun mapParts(transform: (EndpointPart<*>) -> EndpointPart<*>?): Endpoint =
-        mapUrlParts { transform(it) as EndpointUrlPart? }
-            .mapQueryParameters { _, it -> transform(it) as EndpointQueryParameter? }
+        mapUrlParts {
+            @Suppress("UNCHECKED_CAST")
+            transform(it) as EndpointUrlPart?
+        }
+            .mapQueryParameters { _, it ->
+                @Suppress("UNCHECKED_CAST")
+                transform(it) as EndpointQueryParameter?
+            }
 
 
     /**
@@ -295,12 +312,6 @@ public data class Endpoint(
 
     /**
      * Substitute static variables (method name and krosstalk prefix) into the endpoint template, and replace parameters.
-     * [newParameter] is called on non- [methodName] or [prefix] keys, and like [fill] replaces the entire parameter, curly braces and all.
-     * For no change, use the default [newParameter] of ` { "{$it}" }`.
-     *
-     * For example, to change from curly braces to parentheses you could use `fillEndpointWithStaticAndAdjustParameters(..., { "($it)" })`.
-     *
-     * **Note that other `fillEndpoint` methods and `splitEndpoint` will only work with keys wrapped in curly braces.**
      *
      * @see [fill]
      */

@@ -31,13 +31,17 @@ data class KrosstalkAnnotations(val annotations: Set<KrosstalkAnnotation>) :
     constructor(annotations: List<IrConstructorCall>) : this(annotations.filter { it.isKrosstalkAnnotation() }
         .map { KrosstalkAnnotation(it) }.toSet())
 
+    @Suppress("UNCHECKED_CAST")
     operator fun <A : KrosstalkAnnotation> get(klass: KClass<A>): A? =
         annotations.singleOrNull { it::class == klass } as A?
 
     inline fun <reified A : KrosstalkAnnotation> get(): A? = get(A::class)
 
     fun <A : KrosstalkAnnotation> repeatable(klass: KClass<A>): List<A> =
-        annotations.filter { it::class == klass }.map { it as A }
+        annotations.filter { it::class == klass }.map {
+            @Suppress("UNCHECKED_CAST")
+            it as A
+        }
 
     inline fun <reified A : KrosstalkAnnotation> repeatable() = repeatable(A::class)
 
@@ -112,6 +116,7 @@ sealed class KrosstalkAnnotation(val call: IrConstructorCall, name: String) {
             val expr = arguments[name] ?: return default?.let { WrapperDelegate(it) }
                 ?: error("Required field $name missing")
 
+            @Suppress("UNCHECKED_CAST")
             return WrapperDelegate((expr as IrConst<T>).value)
         }
     }
@@ -121,6 +126,7 @@ sealed class KrosstalkAnnotation(val call: IrConstructorCall, name: String) {
             val name = property.name
             val expr = arguments[name] ?: return WrapperDelegate(null)
 
+            @Suppress("UNCHECKED_CAST")
             return WrapperDelegate((expr as IrConst<T>).value)
         }
     }
@@ -132,6 +138,7 @@ sealed class KrosstalkAnnotation(val call: IrConstructorCall, name: String) {
 
             return WrapperDelegate(
                 (expr as IrVararg).elements.map {
+                    @Suppress("UNCHECKED_CAST")
                     (it as IrConst<T>).value
                 }
             )
@@ -145,6 +152,7 @@ sealed class KrosstalkAnnotation(val call: IrConstructorCall, name: String) {
 
             return WrapperDelegate(
                 (expr as IrVararg).elements.map {
+                    @Suppress("UNCHECKED_CAST")
                     (it as IrConst<T>).value
                 }.toSet()
             )

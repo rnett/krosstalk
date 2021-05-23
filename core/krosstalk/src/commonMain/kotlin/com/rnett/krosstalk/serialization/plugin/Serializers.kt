@@ -49,6 +49,7 @@ public class ArgumentSerializers<S>(public val map: Map<String, Serializer<*, S>
      */
     @OptIn(InternalKrosstalkApi::class)
     @KrosstalkPluginApi
+    @Suppress("UNCHECKED_CAST")
     public operator fun get(argument: String): Serializer<Any?, S> = (map[argument]
         ?: throw MissingSerializerException(argument, map.keys, false)) as Serializer<Any?, S>
 
@@ -76,5 +77,6 @@ public class ArgumentSerializers<S>(public val map: Map<String, Serializer<*, S>
      * Deserialize an argument, throwing [MissingSerializerException] if the serializer is missing.
      */
     @KrosstalkPluginApi
+    @Suppress("UNCHECKED_CAST")
     public fun <T> deserializeArgument(key: String, value: S): T = this[key].deserialize(value) as T
 }

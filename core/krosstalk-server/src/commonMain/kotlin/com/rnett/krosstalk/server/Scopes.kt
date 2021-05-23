@@ -6,7 +6,7 @@ import com.rnett.krosstalk.ScopeInstance
 import com.rnett.krosstalk.server.plugin.ServerScope
 
 @OptIn(InternalKrosstalkApi::class, KrosstalkPluginApi::class)
-@Suppress("UNCHECKED_CAST")
+@Suppress("UNCHECKED_CAST", "DEPRECATED")
 public val <T : ServerScope<S>, S> ScopeInstance<T>.value: S
     get() =
         if (this !is ScopeInstance.Server<*, *>)
@@ -16,4 +16,5 @@ public val <T : ServerScope<S>, S> ScopeInstance<T>.value: S
 
 
 @OptIn(InternalKrosstalkApi::class, KrosstalkPluginApi::class)
+@Suppress("DEPRECATED")
 public operator fun <T : ServerScope<S>, S> T.invoke(serverData: S): ScopeInstance<T> = ScopeInstance.Server(serverData, this)

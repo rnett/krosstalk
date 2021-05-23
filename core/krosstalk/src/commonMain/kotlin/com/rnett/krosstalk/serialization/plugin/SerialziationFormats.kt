@@ -42,7 +42,7 @@ private fun UByte.toHex(): String = toString(16).let {
         "0$it"
     else
         it
-}.capitalize()
+}.uppercase()
 
 @OptIn(ExperimentalUnsignedTypes::class)
 private fun ByteArray.toHexString(): String = toUByteArray().joinToString("") { it.toHex() }

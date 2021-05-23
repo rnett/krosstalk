@@ -5,7 +5,7 @@
 [![License](https://img.shields.io/badge/License-Apache%202.0-yellowgreen.svg)](https://opensource.org/licenses/Apache-2.0)
 
 Krosstalk allows you to easily create RPC methods using pure kotlin. Client, server, and serialization implementations
-are plugable, and Kotlin's expect-actual modifiers can be used to ensure that client and server methods match.
+are pluggable, and Kotlin's expect-actual modifiers can be used to ensure that client and server methods match.
 
 Ktor client and server and Kotlinx Serialization plugins are provided, along
 with [instructions on how to write your own](./WRITING_PLUGINS.md).
@@ -107,9 +107,9 @@ fun main() {
 # Overview
 
 Krosstalk works by registering any methods annotated with `@KrosstalkMethod` with the class specified in the annotation,
-which must be an `object` that extends `Krosstalk` (refered to as the Krosstalk object). Client methods (which must have
-a body of `krosstalkCall()`) will then have their bodies replaced with a call to the Krosstalk object, which will use
-the client handler to send a request and return the response). Registering the server Krosstalk with your server
+which must be an `object` that extends `Krosstalk` (referred to as the Krosstalk object). Client methods (which must
+have a body of `krosstalkCall()`) will then have their bodies replaced with a call to the Krosstalk object, which will
+use the client handler to send a request and return the response). Registering the server Krosstalk with your server
 implementation (using a server plugin) will then cause incoming requests to be handled by the Krosstalk object, which
 will call the requested method and respond with the returned value.
 
@@ -416,7 +416,7 @@ fun main() {
 ## Resolution helpers
 
 Microservices are a rather common use case of RPC, and to better support them, we provide some resolution helpers,
-visable in the [microservices test](tests/microservices-test). These help manage dependencies, and can be seen in the
+visible in the [microservices test](tests/microservices-test). These help manage dependencies, and can be seen in the
 test's [buildscripts](tests/microservices-test/ping/build.gradle.kts) (each microservice's server depends on the other's
 client).
 

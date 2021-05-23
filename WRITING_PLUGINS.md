@@ -163,8 +163,9 @@ For an example, see [ktor-client](./plugins/ktor-client). The main plugin is
 artifact structure. This guide will follow its implementation.
 
 To define a client, you will need to define a scope for your plugin that extends `ClientScope` (and generally preserves
-the type parameter) and a `ClientHandler<S>` where `S` is your scope. You will also genrally want to define an interface
-implementing `KrosstalkClient` that uses your scope and client handler classes. Examples from the Ktor client plugin
+the type parameter) and a `ClientHandler<S>` where `S` is your scope. You will also generally want to define an
+interface implementing `KrosstalkClient` that uses your scope and client handler classes. Examples from the Ktor client
+plugin
 (definitions only):
 
 ```kotlin

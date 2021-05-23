@@ -35,6 +35,7 @@ import io.ktor.util.AttributeKey
 import io.ktor.util.createFromCall
 import io.ktor.util.toByteArray
 import io.ktor.util.toMap
+import java.util.*
 
 /**
  * Applies [remaining] scopes in reverse order, recursively, with [final] inside all of them.
@@ -127,6 +128,7 @@ public object KtorServer : ServerHandler<KtorServerScope<*>> {
                                 val scopes = MutableWantedScopes()
 
                                 method.allScopes.let(krosstalk::scopesAsType).forEach { scope ->
+                                    @Suppress("UNCHECKED_CAST")
                                     scope.getData(call)?.let { scopes[scope as KtorServerScope<Any>] = it }
                                 }
 
@@ -174,7 +176,7 @@ private val KrosstalkMethodBaseUrlAttribute = AttributeKey<String>("KrosstalkMet
 internal class KrosstalkRouteSelector(val method: MethodDefinition<*>) : RouteSelector(2.0) {
     override fun evaluate(context: RoutingResolveContext, segmentIndex: Int): RouteSelectorEvaluation {
         with(context) {
-            if (call.request.httpMethod.value.toLowerCase() != method.httpMethod.toLowerCase()) {
+            if (call.request.httpMethod.value.lowercase() != method.httpMethod.lowercase()) {
                 return RouteSelectorEvaluation.Failed
             }
 

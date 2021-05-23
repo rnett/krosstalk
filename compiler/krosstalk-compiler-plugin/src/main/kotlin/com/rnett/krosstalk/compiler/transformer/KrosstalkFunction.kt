@@ -450,7 +450,7 @@ class KrosstalkFunction(val declaration: IrSimpleFunction, val methodTransformer
         }
 
         annotations.KrosstalkEndpoint?.httpMethod?.let { method ->
-            if (method.toLowerCase() == "get" && hasArgs && !requireEmptyBody) {
+            if (method.lowercase() == "get" && hasArgs && !requireEmptyBody) {
                 messageCollector.reportError(
                     "Can't use HTTP GET method without either having no parameters (including receivers) or using @EmptyBody.",
                     declaration
