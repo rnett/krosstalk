@@ -14,6 +14,7 @@ import com.rnett.krosstalk.ServerDefault
 import com.rnett.krosstalk.WithHeaders
 import com.rnett.krosstalk.annotations.ServerURL
 import com.rnett.krosstalk.client.plugin.AppliedClientScope
+import com.rnett.krosstalk.client.plugin.toAppliedScope
 import com.rnett.krosstalk.client.plugin.ClientScope
 import com.rnett.krosstalk.deserializeServerException
 import com.rnett.krosstalk.headersOf
