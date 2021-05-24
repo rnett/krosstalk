@@ -12,12 +12,13 @@ allprojects {
     group = "krosstalk.tests"
     version = "1.0.3-ALPHA"
 
-    var ktor_version: String by extra("1.5.4")
-    var coroutines_version: String by extra("1.4.3")
+    var ktor_version: String by extra("2.0.0-eap-132")
+    var coroutines_version: String by extra("1.5.0")
     val serialization_version: String by extra("1.2.1")
 
     repositories {
         mavenCentral()
         maven("https://oss.sonatype.org/content/repositories/snapshots")
+        maven("https://maven.pkg.jetbrains.space/public/p/ktor/eap")
     }
 }

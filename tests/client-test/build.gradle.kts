@@ -60,7 +60,6 @@ kotlin {
         val jvmMain by getting {
             dependencies {
                 implementation("io.ktor:ktor-server-cio:$ktor_version")
-                implementation("io.ktor:ktor-serialization:$ktor_version")
                 implementation("io.ktor:ktor-auth:$ktor_version")
 
                 implementation("ch.qos.logback:logback-classic:1.2.3")
