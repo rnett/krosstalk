@@ -21,6 +21,11 @@ jobs:
         with:
           java-version: 15
 
+      - name: Install CURL Linux
+        if: runner.os == 'Linux'
+        run: |
+          sudo apt-get install curl libcurl4 libcurl4-openssl-dev -y
+
       - name: Grant execute permission for gradlew
         run: |
           chmod +x gradlew
@@ -91,11 +96,6 @@ jobs:
         uses: actions/setup-java@v1
         with:
           java-version: 15
-
-      - name: Install CURL Linux
-        if: runner.os == 'Linux'
-        run: |
-          sudo apt-get install curl libcurl4 libcurl4-openssl-dev -y
 
       - name: Grant execute permission for gradlew
         run: |
