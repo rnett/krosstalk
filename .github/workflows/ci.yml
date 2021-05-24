@@ -13,6 +13,7 @@ jobs:
     strategy:
       matrix:
         os: [ ubuntu-latest, macos-latest, windows-latest ]
+      fail-fast: false
     runs-on: ${{ matrix.os }}
     steps:
       - uses: actions/checkout@v2
@@ -82,7 +83,7 @@ jobs:
           username: rnett
           password: ${{ secrets.SONATYPE_PASSWORD }}
           staging_profile_id: ${{ secrets.SONATYPE_PROFILE_ID }}
-          description: Kwrosstalk ${{ github.repository }}/${{ github.workflow }}#${{ github.run_number }}
+          description: Krosstalk ${{ github.repository }}/${{ github.workflow }}#${{ github.run_number }}
 
   publish:
     strategy:
