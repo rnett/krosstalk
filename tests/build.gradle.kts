@@ -1,6 +1,6 @@
 plugins {
-    kotlin("multiplatform") version "1.5.0" apply false
-    kotlin("jvm") version "1.5.0" apply false
+    kotlin("multiplatform") version "1.5.10" apply false
+    kotlin("jvm") version "1.5.10" apply false
     id("org.jetbrains.kotlin.plugin.serialization") version "1.5.0" apply false
     id("org.jetbrains.compose") version "0.4.0-build209" apply false
     id("com.github.rnett.krosstalk") apply false
