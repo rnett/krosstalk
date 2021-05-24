@@ -19,42 +19,42 @@ import io.ktor.server.engine.embeddedServer
 import kotlinx.serialization.cbor.Cbor
 import org.slf4j.event.Level
 
-//fun main() {
-//    embeddedServer(CIO, 8080, "localhost") {
-//
-//        install(CORS) {
-//            anyHost()
-//        }
-//        install(CallLogging) {
-//            level = Level.DEBUG
-//        }
-//
-//        routing {
-////            trace { application.log.info(it.buildText()) }
-//            MyKrosstalk.defineKtor(this)
-//        }
-//
-//    }.start(true)
-//}
-//
-//data class User(val username: String) : Principal
-//
-//private val validUsers = mapOf("username" to "password")
-//
-//actual object MyKrosstalk : Krosstalk(), KrosstalkServer<KtorServerScope<*>> {
-//    actual override val serialization = KotlinxBinarySerializationHandler(Cbor { })
-//    override val server = KtorServer
-//
-//    actual object Auth : Scope, KtorServerBasicAuth<User>("auth") {
-//        override fun BasicAuthenticationProvider.Configuration.configure() {
-//            validate {
-//                if (validUsers[it.name] == it.password)
-//                    User(it.name)
-//                else
-//                    null
-//            }
-//        }
-//    }
-//}
-//
-//actual suspend fun testBasic(id: Int, name: String): Item = Item(id, name)
+fun main() {
+    embeddedServer(CIO, 8087, "localhost") {
+
+        install(CORS) {
+            anyHost()
+        }
+        install(CallLogging) {
+            level = Level.DEBUG
+        }
+
+        routing {
+//            trace { application.log.info(it.buildText()) }
+            MyKrosstalk.defineKtor(this)
+        }
+
+    }.start(true)
+}
+
+data class User(val username: String) : Principal
+
+private val validUsers = mapOf("username" to "password")
+
+actual object MyKrosstalk : Krosstalk(), KrosstalkServer<KtorServerScope<*>> {
+    actual override val serialization = KotlinxBinarySerializationHandler(Cbor { })
+    override val server = KtorServer
+
+    actual object Auth : Scope, KtorServerBasicAuth<User>("auth") {
+        override fun BasicAuthenticationProvider.Configuration.configure() {
+            validate {
+                if (validUsers[it.name] == it.password)
+                    User(it.name)
+                else
+                    null
+            }
+        }
+    }
+}
+
+actual suspend fun testBasic(id: Int, name: String): Item = Item(id, name)

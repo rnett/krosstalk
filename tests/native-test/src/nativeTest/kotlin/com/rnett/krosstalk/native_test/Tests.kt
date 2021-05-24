@@ -15,8 +15,7 @@ class Tests{
     @Test
     fun testBasic(){
         runBlocking {
-            assertEquals(3, 3)
-//            assertEquals(Item(3, "test"), testBasic(4, "test"))
+            assertEquals(Item(3, "test"), testBasic(3, "test"))
         }
     }
 }

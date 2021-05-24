@@ -33,13 +33,6 @@ kotlin {
         isMingwX64 -> mingwX64("native")
         else -> throw GradleException("Host OS is not supported in Kotlin/Native.")
     }
-    nativeTarget.apply {
-        binaries {
-            executable{
-                entryPoint = "com.rnett.krosstalk.native_test.main"
-            }
-        }
-    }
 
     sourceSets {
         val commonMain by getting {
@@ -54,8 +47,7 @@ kotlin {
 
         val commonTest by getting {
             dependencies {
-                implementation(kotlin("test-common"))
-                implementation(kotlin("test-annotations-common"))
+                implementation(kotlin("test"))
             }
         }
         val jvmMain by getting {
@@ -68,24 +60,14 @@ kotlin {
                 implementation("ch.qos.logback:logback-classic:1.2.3")
             }
         }
-        val jvmTest by getting {
-            dependencies {
-                implementation(kotlin("test-junit"))
-            }
-        }
         val nativeMain by getting {
             dependencies {
                 implementation("com.github.rnett.krosstalk:krosstalk-client")
-//                implementation("com.github.rnett.krosstalk:krosstalk-ktor-client")
-//                implementation("com.github.rnett.krosstalk:krosstalk-ktor-client-auth")
+                implementation("com.github.rnett.krosstalk:krosstalk-ktor-client")
+                implementation("com.github.rnett.krosstalk:krosstalk-ktor-client-auth")
 
-//                implementation("io.ktor:ktor-client-curl:$ktor_version")
-//                implementation("io.ktor:ktor-client-logging:$ktor_version")
-            }
-        }
-        val nativeTest by getting {
-            dependencies {
-                implementation(kotlin("test"))
+                implementation("io.ktor:ktor-client-curl:$ktor_version")
+                implementation("io.ktor:ktor-client-logging:$ktor_version")
             }
         }
     }
@@ -106,7 +88,7 @@ tasks.create<com.github.psxpaul.task.JavaExecFork>("startTestServer") {
 
     dependsOn("jvmJar")
 
-//    stopAfter = tasks["jsBrowserTest"]
+    stopAfter = tasks["nativeTest"]
 
-//    tasks["jsBrowserTest"].dependsOn(this)
+    tasks["nativeTest"].dependsOn(this)
 }

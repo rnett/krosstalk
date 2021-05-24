@@ -173,7 +173,7 @@ private val KrosstalkMethodAttribute = AttributeKey<Map<String, String>>("Krosst
 private val KrosstalkMethodBaseUrlAttribute = AttributeKey<String>("KrosstalkMethodBaseUrl")
 
 @KrosstalkPluginApi
-internal class KrosstalkRouteSelector(val method: MethodDefinition<*>) : RouteSelector(2.0) {
+internal class KrosstalkRouteSelector(val method: MethodDefinition<*>) : RouteSelector() {
     override fun evaluate(context: RoutingResolveContext, segmentIndex: Int): RouteSelectorEvaluation {
         with(context) {
             if (call.request.httpMethod.value.lowercase() != method.httpMethod.lowercase()) {
