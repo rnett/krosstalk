@@ -24,8 +24,12 @@ jobs:
 
       - name: Install CURL Linux
         if: runner.os == 'Linux'
+        run: sudo apt-get install curl libcurl4 libcurl4-openssl-dev -y
+
+      - name: Install CURL Windows
+        if: runner.os == 'Windows'
         run: |
-          sudo apt-get install curl libcurl4 libcurl4-openssl-dev -y
+          choco install curl
 
       - name: Grant execute permission for gradlew
         run: |
