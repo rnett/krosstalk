@@ -7,5 +7,5 @@ repositories {
 }
 
 dependencies {
-    compileOnly("org.jetbrains.kotlin:kotlin-gradle-plugin:1.5.0")
+    compileOnly("org.jetbrains.kotlin:kotlin-gradle-plugin:1.5.10")
 }
