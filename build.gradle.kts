@@ -6,6 +6,7 @@ plugins {
     id("com.gradle.plugin-publish") version Dependencies.gradlePluginPublish apply false
     id("org.jetbrains.dokka") version Dependencies.dokka apply false
     id("com.github.gmazzo.buildconfig") version Dependencies.buildconfig apply false
+    id("com.github.johnrengelman.shadow") version Dependencies.shadow apply false
     id("com.vanniktech.maven.publish") version Dependencies.publishPlugin apply false
     signing
 }
@@ -34,6 +35,11 @@ allprojects {
 
             val project = this
 
+//            if(project.name == "krosstalk-compiler-plugin-native") {
+//                apply(plugin = "com.vanniktech.maven.publish.base")
+//            } else {
+//                apply(plugin = "com.vanniktech.maven.publish")
+//            }
             apply(plugin = "com.vanniktech.maven.publish")
 
             extensions.getByType<com.vanniktech.maven.publish.MavenPublishBaseExtension>().apply {

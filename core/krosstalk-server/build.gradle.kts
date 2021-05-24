@@ -6,7 +6,7 @@ plugins {
 description = "The server-specific APIs of Krosstalk, including KrosstalkServer."
 
 kotlin {
-    allTargets(project)
+    allTargets()
     sourceSets {
         val commonMain by getting {
             dependencies {

@@ -6,7 +6,7 @@ niceModuleName = "Krosstalk Kotlinx-serialization"
 description = "Kotlinx-serialization support for Krosstalk"
 
 kotlin {
-    allTargets(project)
+    allTargets()
     sourceSets {
         val commonMain by getting {
             dependencies {

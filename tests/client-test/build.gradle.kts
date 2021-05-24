@@ -6,9 +6,9 @@ plugins {
     id("com.github.hesch.execfork")
 }
 
-val ktor_version = "1.5.2"
-val coroutines_version = "1.4.3"
-val serialization_version = "1.1.0"
+var ktor_version: String by extra
+var coroutines_version: String by extra
+val serialization_version: String by extra
 
 repositories {
     mavenCentral()

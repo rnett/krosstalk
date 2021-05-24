@@ -9,4 +9,4 @@ dependencies {
     api(project(":plugins:ktor-server:krosstalk-ktor-server"))
 }
 
-kotlin.irAndJava8(project)
+kotlin.irAndJava8()

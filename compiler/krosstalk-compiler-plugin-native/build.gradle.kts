@@ -2,22 +2,49 @@ plugins {
     kotlin("jvm")
     kotlin("kapt")
     id("com.github.rnett.compiler-plugin-utils") version Dependencies.compilerPluginUtils
+    id("com.github.johnrengelman.shadow")
 }
 
 description = "Krosstalk Kotlin native compiler plugin"
 
 dependencies {
-    implementation(kotlin("reflect"))
     implementation(project(":core:krosstalk-base"))
+    implementation("com.github.rnett.compiler-plugin-utils:compiler-plugin-utils-native:${Dependencies.compilerPluginUtils}")
+
     compileOnly("org.jetbrains.kotlin:kotlin-compiler:${Dependencies.kotlin}")
-
-    implementation("com.github.rnett.compiler-plugin-utils:compiler-plugin-utils:${Dependencies.compilerPluginUtils}")
-
     compileOnly("com.google.auto.service:auto-service-annotations:${Dependencies.autoService}")
+
     kapt("com.google.auto.service:auto-service:${Dependencies.autoService}")
 }
 
-kotlin.irAndJava8(project)
+kotlin.irAndJava8()
+
+kotlin {
+    this.target {
+        mavenPublication {
+            project.shadow.component(this)
+        }
+//        components.forEach {
+//            it as AdhocComponentWithVariants
+//            it.wi
+//
+//        }
+    }
+}
+
+val shadowJar = tasks.shadowJar.apply {
+    configure {
+        archiveClassifier.set("")
+        dependencies {
+            include(project(":core:krosstalk-base"))
+            include(dependency("com.github.rnett.compiler-plugin-utils:compiler-plugin-utils-native"))
+        }
+    }
+}
+
+tasks.jar.configure {
+    finalizedBy(shadowJar)
+}
 
 tasks.named("compileKotlin") { dependsOn("syncSource") }
 tasks.register<Sync>("syncSource") {

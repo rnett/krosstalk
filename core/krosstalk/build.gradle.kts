@@ -7,7 +7,7 @@ niceModuleName = "Krosstalk Core"
 description = "The core (client or server) APIs of Krosstalk, including everything necessary for expect Krosstalks."
 
 kotlin {
-    allTargets(project)
+    allTargets()
     sourceSets {
         val commonMain by getting {
             dependencies {

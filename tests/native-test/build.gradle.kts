@@ -14,42 +14,40 @@ repositories {
     mavenCentral()
     jcenter()
     maven("https://dl.bintray.com/kotlin/ktor")
-    maven("https://dl.bintray.com/kotlin/kotlin-eap")
 }
 kotlin {
     jvm {
         compilations.all {
             kotlinOptions {
                 jvmTarget = "1.8"
-                useIR = true
             }
         }
         withJava()
     }
-    js(IR) {
-        browser {
-            binaries.executable()
 
-            webpackTask {
-                val project = project
-                mode =
-                    if (project.hasProperty("dev")) org.jetbrains.kotlin.gradle.targets.js.webpack.KotlinWebpackConfig.Mode.DEVELOPMENT else org.jetbrains.kotlin.gradle.targets.js.webpack.KotlinWebpackConfig.Mode.PRODUCTION
-            }
-            testTask {
-                useMocha {
-                    timeout = "99999999999999"
-//                    useChromeHeadless()
-                }
-
+    val hostOs = System.getProperty("os.name")
+    val isMingwX64 = hostOs.startsWith("Windows")
+    val nativeTarget = when {
+        hostOs == "Mac OS X" -> macosX64("native")
+        hostOs == "Linux" -> linuxX64("native")
+        isMingwX64 -> mingwX64("native")
+        else -> throw GradleException("Host OS is not supported in Kotlin/Native.")
+    }
+    nativeTarget.apply {
+        binaries {
+            executable{
+                entryPoint = "com.rnett.krosstalk.native_test.main"
             }
         }
     }
+
     sourceSets {
         val commonMain by getting {
             dependencies {
                 implementation("com.github.rnett.krosstalk:krosstalk")
                 implementation("com.github.rnett.krosstalk:krosstalk-kotlinx-serialization")
                 implementation("org.jetbrains.kotlinx:kotlinx-serialization-cbor:$serialization_version")
+
                 implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:$coroutines_version")
             }
         }
@@ -75,37 +73,40 @@ kotlin {
                 implementation(kotlin("test-junit"))
             }
         }
-        val jsMain by getting {
+        val nativeMain by getting {
             dependencies {
-                implementation("com.github.rnett.krosstalk:krosstalk-ktor-client")
-                implementation("com.github.rnett.krosstalk:krosstalk-ktor-client-auth")
-                implementation("io.ktor:ktor-client-logging:$ktor_version")
+                implementation("com.github.rnett.krosstalk:krosstalk-client")
+//                implementation("com.github.rnett.krosstalk:krosstalk-ktor-client")
+//                implementation("com.github.rnett.krosstalk:krosstalk-ktor-client-auth")
+
+//                implementation("io.ktor:ktor-client-curl:$ktor_version")
+//                implementation("io.ktor:ktor-client-logging:$ktor_version")
             }
         }
-        val jsTest by getting {
+        val nativeTest by getting {
             dependencies {
-                implementation(kotlin("test-js"))
+                implementation(kotlin("test"))
             }
         }
     }
 }
 
 application {
-    this.mainClass.set("com.rnett.krosstalk.fullstack_test.TestKt")
+    this.mainClass.set("com.rnett.krosstalk.native_test.TestKt")
 }
 
 tasks.create<com.github.psxpaul.task.JavaExecFork>("startTestServer") {
     group = "verification"
 
     classpath = sourceSets.main.get().runtimeClasspath
-    main = "com.rnett.krosstalk.fullstack_test.TestKt"
+    main = "com.rnett.krosstalk.native_test.TestKt"
     doLast {
         Thread.sleep(5_000)
     }
 
     dependsOn("jvmJar")
 
-    stopAfter = tasks["jsBrowserTest"]
+//    stopAfter = tasks["jsBrowserTest"]
 
-    tasks["jsBrowserTest"].dependsOn(this)
+//    tasks["jsBrowserTest"].dependsOn(this)
 }

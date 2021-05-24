@@ -6,7 +6,7 @@ plugins {
 description = "The client-specific APIs of Krosstalk, including KrosstalkClient."
 
 kotlin {
-    allTargets(project)
+    allTargets()
     sourceSets {
         val commonMain by getting {
             dependencies {

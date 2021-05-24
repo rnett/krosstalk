@@ -21,7 +21,7 @@ val isMacOs get() = hostOs == "Mac OS X"
 val isMainHost get() = isMingwX64
 
 @OptIn(ExperimentalStdlibApi::class)
-inline fun KotlinMultiplatformExtension.allTargets(project: Project, noWatchOsX64: Boolean = false) {
+inline fun KotlinMultiplatformExtension.allTargets(noWatchOsX64: Boolean = false) {
     jvm {
         //TODO remove once KT-36942 and KT-35003 are fixed
         attributes {
@@ -96,6 +96,7 @@ inline fun KotlinMultiplatformExtension.allTargets(project: Project, noWatchOsX6
         languageSettings.commonSettings()
     }
 
+    val project = nativeTargets.first().project
     with(project) {
         afterEvaluate {
             extensions.getByType<PublishingExtension>().apply {
@@ -116,7 +117,7 @@ inline fun KotlinMultiplatformExtension.allTargets(project: Project, noWatchOsX6
     }
 }
 
-inline fun KotlinJvmProjectExtension.irAndJava8(project: Project) {
+inline fun KotlinJvmProjectExtension.irAndJava8() {
     target {
         //TODO remove once KT-36942 and KT-35003 are fixed
         attributes {
@@ -137,6 +138,7 @@ inline fun KotlinJvmProjectExtension.irAndJava8(project: Project) {
         }
     }
 
+    val project = target.project
     with(project) {
         afterEvaluate {
             extensions.getByType<PublishingExtension>().apply {
