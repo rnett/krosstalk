@@ -24,11 +24,6 @@ kotlin {
         mavenPublication {
             project.shadow.component(this)
         }
-//        components.forEach {
-//            it as AdhocComponentWithVariants
-//            it.wi
-//
-//        }
     }
 }
 
