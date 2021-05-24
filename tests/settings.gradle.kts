@@ -16,7 +16,7 @@ includeBuild("..")
 include(
     "fullstack-test",
     "client-test",
-//    "native-test",
+    "native-test",
 //    "compose-test",
     "microservices-test",
     "microservices-test:ping",

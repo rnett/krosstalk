@@ -16,9 +16,10 @@ Krosstalk is currently not compatible with Compose, because their compiler plugi
 this, put all your Krosstalk stuff in other modules and depend on it in the modules with the compiler plugin applied.
 [Tracked issue](https://issuetracker.google.com/issues/185609826).
 
-Native support is WIP, waiting on [KT-46340](https://youtrack.jetbrains.com/issue/KT-46340),
-[KT-46895](https://youtrack.jetbrains.com/issue/KT-46895), and
-[KT-46896](https://youtrack.jetbrains.com/issue/KT-46896).
+The compiler plugin supports Native, but the Ktor plugin does not, waiting on 
+[KT-46340](https://youtrack.jetbrains.com/issue/KT-46340) and
+[KT-46895](https://youtrack.jetbrains.com/issue/KT-46895).
+If you have another server or client plugin things should work fine.
 
 ## Artifacts
 

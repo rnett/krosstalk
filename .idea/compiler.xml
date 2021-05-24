@@ -4,6 +4,16 @@
     <annotationProcessing>
       <profile default="true" name="Default" enabled="true" />
     </annotationProcessing>
-    <bytecodeTargetLevel target="11" />
+    <bytecodeTargetLevel target="11">
+      <module name="tests.compose-test" target="15" />
+      <module name="tests.compose-test.commonMain" target="1.8" />
+      <module name="tests.compose-test.commonTest" target="1.8" />
+      <module name="tests.compose-test.composeMain" target="1.8" />
+      <module name="tests.compose-test.composeTest" target="1.8" />
+      <module name="tests.compose-test.main" target="15" />
+      <module name="tests.compose-test.serverMain" target="1.8" />
+      <module name="tests.compose-test.serverTest" target="1.8" />
+      <module name="tests.compose-test.test" target="15" />
+    </bytecodeTargetLevel>
   </component>
 </project>

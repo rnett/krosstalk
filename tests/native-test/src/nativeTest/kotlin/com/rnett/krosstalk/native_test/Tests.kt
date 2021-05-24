@@ -7,7 +7,7 @@ import com.rnett.krosstalk.KrosstalkPluginApi
 
 class Tests{
     //TODO waiting on https://youtrack.jetbrains.com/issue/KT-46896
-//    @Test
+    @Test
     @OptIn(KrosstalkPluginApi::class)
     fun testPlugin(){
         assertEquals(1, TestKrosstalk.methods.size)
