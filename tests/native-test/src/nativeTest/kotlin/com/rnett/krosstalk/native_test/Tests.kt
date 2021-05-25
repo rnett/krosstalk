@@ -19,4 +19,9 @@ class Tests {
             assertEquals(Item(3, "test"), testBasic(3, "test"))
         }
     }
+
+    @Test
+    fun errorTest(){
+        error("My Error")
+    }
 }
