@@ -15,13 +15,8 @@ class Tests {
 
     @Test
     fun testBasic() {
-        try {
-            runBlocking {
-                assertEquals(Item(3, "test"), testBasic(3, "test"))
-            }
-        } catch (e: Throwable) {
-            e.printStackTrace()
-            throw e
+        runBlocking {
+            assertEquals(Item(3, "test"), testBasic(3, "test"))
         }
     }
 }
