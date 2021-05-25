@@ -6,7 +6,6 @@ import kotlin.test.Test
 import kotlin.test.assertEquals
 
 class Tests {
-    //TODO waiting on https://youtrack.jetbrains.com/issue/KT-46896
     @Test
     @OptIn(KrosstalkPluginApi::class)
     fun testPlugin() {
