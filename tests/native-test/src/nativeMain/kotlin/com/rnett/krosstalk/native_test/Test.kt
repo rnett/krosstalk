@@ -33,3 +33,14 @@ actual object MyKrosstalk : Krosstalk(), KrosstalkClient<KtorClientScope<*>> {
 }
 
 actual suspend fun testBasic(id: Int, name: String): Item = krosstalkCall()
+
+fun main() {
+    try {
+        runBlocking {
+            println(testBasic(4, "test"))
+        }
+    } catch (e: Throwable){
+        e.printStackTrace()
+        throw e
+    }
+}

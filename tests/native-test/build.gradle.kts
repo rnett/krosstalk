@@ -33,6 +33,11 @@ kotlin {
         isMingwX64 -> mingwX64("native")
         else -> throw GradleException("Host OS is not supported in Kotlin/Native.")
     }
+    nativeTarget.apply {
+        binaries.executable {
+            entryPoint = "com.rnett.krosstalk.native_test.main"
+        }
+    }
 
     sourceSets {
         val commonMain by getting {
@@ -41,7 +46,7 @@ kotlin {
                 implementation("com.github.rnett.krosstalk:krosstalk-kotlinx-serialization")
                 implementation("org.jetbrains.kotlinx:kotlinx-serialization-cbor:$serialization_version")
 
-                implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:$coroutines_version")
+                implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:$coroutines_version-native-mt")
             }
         }
 
@@ -91,4 +96,36 @@ tasks.create<com.github.psxpaul.task.JavaExecFork>("startTestServer") {
     stopAfter = tasks["nativeTest"]
 
     tasks["nativeTest"].dependsOn(this)
+}
+
+tasks.create<com.github.psxpaul.task.JavaExecFork>("startRunDebugServer") {
+    group = "run"
+
+    classpath = sourceSets.main.get().runtimeClasspath
+    main = "com.rnett.krosstalk.native_test.TestKt"
+    doLast {
+        Thread.sleep(5_000)
+    }
+
+    dependsOn("jvmJar")
+
+    stopAfter = tasks["runDebugExecutableNative"]
+
+    tasks["runDebugExecutableNative"].dependsOn(this)
+}
+
+tasks.create<com.github.psxpaul.task.JavaExecFork>("startRunReleaseServer") {
+    group = "run"
+
+    classpath = sourceSets.main.get().runtimeClasspath
+    main = "com.rnett.krosstalk.native_test.TestKt"
+    doLast {
+        Thread.sleep(5_000)
+    }
+
+    dependsOn("jvmJar")
+
+    stopAfter = tasks["runReleaseExecutableNative"]
+
+    tasks["runReleaseExecutableNative"].dependsOn(this)
 }
