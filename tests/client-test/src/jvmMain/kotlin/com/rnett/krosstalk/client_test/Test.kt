@@ -18,6 +18,7 @@ import io.ktor.routing.routing
 import io.ktor.server.cio.CIO
 import io.ktor.server.engine.embeddedServer
 import io.ktor.shared.serialization.ContentConverter
+import io.ktor.shared.serialization.kotlinx.serialization
 import io.ktor.util.getOrFail
 import io.ktor.util.reflect.TypeInfo
 import io.ktor.utils.io.ByteReadChannel
@@ -46,16 +47,7 @@ fun main() {
         }
 
         install(ContentNegotiation) {
-
-            register(ContentType.Application.Json, object : ContentConverter{
-                override suspend fun deserialize(charset: Charset, typeInfo: TypeInfo, content: ByteReadChannel): Any? {
-                    return json.decodeFromString(typeInfo.serializer(), content.readRemaining().readText(charset))
-                }
-
-                override suspend fun serialize(contentType: ContentType, charset: Charset, typeInfo: TypeInfo, value: Any): OutgoingContent? {
-                    return TextContent(json.encodeToString(typeInfo.serializer(), value), contentType)
-                }
-            })
+            serialization(ContentType.Application.Json, Json {  })
         }
 
         install(Authentication) {

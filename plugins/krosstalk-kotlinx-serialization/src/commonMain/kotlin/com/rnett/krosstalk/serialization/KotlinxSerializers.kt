@@ -38,7 +38,7 @@ public data class KotlinxStringSerializer<T>(val serializer: KSerializer<T>, val
  * Kotlinx serialization handler that uses a [BinaryFormat].  Combines arguments into a `Map<String, ByteArray>`, then serializes the map.
  */
 @OptIn(KrosstalkPluginApi::class)
-public data class KotlinxBinarySerializationHandler(val format: BinaryFormat) :
+public data class KotlinxBinarySerializationHandler(val format: BinaryFormat, override val contentType: String = byteArrayContentType) :
     ArgumentSerializationHandler<ByteArray>(ByteTransformer) {
     override fun serializeArguments(serializedArguments: Map<String, ByteArray>): ByteArray {
         return format.encodeToByteArray(mapSerializer, serializedArguments)
@@ -52,7 +52,6 @@ public data class KotlinxBinarySerializationHandler(val format: BinaryFormat) :
         KotlinxBinarySerializer(serializer(type), format)
 
     private val mapSerializer = serializer<Map<String, ByteArray>>()
-    override val contentType: String = byteArrayContentType
 }
 
 
@@ -64,7 +63,7 @@ public data class KotlinxBinarySerializationHandler(val format: BinaryFormat) :
  * This is necessary for using non-krosstalk apis.
  */
 @OptIn(KrosstalkPluginApi::class)
-public data class KotlinxStringSerializationHandler(val format: StringFormat) :
+public data class KotlinxStringSerializationHandler(val format: StringFormat, override val contentType: String = if(format is Json) "application/json" else stringContentType) :
     ArgumentSerializationHandler<String>(StringTransformer) {
     override fun serializeArguments(serializedArguments: Map<String, String>): String {
         return format.encodeToString(mapSerializer, serializedArguments)
@@ -78,7 +77,6 @@ public data class KotlinxStringSerializationHandler(val format: StringFormat) :
         KotlinxStringSerializer(serializer(type), format)
 
     private val mapSerializer = serializer<Map<String, String>>()
-    override val contentType: String = stringContentType
 }
 
 /**
@@ -110,5 +108,5 @@ public data class KotlinxJsonObjectSerializationHandler(val format: Json) :
         }
     }
 
-    override val contentType: String = stringContentType
+    override val contentType: String = "application/json"
 }
