@@ -18,7 +18,7 @@ jobs:
     steps:
       - uses: actions/checkout@v2
       - name: Setup
-        uses: ./github/actions/setup
+        uses: ./.github/actions/setup
         with:
           cache: true
 
@@ -34,7 +34,7 @@ jobs:
         run: (cd tests && ./gradlew allTests --no-parallel)
 
       - name: Cleanup cache
-        uses: ./github/actions/cleanup-cache
+        uses: ./.github/actions/cleanup-cache
 
   find-version:
     runs-on: ubuntu-latest
@@ -45,7 +45,7 @@ jobs:
     steps:
       - uses: actions/checkout@v2
       - name: Setup
-        uses: ./github/actions/setup
+        uses: ./.github/actions/setup
         with:
           cache: false
 
@@ -87,7 +87,7 @@ jobs:
     steps:
       - uses: actions/checkout@v2
       - name: Setup
-        uses: ./github/actions/setup
+        uses: ./.github/actions/setup
         with:
           cache: true
 
@@ -102,7 +102,7 @@ jobs:
         run: ./gradlew publish --no-daemon --no-parallel
 
       - name: Cleanup cache
-        uses: ./github/actions/cleanup-cache
+        uses: ./.github/actions/cleanup-cache
 
 
   publish-docs:
@@ -112,7 +112,7 @@ jobs:
     steps:
       - uses: actions/checkout@v2
       - name: Setup
-        uses: ./github/actions/setup
+        uses: ./.github/actions/setup
         with:
           cache: true
 
@@ -167,7 +167,7 @@ jobs:
           message: Update Plugin docs for $version
 
       - name: Cleanup cache
-        uses: ./github/actions/cleanup-cache
+        uses: ./.github/actions/cleanup-cache
 
   finalize:
     runs-on: ubuntu-latest
