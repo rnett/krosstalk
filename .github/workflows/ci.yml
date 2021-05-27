@@ -261,7 +261,7 @@ jobs:
 
       - name: Publish Core docs
         if: github.ref == 'refs/heads/main'
-        uses: rnett/publish-docs@v2.3
+        uses: rnett/publish-docs@v2.4
         with:
           from: core/build/dokka/htmlMultiModule
           publish-to: '$latest/core,!old-releases/core/$version'
@@ -271,13 +271,23 @@ jobs:
 
       - name: Publish Plugin docs
         if: github.ref == 'refs/heads/main'
-        uses: rnett/publish-docs@v2.3
+        uses: rnett/publish-docs@v2.4
         with:
           from: plugins/build/dokka/htmlMultiModule
           publish-to: '$latest/plugins,!old-releases/plugins/$version'
           version: ${{ needs.find-version.outputs.version }}
           restore: true
           message: Update Plugin docs for $version
+
+      - name: Publish Release README
+        if: github.ref == 'refs/heads/main'
+        uses: rnett/publish-docs@v2.4
+        with:
+          from-file: README.md
+          publish-to: '$latest,!.'
+          version: ${{ needs.find-version.outputs.version }}
+          restore: true
+          message: Update README for $version
 
       - name: Stop gradle daemon
         run: ./gradlew --stop
