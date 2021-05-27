@@ -66,11 +66,20 @@ jobs:
         run: ./gradlew --stop
 
       - name: Cleanup Gradle Cache
+        if: runner.os != 'Windows'
         # Remove some files from the Gradle cache, so they aren't cached by GitHub Actions.
         # Restoring these files from a GitHub Actions cache might cause problems for future builds.
         run: |
           rm -f ~/.gradle/caches/modules-2/modules-2.lock
           rm -f ~/.gradle/caches/modules-2/gc.properties
+
+      - name: Cleanup Gradle Cache Windows
+        if: runner.os == 'Windows'
+        # Remove some files from the Gradle cache, so they aren't cached by GitHub Actions.
+        # Restoring these files from a GitHub Actions cache might cause problems for future builds.
+        run: |
+          if (test-path ~/.gradle/caches/modules-2/modules-2.lock) { rm ~/.gradle/caches/modules-2/modules-2.lock }
+          if (test-path ~/.gradle/caches/modules-2/gc.properties) { rm ~/.gradle/caches/modules-2/gc.properties }
 
   find-version:
     runs-on: ubuntu-latest
@@ -175,11 +184,20 @@ jobs:
         run: ./gradlew --stop
 
       - name: Cleanup Gradle Cache
+        if: runner.os != 'Windows'
         # Remove some files from the Gradle cache, so they aren't cached by GitHub Actions.
         # Restoring these files from a GitHub Actions cache might cause problems for future builds.
         run: |
           rm -f ~/.gradle/caches/modules-2/modules-2.lock
           rm -f ~/.gradle/caches/modules-2/gc.properties
+
+      - name: Cleanup Gradle Cache Windows
+        if: runner.os == 'Windows'
+        # Remove some files from the Gradle cache, so they aren't cached by GitHub Actions.
+        # Restoring these files from a GitHub Actions cache might cause problems for future builds.
+        run: |
+          if (test-path ~/.gradle/caches/modules-2/modules-2.lock) { rm ~/.gradle/caches/modules-2/modules-2.lock }
+          if (test-path ~/.gradle/caches/modules-2/gc.properties) { rm ~/.gradle/caches/modules-2/gc.properties }
 
 
   publish-docs:
@@ -276,11 +294,20 @@ jobs:
         run: ./gradlew --stop
 
       - name: Cleanup Gradle Cache
+        if: runner.os != 'Windows'
         # Remove some files from the Gradle cache, so they aren't cached by GitHub Actions.
         # Restoring these files from a GitHub Actions cache might cause problems for future builds.
         run: |
           rm -f ~/.gradle/caches/modules-2/modules-2.lock
           rm -f ~/.gradle/caches/modules-2/gc.properties
+
+      - name: Cleanup Gradle Cache Windows
+        if: runner.os == 'Windows'
+        # Remove some files from the Gradle cache, so they aren't cached by GitHub Actions.
+        # Restoring these files from a GitHub Actions cache might cause problems for future builds.
+        run: |
+          if (test-path ~/.gradle/caches/modules-2/modules-2.lock) { rm ~/.gradle/caches/modules-2/modules-2.lock }
+          if (test-path ~/.gradle/caches/modules-2/gc.properties) { rm ~/.gradle/caches/modules-2/gc.properties }
 
   finalize:
     runs-on: ubuntu-latest
