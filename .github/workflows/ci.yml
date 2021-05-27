@@ -281,7 +281,7 @@ jobs:
 
       - name: Publish Release README
         if: github.ref == 'refs/heads/main'
-        uses: rnett/publish-docs@v2.5-pre1
+        uses: rnett/publish-docs@v2.5-pre2
         with:
           from-file: ./README.md
           publish-to: '$latest,!.'
