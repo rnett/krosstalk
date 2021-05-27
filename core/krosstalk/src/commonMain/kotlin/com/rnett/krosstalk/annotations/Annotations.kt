@@ -2,6 +2,7 @@ package com.rnett.krosstalk.annotations
 
 import com.rnett.krosstalk.Headers
 import com.rnett.krosstalk.Krosstalk
+import com.rnett.krosstalk.ServerDefault
 import com.rnett.krosstalk.WithHeaders
 import com.rnett.krosstalk.defaultEndpoint
 import com.rnett.krosstalk.defaultEndpointHttpMethod
@@ -49,7 +50,6 @@ internal annotation class TopLevelOnly
 @TopLevelOnly
 public annotation class KrosstalkMethod(val klass: KClass<out Krosstalk>, val noParamHash: Boolean = false)
 
-//TODO update docs, only Optional or ServerDefault can be used in optionals
 /**
  * Specifies an endpoint for the krosstalk method to use.
  * [endpoint] should be a http-formatted string of the (relative) pathname and query string, i.e. `"/items/?id={id}"`.
@@ -57,12 +57,12 @@ public annotation class KrosstalkMethod(val klass: KClass<out Krosstalk>, val no
  * * Literals
  * * Parameters: `{param}`.
  * * Parameter with name: `{{param}}`, becomes `/param/{param}` or `param={param}` depending on location.
- * * Optional: `[?param:...]`.  Evaluates to the body (`...`) if param is present (not null if `name` is `@Optional` or not
- *   a default if `name` is `@ServerDefault`), empty otherwise.  Contents are treated as full segments, i.e.
+ * * Optional: `[?param:...]`.  Evaluates to the body (`...`) if param is present (not null if `name` is a nullable `@Optional` or not
+ *   a default if `name` is a `ServerDefault` `@Optional`), empty otherwise.  Contents are treated as full segments, i.e.
  *   `my[?param:id]={param2}` is not allowed.
  * * Optional named parameter: `{{?param}}`, becomes `{{param}}` if param is present, empty otherwise.
  *
- * For both optionals, `param` must either be `@Optional` or `@ServerDefault`.
+ * For both optionals, `param` must either be `@Optional`.
  *
  * Valid parameter names are the method parameters, [instanceReceiver] if it has an instance/dispatch receiver,
  * [extensionReceiver] if it has a extension receiver.
@@ -178,12 +178,18 @@ public annotation class ExceptionHandling(
 public annotation class RespondWithHeaders
 
 /**
- * Don't send a parameter if it is null.  Must be used on a nullable parameter.
- * **If it is not present in a call to the server, `null` will be used, not any default.**
- * Defaults will be evaluated at the call side, i.e. on client side if called from the client, or server side if called from the server.
- * Defaults are ignored for direct HTTP requests.
+ * Don't send a parameter if it is null (if nullable) or default (if ServerDefault).
+ * Must be used on a nullable parameter or a parameter of type [ServerDefault].
  *
- * If you want to use a default value when the parameter is not specified, make the parameter default to null and use `?:` in the server method body.
+ * **If a nullable `@Optional` parameter is not present in a call to the server, `null` will be used, not any default.**
+ *
+ * Nullable `@Optional` parameters will have their defaults evaluated at the call side, and only not passed to the server if they are null.
+ *
+ * `ServerDefault` `@Optional` parameters must have a default value, and won't be passed to the server if their value is not specified (i.e.
+ * the default is used).  In that case, the default will be evaluated on the server.
+ *
+ * If you want to use a default value when the parameter is not specified, make the parameter default to null and use `?:` in the server method body,
+ * or use [ServerDefault].
  *
  * Optional parameters may be used in optional blocks in an endpoint (see [KrosstalkEndpoint]).
  */
@@ -226,8 +232,6 @@ public annotation class RequestHeaders
 /**
  * Don't pass a parameter, and instead use `null` or the default on the server.
  * The marked parameter must be nullable or have a default value.
- *
- * Default values that reference other parameters will cause errors.
  *
  * You **can not** use ignored parameters in [KrosstalkEndpoint].
  */

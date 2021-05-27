@@ -116,7 +116,7 @@ public class ServerDefaultInEndpointException(public val methodName: String, pub
 public open class ClientFailureException @InternalKrosstalkApi constructor(
     public val methodName: String,
     override val cause: Throwable
-) : KrosstalkException("Method $methodName failed with a client exception", cause)
+) : KrosstalkException("Method $methodName failed with a client exception: $cause", cause)
 
 @OptIn(InternalKrosstalkApi::class)
 public class WrongHeadersTypeException @InternalKrosstalkApi constructor(

@@ -12,6 +12,7 @@ import com.rnett.krosstalk.result.serverExceptionOrNull
 import com.rnett.krosstalk.result.valueOrNull
 import io.ktor.client.utils.EmptyContent
 import io.ktor.http.HttpMethod
+import kotlinx.coroutines.DelicateCoroutinesApi
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.promise
 import kotlin.test.Test
@@ -21,6 +22,7 @@ import kotlin.test.assertNotNull
 import kotlin.test.assertTrue
 import kotlin.test.fail
 
+@OptIn(DelicateCoroutinesApi::class)
 class Tests {
 
     @Test
@@ -369,5 +371,15 @@ class Tests {
     fun testIgnored() = GlobalScope.promise {
         assertEquals("test", withIgnored())
         assertEquals("test", withIgnored("2"))
+    }
+
+    @Test
+    fun testIgnoredDependentDefault() = GlobalScope.promise {
+        assertEquals("testIgnore" to "testIgnore2", withIgnoredDependentDefault("test"))
+    }
+
+    @Test
+    fun testDependentServerDefault() = GlobalScope.promise {
+        assertEquals("2", withDependentServerDefault(2))
     }
 }

@@ -115,7 +115,7 @@ expect fun serverOnlyDefault(): Int
 @KrosstalkEndpoint("$krosstalkPrefix/$methodName/{{a}}/{{?b}}")
 @KrosstalkMethod(MyKrosstalk::class)
 @EmptyBody
-expect suspend fun withServerDefault(a: Int = 2, b: ServerDefault<Int> = ServerDefault { serverOnlyDefault() }): Int
+expect suspend fun withServerDefault(a: Int = 2, @Optional b: ServerDefault<Int> = ServerDefault { serverOnlyDefault() }): Int
 
 expect object ExpectObject {
     fun value(): Int
@@ -225,3 +225,10 @@ expect suspend fun withRequestHeadersInCallAndParam(@RequestHeaders headers: Hea
 @KrosstalkMethod(MyKrosstalk::class)
 expect suspend fun withIgnored(@Ignore test: String = "test"): String
 
+@KrosstalkMethod(MyKrosstalk::class)
+expect suspend fun withIgnoredDependentDefault(pass: String, @Ignore ignore1: String = pass + "Ignore", @Ignore ignore2: String = ignore1 + "2"): Pair<String, String>
+
+expect fun dependentServerDefault(pass: Int): String
+
+@KrosstalkMethod(MyKrosstalk::class)
+expect suspend fun withDependentServerDefault(pass: Int, @Optional test: ServerDefault<String> = ServerDefault { dependentServerDefault(pass) }): String

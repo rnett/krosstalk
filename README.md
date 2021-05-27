@@ -253,18 +253,19 @@ no parameters.
 
 ### Optionals/Defaults
 
-Optionals and default values can be handled in two ways: `@Optional` and `@ServerDefault`, both of which are annotations
-on the parameters.  `@Optional` is easier to use, but uses `null` to encode "not present", and so doesn't work for
-nullable data.  `@ServerDefault` does.
+Optionals and default values can be handled in two ways, both requiring `@Optional` on the parameter: nullable and `ServerDefault`, which
+require a nullable or `ServerDefault` type, respectively.
+Nullables are easier to use, but uses `null` to encode "not present", and so doesn't work for
+nullable data.  `ServerDefault` does.
 
-`@Optional` and `@ServerDefault` are "present" when a non-null or non-default value is specified, respectively.  
+Nullable and `ServerDefault` `@Optional`s are "present" when a non-null or non-default value is specified, respectively.  
 They can be used in endpoints (and as the predicate for optional blocks), but must not be used when they are not
 present (i.e. they must be gated behind an optional).
 
-When `@Optional` and `@ServerDefault` parameters are not present, they are not passed at all, and the server uses
+When `@Optional` parameters are not present, they are not passed at all, and the server uses
 `null` or the default, respectively.
 
-`@ServerDefault` parameters must be of the `ServerDefault` type. This is essentially an optional type, but the
+`ServerDefault` is essentially an optional type, but the
 `None` is hidden. The compiler plugin will replace the default value of the parameter with `None` on the client side,
 which will lead to it not being passed and the default being evaluated on the server.
 

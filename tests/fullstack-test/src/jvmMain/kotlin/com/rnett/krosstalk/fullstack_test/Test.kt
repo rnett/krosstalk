@@ -278,3 +278,13 @@ actual suspend fun withRequestHeadersInCallAndParam(
 }
 
 actual suspend fun withIgnored(test: String): String = test
+
+actual suspend fun withIgnoredDependentDefault(
+    pass: String,
+    ignore1: String,
+    ignore2: String
+): Pair<String, String> = ignore1 to ignore2
+
+actual fun dependentServerDefault(pass: Int): String = pass.toString()
+
+actual suspend fun withDependentServerDefault(pass: Int, test: ServerDefault<String>): String = test.value

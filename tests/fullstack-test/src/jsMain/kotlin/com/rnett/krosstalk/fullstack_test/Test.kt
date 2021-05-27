@@ -183,3 +183,13 @@ actual suspend fun withRequestHeadersInCallAndParam(
 ): Pair<String?, String?> = krosstalkCall(headersOf(keys.first to "call"))
 
 actual suspend fun withIgnored(test: String): String = krosstalkCall()
+
+actual suspend fun withIgnoredDependentDefault(
+    pass: String,
+    ignore1: String,
+    ignore2: String
+): Pair<String, String> = krosstalkCall()
+
+actual fun dependentServerDefault(pass: Int): String = error("Called server default on the client side")
+
+actual suspend fun withDependentServerDefault(pass: Int, test: ServerDefault<String>): String = krosstalkCall()

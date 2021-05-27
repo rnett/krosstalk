@@ -41,13 +41,19 @@ import org.jetbrains.kotlin.ir.builders.irGet
 import org.jetbrains.kotlin.ir.builders.irGetObject
 import org.jetbrains.kotlin.ir.builders.irGetObjectValue
 import org.jetbrains.kotlin.ir.builders.irNull
+import org.jetbrains.kotlin.ir.builders.irReturn
+import org.jetbrains.kotlin.ir.builders.irTemporary
+import org.jetbrains.kotlin.ir.builders.parent
 import org.jetbrains.kotlin.ir.declarations.IrClass
 import org.jetbrains.kotlin.ir.declarations.IrSimpleFunction
 import org.jetbrains.kotlin.ir.declarations.IrValueParameter
 import org.jetbrains.kotlin.ir.expressions.IrBlockBody
+import org.jetbrains.kotlin.ir.expressions.IrBody
 import org.jetbrains.kotlin.ir.expressions.IrCall
 import org.jetbrains.kotlin.ir.expressions.IrExpression
 import org.jetbrains.kotlin.ir.expressions.IrExpressionBody
+import org.jetbrains.kotlin.ir.symbols.IrValueParameterSymbol
+import org.jetbrains.kotlin.ir.symbols.IrValueSymbol
 import org.jetbrains.kotlin.ir.types.IrType
 import org.jetbrains.kotlin.ir.types.classOrNull
 import org.jetbrains.kotlin.ir.types.defaultType
@@ -62,7 +68,6 @@ import org.jetbrains.kotlin.ir.types.typeWith
 import org.jetbrains.kotlin.ir.types.typeWithArguments
 import org.jetbrains.kotlin.ir.util.constructedClass
 import org.jetbrains.kotlin.ir.util.constructors
-import org.jetbrains.kotlin.ir.util.deepCopyWithSymbols
 import org.jetbrains.kotlin.ir.util.defaultType
 import org.jetbrains.kotlin.ir.util.hasAnnotation
 import org.jetbrains.kotlin.ir.util.isAnonymousObject
@@ -181,12 +186,12 @@ class KrosstalkFunction(val declaration: IrSimpleFunction, val methodTransformer
         valueParameters.filter { !it.isScope }
     }
 
-    val optionalParameters by lazy {
-        parameters.filter { it.isOptionalParam }
+    val nullableOptionalParameters by lazy {
+        parameters.filter { it.isNullableOptional }
     }
 
     val serverDefaultParameters by lazy {
-        parameters.filter { it.isServerDefault }
+        parameters.filter { it.isServerDefaultOptional }
     }
 
     val allNonScopeParameters by lazy {
@@ -409,7 +414,7 @@ class KrosstalkFunction(val declaration: IrSimpleFunction, val methodTransformer
         }
 
         val allowedOptionals =
-            (optionalParameters.map { it.krosstalkName } + serverDefaultParameters.map { it.krosstalkName }).toSet()
+            (nullableOptionalParameters.map { it.krosstalkName } + serverDefaultParameters.map { it.krosstalkName }).toSet()
         endpoint.usedOptionals().forEach {
             if (it !in allowedOptionals) {
                 messageCollector.reportError(
@@ -547,63 +552,44 @@ class KrosstalkFunction(val declaration: IrSimpleFunction, val methodTransformer
             }
         }
 
+        fun IrBuilderWithScope.getValueOrError(
+            methodName: String,
+            map: IrExpression,
+            type: IrType,
+            key: String,
+            default: IrBody?,
+            nullError: String,
+            typeError: String,
+            keyType: IrType = context.irBuiltIns.stringType,
+        ) =
+            irCall(Krosstalk.getValueAsOrError(), type).apply {
+                putTypeArgument(0, keyType)
+                putTypeArgument(1, type)
+
+                extensionReceiver = map
+
+                withValueArguments(
+                    methodName.asConst(),
+                    key.asConst(),
+                    (default != null).asConst(),
+                    nullError.asConst(),
+                    typeError.asConst(),
+                    default?.let { lambdaArgument(buildLambda(type) { body = it }) }
+                )
+            }
+
         return buildLambda(declaration.returnType, { isSuspend = true }) {
             withBuilder {
                 val (args, scopes) = addCallMethodParameters()
 
-                body = irJsExprBody(irCall(declaration.symbol).apply {
-                    nonScopeValueParameters.forEach { param ->
-                        if (param.isIgnored) {
-                            if (param.defaultValue == null)
-                                putValueArgument(param.index, irNull(param.rawType))
-                            else
-                                putValueArgument(param.index, param.defaultValue!!.expression.deepCopyWithSymbols(this@buildLambda))
-                        } else {
-                            putValueArgument(
-                                param.index,
-                                with(methodTransformer) {
-                                    getValueOrError(
-                                        declaration.name.asString(),
-                                        irGet(args),
-                                        param.rawType,
-                                        param.krosstalkName,
-                                        param.run { defaultBody() },
-                                        "No argument for ${param.krosstalkName}, but it was required",
-                                        "Argument for ${param.krosstalkName} was type \$type, but the parameter is of type \$required"
-                                    )
-                                }
-                            )
-                        }
-                    }
+                body = irBlockBody {
 
-                    requiredScopes.forEach { (param, cls) ->
-                        val dataType =
-                            cls.defaultType.raiseTo(Krosstalk.Server.Plugin.ServerScope()).typeArgument(0)
-                        putValueArgument(
-                            param.index,
-                            irCall(Krosstalk.Server.Plugin.ImmutableWantedScopes.getRequiredInstance)
-                                .withDispatchReceiver(irGet(scopes))
-                                .withTypeArguments(cls.defaultType, dataType)
-                                .withValueArguments(irGetObject(cls.symbol), calculateName().asConst())
-                        )
-                    }
 
-                    optionalScopes.forEach { (param, cls) ->
-                        val dataType =
-                            cls.defaultType.raiseTo(Krosstalk.Server.Plugin.ServerScope()).typeArgument(0)
+                    val arguments = mutableMapOf<IrValueParameterSymbol, IrValueSymbol>()
 
-                        putValueArgument(
-                            param.index,
-                            irCall(Krosstalk.Server.Plugin.ImmutableWantedScopes.getOptionalInstance)
-                                .withDispatchReceiver(irGet(scopes))
-                                .withTypeArguments(cls.defaultType, dataType)
-                                .withValueArguments(irGetObject(cls.symbol))
-                        )
-                    }
-
-                    with(methodTransformer) {
-                        declaration.extensionReceiverParameter?.param?.let { param ->
-                            extensionReceiver = if (param.isIgnored) {
+                    val extensionReceiver = declaration.extensionReceiverParameter?.param?.let { param ->
+                        irTemporary(
+                            if (param.isIgnored) {
                                 irNull(param.rawType)
                             } else {
                                 getValueOrError(
@@ -611,27 +597,92 @@ class KrosstalkFunction(val declaration: IrSimpleFunction, val methodTransformer
                                     irGet(args),
                                     param.rawType,
                                     param.krosstalkName,
-                                    param.run { defaultBody() },
+                                    param.run { defaultBody(arguments) },
                                     "No extension receiver argument, but it was required",
                                     "Extension receiver argument was type \$type, but parameter is of type \$required"
                                 )
-                            }
+                            }, "dispatchReceiver"
+                        ).also {
+                            arguments[param.expectDeclaration?.symbol ?: param.declaration.symbol] = it.symbol
                         }
+                    }
 
-                        declaration.dispatchReceiverParameter?.let {
-                            dispatchReceiver = getValueOrError(
+                    val dispatchReceiver = declaration.dispatchReceiverParameter?.param?.let { param ->
+                        irTemporary(
+                            getValueOrError(
                                 declaration.name.asString(),
                                 irGet(args),
-                                it.type,
+                                param.rawType,
                                 instanceReceiver,
                                 null,
                                 "No instance receiver argument, but it was required",
                                 "Instance receiver argument was type \$type, but parameter is of type \$required"
-                            )
+                            ), "dispatchReceiver"
+                        ).also {
+                            arguments[param.expectDeclaration?.symbol ?: param.declaration.symbol] = it.symbol
                         }
                     }
 
-                })
+                    val valueParameters = nonScopeValueParameters.associate { param ->
+                        val value = if (param.isIgnored) {
+                            if (param.defaultValue == null)
+                                irNull(param.rawType)
+                            else
+                                param.substitutedDefaultValue(parent, arguments)
+                        } else {
+                            getValueOrError(
+                                declaration.name.asString(),
+                                irGet(args),
+                                param.rawType,
+                                param.krosstalkName,
+                                param.run { defaultBody(arguments) },
+                                "No argument for ${param.krosstalkName}, but it was required",
+                                "Argument for ${param.krosstalkName} was type \$type, but the parameter is of type \$required"
+                            )
+
+                        }
+
+                        val variable = irTemporary(value, param.realName)
+                        arguments[param.expectDeclaration?.symbol ?: param.declaration.symbol] = variable.symbol
+
+                        param.index to variable
+                    }
+
+                    +irReturn(irCall(declaration.symbol).apply {
+
+                        this.extensionReceiver = extensionReceiver?.let { irGet(it) }
+                        this.dispatchReceiver = dispatchReceiver?.let { irGet(it) }
+                        valueParameters.forEach { (idx, value) ->
+                            putValueArgument(idx, irGet(value))
+                        }
+
+                        requiredScopes.forEach { (param, cls) ->
+                            val dataType =
+                                cls.defaultType.raiseTo(Krosstalk.Server.Plugin.ServerScope()).typeArgument(0)
+                            putValueArgument(
+                                param.index,
+                                irCall(Krosstalk.Server.Plugin.ImmutableWantedScopes.getRequiredInstance)
+                                    .withDispatchReceiver(irGet(scopes))
+                                    .withTypeArguments(cls.defaultType, dataType)
+                                    .withValueArguments(irGetObject(cls.symbol), calculateName().asConst())
+                            )
+                        }
+
+                        optionalScopes.forEach { (param, cls) ->
+                            val dataType =
+                                cls.defaultType.raiseTo(Krosstalk.Server.Plugin.ServerScope()).typeArgument(0)
+
+                            putValueArgument(
+                                param.index,
+                                irCall(Krosstalk.Server.Plugin.ImmutableWantedScopes.getOptionalInstance)
+                                    .withDispatchReceiver(irGet(scopes))
+                                    .withTypeArguments(cls.defaultType, dataType)
+                                    .withValueArguments(irGetObject(cls.symbol))
+                            )
+                        }
+
+                    })
+                }
             }
         }
     }
@@ -763,7 +814,7 @@ class KrosstalkFunction(val declaration: IrSimpleFunction, val methodTransformer
 
                         // optionalParameters
                         addValueArgument(
-                            optionalParameters.map { it.krosstalkName.asConst() }
+                            nullableOptionalParameters.map { it.krosstalkName.asConst() }
                                 .let { stdlib.collections.setOf(context.irBuiltIns.stringType, it) }
                         )
 

@@ -39,32 +39,6 @@ class KrosstalkMethodTransformer(
 
     fun IrFunction.paramHash() = this.symbol.signature!!.hashCode().absoluteValue.toString(36)
 
-    fun IrBuilderWithScope.getValueOrError(
-        methodName: String,
-        map: IrExpression,
-        type: IrType,
-        key: String,
-        default: IrBody?,
-        nullError: String,
-        typeError: String,
-        keyType: IrType = context.irBuiltIns.stringType,
-    ) =
-        irCall(Krosstalk.getValueAsOrError(), type).apply {
-            putTypeArgument(0, keyType)
-            putTypeArgument(1, type)
-
-            extensionReceiver = map
-
-            withValueArguments(
-                methodName.asConst(),
-                key.asConst(),
-                (default != null).asConst(),
-                nullError.asConst(),
-                typeError.asConst(),
-                default?.let { lambdaArgument(buildLambda(type) { body = it }) }
-            )
-        }
-
     @OptIn(ObsoleteDescriptorBasedAPI::class)
     fun IrClass.expect(): IrClass? {
         if (!this.descriptor.isActual)

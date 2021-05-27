@@ -6,6 +6,7 @@ import com.rnett.krosstalk.extensionReceiver
 import com.rnett.krosstalk.instanceReceiver
 import com.rnett.plugin.ir.HasContext
 import com.rnett.plugin.ir.KnowsCurrentFile
+import com.rnett.plugin.ir.deepCopyAndRemapValues
 import com.rnett.plugin.ir.typeArgument
 import com.rnett.plugin.naming.isClassifierOf
 import org.jetbrains.kotlin.ir.builders.IrBuilderWithScope
@@ -13,14 +14,17 @@ import org.jetbrains.kotlin.ir.builders.irExprBody
 import org.jetbrains.kotlin.ir.builders.irNull
 import org.jetbrains.kotlin.ir.builders.parent
 import org.jetbrains.kotlin.ir.declarations.IrClass
+import org.jetbrains.kotlin.ir.declarations.IrDeclarationParent
 import org.jetbrains.kotlin.ir.declarations.IrValueParameter
 import org.jetbrains.kotlin.ir.expressions.IrBody
+import org.jetbrains.kotlin.ir.expressions.IrExpression
+import org.jetbrains.kotlin.ir.symbols.IrValueParameterSymbol
+import org.jetbrains.kotlin.ir.symbols.IrValueSymbol
 import org.jetbrains.kotlin.ir.types.IrType
 import org.jetbrains.kotlin.ir.types.classOrNull
 import org.jetbrains.kotlin.ir.types.isNullable
 import org.jetbrains.kotlin.ir.types.makeNullable
 import org.jetbrains.kotlin.ir.util.constructedClass
-import org.jetbrains.kotlin.ir.util.deepCopyWithSymbols
 import org.jetbrains.kotlin.ir.util.hasAnnotation
 import org.jetbrains.kotlin.ir.util.hasDefaultValue
 import org.jetbrains.kotlin.ir.util.isAnonymousObject
@@ -64,8 +68,9 @@ class KrosstalkParameter(
     val isOptionalScope get() = declaration.type.isNullable() && isScope
     val scopeClass by lazy { declaration.type.typeArgument(0).classOrNull!!.owner }
 
-    val isOptionalParam by lazy { annotations.Optional != null }
-    val isServerDefault by lazy { declaration.type.isClassifierOf(Krosstalk.ServerDefault) }
+    val isOptional by lazy { annotations.Optional != null }
+    val isServerDefaultOptional by lazy { isOptional && declaration.type.isClassifierOf(Krosstalk.ServerDefault) }
+    val isNullableOptional by lazy { isOptional && !isServerDefaultOptional }
 
     val isRequestHeaders by lazy { annotations.RequestHeaders != null }
     val isServerURL by lazy { annotations.ServerURL != null }
@@ -99,7 +104,7 @@ class KrosstalkParameter(
     }
 
     val constantObject: IrClass? by lazy {
-        if (isServerDefault) return@lazy null
+        if (isServerDefaultOptional) return@lazy null
 
         with(krosstalkFunction) {
             dataType.expectableObject()
@@ -121,19 +126,19 @@ class KrosstalkParameter(
         if (checked)
             return
 
-        if (isScope && isOptionalParam) {
+        if (isScope && isNullableOptional) {
             reportError("Can't use @Optional on scopes, to make a scope optional just make it nullable")
         }
 
-        if (isServerDefault && !hasDefault) {
+        if (isServerDefaultOptional && !hasDefault) {
             reportError("Must specify a default value for ServerDefault parameters.")
         }
 
-        if (isServerDefault && !isValueParameter) {
+        if (isServerDefaultOptional && !isValueParameter) {
             reportError("Can only use ServerDefault as a value parameter.")
         }
 
-        if (isServerDefault && isOptionalParam) {
+        if (isServerDefaultOptional && isNullableOptional) {
             reportError("Can't use @Optional on ServerDefault parameter.")
         }
 
@@ -141,11 +146,11 @@ class KrosstalkParameter(
             reportError("Can't have a parameter be both @ServerURL and @RequestHeaders")
         }
 
-        if (isOptionalParam && isServerURL) {
+        if (isNullableOptional && isServerURL) {
             reportError("@ServerURL parameters can't be @Optional")
         }
 
-        if (isOptionalParam && isRequestHeaders) {
+        if (isNullableOptional && isRequestHeaders) {
             reportError("@RequestHeaders parameters can't be @Optional")
         }
 
@@ -192,8 +197,20 @@ class KrosstalkParameter(
             }
         }
 
-        if (isOptionalParam && !dataType.isNullable()) {
-            reportError("@Optional parameters must be nullable.")
+        if (isNullableOptional && !dataType.isNullable()) {
+            reportError("Non-ServerDefault @Optional parameters must be nullable.")
+        }
+
+        if(declaration.type.isClassifierOf(Krosstalk.ServerDefault) && !isOptional){
+            reportError("ServerDefault parameters must be marked with @Optional.")
+        }
+
+        if(isOptional && !isNullableOptional && !isServerDefaultOptional){
+            reportError("@Optional parameters must either be nullable or ServerDefault")
+        }
+
+        if(isServerDefaultOptional && declaration.type.isNullable()){
+            reportError("Can't have a nullable ServerDefault parameter.")
         }
 
         if (isServerURL && !(dataType == context.irBuiltIns.stringType || dataType == context.irBuiltIns.stringType.makeNullable())) {
@@ -211,10 +228,17 @@ class KrosstalkParameter(
         checked = true
     }
 
-    fun IrBuilderWithScope.defaultBody(): IrBody? =
+
+    fun substitutedDefaultValue(parent: IrDeclarationParent, arguments: Map<IrValueParameterSymbol, IrValueSymbol>): IrExpression? {
+        return defaultValue?.expression?.deepCopyAndRemapValues(parent){
+            arguments[it]
+        }
+    }
+
+    fun IrBuilderWithScope.defaultBody(arguments: Map<IrValueParameterSymbol, IrValueSymbol>): IrBody? =
         when {
-            isServerDefault -> defaultValue!!.deepCopyWithSymbols(this.parent)
-            isOptionalParam -> irExprBody(irNull(rawType))
+            isServerDefaultOptional -> irExprBody(substitutedDefaultValue(parent, arguments)!!)
+            isNullableOptional -> irExprBody(irNull(rawType))
             else -> null
         }
 }
