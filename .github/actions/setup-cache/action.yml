@@ -1,0 +1,28 @@
+name: 'Setup build cache'
+description: 'Setup gradle build cache'
+runs:
+  using: "composite"
+  steps:
+    - name: Enable build cache Posix
+      if: runner.os != 'Windows'
+      run: |
+        mkdir -p ~/.gradle
+        touch ~/.gradle/gradle.properties
+        echo "org.gradle.caching=true" >> ~/.gradle/gradle.properties
+
+    - name: Enable build cache Windows
+      if: runner.os == 'Windows'
+      run: |
+        mkdir ~/.gradle
+        echo "org.gradle.caching=true" >> ~/.gradle/gradle.properties
+
+    - name: Cache Gradle packages and Konan
+      uses: actions/cache@v2
+      with:
+        path: |
+          ~/.gradle/caches
+          ~/.gradle/wrapper
+          ~/.konan
+        key: ${{ runner.os }}-gradle-${{ hashFiles('**/settings.gradle*', 'buildSrc/*.gradle*', '**/gradle-wrapper.properties') }}
+        restore-keys: |
+          ${{ runner.os }}-gradle-
