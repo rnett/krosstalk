@@ -143,15 +143,16 @@ jobs:
           git clone --depth 1 https://github.com/rnett/krosstalk.git --branch gh-pages --single-branch past-docs
           mkdir -p past-docs/old-releases/core
           mkdir -p past-docs/old-releases/plugins
-          echo "Core"
-          ls -l past-docs/old-releases/core
-          echo "Plugins"
-          ls -l past-docs/old-releases/plugins
 
       - name: Remove current docs from old docs
         run: |
           rm -rf past-docs/old-releases/core/${{ needs.find-version.outputs.version }}
           rm -rf past-docs/old-releases/plugins/${{ needs.find-version.outputs.version }}
+
+      - name: List core versions
+        run: ls -l past-docs/old-releases/core
+      - name: List plugin versions
+        run: ls -l past-docs/old-releases/plugins
 
       - name: Generate HTML Docs
         run: ./gradlew dokkaHtmlMultiModule -PgitBranch=$GITHUB_SHA -PcoreVersionDir=past-docs/old-releases/core -PpluginVersionDir=past-docs/old-releases/plugins
