@@ -23,9 +23,16 @@ jobs:
           java-version: 15
 
       - name: Enable build cache
+        if: runner.os != 'Windows'
         run: |
           mkdir -p ~/.gradle
           touch ~/.gradle/gradle.properties
+          echo "org.gradle.caching=true" >> ~/.gradle/gradle.properties
+
+      - name: Enable build cache Windows
+        if: runner.os == 'Windows'
+        run: |
+          mkdir ~/.gradle
           echo "org.gradle.caching=true" >> ~/.gradle/gradle.properties
 
       - name: Cache Gradle packages and Konan
@@ -126,9 +133,16 @@ jobs:
           java-version: 15
 
       - name: Enable build cache
+        if: runner.os != 'Windows'
         run: |
           mkdir -p ~/.gradle
           touch ~/.gradle/gradle.properties
+          echo "org.gradle.caching=true" >> ~/.gradle/gradle.properties
+
+      - name: Enable build cache Windows
+        if: runner.os == 'Windows'
+        run: |
+          mkdir ~/.gradle
           echo "org.gradle.caching=true" >> ~/.gradle/gradle.properties
 
       - name: Cache Gradle packages
@@ -180,9 +194,16 @@ jobs:
           java-version: 15
 
       - name: Enable build cache
+        if: runner.os != 'Windows'
         run: |
           mkdir -p ~/.gradle
           touch ~/.gradle/gradle.properties
+          echo "org.gradle.caching=true" >> ~/.gradle/gradle.properties
+
+      - name: Enable build cache Windows
+        if: runner.os == 'Windows'
+        run: |
+          mkdir ~/.gradle
           echo "org.gradle.caching=true" >> ~/.gradle/gradle.properties
 
       - name: Cache Gradle packages
