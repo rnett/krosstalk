@@ -1,46 +1,25 @@
 plugins {
     kotlin("multiplatform")
     id("org.jetbrains.kotlin.plugin.serialization")
-    application
     id("com.github.rnett.krosstalk")
-    id("com.github.hesch.execfork")
+    id("com.github.psxpaul.execfork")
 }
 
 var ktor_version: String by extra
 var coroutines_version: String by extra
 val serialization_version: String by extra
 
-repositories {
-    mavenCentral()
-    jcenter()
-    maven("https://dl.bintray.com/kotlin/ktor")
-    maven("https://dl.bintray.com/kotlin/kotlin-eap")
-}
 kotlin {
     jvm {
-        compilations.all {
-            kotlinOptions {
-                jvmTarget = "1.8"
-                useIR = true
-            }
-        }
         withJava()
     }
     js(IR) {
         browser {
             binaries.executable()
-
-            webpackTask {
-                val project = project
-                mode =
-                    if (project.hasProperty("dev")) org.jetbrains.kotlin.gradle.targets.js.webpack.KotlinWebpackConfig.Mode.DEVELOPMENT else org.jetbrains.kotlin.gradle.targets.js.webpack.KotlinWebpackConfig.Mode.PRODUCTION
-            }
             testTask {
                 useMocha {
                     timeout = "99999999999999"
-//                    useChromeHeadless()
                 }
-
             }
         }
     }
@@ -56,8 +35,7 @@ kotlin {
 
         val commonTest by getting {
             dependencies {
-                implementation(kotlin("test-common"))
-                implementation(kotlin("test-annotations-common"))
+                implementation(kotlin("test"))
             }
         }
         val jvmMain by getting {
@@ -70,11 +48,6 @@ kotlin {
                 implementation("ch.qos.logback:logback-classic:1.2.3")
             }
         }
-        val jvmTest by getting {
-            dependencies {
-                implementation(kotlin("test-junit"))
-            }
-        }
         val jsMain by getting {
             dependencies {
                 implementation("com.github.rnett.krosstalk:krosstalk-ktor-client")
@@ -82,22 +55,13 @@ kotlin {
                 implementation("io.ktor:ktor-client-logging:$ktor_version")
             }
         }
-        val jsTest by getting {
-            dependencies {
-                implementation(kotlin("test-js"))
-            }
-        }
     }
-}
-
-application {
-    this.mainClass.set("com.rnett.krosstalk.fullstack_test.TestKt")
 }
 
 tasks.create<com.github.psxpaul.task.JavaExecFork>("startTestServer") {
     group = "verification"
 
-    classpath = sourceSets.main.get().runtimeClasspath
+    classpath = sourceSets["main"].runtimeClasspath
     main = "com.rnett.krosstalk.fullstack_test.TestKt"
     doLast {
         Thread.sleep(5_000)

@@ -4,7 +4,7 @@ plugins {
     id("org.jetbrains.kotlin.plugin.serialization") version "1.5.0" apply false
     id("org.jetbrains.compose") version "0.4.0-build211" apply false
     id("com.github.rnett.krosstalk") apply false
-    id("com.github.hesch.execfork") version "0.1.15" apply false
+    id("com.github.psxpaul.execfork") version "0.1.15" apply false
 }
 
 
@@ -19,6 +19,7 @@ allprojects {
     repositories {
         mavenCentral()
         maven("https://oss.sonatype.org/content/repositories/snapshots")
+        maven("https://dl.bintray.com/kotlin/ktor")
         maven("https://maven.pkg.jetbrains.space/public/p/ktor/eap")
     }
 }

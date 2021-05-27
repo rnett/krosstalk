@@ -9,9 +9,9 @@ object Dependencies {
 
     const val compilerPluginUtils = "0.1.5-SNAPSHOT"
 
-    const val gradlePluginPublish = "0.14.0"
+    const val gradlePluginPublish = "0.15.0"
     const val buildconfig = "3.0.0"
-    const val shadow = "6.1.0"
+    const val shadow = "7.0.0"
 
     const val publishPlugin = "0.15.1"
 }

@@ -1,27 +1,16 @@
 plugins {
     kotlin("multiplatform")
     id("org.jetbrains.kotlin.plugin.serialization")
-    application
     id("com.github.rnett.krosstalk")
-    id("com.github.hesch.execfork")
+    id("com.github.psxpaul.execfork")
 }
 
 var ktor_version: String by extra
 var coroutines_version: String by extra
 val serialization_version: String by extra
 
-repositories {
-    mavenCentral()
-    jcenter()
-    maven("https://dl.bintray.com/kotlin/ktor")
-}
 kotlin {
     jvm {
-        compilations.all {
-            kotlinOptions {
-                jvmTarget = "1.8"
-            }
-        }
         withJava()
     }
 
@@ -73,14 +62,10 @@ kotlin {
     }
 }
 
-application {
-    this.mainClass.set("com.rnett.krosstalk.native_test.TestKt")
-}
-
 tasks.create<com.github.psxpaul.task.JavaExecFork>("startTestServer") {
     group = "verification"
 
-    classpath = sourceSets.main.get().runtimeClasspath
+    classpath = sourceSets["main"].runtimeClasspath
     main = "com.rnett.krosstalk.native_test.TestKt"
     doLast {
         Thread.sleep(5_000)

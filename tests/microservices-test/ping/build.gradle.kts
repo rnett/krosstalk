@@ -4,42 +4,21 @@ import com.rnett.krosstalk.krosstalkServer
 plugins {
     kotlin("multiplatform")
     id("org.jetbrains.kotlin.plugin.serialization")
-    application
     id("com.github.rnett.krosstalk")
-    id("com.github.hesch.execfork")
+    id("com.github.psxpaul.execfork")
 }
 
 var ktor_version: String by extra
 var coroutines_version: String by extra
 val serialization_version: String by extra
 
-repositories {
-    mavenCentral()
-    jcenter()
-    maven("https://dl.bintray.com/kotlin/ktor")
-    maven("https://dl.bintray.com/kotlin/kotlin-eap")
-    maven { url = uri("https://maven.pkg.jetbrains.space/public/p/compose/dev") }
-}
-
 kotlin {
     jvm("server") {
         withJava()
         krosstalkServer()
-        compilations.all {
-            kotlinOptions {
-                jvmTarget = "1.8"
-                useIR = true
-            }
-        }
     }
     jvm("client") {
         krosstalkClient()
-        compilations.all {
-            kotlinOptions {
-                jvmTarget = "1.8"
-                useIR = true
-            }
-        }
     }
     sourceSets {
         val commonMain by getting {
@@ -53,8 +32,7 @@ kotlin {
 
         val commonTest by getting {
             dependencies {
-                implementation(kotlin("test-common"))
-                implementation(kotlin("test-annotations-common"))
+                implementation(kotlin("test"))
             }
         }
         val serverMain by getting {
@@ -71,11 +49,6 @@ kotlin {
                 implementation(project(":microservices-test:pong").krosstalkClient())
             }
         }
-        val serverTest by getting {
-            dependencies {
-                implementation(kotlin("test-junit"))
-            }
-        }
         val clientMain by getting {
             dependencies {
                 implementation("com.github.rnett.krosstalk:krosstalk-ktor-client")
@@ -84,21 +57,13 @@ kotlin {
                 implementation("io.ktor:ktor-client-logging:$ktor_version")
             }
         }
-        val clientTest by getting {
-            dependencies {
-                implementation(kotlin("test-junit"))
-            }
-        }
     }
-}
-application {
-    this.mainClass.set("com.rnett.krosstalk.ping.Main")
 }
 
 tasks.create<com.github.psxpaul.task.JavaExecFork>("startAllTestsServer") {
     group = "verification"
 
-    classpath = sourceSets.main.get().runtimeClasspath
+    classpath = sourceSets["main"].runtimeClasspath
     main = "com.rnett.krosstalk.ping.Main"
 
     dependsOn("serverJar")
@@ -107,7 +72,7 @@ tasks.create<com.github.psxpaul.task.JavaExecFork>("startAllTestsServer") {
 val startLocalTestServer = tasks.create<com.github.psxpaul.task.JavaExecFork>("startLocalTestServer") {
     group = "verification"
 
-    classpath = sourceSets.main.get().runtimeClasspath
+    classpath = sourceSets["main"].runtimeClasspath
     main = "com.rnett.krosstalk.ping.TestServer"
 
     dependsOn("serverJar")

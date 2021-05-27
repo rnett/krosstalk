@@ -5,7 +5,7 @@ plugins {
     id("org.jetbrains.kotlin.plugin.serialization")
     application
     id("com.github.rnett.krosstalk")
-    id("com.github.hesch.execfork")
+    id("com.github.psxpaul.execfork")
     id("org.jetbrains.compose")
 }
 
@@ -22,18 +22,8 @@ repositories {
 }
 kotlin {
     jvm("server") {
-        compilations.all {
-            kotlinOptions {
-                jvmTarget = "1.8"
-            }
-        }
     }
     jvm("compose") {
-        compilations.all {
-            kotlinOptions {
-                jvmTarget = "1.8"
-            }
-        }
     }
     sourceSets {
         val commonMain by getting {
