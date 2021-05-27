@@ -133,7 +133,7 @@ jobs:
           chmod +x gradlew
           chmod +x tests/gradlew
 
-      - name: Build
+      - name: Assemble
         run: ./gradlew assemble -DRELEASE_SIGNING_ENABLED=false
 
       - name: Clone past docs for release
