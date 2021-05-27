@@ -41,10 +41,9 @@ jobs:
           path: |
             ~/.gradle/caches
             ~/.gradle/wrapper
-            ~/.konan
-          key: gradle-${{ hashFiles('**/settings.gradle*', 'buildSrc/*.gradle*', '**/gradle-wrapper.properties') }}
+          key: ${{ runner.os }}-gradle-${{ hashFiles('**/settings.gradle*', 'buildSrc/*.gradle*', '**/gradle-wrapper.properties') }}
           restore-keys: |
-            gradle-
+            ${{ runner.os }}-gradle-
 
       - name: Install CURL Linux
         if: runner.os == 'Linux'
@@ -160,10 +159,9 @@ jobs:
           path: |
             ~/.gradle/caches
             ~/.gradle/wrapper
-            ~/.konan
-          key: gradle-${{ hashFiles('**/settings.gradle*', 'buildSrc/*.gradle*', '**/gradle-wrapper.properties') }}
+          key: ${{ runner.os }}-gradle-${{ hashFiles('**/settings.gradle*', 'buildSrc/*.gradle*', '**/gradle-wrapper.properties') }}
           restore-keys: |
-            gradle-
+            ${{ runner.os }}-gradle-
 
       - name: Grant execute permission for gradlew
         run: |
@@ -230,10 +228,9 @@ jobs:
           path: |
             ~/.gradle/caches
             ~/.gradle/wrapper
-            ~/.konan
-          key: gradle-${{ hashFiles('**/settings.gradle*', 'buildSrc/*.gradle*', '**/gradle-wrapper.properties') }}
+          key: ${{ runner.os }}-gradle-${{ hashFiles('**/settings.gradle*', 'buildSrc/*.gradle*', '**/gradle-wrapper.properties') }}
           restore-keys: |
-            gradle-
+            ${{ runner.os }}-gradle-
 
       - name: Grant execute permission for gradlew
         run: |
