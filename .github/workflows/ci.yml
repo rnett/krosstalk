@@ -133,6 +133,9 @@ jobs:
           chmod +x gradlew
           chmod +x tests/gradlew
 
+      - name: Build
+        run: ./gradlew assemble -DRELEASE_SIGNING_ENABLED=false
+
       - name: Clone past docs for release
         if: needs.find-version.outputs.snapshot == 'false'
         run: |
@@ -149,9 +152,6 @@ jobs:
         run: |
           rm -rf past-docs/old-releases/core/${{ needs.find-version.outputs.version }}
           rm -rf past-docs/old-releases/plugins/${{ needs.find-version.outputs.version }}
-
-      - name: Build
-        run: ./gradlew assemble -DRELEASE_SIGNING_ENABLED=false
 
       - name: Generate HTML Docs
         run: ./gradlew dokkaHtmlMultiModule -PgitBranch=$GITHUB_SHA -PcoreVersionDir=past-docs/old-releases/core -PpluginVersionDir=past-docs/old-releases/plugins
