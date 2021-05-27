@@ -22,7 +22,7 @@ jobs:
         with:
           java-version: 15
 
-      - name: Enable build cache
+      - name: Enable build cache Posix
         if: runner.os != 'Windows'
         run: |
           mkdir -p ~/.gradle
@@ -65,7 +65,7 @@ jobs:
       - name: Stop gradle daemon
         run: ./gradlew --stop
 
-      - name: Cleanup Gradle Cache
+      - name: Cleanup Gradle Cache Posix
         if: runner.os != 'Windows'
         # Remove some files from the Gradle cache, so they aren't cached by GitHub Actions.
         # Restoring these files from a GitHub Actions cache might cause problems for future builds.
@@ -141,7 +141,7 @@ jobs:
         with:
           java-version: 15
 
-      - name: Enable build cache
+      - name: Enable build cache Posix
         if: runner.os != 'Windows'
         run: |
           mkdir -p ~/.gradle
@@ -183,7 +183,7 @@ jobs:
       - name: Stop gradle daemon
         run: ./gradlew --stop
 
-      - name: Cleanup Gradle Cache
+      - name: Cleanup Gradle Cache Posix
         if: runner.os != 'Windows'
         # Remove some files from the Gradle cache, so they aren't cached by GitHub Actions.
         # Restoring these files from a GitHub Actions cache might cause problems for future builds.
@@ -211,7 +211,7 @@ jobs:
         with:
           java-version: 15
 
-      - name: Enable build cache
+      - name: Enable build cache Posix
         if: runner.os != 'Windows'
         run: |
           mkdir -p ~/.gradle
@@ -287,13 +287,13 @@ jobs:
           from: plugins/build/dokka/htmlMultiModule
           publish-to: '$latest/plugins,!old-releases/plugins/$version'
           version: ${{ needs.find-version.outputs.version }}
-          restore: 'false'
+          restore: true
           message: Update Plugin docs for $version
 
       - name: Stop gradle daemon
         run: ./gradlew --stop
 
-      - name: Cleanup Gradle Cache
+      - name: Cleanup Gradle Cache Posix
         if: runner.os != 'Windows'
         # Remove some files from the Gradle cache, so they aren't cached by GitHub Actions.
         # Restoring these files from a GitHub Actions cache might cause problems for future builds.
