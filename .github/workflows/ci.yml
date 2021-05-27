@@ -142,6 +142,11 @@ jobs:
           echo "Plugins"
           ls -l past-docs/old-releases/plugins
 
+      - name: Remove current docs from old docs
+        run: |
+          rm -rf past-docs/old-releases/core/${{ needs.find-version.outputs.version }}
+          rm -rf past-docs/old-releases/plugins/${{ needs.find-version.outputs.version }}
+
       - name: Build
         run: ./gradlew build -DRELEASE_SIGNING_ENABLED=false
 
