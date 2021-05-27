@@ -1,0 +1,19 @@
+$dokka.format:html-v1
+$dokka.linkExtension:html
+$dokka.location:com.rnett.krosstalk.ktor.client.auth////PointingToDeclaration/-krosstalk -ktor -client -auth/com.rnett.krosstalk.ktor.client.auth/index.html
+$dokka.location:com.rnett.krosstalk.ktor.client.auth//invoke/TypeParam(bounds=[com.rnett.krosstalk.ktor.client.auth.KtorClientBasicAuth])#kotlin.String#kotlin.String/PointingToDeclaration/-krosstalk -ktor -client -auth/com.rnett.krosstalk.ktor.client.auth/invoke.html
+$dokka.location:com.rnett.krosstalk.ktor.client.auth/BasicCredentials///PointingToDeclaration/-krosstalk -ktor -client -auth/com.rnett.krosstalk.ktor.client.auth/-basic-credentials/index.html
+$dokka.location:com.rnett.krosstalk.ktor.client.auth/BasicCredentials/BasicCredentials/#kotlin.String#kotlin.String/PointingToDeclaration/-krosstalk -ktor -client -auth/com.rnett.krosstalk.ktor.client.auth/-basic-credentials/-basic-credentials.html
+$dokka.location:com.rnett.krosstalk.ktor.client.auth/BasicCredentials/password/#/PointingToDeclaration/-krosstalk -ktor -client -auth/com.rnett.krosstalk.ktor.client.auth/-basic-credentials/password.html
+$dokka.location:com.rnett.krosstalk.ktor.client.auth/BasicCredentials/username/#/PointingToDeclaration/-krosstalk -ktor -client -auth/com.rnett.krosstalk.ktor.client.auth/-basic-credentials/username.html
+$dokka.location:com.rnett.krosstalk.ktor.client.auth/KtorClientAuth///PointingToDeclaration/-krosstalk -ktor -client -auth/com.rnett.krosstalk.ktor.client.auth/-ktor-client-auth/index.html
+$dokka.location:com.rnett.krosstalk.ktor.client.auth/KtorClientAuth/KtorClientAuth/#/PointingToDeclaration/-krosstalk -ktor -client -auth/com.rnett.krosstalk.ktor.client.auth/-ktor-client-auth/-ktor-client-auth.html
+$dokka.location:com.rnett.krosstalk.ktor.client.auth/KtorClientAuth/configureClient/io.ktor.client.HttpClientConfig[*]#TypeParam(bounds=[kotlin.Any?])/PointingToDeclaration/-krosstalk -ktor -client -auth/com.rnett.krosstalk.ktor.client.auth/-ktor-client-auth/configure-client.html
+$dokka.location:com.rnett.krosstalk.ktor.client.auth/KtorClientAuth/configureClientAuth/io.ktor.client.features.auth.Auth#TypeParam(bounds=[kotlin.Any?])/PointingToDeclaration/-krosstalk -ktor -client -auth/com.rnett.krosstalk.ktor.client.auth/-ktor-client-auth/configure-client-auth.html
+$dokka.location:com.rnett.krosstalk.ktor.client.auth/KtorClientBasicAuth///PointingToDeclaration/-krosstalk -ktor -client -auth/com.rnett.krosstalk.ktor.client.auth/-ktor-client-basic-auth/index.html
+$dokka.location:com.rnett.krosstalk.ktor.client.auth/KtorClientBasicAuth/KtorClientBasicAuth/#kotlin.Boolean#kotlin.String?/PointingToDeclaration/-krosstalk -ktor -client -auth/com.rnett.krosstalk.ktor.client.auth/-ktor-client-basic-auth/-ktor-client-basic-auth.html
+$dokka.location:com.rnett.krosstalk.ktor.client.auth/KtorClientBasicAuth/configureClientAuth/io.ktor.client.features.auth.Auth#com.rnett.krosstalk.ktor.client.auth.BasicCredentials/PointingToDeclaration/-krosstalk -ktor -client -auth/com.rnett.krosstalk.ktor.client.auth/-ktor-client-basic-auth/configure-client-auth.html
+$dokka.location:com.rnett.krosstalk.ktor.client.auth/KtorClientBasicAuth/realm/#/PointingToDeclaration/-krosstalk -ktor -client -auth/com.rnett.krosstalk.ktor.client.auth/-ktor-client-basic-auth/realm.html
+$dokka.location:com.rnett.krosstalk.ktor.client.auth/KtorClientBasicAuth/sendWithoutRequest/#/PointingToDeclaration/-krosstalk -ktor -client -auth/com.rnett.krosstalk.ktor.client.auth/-ktor-client-basic-auth/send-without-request.html
+com.rnett.krosstalk.ktor.client.auth
+
