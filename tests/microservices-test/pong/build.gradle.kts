@@ -14,7 +14,7 @@ val serialization_version: String by extra
 
 kotlin {
     jvm("server") {
-        withJava()
+//        withJava()
         krosstalkServer()
     }
     jvm("client") {
@@ -61,7 +61,10 @@ kotlin {
 tasks.create<com.github.psxpaul.task.JavaExecFork>("startAllTestsServer") {
     group = "verification"
 
-    classpath = sourceSets["main"].runtimeClasspath
+    afterEvaluate {
+        classpath = configurations["serverRuntimeClasspath"] + kotlin.targets["server"].compilations["main"].output.allOutputs
+    }
+
     main = "com.rnett.krosstalk.pong.Main"
 
     dependsOn("serverJar")
@@ -71,7 +74,10 @@ tasks.create<com.github.psxpaul.task.JavaExecFork>("startAllTestsServer") {
 val startLocalTestServer = tasks.create<com.github.psxpaul.task.JavaExecFork>("startLocalTestServer") {
     group = "verification"
 
-    classpath = sourceSets["main"].runtimeClasspath
+    afterEvaluate {
+        classpath = configurations["serverRuntimeClasspath"] + kotlin.targets["server"].compilations["main"].output.allOutputs
+    }
+
     main = "com.rnett.krosstalk.pong.TestServer"
 
     dependsOn("serverJar")

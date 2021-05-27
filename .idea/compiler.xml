@@ -5,6 +5,8 @@
       <profile default="true" name="Default" enabled="true" />
     </annotationProcessing>
     <bytecodeTargetLevel target="11">
+      <module name="tests.client-test.main" target="15" />
+      <module name="tests.client-test.test" target="15" />
       <module name="tests.compose-test" target="15" />
       <module name="tests.compose-test.commonMain" target="1.8" />
       <module name="tests.compose-test.commonTest" target="1.8" />
@@ -14,6 +16,14 @@
       <module name="tests.compose-test.serverMain" target="1.8" />
       <module name="tests.compose-test.serverTest" target="1.8" />
       <module name="tests.compose-test.test" target="15" />
+      <module name="tests.fullstack-test.main" target="15" />
+      <module name="tests.fullstack-test.test" target="15" />
+      <module name="tests.microservices-test.ping.main" target="15" />
+      <module name="tests.microservices-test.ping.test" target="15" />
+      <module name="tests.microservices-test.pong.main" target="15" />
+      <module name="tests.microservices-test.pong.test" target="15" />
+      <module name="tests.native-test.main" target="15" />
+      <module name="tests.native-test.test" target="15" />
     </bytecodeTargetLevel>
   </component>
 </project>

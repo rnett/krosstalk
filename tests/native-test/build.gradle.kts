@@ -11,7 +11,7 @@ val serialization_version: String by extra
 
 kotlin {
     jvm {
-        withJava()
+//        withJava()
     }
 
     val hostOs = System.getProperty("os.name")
@@ -65,7 +65,10 @@ kotlin {
 tasks.create<com.github.psxpaul.task.JavaExecFork>("startTestServer") {
     group = "verification"
 
-    classpath = sourceSets["main"].runtimeClasspath
+    afterEvaluate {
+        classpath = configurations["jvmRuntimeClasspath"] + kotlin.targets["jvm"].compilations["main"].output.allOutputs
+    }
+
     main = "com.rnett.krosstalk.native_test.TestKt"
     doLast {
         Thread.sleep(5_000)
