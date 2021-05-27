@@ -151,7 +151,7 @@ jobs:
           rm -rf past-docs/old-releases/plugins/${{ needs.find-version.outputs.version }}
 
       - name: Build
-        run: ./gradlew build -DRELEASE_SIGNING_ENABLED=false
+        run: ./gradlew assemble -DRELEASE_SIGNING_ENABLED=false
 
       - name: Generate HTML Docs
         run: ./gradlew dokkaHtmlMultiModule -PgitBranch=$GITHUB_SHA -PcoreVersionDir=past-docs/old-releases/core -PpluginVersionDir=past-docs/old-releases/plugins
