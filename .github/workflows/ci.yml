@@ -23,7 +23,10 @@ jobs:
           java-version: 15
 
       - name: Enable build cache
-        run: echo "org.gradle.caching=true" >> ~/.gradle/gradle.properties
+        run: |
+          mkdir -p ~/.gradle
+          touch ~/.gradle/gradle.properties
+          echo "org.gradle.caching=true" >> ~/.gradle/gradle.properties
 
       - name: Cache Gradle packages and Konan
         uses: actions/cache@v2
@@ -123,7 +126,10 @@ jobs:
           java-version: 15
 
       - name: Enable build cache
-        run: echo "org.gradle.caching=true" >> ~/.gradle/gradle.properties
+        run: |
+          mkdir -p ~/.gradle
+          touch ~/.gradle/gradle.properties
+          echo "org.gradle.caching=true" >> ~/.gradle/gradle.properties
 
       - name: Cache Gradle packages
         uses: actions/cache@v2
@@ -174,7 +180,10 @@ jobs:
           java-version: 15
 
       - name: Enable build cache
-        run: echo "org.gradle.caching=true" >> ~/.gradle/gradle.properties
+        run: |
+          mkdir -p ~/.gradle
+          touch ~/.gradle/gradle.properties
+          echo "org.gradle.caching=true" >> ~/.gradle/gradle.properties
 
       - name: Cache Gradle packages
         uses: actions/cache@v2
