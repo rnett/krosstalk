@@ -256,6 +256,9 @@ jobs:
       - name: Generate HTML Docs
         run: ./gradlew dokkaHtmlMultiModule -PgitBranch=$GITHUB_SHA -PcoreVersionDir=past-docs/old-releases/core -PpluginVersionDir=past-docs/old-releases/plugins
 
+      - name: Generate publishable readme
+        run: ./gradlew generateReadme
+
       - name: Stop gradle daemon
         run: ./gradlew --stop
 
@@ -283,7 +286,7 @@ jobs:
         if: github.ref == 'refs/heads/main'
         uses: rnett/publish-docs@v2.5-pre2
         with:
-          from-file: ./README.md
+          from-file: ./build/README.md
           publish-to: '$latest,!.'
           version: ${{ needs.find-version.outputs.version }}
           restore: true
