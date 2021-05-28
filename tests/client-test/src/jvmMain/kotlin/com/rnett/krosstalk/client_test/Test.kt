@@ -19,8 +19,6 @@ import io.ktor.serialization.json
 import io.ktor.serialization.serialization
 import io.ktor.server.cio.CIO
 import io.ktor.server.engine.embeddedServer
-import io.ktor.shared.serialization.ContentConverter
-import io.ktor.shared.serialization.kotlinx.serialization
 import io.ktor.util.getOrFail
 import io.ktor.util.reflect.TypeInfo
 import io.ktor.utils.io.ByteReadChannel
