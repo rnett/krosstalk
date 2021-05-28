@@ -249,8 +249,10 @@ jobs:
           rm -rf past-docs/old-releases/plugins/*/older
 
       - name: List core versions
+        if: needs.find-version.outputs.snapshot == 'false'
         run: ls -l past-docs/old-releases/core
       - name: List plugin versions
+        if: needs.find-version.outputs.snapshot == 'false'
         run: ls -l past-docs/old-releases/plugins
 
       - name: Generate HTML Docs
