@@ -3,7 +3,7 @@ object Dependencies {
     const val serialization = "1.2.1"
     const val dokka = "1.4.32"
 
-    const val ktor = "2.0.0-eap-132"
+    const val ktor = "1.6.0"
 
     const val autoService = "1.0-rc6"
 

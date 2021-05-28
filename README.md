@@ -16,9 +16,6 @@ Krosstalk is currently not compatible with Compose, because their compiler plugi
 this, put all your Krosstalk stuff in other modules and depend on it in the modules with the compiler plugin applied.
 [Tracked issue](https://issuetracker.google.com/issues/185609826).
 
-All Ktor plugins currently use version `2.0.0-eap-132` because of compatibility issues with earlier versions. 
-To use it yourself, see [Ktor's EAP program](https://ktor.io/eap/).
-
 ## Artifacts
 
 ### Core ([Docs](https://rnett.github.io/krosstalk/release/core/index.html))

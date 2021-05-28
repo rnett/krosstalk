@@ -20,7 +20,6 @@ allprojects {
         mavenCentral()
         maven("https://oss.sonatype.org/content/repositories/snapshots")
         maven("https://maven.pkg.jetbrains.space/public/p/kotlinx-html/maven")
-        maven("https://maven.pkg.jetbrains.space/public/p/ktor/eap")
     }
 
     val isRoot = this == rootProject
