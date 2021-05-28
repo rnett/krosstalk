@@ -266,7 +266,7 @@ jobs:
 
       - name: Publish Core docs
         if: github.ref == 'refs/heads/main'
-        uses: rnett/publish-docs@v2.5
+        uses: rnett/publish-docs@v2.6
         with:
           from: core/build/dokka/htmlMultiModule
           publish-to: '$latest/core,!old-releases/core/$version'
@@ -276,7 +276,7 @@ jobs:
 
       - name: Publish Plugin docs
         if: github.ref == 'refs/heads/main'
-        uses: rnett/publish-docs@v2.5
+        uses: rnett/publish-docs@v2.6
         with:
           from: plugins/build/dokka/htmlMultiModule
           publish-to: '$latest/plugins,!old-releases/plugins/$version'
@@ -286,7 +286,7 @@ jobs:
 
       - name: Publish Release README
         if: github.ref == 'refs/heads/main'
-        uses: rnett/publish-docs@v2.5
+        uses: rnett/publish-docs@v2.6
         with:
           from-file: ./build/README.md
           publish-to: '$latest,!.'
