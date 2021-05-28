@@ -7,7 +7,7 @@ object Dependencies {
 
     const val autoService = "1.0-rc6"
 
-    const val compilerPluginUtils = "0.1.6-SNAPSHOT"
+    const val compilerPluginUtils = "0.1.7-SNAPSHOT"
 
     const val gradlePluginPublish = "0.15.0"
     const val buildconfig = "3.0.0"
