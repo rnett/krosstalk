@@ -15,6 +15,8 @@ import io.ktor.response.respond
 import io.ktor.routing.get
 import io.ktor.routing.route
 import io.ktor.routing.routing
+import io.ktor.serialization.json
+import io.ktor.serialization.serialization
 import io.ktor.server.cio.CIO
 import io.ktor.server.engine.embeddedServer
 import io.ktor.shared.serialization.ContentConverter
@@ -40,14 +42,12 @@ fun TypeInfo.serializer(): KSerializer<Any> = kotlinType?.let { serializer(it) a
 
 fun main() {
     embeddedServer(CIO, 8081, "localhost") {
-        val json = Json {  }
-
         install(CORS) {
             anyHost()
         }
 
         install(ContentNegotiation) {
-            serialization(ContentType.Application.Json, Json {  })
+            json()
         }
 
         install(Authentication) {
