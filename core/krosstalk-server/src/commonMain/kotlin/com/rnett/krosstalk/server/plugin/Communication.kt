@@ -106,7 +106,6 @@ internal class ResponseContext<K>(
 
 //TODO tests for new behavior, new catch methods, catch for http errors only?
 
-//TODO make inline
 /**
  * Helper method for server side to handle a request for a Krosstalk [method].
  *
@@ -121,7 +120,7 @@ internal class ResponseContext<K>(
  */
 @OptIn(InternalKrosstalkApi::class, ExperimentalStdlibApi::class, kotlin.contracts.ExperimentalContracts::class)
 @KrosstalkPluginApi
-public suspend fun <K> K.handle(
+public inline suspend fun <K> K.handle(
     serverUrl: String,
     method: MethodDefinition<*>,
     requestHeaders: Headers,

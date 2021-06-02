@@ -208,7 +208,7 @@ internal suspend inline fun <T, K, reified C : ClientScope<*>> K.call(
     val (endpoint, usedInUrl) = method.endpoint.fillWithArgs(
         methodName,
         rawArguments.keys,
-        arguments.filter { it.value != null }.keys //TODO should I only remove nulls if the param is optional?
+        arguments.filter { it.value != null }.keys // note it's only optionals, so is required to be @Optional
     ) {
         @Suppress("UNCHECKED_CAST", "DEPRECATION")
         if (rawArguments[it].let { it is ServerDefault<*> && it.isNone() })
