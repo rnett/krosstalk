@@ -1,7 +1,9 @@
-# Module Krosstalk
+# Module Krosstalk Core
 
 Common Krosstalk APIs that are used be both clients and servers, and everything required to define an `expect`
 Krosstalk. Includes `Krosstalk`, `Scope`, `KrosstalkResult`, etc.
+
+Artifact: `com.github.rnett.krosstalk:krosstalk`
 
 Usually the only source set that needs to explicitly depend on this artifact is the `common` one, source sets or modules
 with Krosstalk client or servers will inherit it.

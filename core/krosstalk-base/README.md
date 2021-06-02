@@ -1,7 +1,9 @@
-# Module Krosstalk Core
+# Module Krosstalk Base
 
 Krosstalk APIs that are shared between the runtime and compiler plugin. None of these are user facing, you should not
 need them unless you are implementing a plugin.
+
+Artifact: `com.github.rnett.krosstalk:krosstalk-base` (you shouldn't ever need this)
 
 # Package com.rnett.krosstalk
 

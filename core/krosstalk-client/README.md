@@ -2,6 +2,8 @@
 
 Krosstalk APIs necessary for defining a client.
 
+Artifact: `com.github.rnett.krosstalk:krosstalk-client`
+
 For usage instructions, see the [github readme](./../../README.md#krosstalk-a-pure-kotlin-pluggable-rpc-library).
 
 For more examples, see [tests](./../../tests).

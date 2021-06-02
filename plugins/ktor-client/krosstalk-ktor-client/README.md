@@ -1,6 +1,9 @@
 # Module Krosstalk Ktor Client
 
-A basic multiplatform Krosstalk client plugin using [Ktor](https://ktor.io/).
+A basic multiplatform Krosstalk client plugin using [Ktor](https://ktor.io/).  Supports all platforms Ktor does,
+which is currently everything except `watchosX64`.
+
+Artifact: `com.github.rnett.krosstalk:krosstalk-ktor-client`
 
 To use, have your Krosstalk client object implement `KtorKrosstalkClient`, and set `client` to a `KtorClient`.
 

@@ -2,6 +2,8 @@
 
 Auth scopes for the Krosstalk Ktor server plugin.
 
+Artifact: `com.github.rnett.krosstalk:krosstalk-ktor-server-auth`
+
 We provide a base auth scope [KtorServerAuth], a base auth scope for authentication types that provide a
 principal [KtorServerPrincipalAuth], and several implementations:
 

@@ -1,6 +1,9 @@
 # Module Krosstalk Ktor Server
 
-A basic Krosstalk server plugin using [Ktor](https://ktor.io/). Includes authentication scopes.
+A basic Krosstalk server plugin using [Ktor](https://ktor.io/). Includes authentication scopes.  Note that like Ktor itself,
+this only supports JVM.  Clients, however, are multiplatform.
+
+Artifact: `com.github.rnett.krosstalk:krosstalk-ktor-server`
 
 To use, have your Krosstalk server object implement `KtorKrosstalkServer`, and set `server` to a `KtorServer`.
 

@@ -2,6 +2,8 @@
 
 Krosstalk APIs necessary for defining a server.
 
+Artifact: `com.github.rnett.krosstalk:krosstalk-server`
+
 For usage instructions, see the [github readme](./../../README.md#krosstalk-a-pure-kotlin-pluggable-rpc-library).
 
 For more examples, see [tests](./../../tests).
