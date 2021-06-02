@@ -1,4 +1,4 @@
-# Krosstalk: A pure Kotlin pluggable RPC library
+# [Krosstalk: A pure Kotlin pluggable RPC library](https://github.com/rnett/krosstalk)
 
 ![Maven Central](https://img.shields.io/maven-central/v/com.github.rnett.krosstalk/krosstalk)
 [![Sonatype Nexus (Snapshots)](https://img.shields.io/nexus/s/com.github.rnett.krosstalk/krosstalk?server=https%3A%2F%2Foss.sonatype.org)](https://oss.sonatype.org/content/repositories/snapshots/com/github/rnett/krosstalk/)
