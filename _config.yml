@@ -1,2 +1,9 @@
 name: Krosstalk
 title: null
+
+tagline: 'Krosstalk: Kotlin RPC GitHub Pages'
+description: 'GitHub Pages for Krosstalk, a Kotlin expect/actual based RPC library'
+google_site_verification: NX_Zv2QuIMO-ZCDQmYsSc1jtCHtzu49xCJybqomzc_s
+
+plugins:
+  - jekyll-seo-tag
