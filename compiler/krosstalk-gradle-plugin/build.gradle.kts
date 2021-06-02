@@ -3,7 +3,6 @@ plugins {
     kotlin("jvm")
     kotlin("kapt")
     id("com.github.gmazzo.buildconfig")
-    `maven-publish`
 //    id("com.gradle.plugin-publish")
     //TODO publish to portal, see https://github.com/vanniktech/gradle-maven-publish-plugin/issues/256
 }
