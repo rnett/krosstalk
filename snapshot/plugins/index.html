@@ -22,8 +22,43 @@
           </div>
           <div class="cover ">
             <div class="cover ">
-              <h1 class="">Ktor</h1>
-              <p class="paragraph">This directory contains basic Ktor client and server plugins. Both include authentication scopes, and the client plugin is multiplatform.</p>
+              <h1 class="">Plugins</h1>
+              <p class="paragraph">We provide plugins for <a href="https://github.com/Kotlin/kotlinx.serialization">Kotlinx.serialization</a>  and <a href="https://ktor.io/">Ktor</a> client and server.  Authentication scopes for Ktor clients and servers are also included.</p>
+              <p class="paragraph">If you are making a third party plugin, please make an issue or PR on the  <a href="https://github.com/rnett/krosstalk">GitHub repo</a> so that we can list it here.</p>
+              <h2 class=""> Artifacts</h2>
+              <h4 class=""> Serialization</h4>
+              <ul>
+                <li>
+                  <p class="paragraph">Kotlinx serialization (includes JSON): <code>com.github.rnett.krosstalk:krosstalk-kotlinx-serialization</code></p>
+                </li>
+              </ul>
+              <h4 class=""> Client</h4>
+              <ul>
+                <li>
+                  <p class="paragraph">Ktor: <code>com.github.rnett.krosstalk:krosstalk-ktor-client</code></p>
+                </li>
+                <ul>
+                  <li>
+                    <p class="paragraph">Auth: <code>krosstalk-ktor-client-auth</code></p>
+                  </li>
+                </ul>
+              </ul>
+              <h4 class=""> Server</h4>
+              <ul>
+                <li>
+                  <p class="paragraph">Ktor: <code>com.github.rnett.krosstalk:krosstalk-ktor-server</code></p>
+                </li>
+                <ul>
+                  <li>
+                    <p class="paragraph">Auth: <code>krosstalk-ktor-server-auth</code></p>
+                  </li>
+                  <ul>
+                    <li>
+                      <p class="paragraph">JWT: <code>krosstalk-ktor-server-auth-jwt</code></p>
+                    </li>
+                  </ul>
+                </ul>
+              </ul>
             </div>
             <h2 class="">All modules:</h2>
             <div class="table"><a data-name="454899071%2FMain%2F0" anchor-label="Krosstalk Ktor Server JWT Auth" id="454899071%2FMain%2F0" data-filterable-set=""></a>
@@ -32,7 +67,9 @@
                   <div class="w-100"><span class="inline-flex"><a href="ktor-server/krosstalk-ktor-server-auth-jwt/index.html">Krosstalk Ktor Server JWT Auth</a><span class="anchor-wrapper"><span class="anchor-icon" pointing-to="454899071%2FMain%2F0"></span>
                         <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
                       </span></span></div>
-                  <div><span class="brief-comment"></span></div>
+                  <div><span class="brief-comment">
+                      <p class="paragraph">A Jwt Auth scope for the Krosstalk Ktor server plugin.</p>
+                    </span></div>
                 </div>
               </div>
 <a data-name="1833385656%2FMain%2F0" anchor-label="Krosstalk Ktor Server Auth" id="1833385656%2FMain%2F0" data-filterable-set=""></a>
@@ -53,7 +90,7 @@
                         <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
                       </span></span></div>
                   <div><span class="brief-comment">
-                      <p class="paragraph">A basic Krosstalk server plugin using <a href="https://ktor.io/">Ktor</a>. Includes authentication scopes.</p>
+                      <p class="paragraph">A basic Krosstalk server plugin using <a href="https://ktor.io/">Ktor</a>. Includes authentication scopes.  Note that like Ktor itself, this only supports JVM.  Clients, however, are multiplatform.</p>
                     </span></div>
                 </div>
               </div>
@@ -75,7 +112,7 @@
                         <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
                       </span></span></div>
                   <div><span class="brief-comment">
-                      <p class="paragraph">A basic multiplatform Krosstalk client plugin using <a href="https://ktor.io/">Ktor</a>.</p>
+                      <p class="paragraph">A basic multiplatform Krosstalk client plugin using <a href="https://ktor.io/">Ktor</a>.  Supports all platforms Ktor does, which is currently everything except <code>watchosX64</code>.</p>
                     </span></div>
                 </div>
               </div>
@@ -85,7 +122,9 @@
                   <div class="w-100"><span class="inline-flex"><a href="krosstalk-kotlinx-serialization/index.html">Krosstalk Kotlinx-serialization</a><span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-1982929025%2FMain%2F0"></span>
                         <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
                       </span></span></div>
-                  <div><span class="brief-comment"></span></div>
+                  <div><span class="brief-comment">
+                      <p class="paragraph">A Krosstalk serialization plugin using <a href="https://github.com/Kotlin/kotlinx.serialization">Kotlinx.serialization</a>.</p>
+                    </span></div>
                 </div>
               </div>
             </div>
