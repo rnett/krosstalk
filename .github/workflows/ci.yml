@@ -41,7 +41,7 @@ jobs:
           path: |
             ~/.gradle/caches
             ~/.gradle/wrapper
-          key: ${{ runner.os }}-gradle-${{ hashFiles('**/settings.gradle*', 'buildSrc/*.gradle*', '**/gradle-wrapper.properties') }}
+          key: ${{ runner.os }}-gradle-${{ hashFiles('**/*.gradle*') }}
           restore-keys: |
             ${{ runner.os }}-gradle-
 
@@ -97,7 +97,7 @@ jobs:
       - name: Get version
         if: github.ref == 'refs/heads/main'
         id: get_version
-        uses: rnett/find-regex@v1.1
+        uses: rnett/find-regex@v1.2
         with:
           regex: 'version ?(?:=|:) ?"?([\w.\-_]+)"?'
           files: "build.gradle.kts,gradle.properties,build.gradle"
@@ -155,7 +155,7 @@ jobs:
           path: |
             ~/.gradle/caches
             ~/.gradle/wrapper
-          key: ${{ runner.os }}-gradle-${{ hashFiles('**/settings.gradle*', 'buildSrc/*.gradle*', '**/gradle-wrapper.properties') }}
+          key: ${{ runner.os }}-gradle-${{ hashFiles('**/*.gradle*') }}
           restore-keys: |
             ${{ runner.os }}-gradle-
 
@@ -220,7 +220,7 @@ jobs:
           path: |
             ~/.gradle/caches
             ~/.gradle/wrapper
-          key: ${{ runner.os }}-gradle-${{ hashFiles('**/settings.gradle*', 'buildSrc/*.gradle*', '**/gradle-wrapper.properties') }}
+          key: ${{ runner.os }}-gradle-${{ hashFiles('**/*.gradle*') }}
           restore-keys: |
             ${{ runner.os }}-gradle-
 
