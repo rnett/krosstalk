@@ -1,8 +1,8 @@
 name: Krosstalk
 title: null
 
-tagline: 'Krosstalk: Kotlin RPC GitHub Pages'
-description: 'GitHub Pages for Krosstalk, a Kotlin expect/actual based RPC library'
+tagline: 'Krosstalk: Kotlin RPC library GitHub Pages'
+description: "Krosstalk allows you to easily create RPC methods using pure kotlin. Client, server, and serialization implementations are pluggable, and Kotlin's expect-actual modifiers can be used to ensure that client and server methods match."
 google_site_verification: NX_Zv2QuIMO-ZCDQmYsSc1jtCHtzu49xCJybqomzc_s
 
 plugins:
