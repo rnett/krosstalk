@@ -113,7 +113,7 @@ including use for microservices and a client-only example that calls a normal AP
 # Overview
 
 Krosstalk works by registering any methods annotated with `@KrosstalkMethod` with the class specified in the annotation,
-which must be an `object` that extends `Krosstalk` (referred to as the Krosstalk object). Client methods (which must
+which must be an `object` that extends `Krosstalk` (referred to as the Krosstalk object), and **must be in the same module**. Client methods (which must
 have a body of `krosstalkCall()`) will then have their bodies replaced with a call to the Krosstalk object, which will
 use the client handler to send a request and return the response). Registering the server Krosstalk with your server
 implementation (using a server plugin) will then cause incoming requests to be handled by the Krosstalk object, which
