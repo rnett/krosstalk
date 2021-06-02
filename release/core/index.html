@@ -42,7 +42,7 @@
                 </li>
               </ul>
               <p class="paragraph">Note that despite calling <code>krosstalk</code> &quot;the common API&quot;, both the client and server APIs are fully multiplatform. However, generally your common source set will be the only one depending on <code>krosstalk</code> directly.</p>
-              <p class="paragraph">A guide to Krosstalk is available in the <a href="https://github.com/rnett/krosstalk/blob/cec436aeec37cda94050f6a4795bf2fde3e0fee8/core/../README.md#krosstalk-a-pure-kotlin-pluggable-rpc-library">GitHub README</a>, and instructions for writing plugins are in <a href="https://github.com/rnett/krosstalk/blob/cec436aeec37cda94050f6a4795bf2fde3e0fee8/core/../WRITING_PLUGINS.md#writing-krosstalk-plugins">WRITING_PLUGINS.md</a></p>
+              <p class="paragraph">A guide to Krosstalk is available in the <a href="https://github.com/rnett/krosstalk/blob/518477465c8091d3c7051a04c0853814e5035b2e/core/../README.md#krosstalk-a-pure-kotlin-pluggable-rpc-library">GitHub README</a>, and instructions for writing plugins are in <a href="https://github.com/rnett/krosstalk/blob/518477465c8091d3c7051a04c0853814e5035b2e/core/../WRITING_PLUGINS.md#writing-krosstalk-plugins">WRITING_PLUGINS.md</a></p>
             </div>
             <h2 class="">All modules:</h2>
             <div class="table"><a data-name="-1011534586%2FMain%2F0" anchor-label="Krosstalk Server" id="-1011534586%2FMain%2F0" data-filterable-set=""></a>
@@ -62,7 +62,9 @@
                   <div class="w-100"><span class="inline-flex"><a href="krosstalk/index.html">Krosstalk Core</a><span class="anchor-wrapper"><span class="anchor-icon" pointing-to="689332778%2FMain%2F0"></span>
                         <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
                       </span></span></div>
-                  <div><span class="brief-comment"></span></div>
+                  <div><span class="brief-comment">
+                      <p class="paragraph">Common Krosstalk APIs that are used be both clients and servers, and everything required to define an <code>expect</code> Krosstalk. Includes <code>Krosstalk</code>, <code>Scope</code>, <code>KrosstalkResult</code>, etc.</p>
+                    </span></div>
                 </div>
               </div>
 <a data-name="264051070%2FMain%2F0" anchor-label="Krosstalk Client" id="264051070%2FMain%2F0" data-filterable-set=""></a>
@@ -82,7 +84,9 @@
                   <div class="w-100"><span class="inline-flex"><a href="krosstalk-base/index.html">Krosstalk Base</a><span class="anchor-wrapper"><span class="anchor-icon" pointing-to="229189432%2FMain%2F0"></span>
                         <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
                       </span></span></div>
-                  <div><span class="brief-comment"></span></div>
+                  <div><span class="brief-comment">
+                      <p class="paragraph">Krosstalk APIs that are shared between the runtime and compiler plugin. None of these are user facing, you should not need them unless you are implementing a plugin.</p>
+                    </span></div>
                 </div>
               </div>
             </div>
