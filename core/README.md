@@ -10,5 +10,5 @@ These docs are for the core artifacts of Krosstalk:
 Note that despite calling `krosstalk` "the common API", both the client and server APIs are fully multiplatform.
 However, generally your common source set will be the only one depending on `krosstalk` directly.
 
-A guide to Krosstalk is available in the [GitHub README](./../README.md#krosstalk-expectactual-rpc-call-autowiring), and
+A guide to Krosstalk is available in the [GitHub README](./../README.md#krosstalk-a-pure-kotlin-pluggable-rpc-library), and
 instructions for writing plugins are in [WRITING_PLUGINS.md](./../WRITING_PLUGINS.md#writing-krosstalk-plugins)
