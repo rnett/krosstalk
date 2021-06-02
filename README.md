@@ -25,7 +25,7 @@ compiler plugin applied.
 
 [Snapshot Docs](https://rnett.github.io/krosstalk/snapshot/core/index.html)
 
-* Gradle plugin (required): `com.github.rnett.krosstalk` for the `plugins` block. Full coordinates
+* Gradle plugin (**required**): `com.github.rnett.krosstalk` for the `plugins` block. Full coordinates
   are `com.github.rnett.krosstalk:krosstalk-gradle-plugin`.
 * Core:`com.github.rnett.krosstalk:krosstalk`
 * Client: `com.github.rnett.krosstalk:krosstalk-client`
