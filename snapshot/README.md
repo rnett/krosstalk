@@ -1,9 +1,10 @@
 # [Krosstalk: A pure Kotlin pluggable RPC library](https://github.com/rnett/krosstalk)
 
-![Maven Central](https://img.shields.io/maven-central/v/com.github.rnett.krosstalk/krosstalk)
+[![Maven Central](https://img.shields.io/maven-central/v/com.github.rnett.krosstalk/krosstalk)](https://search.maven.org/artifact/com.github.rnett.krosstalk/krosstalk)
 [![Sonatype Nexus (Snapshots)](https://img.shields.io/nexus/s/com.github.rnett.krosstalk/krosstalk?server=https%3A%2F%2Foss.sonatype.org)](https://oss.sonatype.org/content/repositories/snapshots/com/github/rnett/krosstalk/)
 [![GitHub Repo](https://img.shields.io/badge/GitHub-Krosstalk-blue?logo=github)](https://github.com/rnett/krosstalk)
 [![License](https://img.shields.io/badge/License-Apache%202.0-yellowgreen.svg)](https://opensource.org/licenses/Apache-2.0)
+[![Changelog](https://img.shields.io/badge/Changelog-CHANGELOG.md-green)](./CHANGELOG.md#changelog)
 
 Krosstalk allows you to easily create RPC methods using pure kotlin. Client, server, and serialization implementations
 are pluggable, and Kotlin's `expect/actual` modifiers can be used to ensure that client and server methods match.
@@ -24,7 +25,7 @@ compiler plugin applied.
 
 [Snapshot Docs](https://rnett.github.io/krosstalk/snapshot/core/index.html)
 
-* Gradle plugin (required): `com.github.rnett.krosstalk` for the `plugins` block. Full coordinates
+* Gradle plugin (**required**): `com.github.rnett.krosstalk` for the `plugins` block. Full coordinates
   are `com.github.rnett.krosstalk:krosstalk-gradle-plugin`.
 * Core:`com.github.rnett.krosstalk:krosstalk`
 * Client: `com.github.rnett.krosstalk:krosstalk-client`
@@ -74,7 +75,7 @@ expect suspend fun basicTest(data: Data): List<String>
 Client (JS):
 
 ```kotlin
-actual object MyKrosstalk : Krosstalk(), KrosstalkClient<KtorClientScope<*>> {
+actual object MyKrosstalk : Krosstalk(), KtorKrosstalkClient {
     actual override val serialization = KotlinxBinarySerializationHandler(Cbor { })
     override val serverUrl: String = "http://localhost:8080"
 
@@ -87,7 +88,7 @@ actual suspend fun basicTest(data: Data): List<String> = krosstalkCall()
 Server (JVM):
 
 ```kotlin
-actual object MyKrosstalk : Krosstalk(), KrosstalkServer<KtorServerScope<*>> {
+actual object MyKrosstalk : Krosstalk(), KtorKrosstalkServer {
     actual override val serialization = KotlinxBinarySerializationHandler(Cbor { })
     override val server = KtorServer
 }
@@ -105,6 +106,9 @@ fun main() {
     }.start(true)
 }
 ```
+
+The projects in [tests](./tests) function as good examples of more advanced behavior, 
+including use for microservices and a client-only example that calls a normal API.
 
 # Overview
 
