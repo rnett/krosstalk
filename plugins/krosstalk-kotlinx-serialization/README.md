@@ -1,4 +1,4 @@
-# Module Krosstalk Kotlinx Serialization
+# Module Krosstalk Kotlinx-serialization
 
 A Krosstalk serialization plugin using [Kotlinx.serialization](https://github.com/Kotlin/kotlinx.serialization).
 

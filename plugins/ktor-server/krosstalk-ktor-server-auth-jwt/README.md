@@ -1,4 +1,4 @@
-# Module Krosstalk Ktor Server Auth Jwt
+# Module Krosstalk Ktor Server JWT Auth
 
 A Jwt Auth scope for the Krosstalk Ktor server plugin.
 
