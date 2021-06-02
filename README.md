@@ -1,23 +1,22 @@
-# [Krosstalk: Expect/Actual RPC call autowiring](https://github.com/rnett/krosstalk)
+# [Krosstalk: A pure Kotlin pluggable RPC library](https://github.com/rnett/krosstalk)
 
 ![Maven Central](https://img.shields.io/maven-central/v/com.github.rnett.krosstalk/krosstalk)
 [![Sonatype Nexus (Snapshots)](https://img.shields.io/nexus/s/com.github.rnett.krosstalk/krosstalk?server=https%3A%2F%2Foss.sonatype.org)](https://oss.sonatype.org/content/repositories/snapshots/com/github/rnett/krosstalk/)
+[![GitHub Repo](https://img.shields.io/badge/GitHub-Krosstalk-blue?logo=github)](https://github.com/rnett/krosstalk)
 [![License](https://img.shields.io/badge/License-Apache%202.0-yellowgreen.svg)](https://opensource.org/licenses/Apache-2.0)
 
 Krosstalk allows you to easily create RPC methods using pure kotlin. Client, server, and serialization implementations
-are pluggable, and Kotlin's expect-actual modifiers can be used to ensure that client and server methods match.
+are pluggable, and Kotlin's `expect/actual` modifiers can be used to ensure that client and server methods match.
 
 Ktor client and server and Kotlinx Serialization plugins are provided, along
 with [instructions on how to write your own](./WRITING_PLUGINS.md).
 
 ### Compatibility
 
-Krosstalk is currently not compatible with Compose, because their compiler plugin does some weird stuff. To get around
-this, put all your Krosstalk stuff in other modules and depend on it in the modules with the compiler plugin applied.
+Krosstalk is currently not compatible with Compose in the same module, because their compiler plugin does some weird
+stuff. To get around this, put all your Krosstalk stuff in other modules and depend on it in the modules with the
+compiler plugin applied.
 [Tracked issue](https://issuetracker.google.com/issues/185609826).
-
-All Ktor plugins currently use version `2.0.0-eap-132` because of compatibility issues with earlier versions. 
-To use it yourself, see [Ktor's EAP program](https://ktor.io/eap/).
 
 ## Artifacts
 
@@ -48,13 +47,13 @@ include `com.rnett.krosstalk. Krosstalk` as an accessible class (i.e. if you don
 #### Client
 
 * Ktor: `com.github.rnett.krosstalk:krosstalk-ktor-client`
-  * Auth: `krosstalk-ktor-client-auth`
+    * Auth: `krosstalk-ktor-client-auth`
 
 #### Server
 
 * Ktor: `com.github.rnett.krosstalk:krosstalk-ktor-server`
-  * Auth: `krosstalk-ktor-server-auth`
-    * JWT: `krosstalk-ktor-server-auth-jwt`
+    * Auth: `krosstalk-ktor-server-auth`
+        * JWT: `krosstalk-ktor-server-auth-jwt`
 
 ## Minimal example:
 
@@ -65,7 +64,7 @@ Common:
 data class Data(val num: Int, val str: String)
 
 expect object MyKrosstalk : Krosstalk {
-  override val serialization: KotlinxBinarySerializationHandler
+    override val serialization: KotlinxBinarySerializationHandler
 }
 
 @KrosstalkMethod(MyKrosstalk::class)
@@ -76,10 +75,10 @@ Client (JS):
 
 ```kotlin
 actual object MyKrosstalk : Krosstalk(), KrosstalkClient<KtorClientScope<*>> {
-  actual override val serialization = KotlinxBinarySerializationHandler(Cbor { })
-  override val serverUrl: String = "http://localhost:8080"
+    actual override val serialization = KotlinxBinarySerializationHandler(Cbor { })
+    override val serverUrl: String = "http://localhost:8080"
 
-  override val client = KtorClient()
+    override val client = KtorClient()
 }
 
 actual suspend fun basicTest(data: Data): List<String> = krosstalkCall()
@@ -89,21 +88,21 @@ Server (JVM):
 
 ```kotlin
 actual object MyKrosstalk : Krosstalk(), KrosstalkServer<KtorServerScope<*>> {
-  actual override val serialization = KotlinxBinarySerializationHandler(Cbor { })
-  override val server = KtorServer
+    actual override val serialization = KotlinxBinarySerializationHandler(Cbor { })
+    override val server = KtorServer
 }
 
 actual suspend fun basicTest(data: Data): List<String> {
-  return List(data.num) { data.str }
+    return List(data.num) { data.str }
 }
 
 fun main() {
-  embeddedServer(CIO, 8080, "localhost") {
-    install(CORS) {
-      anyHost()
-    }
-    MyKrosstalk.defineKtor(this)
-  }.start(true)
+    embeddedServer(CIO, 8080, "localhost") {
+        install(CORS) {
+            anyHost()
+        }
+        MyKrosstalk.defineKtor(this)
+    }.start(true)
 }
 ```
 
@@ -201,13 +200,13 @@ pattern like:
 private expect fun _errorFunction(n: Int): KrosstalkResult<Int>
 
 fun errorFunction(n: Int): Int? = _errorFunction(n)
-  .throwOnServerException()
-  .handleHttpError(404) { null }
-  .valueOrThrow
+    .throwOnServerException()
+    .handleHttpError(404) { null }
+    .valueOrThrow
 
 // server
 private actual fun _errorFunction(n: Int): KrosstalkResult<Int> = runKrosstalkCatching {
-  ...
+    ...
 }.catchAsHttpError(NoSuchElementException::class, 404)
 ```
 
@@ -253,12 +252,12 @@ no parameters.
 
 ### Optionals/Defaults
 
-Optionals and default values can be handled in two ways, both requiring `@Optional` on the parameter: nullable and `ServerDefault`, which
-require a nullable or `ServerDefault` type, respectively.
-Nullables are easier to use, but uses `null` to encode "not present", and so doesn't work for
-nullable data.  `ServerDefault` does.
+Optionals and default values can be handled in two ways, both requiring `@Optional` on the parameter: nullable
+and `ServerDefault`, which require a nullable or `ServerDefault` type, respectively. Nullables are easier to use, but
+uses `null` to encode "not present", and so doesn't work for nullable data.  `ServerDefault` does.
 
-Nullable and `ServerDefault` `@Optional`s are "present" when a non-null or non-default value is specified, respectively.  
+Nullable and `ServerDefault` `@Optional`s are "present" when a non-null or non-default value is specified,
+respectively.  
 They can be used in endpoints (and as the predicate for optional blocks), but must not be used when they are not
 present (i.e. they must be gated behind an optional).
 
@@ -355,9 +354,9 @@ Common:
 data class Data(val num: Int, val str: String)
 
 expect object MyKrosstalk : Krosstalk {
-  override val serialization: KotlinxBinarySerializationHandler
+    override val serialization: KotlinxBinarySerializationHandler
 
-  object Auth : Scope
+    object Auth : Scope
 }
 
 @KrosstalkMethod(MyKrosstalk::class)
@@ -368,12 +367,12 @@ Client (JS):
 
 ```kotlin
 actual object MyKrosstalk : Krosstalk(), KrosstalkClient<KtorClientScope<*>> {
-  actual override val serialization = KotlinxBinarySerializationHandler(Cbor { })
-  override val serverUrl: String = "http://localhost:8080"
+    actual override val serialization = KotlinxBinarySerializationHandler(Cbor { })
+    override val serverUrl: String = "http://localhost:8080"
 
-  override val client = KtorClient()
+    override val client = KtorClient()
 
-  actual object Auth : Scope, KtorClientBasicAuth()
+    actual object Auth : Scope, KtorClientBasicAuth()
 }
 
 actual suspend fun basicTest(data: Data, auth: ScopeInstance<Auth>): List<String> = krosstalkCall()
@@ -383,19 +382,19 @@ Server (JVM):
 
 ```kotlin
 actual object MyKrosstalk : Krosstalk(), KrosstalkServer<KtorServerScope<*>> {
-  actual override val serialization = KotlinxBinarySerializationHandler(Cbor { })
-  override val server = KtorServer
+    actual override val serialization = KotlinxBinarySerializationHandler(Cbor { })
+    override val server = KtorServer
 
-  actual object Auth : Scope, KtorServerBasicAuth<User>("auth") {
-    override fun BasicAuthenticationProvider.Configuration.configure() {
-      validate {
-        if (validUsers[it.name] == it.password)
-          User(it.name)
-        else
-          null
-      }
+    actual object Auth : Scope, KtorServerBasicAuth<User>("auth") {
+        override fun BasicAuthenticationProvider.Configuration.configure() {
+            validate {
+                if (validUsers[it.name] == it.password)
+                    User(it.name)
+                else
+                    null
+            }
+        }
     }
-  }
 }
 
 data class User(val username: String) : Principal
@@ -403,17 +402,17 @@ data class User(val username: String) : Principal
 private val validUsers = mapOf("username" to "password")
 
 actual suspend fun basicTest(data: Data, auth: ScopeInstance<Auth>): List<String> {
-  println("Request from: ${auth.value/*: User*/.username}")
-  return List(data.num) { data.str }
+    println("Request from: ${auth.value/*: User*/.username}")
+    return List(data.num) { data.str }
 }
 
 fun main() {
-  embeddedServer(CIO, 8080, "localhost") {
-    install(CORS) {
-      anyHost()
-    }
-    MyKrosstalk.defineKtor(this)
-  }.start(true)
+    embeddedServer(CIO, 8080, "localhost") {
+        install(CORS) {
+            anyHost()
+        }
+        MyKrosstalk.defineKtor(this)
+    }.start(true)
 }
 ```
 
