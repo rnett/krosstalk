@@ -21,6 +21,8 @@ compiler plugin applied.
 
 ## Artifacts
 
+### The compiler plugin, which is loaded via the gradle plugin below, is required for anything to work!
+
 ### Core ([Docs](https://rnett.github.io/krosstalk/release/core/index.html))
 
 [Snapshot Docs](https://rnett.github.io/krosstalk/snapshot/core/index.html)
