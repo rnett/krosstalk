@@ -133,7 +133,7 @@ tasks.create<Copy>("generateReadme"){
     from("README.md")
     into(buildDir)
     filter{
-        it.replace("# Krosstalk: Expect/Actual RPC call autowiring",
-            "# [Krosstalk: Expect/Actual RPC call autowiring](https://github.com/rnett/krosstalk)")
+        it.replace("# Krosstalk: A pure Kotlin pluggable RPC library",
+            "# [Krosstalk: A pure Kotlin pluggable RPC library](https://github.com/rnett/krosstalk)")
     }
 }
