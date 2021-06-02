@@ -107,6 +107,9 @@ fun main() {
 }
 ```
 
+The projects in [tests](./tests) function as good examples of more advanced behavior, 
+including use for microservices and a client-only example that calls a normal API.
+
 # Overview
 
 Krosstalk works by registering any methods annotated with `@KrosstalkMethod` with the class specified in the annotation,
