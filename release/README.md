@@ -74,7 +74,7 @@ expect suspend fun basicTest(data: Data): List<String>
 Client (JS):
 
 ```kotlin
-actual object MyKrosstalk : Krosstalk(), KrosstalkClient<KtorClientScope<*>> {
+actual object MyKrosstalk : Krosstalk(), KtorKrosstalkClient {
     actual override val serialization = KotlinxBinarySerializationHandler(Cbor { })
     override val serverUrl: String = "http://localhost:8080"
 
@@ -87,7 +87,7 @@ actual suspend fun basicTest(data: Data): List<String> = krosstalkCall()
 Server (JVM):
 
 ```kotlin
-actual object MyKrosstalk : Krosstalk(), KrosstalkServer<KtorServerScope<*>> {
+actual object MyKrosstalk : Krosstalk(), KtorKrosstalkServer {
     actual override val serialization = KotlinxBinarySerializationHandler(Cbor { })
     override val server = KtorServer
 }
