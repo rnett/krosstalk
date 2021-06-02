@@ -120,7 +120,7 @@ internal class ResponseContext<K>(
  */
 @OptIn(InternalKrosstalkApi::class, ExperimentalStdlibApi::class, kotlin.contracts.ExperimentalContracts::class)
 @KrosstalkPluginApi
-public inline suspend fun <K> K.handle(
+public suspend fun <K> K.handle(
     serverUrl: String,
     method: MethodDefinition<*>,
     requestHeaders: Headers,
