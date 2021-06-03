@@ -28,6 +28,7 @@ import com.rnett.plugin.naming.isClassifierOf
 import com.rnett.plugin.stdlib.Kotlin
 import org.jetbrains.kotlin.backend.common.ir.allParameters
 import org.jetbrains.kotlin.backend.common.lower.irThrow
+import org.jetbrains.kotlin.backend.jvm.ir.isInCurrentModule
 import org.jetbrains.kotlin.descriptors.CallableDescriptor
 import org.jetbrains.kotlin.descriptors.ClassDescriptor
 import org.jetbrains.kotlin.ir.ObsoleteDescriptorBasedAPI
@@ -309,6 +310,10 @@ class KrosstalkFunction(val declaration: IrSimpleFunction, val methodTransformer
         }
 
         krosstalkClass.check()
+
+        if(!krosstalkClass.declaration.isInCurrentModule()){
+            messageCollector.reportError("Can't use a Krosstalk object from a different module!", declaration)
+        }
 
         if (!krosstalkClass.isClient && !krosstalkClass.isServer && !krosstalkClass.declaration.isExpect) {
             messageCollector.reportError(

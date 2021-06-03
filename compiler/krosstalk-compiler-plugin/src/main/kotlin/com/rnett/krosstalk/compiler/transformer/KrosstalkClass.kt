@@ -9,6 +9,7 @@ import com.rnett.plugin.ir.typeArgument
 import com.rnett.plugin.ir.withDispatchReceiver
 import com.rnett.plugin.ir.withValueArguments
 import org.jetbrains.kotlin.backend.common.lower.DeclarationIrBuilder
+import org.jetbrains.kotlin.backend.jvm.ir.isInCurrentModule
 import org.jetbrains.kotlin.cli.common.messages.MessageCollector
 import org.jetbrains.kotlin.ir.builders.irBlockBody
 import org.jetbrains.kotlin.ir.builders.irGetObject
