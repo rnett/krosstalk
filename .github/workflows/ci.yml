@@ -35,12 +35,14 @@ jobs:
           mkdir ~/.gradle
           echo "org.gradle.caching=true" >> ~/.gradle/gradle.properties
 
-      - name: Cache Gradle packages and Konan
+      - name: Cache Gradle packages
         uses: actions/cache@v2
         with:
           path: |
             ~/.gradle/caches
             ~/.gradle/wrapper
+            ~/.gradle/nodejs
+            ~/.gradle/yarn
           key: ${{ runner.os }}-gradle-${{ hashFiles('**/*.gradle*', 'buildSrc/**/*.kt') }}
           restore-keys: |
             ${{ runner.os }}-gradle-
@@ -158,6 +160,8 @@ jobs:
           path: |
             ~/.gradle/caches
             ~/.gradle/wrapper
+            ~/.gradle/nodejs
+            ~/.gradle/yarn
           key: ${{ runner.os }}-gradle-${{ hashFiles('**/*.gradle*', 'buildSrc/**/*.kt') }}
           restore-keys: |
             ${{ runner.os }}-gradle-
@@ -223,6 +227,8 @@ jobs:
           path: |
             ~/.gradle/caches
             ~/.gradle/wrapper
+            ~/.gradle/nodejs
+            ~/.gradle/yarn
           key: ${{ runner.os }}-gradle-${{ hashFiles('**/*.gradle*', 'buildSrc/**/*.kt') }}
           restore-keys: |
             ${{ runner.os }}-gradle-
