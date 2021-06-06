@@ -56,12 +56,14 @@ jobs:
       - name: Cleanup Gradle Cache Posix
         if: runner.os != 'Windows'
         run: |
+          jps
           rm -f ~/.gradle/caches/*/*.lock
           rm -f ~/.gradle/caches/*/gc.properties
 
       - name: Cleanup Gradle Cache Windows
         if: runner.os == 'Windows'
         run: |
+          jps
           rm -fo ~/.gradle/caches/*/*.lock
           rm -fo ~/.gradle/caches/*/gc.properties
 
