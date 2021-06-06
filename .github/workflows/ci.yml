@@ -22,19 +22,6 @@ jobs:
         with:
           java-version: 15
 
-      - name: Enable build cache Posix
-        if: runner.os != 'Windows'
-        run: |
-          mkdir -p ~/.gradle
-          touch ~/.gradle/gradle.properties
-          echo "org.gradle.caching=true" >> ~/.gradle/gradle.properties
-
-      - name: Enable build cache Windows
-        if: runner.os == 'Windows'
-        run: |
-          mkdir ~/.gradle
-          echo "org.gradle.caching=true" >> ~/.gradle/gradle.properties
-
       - name: Cache Gradle packages
         uses: actions/cache@v2
         with:
@@ -69,12 +56,14 @@ jobs:
       - name: Cleanup Gradle Cache Posix
         if: runner.os != 'Windows'
         run: |
+          jps
           rm -f ~/.gradle/caches/*/*.lock
           rm -f ~/.gradle/caches/*/gc.properties
 
       - name: Cleanup Gradle Cache Windows
         if: runner.os == 'Windows'
         run: |
+          jps
           rm -fo ~/.gradle/caches/*/*.lock
           rm -fo ~/.gradle/caches/*/gc.properties
 
@@ -141,19 +130,6 @@ jobs:
         with:
           java-version: 15
 
-      - name: Enable build cache Posix
-        if: runner.os != 'Windows'
-        run: |
-          mkdir -p ~/.gradle
-          touch ~/.gradle/gradle.properties
-          echo "org.gradle.caching=true" >> ~/.gradle/gradle.properties
-
-      - name: Enable build cache Windows
-        if: runner.os == 'Windows'
-        run: |
-          mkdir ~/.gradle
-          echo "org.gradle.caching=true" >> ~/.gradle/gradle.properties
-
       - name: Cache Gradle packages
         uses: actions/cache@v2
         with:
@@ -207,19 +183,6 @@ jobs:
         uses: actions/setup-java@v1
         with:
           java-version: 15
-
-      - name: Enable build cache Posix
-        if: runner.os != 'Windows'
-        run: |
-          mkdir -p ~/.gradle
-          touch ~/.gradle/gradle.properties
-          echo "org.gradle.caching=true" >> ~/.gradle/gradle.properties
-
-      - name: Enable build cache Windows
-        if: runner.os == 'Windows'
-        run: |
-          mkdir ~/.gradle
-          echo "org.gradle.caching=true" >> ~/.gradle/gradle.properties
 
       - name: Cache Gradle packages
         uses: actions/cache@v2
