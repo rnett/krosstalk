@@ -43,6 +43,9 @@ include `com.rnett.krosstalk. Krosstalk` as an accessible class (i.e. if you don
 
 [Snapshot Docs](https://rnett.github.io/krosstalk/snapshot/plugins/index.html)
 
+Plugins provide handlers for serialization, clients, or servers that can be used in Krosstalk objects.
+They control how your Krosstalk methods are actually executed.
+
 #### Serialization
 
 * Kotlinx serialization (includes JSON): `com.github.rnett.krosstalk:krosstalk-kotlinx-serialization`
@@ -74,7 +77,7 @@ expect object MyKrosstalk : Krosstalk {
 expect suspend fun basicTest(data: Data): List<String>
 ```
 
-Client (JS):
+Client (i.e. JS):
 
 ```kotlin
 actual object MyKrosstalk : Krosstalk(), KtorKrosstalkClient {
@@ -87,7 +90,7 @@ actual object MyKrosstalk : Krosstalk(), KtorKrosstalkClient {
 actual suspend fun basicTest(data: Data): List<String> = krosstalkCall()
 ```
 
-Server (JVM):
+Server (i.e. JVM):
 
 ```kotlin
 actual object MyKrosstalk : Krosstalk(), KtorKrosstalkServer {
@@ -108,6 +111,8 @@ fun main() {
     }.start(true)
 }
 ```
+
+Note that clients and servers can be on any platform that has the needed plugins.
 
 The projects in [tests](./tests) function as good examples of more advanced behavior, 
 including use for microservices and a client-only example that calls a normal API.
@@ -132,17 +137,17 @@ There are three types of Krosstalk objects, depending on how they are declared: 
   (`urlSerialization`) and a prefix to use in method endpoint urls (`prefix`, `"krosstalk"` by default).  **Note that
   the value of `prefix` and the serialization formats must match on `actual` client and server Krosstalks.**  
   It is not yet possible to declare these directly in the `expect` object, so take care. You can add a abstract class
-  between your Krosstalk object and `Krosstalk` to define these.
+  between your Krosstalk object and `Krosstalk` to define these.  You can get serialization handlers from serialization plugins.
 * Client Krosstalks are those that implement `KrosstalkClient` in addition to `Krosstalk`. They can be declared as
   standalone objects, or as the `actual` object of a common Krosstalk. They specify a client handler via the
   `client` property and a server url via the `serverUrl` property. The server url is read each request, so it can
   be `var`, but
   using [server url parameters](https://rnett.github.io/krosstalk/release/core/krosstalk/-krosstalk/com.rnett.krosstalk.annotations/-server-u-r-l/index.html)
-  is recommended instead.
+  is recommended instead.  You get handlers from client plugins.
 * Server Krosstalks are those that implement `KrosstalkServer` in addition to `Krosstalk`. Like clients, than can be
   standalone or `actual`. They define a server handler via `server`. This handler is usually just an object, since
   server entrypoints and structure can vary, but should define methods to add your Krosstalk's methods to its server
-  implementation (i.e. `defineKtor`).
+  implementation (i.e. `defineKtor`).  You get handlers from server plugins.
 
 The `KrosstalkClient` and `KrosstalkServer` interfaces also require you to provide the scope class of your client or
 server plugin, respectively. Plugins usually define their own interface or typealias that does this, i.e.
