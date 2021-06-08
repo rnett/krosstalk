@@ -46,8 +46,7 @@ internal var lastStatusCode: Int? = null
 internal var lastHeaders: Headers? = null
     private set
 
-actual object MyKrosstalk : Krosstalk(), KrosstalkClient<KtorClientScope<*>> {
-    actual override val serialization = KotlinxBinarySerializationHandler(Cbor { })
+actual object MyKrosstalk : BaseKrosstalk(), KrosstalkClient<KtorClientScope<*>> {
     override val serverUrl: String = "http://localhost:8080"
 
     override val client = KtorClient(
