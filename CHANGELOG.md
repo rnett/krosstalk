@@ -11,7 +11,7 @@ Breaking changes:
 
 Minor changes:
 
-* [#7](https://github.com/rnett/krosstalk/pull/1) Allow the use of `abstract` Krosstalk subclasses to define common
+* [#7](https://github.com/rnett/krosstalk/pull/7) Allow the use of `abstract` Krosstalk subclasses to define common
   configuration (the README already said it was possible, but it lied).
 * [#1](https://github.com/rnett/krosstalk/pull/1) Properly throw a compiler error when trying to register a method with
   a Krosstalk class in another module. Would result in an ICE before.
