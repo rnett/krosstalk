@@ -21,13 +21,16 @@ import com.rnett.krosstalk.methodName
 import com.rnett.krosstalk.result.KrosstalkResult
 import com.rnett.krosstalk.serialization.KotlinxBinarySerializationHandler
 import kotlinx.serialization.Serializable
+import kotlinx.serialization.cbor.Cbor
 
 @Serializable
 data class Data(val num: Int, val str: String)
 
-expect object MyKrosstalk : Krosstalk {
-    override val serialization: KotlinxBinarySerializationHandler
+abstract class BaseKrosstalk : Krosstalk() {
+    override val serialization = KotlinxBinarySerializationHandler(Cbor { })
+}
 
+expect object MyKrosstalk : BaseKrosstalk {
     object Auth : Scope
 }
 

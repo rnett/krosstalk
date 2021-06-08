@@ -92,7 +92,10 @@ class KrosstalkMethodTransformer(
                     registerScopes()
                 }
             } else {
-                messageCollector.reportError("Can't have class extending Krosstalk that isn't an object.", declaration)
+                declaration.declarations.forEach {
+                    if(it is IrClass && it.isObject && it.isSubclassOf(Krosstalk.Scope))
+                        messageCollector.reportError("Can't have a declaration in a non-object Krosstalk class", it)
+                }
             }
         }
         return super.visitClassNew(declaration)
