@@ -31,8 +31,9 @@ import kotlinx.serialization.KSerializer
 import kotlinx.serialization.encodeToString
 import kotlinx.serialization.json.Json
 import kotlinx.serialization.serializer
+import java.util.concurrent.ConcurrentHashMap
 
-private val knownItems = List(20) { Item(it, "Item $it") }.associateBy { it.id }.toMutableMap()
+private val knownItems = List(20) { Item(it, "Item $it") }.associateBy { it.id }.toMap(ConcurrentHashMap())
 
 data class User(val username: String) : Principal
 
@@ -82,6 +83,7 @@ fun main() {
                 post{
                     val item = call.receive<ItemSetRequest>()
                     knownItems[item.id] = item.item
+                    call.respond(HttpStatusCode.OK)
                 }
             }
 
