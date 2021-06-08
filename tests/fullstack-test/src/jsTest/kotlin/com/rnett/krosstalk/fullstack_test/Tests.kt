@@ -277,7 +277,7 @@ class Tests {
 
     @Test
     fun testHttpError() = GlobalScope.promise {
-        CommonTests.krosstalkResultHttpError()
+        CommonTests.KrosstalkHttpError()
         assertEquals(404, lastStatusCode)
     }
 

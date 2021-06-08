@@ -30,7 +30,7 @@ class JvmTests {
 
     @Test
     fun testServerResultHttpError() = runBlocking {
-        CommonTests.krosstalkResultHttpError()
+        CommonTests.KrosstalkHttpError()
     }
 
     @Test

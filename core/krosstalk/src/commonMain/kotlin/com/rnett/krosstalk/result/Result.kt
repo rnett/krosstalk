@@ -20,7 +20,7 @@ import kotlin.reflect.KClass
 @OptIn(InternalKrosstalkApi::class)
 public class KrosstalkHttpError(public val httpError: KrosstalkResult.HttpError) :
     KrosstalkException(buildString {
-        "KrosstalkResult is http error code ${httpError.statusCode}"
+        append("Krosstalk result is http error ${httpError.statusCode}")
         if (httpError.statusCodeName != null)
             append(": ${httpError.statusCodeName}")
 
@@ -40,14 +40,14 @@ public inline fun throwKrosstalkHttpError(statusCode: Int, message: String? = nu
  */
 @OptIn(InternalKrosstalkApi::class)
 public class KrosstalkServerException(public val exception: KrosstalkResult.ServerException) :
-    KrosstalkException("KrosstalkResult is exception $exception")
+    KrosstalkException("Krosstalk result is exception $exception")
 
 /**
  * An exception representing an exception on the server side (i.e. a HTTP 500 response, but with more information).
  */
 @OptIn(InternalKrosstalkApi::class)
 public class KrosstalkUncaughtServerException @InternalKrosstalkApi constructor(public val exception: KrosstalkResult.ServerException) :
-    KrosstalkException("KrosstalkResult is exception $exception")
+    KrosstalkException("Krosstalk result is uncaught exception $exception")
 
 /**
  * Throw a [KrosstalkServerException].

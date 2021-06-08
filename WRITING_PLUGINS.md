@@ -72,8 +72,7 @@ to implement `Map<String, S>` serialization and deserialization methods (**note 
 format**).
 
 Examples of using `ArgumentSerializationHandler` can be seen in `KotlinxStringSerializationHandler` and
-`KotlinxBinarySerializationHandler`
-([source](./plugins/krosstalk-kotlinx-serialization/src/commonMain/kotlin/com/rnett/krosstalk/serialization/KotlinxSerializers.kt#L41)):
+`KotlinxBinarySerializationHandler`:
 
 ```kotlin
 public data class KotlinxBinarySerializationHandler(val format: BinaryFormat) :
@@ -111,46 +110,38 @@ public data class KotlinxStringSerializationHandler(val format: StringFormat) :
 }
 ```
 
-However, `ArgumentSerializationHandler` is not always suitable. For example, when using Json, it is standard to
-serialize a map of arguments as an object with each argument as a field. However, with
-`ArgumentSerializationHandler`, we serialize each argument separately, before merging them into a map, so everything
-would be unnecessarily wrapped in strings. In situations where you are using a non-Krosstalk client or server, this will
-usually cause issues, so you can extend `BaseSerializationHandler` instead of `ArgumentSerializationHandler`
-and define the combination step yourself. An example of this is `KotlinxJsonObjectSerializationHandler`
-([source](https://github.com/rnett/krosstalk/blob/main/plugins/krosstalk-kotlinx-serialization/src/commonMain/kotlin/com/rnett/krosstalk/serialization/KotlinxSerializers.kt#L67)):
+However, `ArgumentSerializationHandler` is not always suitable. Because it serializes all arguments first, you end up
+with the arguments being wrapped in strings or byte arrays.In situations where you are using a non-Krosstalk client or
+server, this will usually cause issues, so you can extend `BaseSerializationHandler` instead
+of `ArgumentSerializationHandler`
+and define the combination step yourself. An example of this are the kotlinx serializers:
+([source](https://github.com/rnett/krosstalk/blob/main/plugins/krosstalk-kotlinx-serialization/src/commonMain/kotlin/com/rnett/krosstalk/serialization/KotlinxSerializers.kt#L91)):
 
 ```kotlin
-public data class KotlinxJsonObjectSerializationHandler(val format: Json) :
-    BaseSerializationHandler<String>(StringTransformer) {
-    override fun getSerializer(type: KType): KotlinxStringSerializer<*> =
-        KotlinxStringSerializer(serializer(type), format)
+public data class KotlinxBinarySerializationHandler(val format: BinaryFormat, override val contentType: String = byteArrayContentType) :
+    BaseSerializationHandler<ByteArray>(ByteTransformer) {
 
-    override fun serializeArguments(arguments: Map<String, *>, serializers: ArgumentSerializers<String>): String {
-        val jsonObject = buildJsonObject {
-            arguments.forEach { (key, data) ->
-                put(
-                    key,
-                    format.encodeToJsonElement((serializers[key] as KotlinxStringSerializer<Any?>).serializer, data)
-                )
-            }
-        }
-        return jsonObject.toString()
+    override fun getSerializer(type: KType): KotlinxBinarySerializer<*> =
+        KotlinxBinarySerializer(serializer(type), format)
+
+    override fun serializeArguments(arguments: Map<String, *>, serializers: ArgumentSerializers<ByteArray>): ByteArray {
+        val kotlinxSerializers = serializers.map.mapValues { (it.value as KotlinxSerializer).serializer }
+        val topLevelSerializer = ArgumentSerializer(kotlinxSerializers as Map<String, KSerializer<Any?>>)
+        return format.encodeToByteArray(topLevelSerializer, arguments)
     }
 
-    override fun deserializeArguments(arguments: String, serializers: ArgumentSerializers<String>): Map<String, *> {
-        val jsonObject = format.parseToJsonElement(arguments).jsonObject
-        return jsonObject.mapValues { (key, data) ->
-            Json.decodeFromJsonElement((serializers[key] as KotlinxStringSerializer<Any?>).serializer, data)
-        }
+    override fun deserializeArguments(
+        arguments: ByteArray,
+        serializers: ArgumentSerializers<ByteArray>
+    ): Map<String, *> {
+        val kotlinxSerializers = serializers.map.mapValues { (it.value as KotlinxSerializer).serializer }
+        val topLevelSerializer = ArgumentSerializer(kotlinxSerializers as Map<String, KSerializer<Any?>>)
+        return format.decodeFromByteArray(topLevelSerializer, arguments)
     }
-
-    override val contentType: String = stringContentType
 }
 ```
 
-Instead of serializing each argument to a string, it serializes each argument to a `JsonElement`, and then combines them
-into a `JsonObject`. This could also be done by defining a `Serializer<T, JsonElement>` and the
-corresponding `SerializedFormatTransformer<JsonElement>`, but that is unnecessary here.
+They avoid the issue by using a custom heterogeneous map serializer (in the same file).
 
 Note the use
 of [`ArgumentSerializers`](https://rnett.github.io/krosstalk/release/core/krosstalk/-krosstalk/com.rnett.krosstalk.serialization.plugin/-argument-serializers/index.html)

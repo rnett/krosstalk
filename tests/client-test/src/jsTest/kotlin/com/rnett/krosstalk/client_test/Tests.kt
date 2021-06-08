@@ -15,6 +15,12 @@ class Tests {
     }
 
     @Test
+    fun testSetItems() = GlobalScope.promise{
+        setItem(100, Item(20, "Test Item"))
+        assertEquals(Item(20, "Test Item"), getItem(100).valueOrNull)
+    }
+
+    @Test
     fun testKrosstalkResult() = GlobalScope.promise {
         assertEquals(Item(2, "Item 2"), getItem(2).valueOrNull)
         assertEquals(404, getItem(30).httpErrorOrNull?.statusCode)

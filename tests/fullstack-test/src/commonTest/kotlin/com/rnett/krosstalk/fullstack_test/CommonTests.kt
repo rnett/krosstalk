@@ -62,7 +62,7 @@ object CommonTests {
         )
     }
 
-    suspend fun krosstalkResultHttpError() {
+    suspend fun KrosstalkHttpError() {
         val errorResult = withHttpError(-2)
         assertTrue(errorResult.isHttpError())
         assertEquals(404, errorResult.statusCode)
