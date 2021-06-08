@@ -34,14 +34,42 @@ import kotlin.contracts.contract
 @KrosstalkPluginApi
 public interface ServerHandler<S : ServerScope<*>>
 
+//TODO make value class
 /**
- * A lambda to send a response from the server with the appropriate configuration and data.
+ * A response to send from the server.  Should not set content type if [contentType] is null.
  */
 @KrosstalkPluginApi
-public typealias Responder = suspend (statusCode: Int, contentType: String?, responseHeaders: Headers, responseBody: ByteArray) -> Unit
+public class KrosstalkResponse(public val statusCode: Int, public val contentType: String?, public val responseHeaders: Headers, public val responseBody: ByteArray) {
+    override fun equals(other: Any?): Boolean {
+        if (this === other) return true
+        if (other == null || this::class != other::class) return false
+
+        other as KrosstalkResponse
+
+        if (statusCode != other.statusCode) return false
+        if (contentType != other.contentType) return false
+        if (responseHeaders != other.responseHeaders) return false
+        if (!responseBody.contentEquals(other.responseBody)) return false
+
+        return true
+    }
+
+    override fun hashCode(): Int {
+        var result = statusCode
+        result = 31 * result + (contentType?.hashCode() ?: 0)
+        result = 31 * result + responseHeaders.hashCode()
+        result = 31 * result + responseBody.contentHashCode()
+        return result
+    }
+
+    override fun toString(): String {
+        return "KrosstalkResponse(statusCode=$statusCode, contentType=$contentType, responseHeaders=$responseHeaders, responseBody=${responseBody.contentToString()})"
+    }
+}
 
 @KrosstalkPluginApi
 @InternalKrosstalkApi
+@PublishedApi
 internal fun MethodDefinition<*>.getReturnBody(data: Any?): ByteArray = if (returnObject != null)
     ByteArray(0)
 else
@@ -50,35 +78,35 @@ else
 //TODO make value class
 @KrosstalkPluginApi
 @InternalKrosstalkApi
+@PublishedApi
 internal class ResponseContext<K>(
     val krosstalk: K,
     val method: MethodDefinition<*>,
-    val respond: Responder,
     val contentType: String,
 ) where K : Krosstalk, K : KrosstalkServer<*> {
 
     val responseHeaders = mutableHeadersOf()
 
-    internal suspend inline fun respondServerException(
+    @PublishedApi
+    internal inline fun serverExceptionResponse(
         exception: KrosstalkResult.ServerException,
         throwing: Boolean = false,
         uncaught: Boolean = false
-    ) {
-        respond(
-            500,
-            "text/plain; charset=utf-8",
-            responseHeaders.addHeaders {
-                if (throwing)
-                    this[KROSSTALK_THROW_EXCEPTION_HEADER_NAME] = "true"
-                if (uncaught)
-                    this[KROSSTALK_UNCAUGHT_EXCEPTION_HEADER_NAME] = "true"
-            },
-            serializeServerException(exception.withIncludeStackTrace(method.includeStacktrace))
-        )
-    }
+    ): KrosstalkResponse = KrosstalkResponse(
+        500,
+        "text/plain; charset=utf-8",
+        responseHeaders.addHeaders {
+            if (throwing)
+                this[KROSSTALK_THROW_EXCEPTION_HEADER_NAME] = "true"
+            if (uncaught)
+                this[KROSSTALK_UNCAUGHT_EXCEPTION_HEADER_NAME] = "true"
+        },
+        serializeServerException(exception.withIncludeStackTrace(method.includeStacktrace))
+    )
 
-    internal suspend inline fun respondHttpError(error: KrosstalkResult.HttpError, throwing: Boolean = false) {
-        respond(
+    @PublishedApi
+    internal inline fun httpErrorResponse(error: KrosstalkResult.HttpError, throwing: Boolean = false): KrosstalkResponse =
+        KrosstalkResponse(
             error.statusCode,
             "text/plain; charset=utf-8",
             responseHeaders.addHeaders {
@@ -87,7 +115,6 @@ internal class ResponseContext<K>(
             },
             (error.message ?: "").encodeToByteArray()
         )
-    }
 
     fun Any?.unwrapInnerHeaders(): Any? =
         if (method.innerWithHeaders) {
@@ -98,13 +125,12 @@ internal class ResponseContext<K>(
             this
         }
 
-    internal suspend inline fun respondSuccess(value: Any?) {
+    @PublishedApi
+    internal inline fun successResponse(value: Any?): KrosstalkResponse {
         val responseBody = method.getReturnBody(value.unwrapInnerHeaders())
-        respond(200, contentType, responseHeaders, responseBody)
+        return KrosstalkResponse(200, contentType, responseHeaders, responseBody)
     }
 }
-
-//TODO tests for new behavior, new catch methods, catch for http errors only?
 
 /**
  * Helper method for server side to handle a request for a Krosstalk [method].
@@ -116,11 +142,11 @@ internal class ResponseContext<K>(
  * @param requestBody the body of the request
  * @param scopes the scopes gotten from the request.  Missing required scopes will be handled here.
  * @param handleException how to handle a server exception, if requested.  Should log if possible, throw if not.
- * @param responder a lambda to respond to the request.
+ * @param sendResponse a lambda to respond to the request.
  */
 @OptIn(InternalKrosstalkApi::class, ExperimentalStdlibApi::class, kotlin.contracts.ExperimentalContracts::class)
 @KrosstalkPluginApi
-public suspend fun <K> K.handle(
+public suspend inline fun <K> K.handle(
     serverUrl: String,
     method: MethodDefinition<*>,
     requestHeaders: Headers,
@@ -128,13 +154,13 @@ public suspend fun <K> K.handle(
     requestBody: ByteArray,
     scopes: WantedScopes,
     handleException: (Throwable) -> Unit = { throw it },
-    responder: Responder,
+    sendResponse: (KrosstalkResponse) -> Unit,
 ): Unit where K : Krosstalk, K : KrosstalkServer<*> {
     contract {
-        callsInPlace(responder, InvocationKind.EXACTLY_ONCE)
+        callsInPlace(sendResponse, InvocationKind.EXACTLY_ONCE)
         callsInPlace(handleException, InvocationKind.AT_MOST_ONCE)
     }
-    with(ResponseContext(this, method, responder, method.contentType ?: serialization.contentType)) {
+    with(ResponseContext(this, method, method.contentType ?: serialization.contentType)) {
         val wantedScopes = scopes.toImmutable()
 
         val arguments: Map<String, Any?> = buildMap() {
@@ -165,16 +191,16 @@ public suspend fun <K> K.handle(
 
         if (caughtResult.isFailure) {
             when (val exception = caughtResult.exceptionOrNull()!!) {
-                is KrosstalkHttpError -> respondHttpError(exception.httpError, true)
+                is KrosstalkHttpError -> sendResponse(httpErrorResponse(exception.httpError, true))
                 is KrosstalkServerException -> {
-                    respondServerException(exception.exception, true)
+                    sendResponse(serverExceptionResponse(exception.exception, true))
                     val t = exception.exception.throwable
                     if (method.propagateServerExceptions && t != null) {
                         handleException(t)
                     }
                 }
                 else -> {
-                    respondServerException(KrosstalkResult.ServerException(exception, true), throwing = true, uncaught = true)
+                    sendResponse(serverExceptionResponse(KrosstalkResult.ServerException(exception, true), throwing = true, uncaught = true))
                     throw exception
                 }
             }
@@ -190,18 +216,18 @@ public suspend fun <K> K.handle(
 
             if (method.useExplicitResult) {
                 when (val kr = result as KrosstalkResult<*>) {
-                    is KrosstalkResult.Success -> respondSuccess(kr.value)
+                    is KrosstalkResult.Success -> sendResponse(successResponse(kr.value))
                     is KrosstalkResult.ServerException -> {
-                        respondServerException(kr)
+                        sendResponse(serverExceptionResponse(kr))
 
                         if (method.propagateServerExceptions && kr.throwable != null) {
                             handleException(kr.throwable!!)
                         }
                     }
-                    is KrosstalkResult.HttpError -> respondHttpError(kr)
+                    is KrosstalkResult.HttpError -> sendResponse(httpErrorResponse(kr))
                 }
             } else {
-                respondSuccess(result)
+                sendResponse(successResponse(result))
             }
         }
     }
