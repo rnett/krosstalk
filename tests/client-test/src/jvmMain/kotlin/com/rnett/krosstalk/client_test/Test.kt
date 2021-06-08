@@ -11,8 +11,10 @@ import io.ktor.http.content.OutgoingContent
 import io.ktor.http.content.TextContent
 import io.ktor.http.content.resource
 import io.ktor.http.content.static
+import io.ktor.request.receive
 import io.ktor.response.respond
 import io.ktor.routing.get
+import io.ktor.routing.post
 import io.ktor.routing.route
 import io.ktor.routing.routing
 import io.ktor.serialization.json
@@ -30,7 +32,7 @@ import kotlinx.serialization.encodeToString
 import kotlinx.serialization.json.Json
 import kotlinx.serialization.serializer
 
-val knownItems = List(20) { Item(it, "Item $it") }.associateBy { it.id }
+private val knownItems = List(20) { Item(it, "Item $it") }.associateBy { it.id }.toMutableMap()
 
 data class User(val username: String) : Principal
 
@@ -62,18 +64,24 @@ fun main() {
         routing {
 
             route("items") {
-                get("{id}") {
-                    val id = call.parameters.getOrFail("id").toIntOrNull() ?: return@get call.respond(
-                        HttpStatusCode.BadRequest,
-                        "id must be an Int"
-                    )
+                route("{id}") {
+                    get {
+                        val id = call.parameters.getOrFail("id").toIntOrNull() ?: return@get call.respond(
+                            HttpStatusCode.BadRequest,
+                            "id must be an Int"
+                        )
 
-                    knownItems[id]?.let {
-                        call.respond(it)
-                    } ?: call.respond(HttpStatusCode.NotFound, "No item with id $id")
+                        knownItems[id]?.let {
+                            call.respond(it)
+                        } ?: call.respond(HttpStatusCode.NotFound, "No item with id $id")
+                    }
                 }
                 get {
                     call.respond(knownItems.values.map { it.id })
+                }
+                post{
+                    val item = call.receive<ItemSetRequest>()
+                    knownItems[item.id] = item.item
                 }
             }
 

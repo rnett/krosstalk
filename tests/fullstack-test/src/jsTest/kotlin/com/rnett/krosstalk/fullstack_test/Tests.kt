@@ -3,7 +3,7 @@ package com.rnett.krosstalk.fullstack_test
 import com.rnett.krosstalk.ServerDefault
 import com.rnett.krosstalk.headersOf
 import com.rnett.krosstalk.ktor.client.auth.invoke
-import com.rnett.krosstalk.result.KrosstalkHttpError
+import com.rnett.krosstalk.result.KrosstalkResultHttpError
 import com.rnett.krosstalk.result.KrosstalkUncaughtServerException
 import com.rnett.krosstalk.result.httpErrorOrNull
 import com.rnett.krosstalk.result.isServerException
@@ -347,7 +347,7 @@ class Tests {
         try {
             withHttpErrorOutsideKrosstalkResult(-2)
             fail("No exception")
-        } catch (e: KrosstalkHttpError) {
+        } catch (e: KrosstalkResultHttpError) {
             assertEquals(411, e.httpError.statusCode)
             assertEquals("Negative n = -2", e.httpError.message)
         }

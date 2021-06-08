@@ -1,6 +1,6 @@
 package com.rnett.krosstalk.fullstack_test
 
-import com.rnett.krosstalk.result.KrosstalkHttpError
+import com.rnett.krosstalk.result.KrosstalkResultHttpError
 import com.rnett.krosstalk.result.valueOrNull
 import kotlinx.coroutines.runBlocking
 import kotlin.test.Test
@@ -71,7 +71,7 @@ class JvmTests {
         try {
             withHttpErrorOutsideKrosstalkResult(-2)
             fail("No exception")
-        } catch (e: KrosstalkHttpError) {
+        } catch (e: KrosstalkResultHttpError) {
             assertEquals(411, e.httpError.statusCode)
             assertEquals("Negative n = -2", e.httpError.message)
         }
