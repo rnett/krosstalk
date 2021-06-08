@@ -223,6 +223,8 @@ internal suspend inline fun <T, K, reified C : ClientScope<*>> K.call(
 
     val serializedBody = method.serialization.serializeBodyArguments(bodyArguments)
 
+    println("Method content type: ${method.contentType}, serialization content type: ${serialization.contentType}")
+
     val result = try {
         client.sendKrosstalkRequest(
             serverUrl.trimEnd('/') + "/" + endpoint.trimStart('/'),
