@@ -1,6 +1,10 @@
 # Changelog
 
-## Next (1.1.0)
+## Next
+
+*
+
+## 1.1.0
 
 Breaking changes:
 
