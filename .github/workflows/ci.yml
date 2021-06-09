@@ -114,7 +114,7 @@ jobs:
           username: rnett
           password: ${{ secrets.SONATYPE_PASSWORD }}
           staging_profile_id: ${{ secrets.SONATYPE_PROFILE_ID }}
-          description: Krosstalk ${{ github.repository }}/${{ github.workflow }}#${{ github.run_number }}
+          description: ${{ github.repository }}/${{ github.workflow }}#${{ github.run_number }} - ${{ needs.find-version.outputs.version }}
 
   publish:
     strategy:
@@ -292,9 +292,10 @@ jobs:
           staging_repository_id: ${{ needs.create_staging_repository.outputs.repository_id }}
       - name: Release
         if: ${{ needs.publish-docs.result == 'success' }}
-        uses: nexus-actions/release-nexus-staging-repo@v1.1
+        uses: nexus-actions/release-nexus-staging-repo@v1.2
         with:
           username: rnett
           password: ${{ secrets.SONATYPE_PASSWORD }}
           staging_repository_id: ${{ needs.create_staging_repository.outputs.repository_id }}
+          description: Closed ${{ github.repository }}/${{ github.workflow }}#${{ github.run_number }} - ${{ needs.find-version.outputs.version }}
           close_only: 'true'
