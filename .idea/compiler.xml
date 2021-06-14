@@ -5,6 +5,62 @@
       <profile default="true" name="Default" enabled="true" />
     </annotationProcessing>
     <bytecodeTargetLevel target="11">
+      <module name="com.github.rnett.krosstalk.krosstalk-parent.compiler.krosstalk-compiler-plugin" target="15" />
+      <module name="com.github.rnett.krosstalk.krosstalk-parent.compiler.krosstalk-compiler-plugin-native" target="15" />
+      <module name="com.github.rnett.krosstalk.krosstalk-parent.compiler.krosstalk-compiler-plugin-native.main" target="1.8" />
+      <module name="com.github.rnett.krosstalk.krosstalk-parent.compiler.krosstalk-compiler-plugin-native.test" target="1.8" />
+      <module name="com.github.rnett.krosstalk.krosstalk-parent.compiler.krosstalk-compiler-plugin.main" target="1.8" />
+      <module name="com.github.rnett.krosstalk.krosstalk-parent.compiler.krosstalk-compiler-plugin.test" target="1.8" />
+      <module name="com.github.rnett.krosstalk.krosstalk-parent.compiler.krosstalk-gradle-plugin" target="1.8" />
+      <module name="com.github.rnett.krosstalk.krosstalk-parent.compiler.krosstalk-gradle-plugin.main" target="1.8" />
+      <module name="com.github.rnett.krosstalk.krosstalk-parent.compiler.krosstalk-gradle-plugin.test" target="1.8" />
+      <module name="com.github.rnett.krosstalk.krosstalk-parent.core.krosstalk" target="15" />
+      <module name="com.github.rnett.krosstalk.krosstalk-parent.core.krosstalk-base" target="15" />
+      <module name="com.github.rnett.krosstalk.krosstalk-parent.core.krosstalk-base.commonMain" target="1.8" />
+      <module name="com.github.rnett.krosstalk.krosstalk-parent.core.krosstalk-base.commonTest" target="1.8" />
+      <module name="com.github.rnett.krosstalk.krosstalk-parent.core.krosstalk-base.jvmMain" target="1.8" />
+      <module name="com.github.rnett.krosstalk.krosstalk-parent.core.krosstalk-base.jvmTest" target="1.8" />
+      <module name="com.github.rnett.krosstalk.krosstalk-parent.core.krosstalk-client" target="15" />
+      <module name="com.github.rnett.krosstalk.krosstalk-parent.core.krosstalk-client.commonMain" target="1.8" />
+      <module name="com.github.rnett.krosstalk.krosstalk-parent.core.krosstalk-client.commonTest" target="1.8" />
+      <module name="com.github.rnett.krosstalk.krosstalk-parent.core.krosstalk-client.jvmMain" target="1.8" />
+      <module name="com.github.rnett.krosstalk.krosstalk-parent.core.krosstalk-client.jvmTest" target="1.8" />
+      <module name="com.github.rnett.krosstalk.krosstalk-parent.core.krosstalk-server" target="15" />
+      <module name="com.github.rnett.krosstalk.krosstalk-parent.core.krosstalk-server.commonMain" target="1.8" />
+      <module name="com.github.rnett.krosstalk.krosstalk-parent.core.krosstalk-server.commonTest" target="1.8" />
+      <module name="com.github.rnett.krosstalk.krosstalk-parent.core.krosstalk-server.jvmMain" target="1.8" />
+      <module name="com.github.rnett.krosstalk.krosstalk-parent.core.krosstalk-server.jvmTest" target="1.8" />
+      <module name="com.github.rnett.krosstalk.krosstalk-parent.core.krosstalk.commonMain" target="1.8" />
+      <module name="com.github.rnett.krosstalk.krosstalk-parent.core.krosstalk.commonTest" target="1.8" />
+      <module name="com.github.rnett.krosstalk.krosstalk-parent.core.krosstalk.jvmMain" target="1.8" />
+      <module name="com.github.rnett.krosstalk.krosstalk-parent.core.krosstalk.jvmTest" target="1.8" />
+      <module name="com.github.rnett.krosstalk.krosstalk-parent.plugins.krosstalk-kotlinx-serialization" target="15" />
+      <module name="com.github.rnett.krosstalk.krosstalk-parent.plugins.krosstalk-kotlinx-serialization.commonMain" target="1.8" />
+      <module name="com.github.rnett.krosstalk.krosstalk-parent.plugins.krosstalk-kotlinx-serialization.commonTest" target="1.8" />
+      <module name="com.github.rnett.krosstalk.krosstalk-parent.plugins.krosstalk-kotlinx-serialization.jvmMain" target="1.8" />
+      <module name="com.github.rnett.krosstalk.krosstalk-parent.plugins.krosstalk-kotlinx-serialization.jvmTest" target="1.8" />
+      <module name="com.github.rnett.krosstalk.krosstalk-parent.plugins.ktor-client.krosstalk-ktor-client" target="15" />
+      <module name="com.github.rnett.krosstalk.krosstalk-parent.plugins.ktor-client.krosstalk-ktor-client-auth" target="15" />
+      <module name="com.github.rnett.krosstalk.krosstalk-parent.plugins.ktor-client.krosstalk-ktor-client-auth.commonMain" target="1.8" />
+      <module name="com.github.rnett.krosstalk.krosstalk-parent.plugins.ktor-client.krosstalk-ktor-client-auth.commonTest" target="1.8" />
+      <module name="com.github.rnett.krosstalk.krosstalk-parent.plugins.ktor-client.krosstalk-ktor-client-auth.jvmMain" target="1.8" />
+      <module name="com.github.rnett.krosstalk.krosstalk-parent.plugins.ktor-client.krosstalk-ktor-client-auth.jvmTest" target="1.8" />
+      <module name="com.github.rnett.krosstalk.krosstalk-parent.plugins.ktor-client.krosstalk-ktor-client.commonMain" target="1.8" />
+      <module name="com.github.rnett.krosstalk.krosstalk-parent.plugins.ktor-client.krosstalk-ktor-client.commonTest" target="1.8" />
+      <module name="com.github.rnett.krosstalk.krosstalk-parent.plugins.ktor-client.krosstalk-ktor-client.jvmMain" target="1.8" />
+      <module name="com.github.rnett.krosstalk.krosstalk-parent.plugins.ktor-client.krosstalk-ktor-client.jvmTest" target="1.8" />
+      <module name="com.github.rnett.krosstalk.krosstalk-parent.plugins.ktor-server.krosstalk-ktor-server" target="15" />
+      <module name="com.github.rnett.krosstalk.krosstalk-parent.plugins.ktor-server.krosstalk-ktor-server-auth" target="15" />
+      <module name="com.github.rnett.krosstalk.krosstalk-parent.plugins.ktor-server.krosstalk-ktor-server-auth-jwt" target="15" />
+      <module name="com.github.rnett.krosstalk.krosstalk-parent.plugins.ktor-server.krosstalk-ktor-server-auth-jwt.main" target="1.8" />
+      <module name="com.github.rnett.krosstalk.krosstalk-parent.plugins.ktor-server.krosstalk-ktor-server-auth-jwt.test" target="1.8" />
+      <module name="com.github.rnett.krosstalk.krosstalk-parent.plugins.ktor-server.krosstalk-ktor-server-auth.main" target="1.8" />
+      <module name="com.github.rnett.krosstalk.krosstalk-parent.plugins.ktor-server.krosstalk-ktor-server-auth.test" target="1.8" />
+      <module name="com.github.rnett.krosstalk.krosstalk-parent.plugins.ktor-server.krosstalk-ktor-server.main" target="1.8" />
+      <module name="com.github.rnett.krosstalk.krosstalk-parent.plugins.ktor-server.krosstalk-ktor-server.test" target="1.8" />
+      <module name="My Stuff.krosstalk.buildSrc" target="15" />
+      <module name="My Stuff.krosstalk.buildSrc.main" target="15" />
+      <module name="My Stuff.krosstalk.buildSrc.test" target="15" />
       <module name="tests.client-test.main" target="15" />
       <module name="tests.client-test.test" target="15" />
       <module name="tests.compose-test" target="15" />

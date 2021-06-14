@@ -13,7 +13,7 @@ plugins {
 
 allprojects {
 
-    version = "1.1.1-SNAPSHOT"
+    version = "1.1.1"
     group = "com.github.rnett.krosstalk"
 
     repositories {
@@ -37,11 +37,6 @@ allprojects {
 
             val project = this
 
-//            if(project.name == "krosstalk-compiler-plugin-native") {
-//                apply(plugin = "com.vanniktech.maven.publish.base")
-//            } else {
-//                apply(plugin = "com.vanniktech.maven.publish")
-//            }
             apply(plugin = "com.vanniktech.maven.publish")
 
             extensions.getByType<com.vanniktech.maven.publish.MavenPublishBaseExtension>().apply {
