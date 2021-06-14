@@ -192,3 +192,5 @@ actual suspend fun withIgnoredDependentDefault(
 actual fun dependentServerDefault(pass: Int): String = error("Called server default on the client side")
 
 actual suspend fun withDependentServerDefault(pass: Int, test: ServerDefault<String>): String = krosstalkCall()
+
+actual suspend fun withContextSerializable(data: ContextSerializable): Int = krosstalkCall()
