@@ -4,6 +4,13 @@
 
 *
 
+## 1.1.1
+
+Minor changes:
+
+* [#11](https://github.com/rnett/krosstalk/pull/11) Kotlinx serialization handler: Use serializers from the format's
+  `serializersModule`.
+
 ## 1.1.0
 
 Breaking changes:
