@@ -20,14 +20,39 @@ import com.rnett.krosstalk.krosstalkPrefix
 import com.rnett.krosstalk.methodName
 import com.rnett.krosstalk.result.KrosstalkResult
 import com.rnett.krosstalk.serialization.KotlinxBinarySerializationHandler
+import kotlinx.serialization.KSerializer
 import kotlinx.serialization.Serializable
 import kotlinx.serialization.cbor.Cbor
+import kotlinx.serialization.descriptors.PrimitiveSerialDescriptor
+import kotlinx.serialization.descriptors.SerialDescriptor
+import kotlinx.serialization.encoding.Decoder
+import kotlinx.serialization.encoding.Encoder
+import kotlinx.serialization.modules.SerializersModule
+import kotlinx.serialization.modules.contextual
 
 @Serializable
 data class Data(val num: Int, val str: String)
 
+data class ContextSerializable(val data: Int)
+
+private object NonSerializableSerializer: KSerializer<ContextSerializable>{
+    override val descriptor: SerialDescriptor = PrimitiveSerialDescriptor("com.rnett.krosstalk.fullstack_test.NonSerializable")
+
+    override fun deserialize(decoder: Decoder): ContextSerializable {
+        return ContextSerializable(decoder.decodeInt())
+    }
+
+    override fun serialize(encoder: Encoder, value: ContextSerializable) {
+        encoder.encodeInt(value.data)
+    }
+}
+
 abstract class BaseKrosstalk : Krosstalk() {
-    override val serialization = KotlinxBinarySerializationHandler(Cbor { })
+    override val serialization = KotlinxBinarySerializationHandler(Cbor {
+        serializersModule += SerializersModule {
+            contextual(NonSerializableSerializer)
+        }
+    })
 }
 
 expect object MyKrosstalk : BaseKrosstalk {
@@ -235,3 +260,6 @@ expect fun dependentServerDefault(pass: Int): String
 
 @KrosstalkMethod(MyKrosstalk::class)
 expect suspend fun withDependentServerDefault(pass: Int, @Optional test: ServerDefault<String> = ServerDefault { dependentServerDefault(pass) }): String
+
+@KrosstalkMethod(MyKrosstalk::class)
+expect suspend fun withContextSerializable(data: ContextSerializable): Int

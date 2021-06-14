@@ -382,4 +382,9 @@ class Tests {
     fun testDependentServerDefault() = GlobalScope.promise {
         assertEquals("2", withDependentServerDefault(2))
     }
+
+    @Test
+    fun testContextSerializable() = GlobalScope.promise {
+        assertEquals(4, withContextSerializable(ContextSerializable(4)))
+    }
 }
