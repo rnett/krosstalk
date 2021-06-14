@@ -287,3 +287,7 @@ actual suspend fun withIgnoredDependentDefault(
 actual fun dependentServerDefault(pass: Int): String = pass.toString()
 
 actual suspend fun withDependentServerDefault(pass: Int, test: ServerDefault<String>): String = test.value
+
+actual suspend fun withContextSerializable(data: ContextSerializable): Int {
+    return data.data
+}

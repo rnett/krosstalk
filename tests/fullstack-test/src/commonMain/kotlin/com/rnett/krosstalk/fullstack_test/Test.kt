@@ -23,12 +23,14 @@ import com.rnett.krosstalk.serialization.KotlinxBinarySerializationHandler
 import kotlinx.serialization.KSerializer
 import kotlinx.serialization.Serializable
 import kotlinx.serialization.cbor.Cbor
+import kotlinx.serialization.descriptors.PrimitiveKind
 import kotlinx.serialization.descriptors.PrimitiveSerialDescriptor
 import kotlinx.serialization.descriptors.SerialDescriptor
 import kotlinx.serialization.encoding.Decoder
 import kotlinx.serialization.encoding.Encoder
 import kotlinx.serialization.modules.SerializersModule
 import kotlinx.serialization.modules.contextual
+import kotlinx.serialization.modules.plus
 
 @Serializable
 data class Data(val num: Int, val str: String)
@@ -36,7 +38,7 @@ data class Data(val num: Int, val str: String)
 data class ContextSerializable(val data: Int)
 
 private object NonSerializableSerializer: KSerializer<ContextSerializable>{
-    override val descriptor: SerialDescriptor = PrimitiveSerialDescriptor("com.rnett.krosstalk.fullstack_test.NonSerializable")
+    override val descriptor: SerialDescriptor = PrimitiveSerialDescriptor("com.rnett.krosstalk.fullstack_test.NonSerializable", PrimitiveKind.INT)
 
     override fun deserialize(decoder: Decoder): ContextSerializable {
         return ContextSerializable(decoder.decodeInt())

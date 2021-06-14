@@ -194,7 +194,3 @@ actual fun dependentServerDefault(pass: Int): String = error("Called server defa
 actual suspend fun withDependentServerDefault(pass: Int, test: ServerDefault<String>): String = krosstalkCall()
 
 actual suspend fun withContextSerializable(data: ContextSerializable): Int = krosstalkCall()
-
-actual suspend fun withContextSerializable(data: ContextSerializable): Int {
-    return data.data
-}
