@@ -1,0 +1,111 @@
+name: Kotlin Bootstrap Test Test
+on:
+  workflow_dispatch:
+    inputs:
+      branch:
+        description: "Target branch"
+        required: false
+        default: 'main'
+  schedule:
+    - cron: "0 0 * * 6"
+
+jobs:
+  test-no-bootstrap:
+    name: Compile normally
+    runs-on: ubuntu-latest
+    steps:
+
+      - name: Checkout default branch
+        uses: actions/checkout@v2
+          
+      - name: Checkout target branch for manual
+        if: github.event_name == 'workflow_dispatch' && github.event.inputs.branch != ''
+        uses: actions/checkout@v2
+        with:
+          ref: ${{ github.event.inputs.branch }}
+        
+        
+      - name: Checkout target branch for scheduled
+        if: github.event_name == 'schedule'
+        uses: actions/checkout@v2
+        with:
+          ref: main
+
+                
+        
+      - name: Set up JDK 15
+        uses: actions/setup-java@v1
+        with:
+          java-version: 15
+
+      - name: Grant execute permission for gradlew
+        run: chmod +x gradlew
+
+      - name: Compile
+        run: |
+          ./gradlew check
+          (cd tests && ./gradlew check)
+
+  test-kotlin-bootstrap:
+    name: Compile with Kotlin bootstrap
+    runs-on: ubuntu-latest
+    outputs:
+      was-ice: ${{ steps.was-ice.outputs.files_exists }}
+    env:
+      ORG_GRADLE_PROJECT_kotlinBootstrap: "latest"
+      ORG_GRADLE_PROJECT_reportICEs: "true"
+    steps:
+
+      - name: Checkout default branch
+        uses: actions/checkout@v2
+          
+      - name: Checkout target branch for manual
+        if: github.event_name == 'workflow_dispatch' && github.event.inputs.branch != ''
+        uses: actions/checkout@v2
+        with:
+          ref: ${{ github.event.inputs.branch }}
+        
+        
+      - name: Checkout target branch for scheduled
+        if: github.event_name == 'schedule'
+        uses: actions/checkout@v2
+        with:
+          ref: main
+
+                
+
+      - name: Set up JDK 15
+        uses: actions/setup-java@v1
+        with:
+          java-version: 15
+
+      - name: Grant execute permission for gradlew
+        run: chmod +x gradlew
+
+      - name: Compile
+        run: |
+          ./gradlew check
+          (cd tests && ./gradlew check)
+
+      - name: Archive ICE report
+        uses: actions/upload-artifact@v2
+        if: ${{ failure() }}
+        with:
+          name: kotlin-future-ICE-report
+          path: build/kotlin-future-testing-ICE-report
+        
+  check-results:
+    name: Results
+    needs: [test-no-bootstrap, test-kotlin-bootstrap]
+    runs-on: ubuntu-latest
+    if: always()
+    steps:
+      - name: Original Compile Failed
+        if: ${{ needs.test-no-bootstrap.result != 'success' }}
+        run: echo "::warning::Compilation without bootstrap failed, aborting"
+        
+      - name: Only Bootstrap Compile failed
+        if: ${{ needs.test-no-bootstrap.result == 'success' && needs.test-kotlin-bootstrap.result != 'success' }}
+        run: echo "::error::Compilation with Kotlin bootstrap failed"
+                
+                

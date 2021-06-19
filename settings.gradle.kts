@@ -1,3 +1,5 @@
+import com.rnett.future.testing.kotlinFutureTesting
+
 pluginManagement {
     repositories {
         mavenCentral()
@@ -9,14 +11,36 @@ pluginManagement {
     }
 
 }
+plugins {
+    id("com.github.rnett.kotlin-future-testing") version "0.0.11-SNAPSHOT"
+}
+
+kotlinFutureTesting {
+    generateGithubWorkflows(branch = "main") {
+        bothCommands(
+            "./gradlew check",
+            "(cd tests && ./gradlew check)",
+            suffix = "test"
+        )
+        bothCommands(
+            "./gradlew check",
+            "(cd tests && ./gradlew check)",
+            suffix = "compile"
+        )
+    }
+}
 
 rootProject.name = "krosstalk-parent"
 
 include(
     "core",
-    "core:krosstalk", "core:krosstalk-base",
-    "core:krosstalk-client", "core:krosstalk-server",
-    "compiler:krosstalk-compiler-plugin", "compiler:krosstalk-compiler-plugin-native", "compiler:krosstalk-gradle-plugin"
+    "core:krosstalk",
+    "core:krosstalk-base",
+    "core:krosstalk-client",
+    "core:krosstalk-server",
+    "compiler:krosstalk-compiler-plugin",
+    "compiler:krosstalk-compiler-plugin-native",
+    "compiler:krosstalk-gradle-plugin"
 )
 
 include(

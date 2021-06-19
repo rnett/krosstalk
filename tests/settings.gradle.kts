@@ -9,6 +9,9 @@ pluginManagement {
     }
 
 }
+plugins {
+    id("com.github.rnett.kotlin-future-testing") version "0.0.11-SNAPSHOT"
+}
 
 rootProject.name = "tests"
 

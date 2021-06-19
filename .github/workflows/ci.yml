@@ -45,10 +45,10 @@ jobs:
           chmod +x tests/gradlew
 
       - name: Build and Unit Test
-        run: ./gradlew build -DRELEASE_SIGNING_ENABLED=false test allTests
+        run: ./gradlew build -DRELEASE_SIGNING_ENABLED=false check
 
       - name: Run Integraiton Tests
-        run: (cd tests && ./gradlew allTests --no-parallel)
+        run: (cd tests && ./gradlew check)
 
       - name: Stop gradle daemon
         run: ./gradlew --stop
