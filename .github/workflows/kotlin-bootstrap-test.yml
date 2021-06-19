@@ -1,4 +1,4 @@
-name: Kotlin Bootstrap Test Test
+name: Kotlin Bootstrap Test
 on:
   workflow_dispatch:
     inputs:
@@ -10,9 +10,13 @@ on:
     - cron: "0 0 * * 6"
 
 jobs:
-  test-no-bootstrap:
-    name: Compile normally
-    runs-on: ubuntu-latest
+  try-no-bootstrap:
+    name: Test normally
+    strategy:
+      matrix:
+        os: [ ubuntu-latest,  macos-latest,  windows-latest ]
+      fail-fast: false
+    runs-on: ${{ matrix.os }}
     steps:
 
       - name: Checkout default branch
@@ -41,17 +45,28 @@ jobs:
       - name: Grant execute permission for gradlew
         run: chmod +x gradlew
 
+      - name: Common Setup
+        run: |
+          chmod +x  tests/gradlew
+      
+      
+      - name: Install CURL Linux
+        if: runner.os == 'Linux'
+        run: |
+          sudo apt-get install curl libcurl4 libcurl4-openssl-dev -y
+
       - name: Compile
         run: |
-          chmod +x tests/gradlew
           ./gradlew check
           (cd tests && ./gradlew check)
 
-  test-kotlin-bootstrap:
-    name: Compile with Kotlin bootstrap
-    runs-on: ubuntu-latest
-    outputs:
-      was-ice: ${{ steps.was-ice.outputs.files_exists }}
+  try-kotlin-bootstrap:
+    name: Test with Kotlin bootstrap
+    strategy:
+      matrix:
+        os: [ ubuntu-latest,  macos-latest,  windows-latest ]
+      fail-fast: false
+    runs-on: ${{ matrix.os }}
     env:
       ORG_GRADLE_PROJECT_kotlinBootstrap: "latest"
       ORG_GRADLE_PROJECT_reportICEs: "true"
@@ -83,9 +98,18 @@ jobs:
       - name: Grant execute permission for gradlew
         run: chmod +x gradlew
 
+      - name: Common Setup
+        run: |
+          chmod +x  tests/gradlew
+      
+      
+      - name: Install CURL Linux
+        if: runner.os == 'Linux'
+        run: |
+          sudo apt-get install curl libcurl4 libcurl4-openssl-dev -y
+
       - name: Compile
         run: |
-          chmod +x tests/gradlew
           ./gradlew check
           (cd tests && ./gradlew check)
 
@@ -93,21 +117,21 @@ jobs:
         uses: actions/upload-artifact@v2
         if: ${{ failure() }}
         with:
-          name: kotlin-future-ICE-report
+          name: kotlin-future-ICE-report-${{ matrix.os }}
           path: build/kotlin-future-testing-ICE-report
         
   check-results:
     name: Results
-    needs: [test-no-bootstrap, test-kotlin-bootstrap]
+    needs: [try-no-bootstrap, try-kotlin-bootstrap]
     runs-on: ubuntu-latest
     if: always()
     steps:
-      - name: Original Compile Failed
-        if: ${{ needs.test-no-bootstrap.result != 'success' }}
+      - name: Original Test Failed
+        if: ${{ needs.try-no-bootstrap.result != 'success' }}
         run: echo "::warning::Compilation without bootstrap failed, aborting"
         
-      - name: Only Bootstrap Compile failed
-        if: ${{ needs.test-no-bootstrap.result == 'success' && needs.test-kotlin-bootstrap.result != 'success' }}
-        run: echo "::error::Compilation with Kotlin bootstrap failed"
+      - name: Only Bootstrap Test failed
+        if: ${{ needs.try-no-bootstrap.result == 'success' && needs.try-kotlin-bootstrap.result != 'success' }}
+        run: echo "::error::Test with Kotlin bootstrap failed"
                 
                 

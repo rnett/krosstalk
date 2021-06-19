@@ -16,19 +16,17 @@ plugins {
 }
 
 kotlinFutureTesting {
-    generateGithubWorkflows(branch = "main", force = true) {
-        bothCommands(
-            "chmod +x tests/gradlew",
-            "./gradlew check",
-            "(cd tests && ./gradlew check)",
-            suffix = "test"
-        )
-        bothCommands(
-            "chmod +x tests/gradlew",
-            "./gradlew check",
-            "(cd tests && ./gradlew check)",
-            suffix = "compile"
-        )
+    generateGithubWorkflows(branch = "main", runners = listOf("ubuntu-latest", "macos-latest", "windows-latest"), force = true) {
+        commonCommands("chmod +x  tests/gradlew")
+        commonStep("""
+          - name: Install CURL Linux
+            if: runner.os == 'Linux'
+            run: |
+              sudo apt-get install curl libcurl4 libcurl4-openssl-dev -y
+        """.trimIndent())
+
+        bothCommands("./gradlew assemble", "(cd tests && ./gradlew assemble)", suffix = "compile")
+        bothCommands("./gradlew check", "(cd tests && ./gradlew check)", suffix = "test")
     }
 }
 
