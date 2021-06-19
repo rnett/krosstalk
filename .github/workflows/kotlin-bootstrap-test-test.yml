@@ -43,6 +43,7 @@ jobs:
 
       - name: Compile
         run: |
+          chmod +x tests/gradlew
           ./gradlew check
           (cd tests && ./gradlew check)
 
@@ -84,6 +85,7 @@ jobs:
 
       - name: Compile
         run: |
+          chmod +x tests/gradlew
           ./gradlew check
           (cd tests && ./gradlew check)
 

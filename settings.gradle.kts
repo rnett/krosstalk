@@ -16,13 +16,15 @@ plugins {
 }
 
 kotlinFutureTesting {
-    generateGithubWorkflows(branch = "main") {
+    generateGithubWorkflows(branch = "main", force = true) {
         bothCommands(
+            "chmod +x tests/gradlew",
             "./gradlew check",
             "(cd tests && ./gradlew check)",
             suffix = "test"
         )
         bothCommands(
+            "chmod +x tests/gradlew",
             "./gradlew check",
             "(cd tests && ./gradlew check)",
             suffix = "compile"
