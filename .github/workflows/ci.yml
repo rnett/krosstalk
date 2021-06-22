@@ -58,12 +58,14 @@ jobs:
         if: runner.os != 'Windows'
         run: |
           jps
+          pkill -f '.*GradleDaemon.*'
           rm -f ~/.gradle/caches/*/*.lock
           rm -f ~/.gradle/caches/*/gc.properties
 
       - name: Cleanup Gradle Cache Windows
         if: runner.os == 'Windows'
         run: |
+          WMIC PROCESS where "Name like 'java%' AND CommandLine like '%GradleDaemon%'" Call Terminate
           jps
           rm -fo ~/.gradle/caches/*/*.lock
           rm -fo ~/.gradle/caches/*/gc.properties
@@ -163,12 +165,16 @@ jobs:
       - name: Cleanup Gradle Cache Posix
         if: runner.os != 'Windows'
         run: |
+          jps
+          pkill -f '.*GradleDaemon.*'
           rm -f ~/.gradle/caches/*/*.lock
           rm -f ~/.gradle/caches/*/gc.properties
 
       - name: Cleanup Gradle Cache Windows
         if: runner.os == 'Windows'
         run: |
+          WMIC PROCESS where "Name like 'java%' AND CommandLine like '%GradleDaemon%'" Call Terminate
+          jps
           rm -fo ~/.gradle/caches/*/*.lock
           rm -fo ~/.gradle/caches/*/gc.properties
 
@@ -270,12 +276,16 @@ jobs:
       - name: Cleanup Gradle Cache Posix
         if: runner.os != 'Windows'
         run: |
+          jps
+          pkill -f '.*GradleDaemon.*'
           rm -f ~/.gradle/caches/*/*.lock
           rm -f ~/.gradle/caches/*/gc.properties
 
       - name: Cleanup Gradle Cache Windows
         if: runner.os == 'Windows'
         run: |
+          WMIC PROCESS where "Name like 'java%' AND CommandLine like '%GradleDaemon%'" Call Terminate
+          jps
           rm -fo ~/.gradle/caches/*/*.lock
           rm -fo ~/.gradle/caches/*/gc.properties
 
