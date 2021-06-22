@@ -58,7 +58,7 @@ jobs:
         if: runner.os != 'Windows'
         run: |
           jps
-          pkill -f '.*GradleDaemon.*'
+          sudo pkill -f '.*GradleDaemon.*'
           rm -f ~/.gradle/caches/*/*.lock
           rm -f ~/.gradle/caches/*/gc.properties
 
@@ -166,7 +166,7 @@ jobs:
         if: runner.os != 'Windows'
         run: |
           jps
-          pkill -f '.*GradleDaemon.*'
+          sudo pkill -f '.*GradleDaemon.*'
           rm -f ~/.gradle/caches/*/*.lock
           rm -f ~/.gradle/caches/*/gc.properties
 
@@ -277,7 +277,7 @@ jobs:
         if: runner.os != 'Windows'
         run: |
           jps
-          pkill -f '.*GradleDaemon.*'
+          sudo pkill -f '.*GradleDaemon.*'
           rm -f ~/.gradle/caches/*/*.lock
           rm -f ~/.gradle/caches/*/gc.properties
 
