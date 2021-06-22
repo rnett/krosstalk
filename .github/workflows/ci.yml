@@ -34,10 +34,11 @@ jobs:
           restore-keys: |
             ${{ runner.os }}-gradle-
 
-      - name: Install CURL Linux
+      - name: Install CURL headers Linux
         if: runner.os == 'Linux'
         run: |
-          sudo apt-get install curl libcurl4 libcurl4-openssl-dev -y
+          sudo apt-get update -y
+          sudo apt-get install libcurl4-openssl-dev -y
 
       - name: Grant execute permission for gradlew
         run: |
@@ -254,7 +255,7 @@ jobs:
           restore: true
           message: Update Plugin docs for $version
 
-      - name: Publish Release README
+      - name: Publish README
         uses: rnett/publish-docs@v2.6
         with:
           from-file: ./build/README.md

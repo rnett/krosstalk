@@ -126,11 +126,13 @@ allprojects {
     }
 }
 
+val header = "Krosstalk: A pure Kotlin pluggable RPC library"
+
 tasks.create<Copy>("generateReadme"){
     from("README.md")
     into(buildDir)
     filter{
-        it.replace("# Krosstalk: A pure Kotlin pluggable RPC library",
-            "# [Krosstalk: A pure Kotlin pluggable RPC library](https://github.com/rnett/krosstalk)")
+        it.replace("# $header",
+            "# [$header](https://github.com/rnett/krosstalk)")
     }
 }
