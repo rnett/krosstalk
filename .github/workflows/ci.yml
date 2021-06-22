@@ -40,10 +40,10 @@ jobs:
           chmod +x tests/gradlew
 
       - name: Build and Unit Test
-        run: ./gradlew build -DRELEASE_SIGNING_ENABLED=false check
+        run: ./gradlew build -DRELEASE_SIGNING_ENABLED=false check --no-build-cache
 
       - name: Run Integraiton Tests
-        run: (cd tests && ./gradlew check)
+        run: (cd tests && ./gradlew check --no-build-cache)
 
       - name: Stop gradle daemon
         run: ./gradlew --stop
