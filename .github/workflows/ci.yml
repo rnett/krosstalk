@@ -37,7 +37,7 @@ jobs:
       - name: Install CURL Linux
         if: runner.os == 'Linux'
         run: |
-          sudo apt-get install libcurl4 -y
+          sudo apt-get install libcurl4-openssl-dev -y
 
       - name: Grant execute permission for gradlew
         run: |
