@@ -34,6 +34,11 @@ jobs:
           restore-keys: |
             ${{ runner.os }}-gradle-
 
+      - name: Install CURL Linux
+        if: runner.os == 'Linux'
+        run: |
+          sudo apt-get install libcurl4 -y
+
       - name: Grant execute permission for gradlew
         run: |
           chmod +x gradlew
