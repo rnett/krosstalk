@@ -18,7 +18,7 @@ kotlin {
             binaries.executable()
             testTask {
                 useMocha {
-                    timeout = "99999999999999"
+                    timeout = "5m"
                 }
 
             }

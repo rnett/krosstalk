@@ -1,5 +1,5 @@
 plugins {
-    kotlin("jvm") version "1.5.0"
+    kotlin("jvm") version "1.5.20"
 }
 
 version = "0.2.0-SNAPSHOT"
@@ -14,8 +14,8 @@ repositories {
 }
 
 dependencies {
-    implementation("io.ktor:ktor-client-core:1.5.3")
-    implementation("io.ktor:ktor-client-cio:1.5.3")
+    implementation("io.ktor:ktor-client-core:1.6.0")
+    implementation("io.ktor:ktor-client-cio:1.6.0")
     implementation("org.jsoup:jsoup:1.13.1")
 }
 
@@ -27,7 +27,7 @@ kotlin {
                 jvmTarget = "1.8"
             }
             //TODO remove once KT-36942 and KT-35003 are fixed
-            compileJavaTaskProvider.get().apply {
+            compileJavaTaskProvider.configure {
                 targetCompatibility = "1.8"
                 sourceCompatibility = "1.8"
             }
