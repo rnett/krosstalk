@@ -157,7 +157,8 @@ expect object ExpectObject {
 @KrosstalkMethod(MyKrosstalk::class)
 expect suspend fun withExpectObjectValueParam(p: ExpectObject): Int
 
-@Serializable
+//TODO add back @Serializable once https://youtrack.jetbrains.com/issue/KT-47468 is fixed
+//@Serializable
 expect object SerializableObject {
     val value: Int
 }
