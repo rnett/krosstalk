@@ -6,7 +6,7 @@ plugins {
 }
 
 var ktor_version: String by extra
-var coroutines_version: String by extra
+val coroutines_version: String by extra
 val serialization_version: String by extra
 
 kotlin {
