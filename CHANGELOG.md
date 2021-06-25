@@ -4,6 +4,10 @@
 
 *
 
+## 1.1.2
+
+* [#19](https://github.com/rnett/krosstalk/pull/19) Update to Kotlin 1.5.20
+
 ## 1.1.1
 
 Minor changes:
