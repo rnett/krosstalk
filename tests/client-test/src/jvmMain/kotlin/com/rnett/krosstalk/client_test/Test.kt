@@ -5,10 +5,7 @@ import io.ktor.application.install
 import io.ktor.auth.*
 import io.ktor.features.CORS
 import io.ktor.features.ContentNegotiation
-import io.ktor.http.ContentType
 import io.ktor.http.HttpStatusCode
-import io.ktor.http.content.OutgoingContent
-import io.ktor.http.content.TextContent
 import io.ktor.http.content.resource
 import io.ktor.http.content.static
 import io.ktor.request.receive
@@ -18,15 +15,10 @@ import io.ktor.routing.post
 import io.ktor.routing.route
 import io.ktor.routing.routing
 import io.ktor.serialization.json
-import io.ktor.serialization.serialization
 import io.ktor.server.cio.CIO
 import io.ktor.server.engine.embeddedServer
 import io.ktor.util.getOrFail
 import io.ktor.util.reflect.TypeInfo
-import io.ktor.utils.io.ByteReadChannel
-import io.ktor.utils.io.charsets.Charset
-import io.ktor.utils.io.core.readText
-import io.ktor.utils.io.readRemaining
 import kotlinx.serialization.KSerializer
 import kotlinx.serialization.encodeToString
 import kotlinx.serialization.json.Json
@@ -39,7 +31,8 @@ data class User(val username: String) : Principal
 
 val users = mapOf("user" to "pass")
 
-fun TypeInfo.serializer(): KSerializer<Any> = kotlinType?.let { serializer(it) as KSerializer<Any> } ?: serializer(reifiedType)
+fun TypeInfo.serializer(): KSerializer<Any> =
+    kotlinType?.let { serializer(it) as KSerializer<Any> } ?: serializer(reifiedType)
 
 fun main() {
     embeddedServer(CIO, 8081, "localhost") {
@@ -80,7 +73,7 @@ fun main() {
                 get {
                     call.respond(knownItems.values.map { it.id })
                 }
-                post{
+                post {
                     val item = call.receive<ItemSetRequest>()
                     knownItems[item.id] = item.item
                     call.respond(HttpStatusCode.OK)
@@ -99,7 +92,18 @@ fun main() {
                 }
             }
 
+            get("testBearer") {
+                val bearer: String = call.request.headers["Authorization"] ?: run {
+                    call.respond(HttpStatusCode.Unauthorized, "No authentication")
+                    error("No authentication")
+                }
 
+                if (bearer != "Bearer testToken") {
+                    call.respond(HttpStatusCode.Forbidden, "Bad authentication")
+                } else {
+                    call.respond(10)
+                }
+            }
 
             static {
                 resource("/test.js", "test.js")

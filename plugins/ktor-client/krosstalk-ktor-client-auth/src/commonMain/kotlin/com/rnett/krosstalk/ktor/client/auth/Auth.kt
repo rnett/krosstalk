@@ -10,6 +10,7 @@ import io.ktor.client.features.auth.providers.BearerTokens
 import io.ktor.client.features.auth.providers.basic
 import io.ktor.client.features.auth.providers.bearer
 import io.ktor.client.statement.HttpResponse
+import com.rnett.krosstalk.client.invoke as makeScope
 
 /**
  * A base Ktor client authentication scope.
@@ -42,7 +43,7 @@ public open class KtorClientBasicAuth(public val sendWithoutRequest: Boolean = t
  * Create a basic auth scope instance by providing the username and password.
  */
 public operator fun <T : KtorClientBasicAuth> T.invoke(username: String, password: String): ScopeInstance<T> =
-    this.invoke(BasicAuthCredentials(username, password))
+    this.makeScope(BasicAuthCredentials(username, password))
 
 /**
  * A Ktor client Bearer authentication scope that loads tokens based on passed data.
@@ -100,4 +101,4 @@ public open class KtorClientBearerTokenAuth(sendWithoutRequest: Boolean = true, 
  * Create a bearer auth scope instance by providing the access token and optionally a refresh token.
  */
 public operator fun <T : KtorClientBearerTokenAuth> T.invoke(accessToken: String, refreshToken: String? = null): ScopeInstance<T> =
-    this.invoke(BearerAuthTokens(accessToken, refreshToken))
+    this.makeScope(BearerAuthTokens(accessToken, refreshToken))
