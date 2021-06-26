@@ -47,4 +47,9 @@ class Tests {
         assertEquals("user", getUserWithCallAuth("user", "pass").valueOrNull)
         assertEquals(401, getUserWithCallAuth("user", "password2").httpErrorOrNull?.statusCode)
     }
+
+    @Test
+    fun testBearerAuth() = GlobalScope.promise {
+        assertEquals(10, tryBearer(MyKrosstalk.BearerAuth("testToken")))
+    }
 }

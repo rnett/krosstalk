@@ -13,6 +13,7 @@ import com.rnett.krosstalk.client.krosstalkCall
 import com.rnett.krosstalk.ktor.client.KtorClient
 import com.rnett.krosstalk.ktor.client.KtorClientScope
 import com.rnett.krosstalk.ktor.client.auth.KtorClientBasicAuth
+import com.rnett.krosstalk.ktor.client.auth.KtorClientBearerTokenAuth
 import com.rnett.krosstalk.ktor.client.auth.invoke
 import com.rnett.krosstalk.result.KrosstalkResult
 import com.rnett.krosstalk.serialization.KotlinxStringSerializationHandler
@@ -61,6 +62,10 @@ class WithServerUrl(val serverUrl: String)
 @EmptyBody
 suspend fun @receiver:Ignore WithServerUrl?.getTestUnitCallServerUrl(): Unit = krosstalkCall(this?.serverUrl)
 
+@KrosstalkMethod(MyKrosstalk::class)
+@KrosstalkEndpoint("/testBearer", "GET")
+@EmptyBody
+suspend fun tryBearer(auth: ScopeInstance<MyKrosstalk.BearerAuth>): Int = krosstalkCall()
 
 object MyKrosstalk : Krosstalk(), KrosstalkClient<KtorClientScope<*>> {
     override val serialization = KotlinxStringSerializationHandler(Json { })
@@ -72,4 +77,5 @@ object MyKrosstalk : Krosstalk(), KrosstalkClient<KtorClientScope<*>> {
     override val serverUrl: String = "http://localhost:8081"
 
     object Auth : KtorClientBasicAuth()
+    object BearerAuth : KtorClientBearerTokenAuth()
 }
