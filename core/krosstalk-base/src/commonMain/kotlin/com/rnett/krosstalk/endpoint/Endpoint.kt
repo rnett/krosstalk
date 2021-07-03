@@ -16,7 +16,7 @@ internal val paramRegex = Regex("\\{\\{(\\??)([^}]+?)\\}\\}")
 /**
  * An unknown parameter was used in an `@KrosstalkEndpoint` template.
  */
-@OptIn(InternalKrosstalkApi::class)
+@OptIn(InternalKrosstalkApi::class, KrosstalkPluginApi::class)
 public class EndpointUnknownArgumentException @OptIn(KrosstalkPluginApi::class)
 @InternalKrosstalkApi constructor(
     public val methodName: String,
