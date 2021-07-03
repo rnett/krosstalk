@@ -28,6 +28,7 @@ kotlinFutureTesting {
         bothCommands("./gradlew assemble", "(cd tests && ./gradlew assemble)", suffix = "compile")
         bothCommands("./gradlew check", "(cd tests && ./gradlew check)", suffix = "test")
     }
+    forceBootstrap()
 }
 
 rootProject.name = "krosstalk-parent"
