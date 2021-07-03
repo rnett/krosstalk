@@ -1,11 +1,13 @@
 package com.rnett.krosstalk.server.result
 
+import com.rnett.krosstalk.InternalKrosstalkApi
 import com.rnett.krosstalk.result.KrosstalkResult
 import kotlin.reflect.KClass
 
 /**
  * Catch an exception by type.  **Must be called where the exception/KrosstalkResult is created**, type information is lost during serialization.
  */
+@OptIn(InternalKrosstalkApi::class)
 public inline fun <R, T : R, reified E : Throwable> KrosstalkResult<T>.catch(klass: KClass<E>, value: (E) -> KrosstalkResult<R>): KrosstalkResult<R> =
     when (this) {
         is KrosstalkResult.ServerException -> if (this.throwable is E) value(this.throwable as E) else this
@@ -16,6 +18,7 @@ public inline fun <R, T : R, reified E : Throwable> KrosstalkResult<T>.catch(kla
 /**
  * Catch an exception by type.  **Must be called where the exception/KrosstalkResult is created**, type information is lost during serialization.
  */
+@OptIn(InternalKrosstalkApi::class)
 public inline fun <R, T : R, reified E : Throwable> KrosstalkResult<T>.catchAsSuccess(klass: KClass<E>, value: (E) -> R): KrosstalkResult<R> =
     when (this) {
         is KrosstalkResult.ServerException -> if (this.throwable is E) KrosstalkResult.Success(value(this.throwable as E)) else this
@@ -26,6 +29,7 @@ public inline fun <R, T : R, reified E : Throwable> KrosstalkResult<T>.catchAsSu
 /**
  * Catch an exception by type.  **Must be called where the exception/KrosstalkResult is created**, type information is lost during serialization.
  */
+@OptIn(InternalKrosstalkApi::class)
 public inline fun <R, T : R, reified E : Throwable> KrosstalkResult<T>.catchAsHttpError(
     klass: KClass<E>,
     statusCode: Int,

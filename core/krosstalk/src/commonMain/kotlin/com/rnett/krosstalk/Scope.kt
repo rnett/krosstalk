@@ -20,10 +20,10 @@ public sealed class ScopeInstance<T : Scope> {
     @OptIn(KrosstalkPluginApi::class)
     @InternalKrosstalkApi
     @Deprecated("Do not use, this is not reliable")
-    public class Server<T : ServerScope<S>, S>(@InternalKrosstalkApi public val _data: S, override val scope: T) : ScopeInstance<T>()
+    public class Server<T : ServerScope<S>, S>(@property:InternalKrosstalkApi public val _data: S, override val scope: T) : ScopeInstance<T>()
 
     @OptIn(KrosstalkPluginApi::class)
     @InternalKrosstalkApi
     @Deprecated("Do not use, this is not reliable")
-    public class Client<T : ClientScope<C>, C>(@InternalKrosstalkApi public val clientData: C, override val scope: T) : ScopeInstance<T>()
+    public class Client<T : ClientScope<C>, C>(@property:InternalKrosstalkApi public val clientData: C, override val scope: T) : ScopeInstance<T>()
 }

@@ -206,7 +206,7 @@ public sealed interface KrosstalkResult<out T> {
         val asStringNoStacktrace: String,
         val asStringWithStacktrace: String?,
         @Transient
-        @InternalKrosstalkApi val throwable: Throwable? = null,
+        @property:InternalKrosstalkApi val throwable: Throwable? = null,
     ) : Failure, SuccessOrServerException<Nothing> {
 
         public constructor(throwable: Throwable, includeStacktrace: Boolean = true) : this(
