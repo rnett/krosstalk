@@ -1,6 +1,7 @@
 package com.rnett.krosstalk.client_test
 
 import com.rnett.krosstalk.Krosstalk
+import com.rnett.krosstalk.KrosstalkPluginApi
 import com.rnett.krosstalk.ScopeInstance
 import com.rnett.krosstalk.annotations.EmptyBody
 import com.rnett.krosstalk.annotations.ExplicitResult
@@ -69,6 +70,7 @@ suspend fun tryBearer(auth: ScopeInstance<MyKrosstalk.BearerAuth>): Int = krosst
 
 object MyKrosstalk : Krosstalk(), KrosstalkClient<KtorClientScope<*>> {
     override val serialization = KotlinxStringSerializationHandler(Json { })
+    @OptIn(KrosstalkPluginApi::class)
     override val client = KtorClient(HttpClient(){
         Logging {
             this.level = LogLevel.ALL

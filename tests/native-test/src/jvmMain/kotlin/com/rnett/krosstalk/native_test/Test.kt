@@ -1,6 +1,7 @@
 package com.rnett.krosstalk.native_test
 
 import com.rnett.krosstalk.Krosstalk
+import com.rnett.krosstalk.KrosstalkPluginApi
 import com.rnett.krosstalk.Scope
 import com.rnett.krosstalk.ktor.server.KtorServer
 import com.rnett.krosstalk.ktor.server.KtorServerScope
@@ -43,6 +44,7 @@ private val validUsers = mapOf("username" to "password")
 
 actual object MyKrosstalk : Krosstalk(), KrosstalkServer<KtorServerScope<*>> {
     actual override val serialization = KotlinxBinarySerializationHandler(Cbor { })
+    @OptIn(KrosstalkPluginApi::class)
     override val server = KtorServer
 
     actual object Auth : Scope, KtorServerBasicAuth<User>("auth") {

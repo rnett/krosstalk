@@ -2,6 +2,7 @@ package com.rnett.krosstalk.fullstack_test
 
 import com.rnett.krosstalk.Headers
 import com.rnett.krosstalk.Krosstalk
+import com.rnett.krosstalk.KrosstalkPluginApi
 import com.rnett.krosstalk.Scope
 import com.rnett.krosstalk.ScopeInstance
 import com.rnett.krosstalk.ServerDefault
@@ -24,6 +25,7 @@ import io.ktor.http.ContentType
 import io.ktor.http.HttpMethod
 import io.ktor.http.authority
 import io.ktor.http.contentType
+import io.ktor.util.InternalAPI
 import kotlinx.serialization.Serializable
 import kotlinx.serialization.cbor.Cbor
 import kotlin.properties.Delegates
@@ -49,6 +51,7 @@ internal var lastHeaders: Headers? = null
 actual object MyKrosstalk : BaseKrosstalk(), KrosstalkClient<KtorClientScope<*>> {
     override val serverUrl: String = "http://localhost:8080"
 
+    @OptIn(KrosstalkPluginApi::class, InternalAPI::class)
     override val client = KtorClient(
         baseClient = HttpClient().config {
             Logging {

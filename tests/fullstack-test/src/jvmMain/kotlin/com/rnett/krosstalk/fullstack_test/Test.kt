@@ -2,6 +2,7 @@ package com.rnett.krosstalk.fullstack_test
 
 import com.rnett.krosstalk.Headers
 import com.rnett.krosstalk.Krosstalk
+import com.rnett.krosstalk.KrosstalkPluginApi
 import com.rnett.krosstalk.Scope
 import com.rnett.krosstalk.ScopeInstance
 import com.rnett.krosstalk.ServerDefault
@@ -58,6 +59,7 @@ data class User(val username: String) : Principal
 private val validUsers = mapOf("username" to "password")
 
 actual object MyKrosstalk : BaseKrosstalk(), KrosstalkServer<KtorServerScope<*>> {
+    @OptIn(KrosstalkPluginApi::class)
     override val server = KtorServer
 
     actual object Auth : Scope, KtorServerBasicAuth<User>("auth") {

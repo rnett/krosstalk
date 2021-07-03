@@ -1,3 +1,5 @@
+import com.rnett.future.testing.kotlinFutureTesting
+
 pluginManagement {
     repositories {
         mavenCentral()
@@ -14,6 +16,10 @@ plugins {
 }
 
 rootProject.name = "tests"
+
+kotlinFutureTesting{
+    forceBootstrap()
+}
 
 includeBuild("..")
 include(

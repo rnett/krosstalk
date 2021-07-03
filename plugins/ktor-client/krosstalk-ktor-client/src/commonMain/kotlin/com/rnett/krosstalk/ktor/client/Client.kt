@@ -1,5 +1,6 @@
 package com.rnett.krosstalk.ktor.client
 
+import com.rnett.krosstalk.InternalKrosstalkApi
 import com.rnett.krosstalk.KrosstalkPluginApi
 import com.rnett.krosstalk.client.KrosstalkClient
 import com.rnett.krosstalk.client.plugin.AppliedClientScope
@@ -17,6 +18,7 @@ import io.ktor.content.ByteArrayContent
 import io.ktor.http.ContentType
 import io.ktor.http.HttpMethod
 import io.ktor.http.charset
+import io.ktor.util.InternalAPI
 import io.ktor.util.toMap
 import io.ktor.utils.io.charsets.Charsets
 import io.ktor.utils.io.charsets.decode
@@ -49,6 +51,7 @@ internal fun <D> AppliedClientScope<KtorClientScope<D>, *>.configureRequest(requ
     }
 }
 
+@OptIn(KrosstalkPluginApi::class)
 public interface KtorKrosstalkClient : KrosstalkClient<KtorClientScope<*>> {
     override val client: KtorClient
 }
@@ -73,6 +76,7 @@ public class KtorClient(
         }
     }
 
+    @OptIn(KrosstalkPluginApi::class, InternalAPI::class)
     override suspend fun sendKrosstalkRequest(
         url: String,
         httpMethod: String,

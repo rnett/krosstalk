@@ -61,6 +61,7 @@ internal fun wrapScopesHelper(
 internal fun wrapScopes(route: Route, optional: Boolean, remaining: List<KtorServerScope<*>>, final: Route.() -> Unit) =
     wrapScopesHelper(route, optional, remaining.toMutableList().asReversed(), final)
 
+@OptIn(KrosstalkPluginApi::class)
 public interface KtorKrosstalkServer : KrosstalkServer<KtorServerScope<*>> {
     override val server: KtorServer
 }
