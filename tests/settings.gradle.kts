@@ -1,3 +1,5 @@
+import com.rnett.future.testing.kotlinFutureTesting
+
 pluginManagement {
     repositories {
         mavenCentral()
@@ -11,6 +13,10 @@ pluginManagement {
 }
 plugins {
     id("com.github.rnett.kotlin-future-testing") version "0.0.12-SNAPSHOT"
+}
+
+kotlinFutureTesting {
+    forceBootstrap()
 }
 
 rootProject.name = "tests"
