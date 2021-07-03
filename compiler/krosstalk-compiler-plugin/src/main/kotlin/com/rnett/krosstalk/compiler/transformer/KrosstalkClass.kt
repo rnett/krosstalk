@@ -14,6 +14,7 @@ import org.jetbrains.kotlin.cli.common.messages.MessageCollector
 import org.jetbrains.kotlin.ir.builders.irBlockBody
 import org.jetbrains.kotlin.ir.builders.irGetObject
 import org.jetbrains.kotlin.ir.declarations.IrClass
+import org.jetbrains.kotlin.ir.types.IrTypeSystemContextImpl
 import org.jetbrains.kotlin.ir.types.isSubtypeOf
 import org.jetbrains.kotlin.ir.util.defaultType
 import org.jetbrains.kotlin.ir.util.isAnonymousObject
@@ -60,7 +61,7 @@ class KrosstalkClass(val declaration: IrClass, private val methodTransformer: Kr
         scopes.forEach {
             if (isClient) {
                 val scopeType = declaration.defaultType.raiseTo(Krosstalk.Client.KrosstalkClient()).typeArgument(0)
-                if (!it.defaultType.isSubtypeOf(scopeType, context.irBuiltIns))
+                if (!it.defaultType.isSubtypeOf(scopeType, IrTypeSystemContextImpl(context.irBuiltIns)))
                     messageCollector.reportError(
                         "All scopes in a Krosstalk Client object must extend the client's scope type ${scopeType.render()}, ${it.name} does not.",
                         it
@@ -68,7 +69,7 @@ class KrosstalkClass(val declaration: IrClass, private val methodTransformer: Kr
             }
             if (isServer) {
                 val scopeType = declaration.defaultType.raiseTo(Krosstalk.Server.KrosstalkServer()).typeArgument(0)
-                if (!it.defaultType.isSubtypeOf(scopeType, context.irBuiltIns))
+                if (!it.defaultType.isSubtypeOf(scopeType, IrTypeSystemContextImpl(context.irBuiltIns)))
                     messageCollector.reportError(
                         "All scopes in a Krosstalk Server object must extend the server's scope type ${scopeType.render()}, ${it.name} does not.",
                         it

@@ -19,6 +19,7 @@ import org.jetbrains.kotlin.ir.declarations.IrSimpleFunction
 import org.jetbrains.kotlin.ir.expressions.IrBody
 import org.jetbrains.kotlin.ir.expressions.IrExpression
 import org.jetbrains.kotlin.ir.types.IrType
+import org.jetbrains.kotlin.ir.types.IrTypeSystemContextImpl
 import org.jetbrains.kotlin.ir.types.isSubtypeOf
 import org.jetbrains.kotlin.ir.util.defaultType
 import org.jetbrains.kotlin.ir.util.hasAnnotation
@@ -83,7 +84,7 @@ class KrosstalkMethodTransformer(
     override fun visitClassNew(declaration: IrClass): IrStatement {
         if (declaration.defaultType.isSubtypeOf(
                 Krosstalk.Krosstalk.resolveTypeWith(),
-                context.irBuiltIns
+                IrTypeSystemContextImpl(context.irBuiltIns)
             ) && !declaration.isExpect
         ) {
             if (declaration.isObject && !declaration.isCompanion && !declaration.isAnonymousObject) {
