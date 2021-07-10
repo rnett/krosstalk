@@ -42,7 +42,7 @@ tasks.jar.configure {
 }
 
 tasks.named("compileKotlin") { dependsOn("syncSource") }
-tasks.register<Sync>("syncSource") {
+val syncSource = tasks.register<Sync>("syncSource") {
     from(project(":compiler:krosstalk-compiler-plugin").sourceSets.main.get().allSource)
     into("src/main/kotlin")
     filter {
@@ -52,4 +52,8 @@ tasks.register<Sync>("syncSource") {
             else -> it
         }
     }
+}
+
+tasks.withType<org.jetbrains.dokka.gradle.AbstractDokkaLeafTask>{
+    dependsOn(syncSource)
 }
