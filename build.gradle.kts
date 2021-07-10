@@ -107,11 +107,14 @@ allprojects {
 
                     val sourceSet = this.sourceSetID.sourceSetName
 
-                    sourceLink {
-                        localDirectory.set(file("src/$sourceSet/kotlin"))
+                    val localDir = file("src/$sourceSet/kotlin")
+                    if(localDir.exists()) {
+                        sourceLink {
+                            localDirectory.set(localDir)
 
-                        remoteUrl.set(java.net.URL("$githubRoot/src/$sourceSet/kotlin"))
-                        remoteLineSuffix.set("#L")
+                            remoteUrl.set(java.net.URL("$githubRoot/src/$sourceSet/kotlin"))
+                            remoteLineSuffix.set("#L")
+                        }
                     }
                 }
             }
