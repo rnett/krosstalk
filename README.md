@@ -444,3 +444,7 @@ Kotlin target configuration, respectively. Then, to depend on one or the other, 
 ` or `.krosstalkServer()`, respectively. Gradle handles circular dependencies well, so having two microservices where
 each's server depends on the other's client works well. Again, you can see this in action in the microservice test (the
 buildscripts are the interesting part).
+
+These both use the `com.rnett.krosstalk.krosstalkTypeAttribute` attribute, which needs to be [registered in the dependencies block](https://docs.gradle.org/current/userguide/variant_attributes.html#creating_attributes_in_a_build_script_or_plugin) in some cases.
+**This is not done automatically**.
+Which situations require this is not clear, but the most basic in-project use, as done in the [microservices test](tests/microservices-test), seems to work fine without it.
