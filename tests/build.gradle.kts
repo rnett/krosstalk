@@ -12,9 +12,9 @@ allprojects {
     group = "krosstalk.tests"
     version = "1.0.3-ALPHA"
 
-    var ktor_version: String by extra("1.6.0")
-    var coroutines_version: String by extra("1.5.0")
-    val serialization_version: String by extra("1.2.1")
+    var ktor_version: String by extra("1.6.1")
+    var coroutines_version: String by extra("1.5.1")
+    val serialization_version: String by extra("1.2.2")
 
     repositories {
         mavenCentral()
