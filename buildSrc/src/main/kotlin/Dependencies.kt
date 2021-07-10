@@ -13,5 +13,5 @@ object Dependencies {
     const val buildconfig = "3.0.0"
     const val shadow = "7.0.0"
 
-    const val publishPlugin = "0.16.0"
+    const val publishPlugin = "0.17.0"
 }
