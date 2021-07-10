@@ -90,14 +90,7 @@ allprojects {
 
         if (generateDocs) {
             val docs = preprocessDocs("README.md")
-            tasks.withType<org.jetbrains.dokka.gradle.AbstractDokkaTask>() {
-
-                val (moduleName, moduleVersion, dokkaSourceSets) = when (this) {
-                    is org.jetbrains.dokka.gradle.DokkaTask -> Triple(moduleName, moduleVersion, dokkaSourceSets)
-                    is org.jetbrains.dokka.gradle.DokkaTaskPartial -> Triple(moduleName, moduleVersion, dokkaSourceSets)
-                    else -> return@withType
-                }
-
+            tasks.withType<org.jetbrains.dokka.gradle.AbstractDokkaLeafTask>() {
                 moduleName.set(niceModuleName)
                 moduleVersion.set(version.toString())
 

@@ -119,7 +119,7 @@ jobs:
         with:
           name: kotlin-future-ICE-report-${{ matrix.os }}
           path: build/kotlin-future-testing-ICE-report
-        
+
   check-results:
     name: Results
     needs: [try-no-bootstrap, try-kotlin-bootstrap]
