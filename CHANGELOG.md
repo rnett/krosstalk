@@ -6,6 +6,10 @@ Breaking changes:
 * [#22](https://github.com/rnett/krosstalk/pull/22) Update Ktor auth scopes.  Changes Basic to use Ktor's credential class and adds Bearer scopes.
   Only breaks if you used `com.rnett.krosstalk.ktor.client.auth.BasicCredentials` directly.
 
+Minor changes:
+* [#23](https://github.com/rnett/krosstalk/pull/23) Update Ktor to 1.6.1 and Seraialization to 1.2.2.  Does not enable watchOsX64 for Ktor plugins, 
+  the issue being fixed was a false positive.
+
 ## 1.1.2
 
 * [#19](https://github.com/rnett/krosstalk/pull/19) Update to Kotlin 1.5.20
