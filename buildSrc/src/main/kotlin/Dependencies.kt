@@ -1,5 +1,5 @@
 object Dependencies {
-    const val kotlin = "1.5.20"
+    const val kotlin = "1.5.21"
     const val serialization = "1.2.2"
     const val dokka = "1.5.0"
 
