@@ -1,6 +1,9 @@
 # Changelog
 
-## Next (1.2.0)
+## Next
+* 
+
+## 1.2.0
 
 Breaking changes:
 * [#22](https://github.com/rnett/krosstalk/pull/22) Update Ktor auth scopes.  Changes Basic to use Ktor's credential class and adds Bearer scopes.
