@@ -1,5 +1,5 @@
 object Dependencies {
-    const val kotlin = "1.5.20"
+    const val kotlin = "1.5.21"
     const val serialization = "1.2.2"
     const val dokka = "1.5.0"
 
@@ -7,7 +7,7 @@ object Dependencies {
 
     const val autoService = "1.0-rc6"
 
-    const val compilerPluginUtils = "1.0.1"
+    const val compilerPluginUtils = "1.0.2"
 
     const val gradlePluginPublish = "0.15.0"
     const val buildconfig = "3.0.0"
