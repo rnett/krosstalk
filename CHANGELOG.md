@@ -9,6 +9,7 @@ Breaking changes:
 Minor changes:
 * [#23](https://github.com/rnett/krosstalk/pull/23) Update Ktor to 1.6.1 and Seraialization to 1.2.2.  Does not enable watchOsX64 for Ktor plugins, 
   the issue being fixed was a false positive.
+* [#24](https://github.com/rnett/krosstalk/pull/24) Update Kotlin to 1.5.21, coroutines to 1.5.1, and compiler-plugin utils to 1.0.2.
 
 ## 1.1.2
 
