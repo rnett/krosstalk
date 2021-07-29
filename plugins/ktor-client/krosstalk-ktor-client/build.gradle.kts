@@ -5,7 +5,7 @@ plugins {
 description = "Ktor client plugin for Krosstalk"
 
 kotlin {
-    allTargets(true)
+    allTargets(false)
     sourceSets {
         val commonMain by getting {
             dependencies {
