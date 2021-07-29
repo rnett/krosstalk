@@ -21,7 +21,7 @@ val isMacOs get() = hostOs == "Mac OS X"
 val isMainHost get() = isMingwX64
 
 @OptIn(ExperimentalStdlibApi::class)
-inline fun KotlinMultiplatformExtension.allTargets(noWatchOsX64: Boolean = false) {
+inline fun KotlinMultiplatformExtension.allTargets() {
     jvm {
         //TODO remove once KT-36942 and KT-35003 are fixed
         attributes {
@@ -57,12 +57,9 @@ inline fun KotlinMultiplatformExtension.allTargets(noWatchOsX64: Boolean = false
 
             watchosArm32(),
             watchosArm64(),
-            watchosX86()
-        ) + buildList {
-            if (!noWatchOsX64) {
-                add(watchosX64())
-            }
-        }
+            watchosX86(),
+            watchosX64()
+        )
         hostOs == "Linux" -> listOf(linuxX64())
         isMingwX64 -> listOf(mingwX64())
         else -> throw GradleException("Host OS is not supported in Kotlin/Native.")

@@ -5,7 +5,7 @@ plugins {
 description = "Auth scopes for the Krosstalk Ktor client plugin"
 
 kotlin {
-    allTargets(false)
+    allTargets()
     sourceSets {
         val commonMain by getting {
             dependencies {
