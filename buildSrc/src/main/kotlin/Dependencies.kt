@@ -1,9 +1,9 @@
 object Dependencies {
-    const val kotlin = "1.5.21"
+    const val kotlin = BuildConfig.KOTLIN_VERSION
     const val serialization = "1.2.2"
     const val dokka = "1.5.0"
 
-    const val ktor = "1.6.1"
+    const val ktor = "1.6.2"
 
     const val autoService = "1.0-rc6"
 
