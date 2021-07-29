@@ -3,6 +3,9 @@
 ## Next
 * 
 
+## 1.2.1
+* [#25](https://github.com/rnett/krosstalk/pull/25) Update Ktor to 1.6.2 and Gradle to 7.1.1.  Enable watchOsX64 for Ktor plugins.
+
 ## 1.2.0
 
 Breaking changes:
