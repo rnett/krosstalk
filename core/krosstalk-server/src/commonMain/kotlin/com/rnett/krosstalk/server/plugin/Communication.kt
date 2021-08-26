@@ -31,7 +31,9 @@ import kotlin.contracts.contract
  *
  * See the `krosstalk-ktor-server` artifact for an example server implementation using Ktor.
  */
-@KrosstalkPluginApi
+//TODO needs to be implementing only
+//@KrosstalkPluginApi
+@OptIn(KrosstalkPluginApi::class)
 public interface ServerHandler<S : ServerScope<*>>
 
 //TODO make value class

@@ -9,10 +9,6 @@ plugins {
     id("org.jetbrains.compose")
 }
 
-var ktor_version: String by extra
-var coroutines_version: String by extra
-val serialization_version: String by extra
-
 repositories {
     mavenCentral()
     jcenter()

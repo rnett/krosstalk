@@ -1,7 +1,7 @@
 # Changelog
 
 ## Next
-* 
+* [#26](https://github.com/rnett/krosstalk/pull/26) Update Kotlin to 1.5.30.  Does not include the new Mac targets since Kotlinx serialization doesn't support them yet.
 
 ## 1.2.1
 * [#25](https://github.com/rnett/krosstalk/pull/25) Update Ktor to 1.6.2 and Gradle to 7.1.1.  Enable watchOsX64 for Ktor plugins.

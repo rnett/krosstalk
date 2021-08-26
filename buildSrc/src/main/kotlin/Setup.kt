@@ -11,7 +11,7 @@ import org.jetbrains.kotlin.gradle.dsl.KotlinMultiplatformExtension
 import org.jetbrains.kotlin.gradle.plugin.LanguageSettingsBuilder
 
 inline fun LanguageSettingsBuilder.commonSettings() {
-    useExperimentalAnnotation("kotlin.RequiresOptIn")
+    optIn("kotlin.RequiresOptIn")
 }
 
 val hostOs: String get() = System.getProperty("os.name")
@@ -19,6 +19,8 @@ val isMingwX64 get() = hostOs.startsWith("Windows")
 val isMacOs get() = hostOs == "Mac OS X"
 
 val isMainHost get() = isMingwX64
+
+//TODO add new native targets.  Need at least serialization on them first
 
 @OptIn(ExperimentalStdlibApi::class)
 inline fun KotlinMultiplatformExtension.allTargets() {

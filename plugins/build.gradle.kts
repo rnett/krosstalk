@@ -1,6 +1,6 @@
 buildscript {
     dependencies {
-        classpath("org.jetbrains.dokka:versioning-plugin:${Dependencies.dokka}")
+        classpath(libs.dokka.versioning)
     }
 }
 

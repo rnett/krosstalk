@@ -1,0 +1,67 @@
+[versions]
+kotlin = "1.5.30"
+kotlinx-serialization = "1.2.2"
+kotlinx-coroutines = "1.5.1"
+ktor = "1.6.2"
+compiler-plugin-utils = "1.0.3-SNAPSHOT"
+autoservice = "1.0"
+shadow = "7.0.0"
+buildconfig = "3.0.2"
+publish = "0.17.0"
+dokka = "1.5.0"
+execfork = "0.1.15"
+
+[libraries]
+autoservice-annotations = { module = "com.google.auto.service:auto-service-annotations", version.ref = "autoservice" }
+autoservice = { module = "com.google.auto.service:auto-service", version.ref = "autoservice" }
+
+kotlin-compiler-embeddable = { module = "org.jetbrains.kotlin:kotlin-compiler-embeddable", version.ref = "kotlin" }
+kotlin-compiler = { module = "org.jetbrains.kotlin:kotlin-compiler", version.ref = "kotlin" }
+
+compiler-plugin-utils = { module = "com.github.rnett.compiler-plugin-utils:compiler-plugin-utils", version.ref = "compiler-plugin-utils" }
+compiler-plugin-utils-native = { module = "com.github.rnett.compiler-plugin-utils:compiler-plugin-utils-native", version.ref = "compiler-plugin-utils" }
+
+kgp = { module = "org.jetbrains.kotlin:kotlin-gradle-plugin", version.ref = "kotlin" }
+kgp-api = { module = "org.jetbrains.kotlin:kotlin-gradle-plugin-api", version.ref = "kotlin" }
+
+dokka-versioning = { module = "org.jetbrains.dokka:versioning-plugin", version.ref = "dokka" }
+
+kotlinx-coroutines-core = { module = "org.jetbrains.kotlinx:kotlinx-coroutines-core", version.ref = "kotlinx-coroutines" }
+
+kotlinx-serialization-core = { module = "org.jetbrains.kotlinx:kotlinx-serialization-core", version.ref = "kotlinx-serialization" }
+kotlinx-serialization-json = { module = "org.jetbrains.kotlinx:kotlinx-serialization-json", version.ref = "kotlinx-serialization" }
+kotlinx-serialization-cbor = { module = "org.jetbrains.kotlinx:kotlinx-serialization-cbor", version.ref = "kotlinx-serialization" }
+
+ktor-client-core = { module = "io.ktor:ktor-client-core", version.ref = "ktor" }
+ktor-client-apache = { module = "io.ktor:ktor-client-apache", version.ref = "ktor" }
+ktor-client-curl = { module = "io.ktor:ktor-client-curl", version.ref = "ktor" }
+ktor-client-auth = { module = "io.ktor:ktor-client-auth", version.ref = "ktor" }
+ktor-client-logging = { module = "io.ktor:ktor-client-logging", version.ref = "ktor" }
+
+ktor-server-core = { module = "io.ktor:ktor-server-core", version.ref = "ktor" }
+ktor-server-auth = { module = "io.ktor:ktor-auth", version.ref = "ktor" }
+ktor-server-auth-jwt = { module = "io.ktor:ktor-auth-jwt", version.ref = "ktor" }
+ktor-server-cio = { module = "io.ktor:ktor-server-cio", version.ref = "ktor" }
+ktor-server-serialization = { module = "io.ktor:ktor-serialization", version.ref = "ktor" }
+
+logback = { module = "ch.qos.logback:logback-classic", version = "1.2.3" }
+
+[bundles]
+
+[plugins]
+kotlin-jvm = { id = "org.jetbrains.kotlin.jvm", version.ref = "kotlin" }
+kotlin-js = { id = "org.jetbrains.kotlin.js", version.ref = "kotlin" }
+kotlin-multiplatform = { id = "org.jetbrains.kotlin.multiplatform", version.ref = "kotlin" }
+kapt = { id = "org.jetbrains.kotlin.kapt", version.ref = "kotlin" }
+
+kotlinx-serialization = { id = "org.jetbrains.kotlin.plugin.serialization", version.ref = "kotlin" }
+
+compiler-plugin-utils = { id = "com.github.rnett.compiler-plugin-utils", version.ref = "compiler-plugin-utils" }
+
+shadow = { id = "com.github.johnrengelman.shadow", version.ref = "shadow" }
+buildconfig = { id = "com.github.gmazzo.buildconfig", version.ref = "buildconfig" }
+
+publish = { id = "com.vanniktech.maven.publish", version.ref = "publish" }
+dokka = { id = "org.jetbrains.dokka", version.ref = "dokka" }
+
+execfork = { id = "com.github.psxpaul.execfork", version.ref = "execfork" }

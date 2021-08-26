@@ -34,7 +34,9 @@ public class InternalKrosstalkResponse(
 /**
  * A Krosstalk client handler.  Capable of sending krosstalk requests.
  */
-@KrosstalkPluginApi
+//TODO needs to be implementing only
+//@KrosstalkPluginApi
+@OptIn(KrosstalkPluginApi::class)
 public interface ClientHandler<C : ClientScope<*>> {
 
     /**
@@ -48,6 +50,7 @@ public interface ClientHandler<C : ClientScope<*>> {
      * @param scopes The scopes to apply to the request.
      * @return The result of the request.
      */
+    @OptIn(KrosstalkPluginApi::class)
     public suspend fun sendKrosstalkRequest(
         url: String,
         httpMethod: String,

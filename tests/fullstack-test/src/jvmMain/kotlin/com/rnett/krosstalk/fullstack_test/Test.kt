@@ -58,7 +58,7 @@ data class User(val username: String) : Principal
 private val validUsers = mapOf("username" to "password")
 
 actual object MyKrosstalk : BaseKrosstalk(), KrosstalkServer<KtorServerScope<*>> {
-    override val server = KtorServer
+    override val server: KtorServer = KtorServer
 
     actual object Auth : Scope, KtorServerBasicAuth<User>("auth") {
         override fun BasicAuthenticationProvider.Configuration.configure() {

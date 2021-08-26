@@ -1,3 +1,6 @@
+
+enableFeaturePreview("VERSION_CATALOGS")
+
 pluginManagement {
     repositories {
         mavenCentral()
@@ -6,7 +9,14 @@ pluginManagement {
             mavenContent { snapshotsOnly() }
         }
     }
+}
 
+dependencyResolutionManagement {
+    versionCatalogs {
+        create(defaultLibrariesExtensionName.get()) {
+            from(files("../gradle/libs.versions.toml"))
+        }
+    }
 }
 
 rootProject.name = "krosstalk-generator"

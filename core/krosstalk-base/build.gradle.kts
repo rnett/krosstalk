@@ -1,5 +1,5 @@
 plugins {
-    kotlin("multiplatform")
+    id(libs.plugins.kotlin.multiplatform.get().pluginId)
 }
 
 description = "The parts of Krosstalk that are used in both the runtime and compiler plugin."
@@ -15,7 +15,7 @@ kotlin {
 
         all {
             languageSettings.apply {
-                useExperimentalAnnotation("kotlin.RequiresOptIn")
+                optIn("kotlin.RequiresOptIn")
             }
         }
     }

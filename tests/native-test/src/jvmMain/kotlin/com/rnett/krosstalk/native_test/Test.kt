@@ -43,7 +43,7 @@ private val validUsers = mapOf("username" to "password")
 
 actual object MyKrosstalk : Krosstalk(), KrosstalkServer<KtorServerScope<*>> {
     actual override val serialization = KotlinxBinarySerializationHandler(Cbor { })
-    override val server = KtorServer
+    override val server: KtorServer = KtorServer
 
     actual object Auth : Scope, KtorServerBasicAuth<User>("auth") {
         override fun BasicAuthenticationProvider.Configuration.configure() {

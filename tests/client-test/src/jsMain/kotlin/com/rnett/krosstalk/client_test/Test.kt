@@ -69,7 +69,7 @@ suspend fun tryBearer(auth: ScopeInstance<MyKrosstalk.BearerAuth>): Int = krosst
 
 object MyKrosstalk : Krosstalk(), KrosstalkClient<KtorClientScope<*>> {
     override val serialization = KotlinxStringSerializationHandler(Json { })
-    override val client = KtorClient(HttpClient(){
+    override val client: KtorClient = KtorClient(HttpClient(){
         Logging {
             this.level = LogLevel.ALL
         }
