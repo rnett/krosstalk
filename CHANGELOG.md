@@ -1,6 +1,9 @@
 # Changelog
 
 ## Next
+ *
+
+## 1.2.3
 * [#27](https://github.com/rnett/krosstalk/pull/27) Update Ktor to 1.6.3.  Note that [KTOR-2977](https://youtrack.jetbrains.com/issue/KTOR-2977) was not actually included in the release, even though it's in the notes.
 
 ## 1.2.2
