@@ -22,17 +22,17 @@ jobs:
         with:
           java-version: 15
 
-#      - name: Cache Gradle packages
-#        uses: actions/cache@v2
-#        with:
-#          path: |
-#            ~/.gradle/caches
-#            ~/.gradle/wrapper
-#            ~/.gradle/nodejs
-#            ~/.gradle/yarn
-#          key: ${{ runner.os }}-gradle-${{ hashFiles('**/*.gradle*', 'buildSrc/**/*.kt') }}
-#          restore-keys: |
-#            ${{ runner.os }}-gradle-
+      - name: Cache Gradle packages
+        uses: actions/cache@v2
+        with:
+          path: |
+            ~/.gradle/caches
+            ~/.gradle/wrapper
+            ~/.gradle/nodejs
+            ~/.gradle/yarn
+          key: ${{ runner.os }}-gradle-${{ hashFiles('**/*.gradle*', 'buildSrc/**/*.kt') }}
+          restore-keys: |
+            ${{ runner.os }}-gradle-
 
       - name: Install CURL headers Linux
         if: runner.os == 'Linux'
