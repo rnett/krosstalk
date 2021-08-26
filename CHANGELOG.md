@@ -1,6 +1,9 @@
 # Changelog
 
 ## Next
+* 
+
+## 1.2.2
 * [#26](https://github.com/rnett/krosstalk/pull/26) Update Kotlin to 1.5.30.  Does not include the new Mac targets since Kotlinx serialization doesn't support them yet.
 
 ## 1.2.1
