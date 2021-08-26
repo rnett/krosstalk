@@ -1,7 +1,7 @@
 # Changelog
 
 ## Next
-* 
+* [#27](https://github.com/rnett/krosstalk/pull/27) Update Ktor to 1.6.3.  Note that [KTOR-2977](https://youtrack.jetbrains.com/issue/KTOR-2977) was not actually included in the release, even though it's in the notes.
 
 ## 1.2.2
 * [#26](https://github.com/rnett/krosstalk/pull/26) Update Kotlin to 1.5.30.  Does not include the new Mac targets since Kotlinx serialization doesn't support them yet.
