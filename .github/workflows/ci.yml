@@ -51,6 +51,12 @@ jobs:
       - name: Run Integraiton Tests
         run: (cd tests && ./gradlew check)
 
+      - name: Upload test reports
+        uses: actions/upload-artifact@v2
+        with:
+          name: test-report-${{ runner.os }}
+          path: "/**/build/reports/tests/**"
+
       - name: Stop gradle daemon
         run: ./gradlew --stop
 

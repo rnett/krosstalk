@@ -8,10 +8,6 @@ plugins {
     id(libs.plugins.execfork.get().pluginId)
 }
 
-var ktor_version: String by extra
-var coroutines_version: String by extra
-val serialization_version: String by extra
-
 kotlin {
     jvm("server") {
 //        withJava()

@@ -5,10 +5,6 @@ plugins {
     alias(libs.plugins.execfork)
 }
 
-var ktor_version: String by extra
-val coroutines_version: String by extra
-val serialization_version: String by extra
-
 kotlin {
     jvm {
 //        withJava()

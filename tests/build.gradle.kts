@@ -16,4 +16,19 @@ allprojects {
         }
         maven("https://dl.bintray.com/kotlin/ktor")
     }
+
+    afterEvaluate {
+        tasks.withType(AbstractTestTask::class) {
+            this.testLogging {
+                showStandardStreams = true
+                showStackTraces = true
+                showExceptions = true
+                showCauses = true
+                exceptionFormat = org.gradle.api.tasks.testing.logging.TestExceptionFormat.FULL
+            }
+        }
+    }
 }
+
+
+
