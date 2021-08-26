@@ -55,7 +55,7 @@ jobs:
         uses: actions/upload-artifact@v2
         with:
           name: test-report-${{ runner.os }}
-          path: "/**/build/reports/tests/**"
+          path: "**/build/reports/tests/**"
 
       - name: Stop gradle daemon
         run: ./gradlew --stop
