@@ -1,5 +1,5 @@
 plugins {
-    id("com.github.psxpaul.execfork")
+    alias(libs.plugins.execfork)
 }
 
 tasks.create("pingPong") {

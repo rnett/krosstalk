@@ -1,13 +1,10 @@
 plugins {
-    kotlin("multiplatform") version Dependencies.kotlin apply false
-    kotlin("jvm") version Dependencies.kotlin apply false
-    id("org.jetbrains.kotlin.plugin.serialization") version Dependencies.kotlin apply false
-    kotlin("kapt") version Dependencies.kotlin apply false
-    id("com.gradle.plugin-publish") version Dependencies.gradlePluginPublish apply false
-    id("org.jetbrains.dokka") version Dependencies.dokka apply false
-    id("com.github.gmazzo.buildconfig") version Dependencies.buildconfig apply false
-    id("com.github.johnrengelman.shadow") version Dependencies.shadow apply false
-    id("com.vanniktech.maven.publish") version Dependencies.publishPlugin apply false
+    alias(libs.plugins.kotlin.multiplatform) apply false
+    alias(libs.plugins.kotlin.jvm) apply false
+
+    alias(libs.plugins.dokka) apply false
+    alias(libs.plugins.publish) apply false
+
     signing
 }
 

@@ -1,3 +1,6 @@
+
+enableFeaturePreview("VERSION_CATALOGS")
+
 pluginManagement {
     repositories {
         mavenCentral()
@@ -12,6 +15,15 @@ pluginManagement {
 plugins {
     id("com.github.rnett.kotlin-future-testing") version "0.0.12-SNAPSHOT"
 }
+
+dependencyResolutionManagement {
+    versionCatalogs {
+        create(defaultLibrariesExtensionName.get()) {
+            from(files("../gradle/libs.versions.toml"))
+        }
+    }
+}
+
 
 rootProject.name = "tests"
 

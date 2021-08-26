@@ -1,6 +1,6 @@
 plugins {
-    kotlin("multiplatform")
-    id("org.jetbrains.kotlin.plugin.serialization")
+    id(libs.plugins.kotlin.multiplatform.get().pluginId)
+    alias(libs.plugins.kotlinx.serialization)
 }
 
 niceModuleName = "Krosstalk Core"
@@ -12,13 +12,13 @@ kotlin {
         val commonMain by getting {
             dependencies {
                 api(project(":core:krosstalk-base"))
-                implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:${Dependencies.serialization}")
+                implementation(libs.kotlinx.serialization.json)
             }
         }
 
         all {
             languageSettings.apply {
-                useExperimentalAnnotation("kotlin.contracts.ExperimentalContracts")
+                optIn("kotlin.contracts.ExperimentalContracts")
             }
         }
     }

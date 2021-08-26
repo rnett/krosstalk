@@ -49,7 +49,7 @@ internal var lastHeaders: Headers? = null
 actual object MyKrosstalk : BaseKrosstalk(), KrosstalkClient<KtorClientScope<*>> {
     override val serverUrl: String = "http://localhost:8080"
 
-    override val client = KtorClient(
+    override val client: KtorClient = KtorClient(
         baseClient = HttpClient().config {
             Logging {
                 level = LogLevel.ALL

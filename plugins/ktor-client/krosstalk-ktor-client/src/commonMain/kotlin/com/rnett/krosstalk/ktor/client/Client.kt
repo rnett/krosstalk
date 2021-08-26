@@ -49,6 +49,7 @@ internal fun <D> AppliedClientScope<KtorClientScope<D>, *>.configureRequest(requ
     }
 }
 
+@OptIn(KrosstalkPluginApi::class)
 public interface KtorKrosstalkClient : KrosstalkClient<KtorClientScope<*>> {
     override val client: KtorClient
 }

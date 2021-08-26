@@ -1,8 +1,8 @@
 plugins {
     `java-gradle-plugin` apply true
-    kotlin("jvm")
-    kotlin("kapt")
-    id("com.github.gmazzo.buildconfig")
+    id(libs.plugins.kotlin.jvm.get().pluginId)
+    id(libs.plugins.kapt.get().pluginId)
+    alias(libs.plugins.buildconfig)
 //    id("com.gradle.plugin-publish")
     //TODO publish to portal, see https://github.com/vanniktech/gradle-maven-publish-plugin/issues/256
 }
@@ -10,12 +10,12 @@ plugins {
 description = "Krosstalk gradle plugin, for serving the compiler plugin"
 
 dependencies {
-    implementation("org.jetbrains.kotlin:kotlin-gradle-plugin-api:${Dependencies.kotlin}")
+    implementation(libs.kgp.api)
 
-    compileOnly("org.jetbrains.kotlin:kotlin-gradle-plugin:${Dependencies.kotlin}")
+    compileOnly(libs.kgp)
 
-    compileOnly("com.google.auto.service:auto-service-annotations:${Dependencies.autoService}")
-    kapt("com.google.auto.service:auto-service:${Dependencies.autoService}")
+    compileOnly(libs.autoservice.annotations)
+    kapt(libs.autoservice)
 }
 
 kotlin.irAndJava8()

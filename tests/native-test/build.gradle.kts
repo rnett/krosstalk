@@ -1,8 +1,8 @@
 plugins {
-    kotlin("multiplatform")
-    id("org.jetbrains.kotlin.plugin.serialization")
+    id(libs.plugins.kotlin.multiplatform.get().pluginId)
+    alias(libs.plugins.kotlinx.serialization)
     id("com.github.rnett.krosstalk")
-    id("com.github.psxpaul.execfork")
+    alias(libs.plugins.execfork)
 }
 
 var ktor_version: String by extra
@@ -28,9 +28,10 @@ kotlin {
             dependencies {
                 implementation("com.github.rnett.krosstalk:krosstalk")
                 implementation("com.github.rnett.krosstalk:krosstalk-kotlinx-serialization")
-                implementation("org.jetbrains.kotlinx:kotlinx-serialization-cbor:$serialization_version")
+                implementation(libs.kotlinx.serialization.cbor)
+                implementation(libs.kotlinx.coroutines.core)
 
-                implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:$coroutines_version-native-mt")
+                implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:${libs.versions.kotlinx.coroutines.get()}-native-mt")
             }
         }
 
@@ -41,12 +42,12 @@ kotlin {
         }
         val jvmMain by getting {
             dependencies {
-                implementation("io.ktor:ktor-server-cio:$ktor_version")
+                implementation(libs.ktor.server.cio)
 
                 implementation("com.github.rnett.krosstalk:krosstalk-ktor-server")
                 implementation("com.github.rnett.krosstalk:krosstalk-ktor-server-auth")
 
-                implementation("ch.qos.logback:logback-classic:1.2.3")
+                implementation(libs.logback)
             }
         }
         val nativeMain by getting {
@@ -55,8 +56,8 @@ kotlin {
                 implementation("com.github.rnett.krosstalk:krosstalk-ktor-client")
                 implementation("com.github.rnett.krosstalk:krosstalk-ktor-client-auth")
 
-                implementation("io.ktor:ktor-client-curl:$ktor_version")
-                implementation("io.ktor:ktor-client-logging:$ktor_version")
+                implementation(libs.ktor.client.curl)
+                implementation(libs.ktor.client.logging)
             }
         }
     }

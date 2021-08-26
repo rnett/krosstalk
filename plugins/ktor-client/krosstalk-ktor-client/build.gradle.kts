@@ -1,5 +1,5 @@
 plugins {
-    kotlin("multiplatform")
+    id(libs.plugins.kotlin.multiplatform.get().pluginId)
 }
 
 description = "Ktor client plugin for Krosstalk"
@@ -9,7 +9,7 @@ kotlin {
     sourceSets {
         val commonMain by getting {
             dependencies {
-                api("io.ktor:ktor-client-core:${Dependencies.ktor}")
+                api(libs.ktor.client.core)
                 api(project(":core:krosstalk-client"))
             }
         }

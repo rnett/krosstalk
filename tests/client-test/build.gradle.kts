@@ -1,8 +1,8 @@
 plugins {
-    kotlin("multiplatform")
-    id("org.jetbrains.kotlin.plugin.serialization")
+    id(libs.plugins.kotlin.multiplatform.get().pluginId)
+    alias(libs.plugins.kotlinx.serialization)
     id("com.github.rnett.krosstalk")
-    id("com.github.psxpaul.execfork")
+    alias(libs.plugins.execfork)
 }
 
 var ktor_version: String by extra
@@ -27,7 +27,7 @@ kotlin {
     sourceSets {
         val commonMain by getting {
             dependencies {
-                implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:$serialization_version")
+                implementation(libs.kotlinx.serialization.json)
             }
         }
 
@@ -38,11 +38,11 @@ kotlin {
         }
         val jvmMain by getting {
             dependencies {
-                implementation("io.ktor:ktor-server-cio:$ktor_version")
-                implementation("io.ktor:ktor-serialization:$ktor_version")
-                implementation("io.ktor:ktor-auth:$ktor_version")
+                implementation(libs.ktor.server.cio)
+                implementation(libs.ktor.server.serialization)
+                implementation(libs.ktor.server.auth)
 
-                implementation("ch.qos.logback:logback-classic:1.2.3")
+                implementation(libs.logback)
             }
         }
         val jsMain by getting {
@@ -52,7 +52,7 @@ kotlin {
                 implementation("com.github.rnett.krosstalk:krosstalk-ktor-client")
                 implementation("com.github.rnett.krosstalk:krosstalk-ktor-client-auth")
 
-                implementation("io.ktor:ktor-client-logging:$ktor_version")
+                implementation(libs.ktor.client.logging)
             }
         }
     }

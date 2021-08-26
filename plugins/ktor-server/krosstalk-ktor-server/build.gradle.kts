@@ -1,11 +1,11 @@
 plugins {
-    kotlin("jvm")
+    id(libs.plugins.kotlin.jvm.get().pluginId)
 }
 
 description = "Ktor server plugin for Krosstalk"
 
 dependencies {
-    api("io.ktor:ktor-server-core:${Dependencies.ktor}")
+    api(libs.ktor.server.core)
     api(project(":core:krosstalk-server"))
 }
 

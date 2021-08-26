@@ -1,5 +1,5 @@
 plugins {
-    kotlin("multiplatform")
+    id(libs.plugins.kotlin.multiplatform.get().pluginId)
 }
 
 description = "Auth scopes for the Krosstalk Ktor client plugin"
@@ -9,7 +9,7 @@ kotlin {
     sourceSets {
         val commonMain by getting {
             dependencies {
-                api("io.ktor:ktor-client-auth:${Dependencies.ktor}")
+                api(libs.ktor.client.auth)
                 api(project(":plugins:ktor-client:krosstalk-ktor-client"))
             }
         }

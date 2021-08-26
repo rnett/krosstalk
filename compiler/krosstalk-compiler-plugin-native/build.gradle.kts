@@ -1,20 +1,21 @@
 plugins {
-    kotlin("jvm")
-    kotlin("kapt")
-    id("com.github.rnett.compiler-plugin-utils") version Dependencies.compilerPluginUtils
-    id("com.github.johnrengelman.shadow")
+    id(libs.plugins.kotlin.jvm.get().pluginId)
+    id(libs.plugins.kapt.get().pluginId)
+    alias(libs.plugins.compiler.plugin.utils)
+    alias(libs.plugins.shadow)
 }
 
 description = "Krosstalk Kotlin native compiler plugin"
 
 dependencies {
     implementation(project(":core:krosstalk-base"))
-    implementation("com.github.rnett.compiler-plugin-utils:compiler-plugin-utils-native:${Dependencies.compilerPluginUtils}")
 
-    compileOnly("org.jetbrains.kotlin:kotlin-compiler:${Dependencies.kotlin}")
-    compileOnly("com.google.auto.service:auto-service-annotations:${Dependencies.autoService}")
+    compileOnly(libs.kotlin.compiler)
 
-    kapt("com.google.auto.service:auto-service:${Dependencies.autoService}")
+    implementation(libs.compiler.plugin.utils.native)
+
+    compileOnly(libs.autoservice.annotations)
+    kapt(libs.autoservice)
 }
 
 kotlin.irAndJava8()
@@ -32,6 +33,7 @@ val shadowJar = tasks.shadowJar.apply {
         archiveClassifier.set("")
         dependencies {
             include(project(":core:krosstalk-base"))
+            //TODO use version catalog?
             include(dependency("com.github.rnett.compiler-plugin-utils:compiler-plugin-utils-native"))
         }
     }

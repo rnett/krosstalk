@@ -1,6 +1,6 @@
 plugins {
-    kotlin("multiplatform")
-    id("org.jetbrains.kotlin.plugin.serialization")
+    id(libs.plugins.kotlin.multiplatform.get().pluginId)
+    alias(libs.plugins.kotlinx.serialization)
 }
 
 description = "The server-specific APIs of Krosstalk, including KrosstalkServer."

@@ -11,7 +11,7 @@ import org.jetbrains.kotlin.gradle.dsl.KotlinMultiplatformExtension
 import org.jetbrains.kotlin.gradle.plugin.LanguageSettingsBuilder
 
 inline fun LanguageSettingsBuilder.commonSettings() {
-    useExperimentalAnnotation("kotlin.RequiresOptIn")
+    optIn("kotlin.RequiresOptIn")
 }
 
 val hostOs: String get() = System.getProperty("os.name")

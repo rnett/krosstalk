@@ -1,5 +1,7 @@
 import com.rnett.future.testing.kotlinFutureTesting
 
+enableFeaturePreview("VERSION_CATALOGS")
+
 pluginManagement {
     repositories {
         mavenCentral()
