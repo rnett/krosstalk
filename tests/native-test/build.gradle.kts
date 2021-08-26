@@ -25,7 +25,6 @@ kotlin {
                 implementation("com.github.rnett.krosstalk:krosstalk")
                 implementation("com.github.rnett.krosstalk:krosstalk-kotlinx-serialization")
                 implementation(libs.kotlinx.serialization.cbor)
-                implementation(libs.kotlinx.coroutines.core)
 
                 implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:${libs.versions.kotlinx.coroutines.get()}-native-mt")
             }
