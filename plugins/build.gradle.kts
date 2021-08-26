@@ -1,6 +1,6 @@
 buildscript {
     dependencies {
-        classpath(Dependencies.dokkaVersioning)
+        classpath(libs.dokka.versioning)
     }
 }
 
