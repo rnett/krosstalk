@@ -20,6 +20,8 @@ val isMacOs get() = hostOs == "Mac OS X"
 
 val isMainHost get() = isMingwX64
 
+//TODO add new native targets.  Need at least serialization on them first
+
 @OptIn(ExperimentalStdlibApi::class)
 inline fun KotlinMultiplatformExtension.allTargets() {
     jvm {
