@@ -48,7 +48,8 @@ They control how your Krosstalk methods are actually executed.
 
 #### Serialization
 
-* Kotlinx serialization (includes JSON): `com.github.rnett.krosstalk:krosstalk-kotlinx-serialization`
+* Kotlinx serialization: `com.github.rnett.krosstalk:krosstalk-kotlinx-serialization`
+    * Includes JSON dependency, works with all formats.
 
 #### Client
 
