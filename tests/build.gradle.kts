@@ -14,7 +14,11 @@ allprojects {
         maven("https://oss.sonatype.org/content/repositories/snapshots"){
             mavenContent{ snapshotsOnly() }
         }
-        maven("https://dl.bintray.com/kotlin/ktor")
+        afterEvaluate {
+            if ("eap" in libs.versions.ktor.get().toLowerCase()) {
+                maven("https://maven.pkg.jetbrains.space/public/p/ktor/eap")
+            }
+        }
     }
 
     afterEvaluate {

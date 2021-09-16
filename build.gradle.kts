@@ -19,6 +19,11 @@ allprojects {
             mavenContent{ snapshotsOnly() }
         }
         maven("https://maven.pkg.jetbrains.space/public/p/kotlinx-html/maven")
+        afterEvaluate {
+            if ("eap" in libs.versions.ktor.get().toLowerCase()) {
+                maven("https://maven.pkg.jetbrains.space/public/p/ktor/eap")
+            }
+        }
     }
 
     val isRoot = this == rootProject
