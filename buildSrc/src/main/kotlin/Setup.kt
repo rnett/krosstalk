@@ -71,8 +71,8 @@ inline fun KotlinMultiplatformExtension.allTargets() {
             linuxX64(),
             linuxArm32Hfp(),
             linuxArm64(),
-            linuxMips32(),
-            linuxMipsel32(),
+//            linuxMips32(),
+//            linuxMipsel32(),
         )
         isMingwX64 -> listOf(
             mingwX64(),
