@@ -68,10 +68,10 @@ inline fun KotlinMultiplatformExtension.allTargets(ktorRequired: Boolean = false
         ) else emptyList()
         hostOs == "Linux" -> listOf(
             linuxX64(),
-            linuxArm32Hfp(),
+        ) + if(!ktorRequired) listOf(
 //            linuxMips32(),
 //            linuxMipsel32(),
-        ) + if(!ktorRequired) listOf(
+            linuxArm32Hfp(),
             linuxArm64(),
         ) else emptyList()
         isMingwX64 -> listOf(
