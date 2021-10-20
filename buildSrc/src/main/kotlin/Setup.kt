@@ -49,6 +49,7 @@ inline fun KotlinMultiplatformExtension.allTargets() {
     val nativeTargets = when {
         isMacOs -> listOf(
             macosX64(),
+            macosArm64(),
 
             iosArm32(),
             iosArm64(),
@@ -60,10 +61,23 @@ inline fun KotlinMultiplatformExtension.allTargets() {
             watchosArm32(),
             watchosArm64(),
             watchosX86(),
-            watchosX64()
+            watchosX64(),
+
+            iosSimulatorArm64(),
+            tvosSimulatorArm64(),
+            watchosSimulatorArm64(),
         )
-        hostOs == "Linux" -> listOf(linuxX64())
-        isMingwX64 -> listOf(mingwX64())
+        hostOs == "Linux" -> listOf(
+            linuxX64(),
+            linuxArm32Hfp(),
+            linuxArm64(),
+            linuxMips32(),
+            linuxMipsel32(),
+        )
+        isMingwX64 -> listOf(
+            mingwX64(),
+            mingwX86(),
+        )
         else -> throw GradleException("Host OS is not supported in Kotlin/Native.")
     }
 
