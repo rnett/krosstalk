@@ -20,10 +20,8 @@ val isMacOs get() = hostOs == "Mac OS X"
 
 val isMainHost get() = isMingwX64
 
-//TODO add new native targets.  Need at least serialization on them first
-
 @OptIn(ExperimentalStdlibApi::class)
-inline fun KotlinMultiplatformExtension.allTargets() {
+inline fun KotlinMultiplatformExtension.allTargets(ktorRequired: Boolean = false) {
     jvm {
         //TODO remove once KT-36942 and KT-35003 are fixed
         attributes {
@@ -49,7 +47,6 @@ inline fun KotlinMultiplatformExtension.allTargets() {
     val nativeTargets = when {
         isMacOs -> listOf(
             macosX64(),
-            macosArm64(),
 
             iosArm32(),
             iosArm64(),
@@ -62,18 +59,21 @@ inline fun KotlinMultiplatformExtension.allTargets() {
             watchosArm64(),
             watchosX86(),
             watchosX64(),
+        ) + if(!ktorRequired) listOf(
+            macosArm64(),
 
             iosSimulatorArm64(),
             tvosSimulatorArm64(),
             watchosSimulatorArm64(),
-        )
+        ) else emptyList()
         hostOs == "Linux" -> listOf(
             linuxX64(),
             linuxArm32Hfp(),
-            linuxArm64(),
 //            linuxMips32(),
 //            linuxMipsel32(),
-        )
+        ) + if(!ktorRequired) listOf(
+            linuxArm64(),
+        ) else emptyList()
         isMingwX64 -> listOf(
             mingwX64(),
             mingwX86(),
