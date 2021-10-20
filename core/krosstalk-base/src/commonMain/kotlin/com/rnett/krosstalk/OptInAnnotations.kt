@@ -6,6 +6,7 @@ package com.rnett.krosstalk
  *
  * These APIs may change without notice, and generally do things that users shouldn't be doing.
  */
+@Target(AnnotationTarget.CLASS, AnnotationTarget.CONSTRUCTOR, AnnotationTarget.FUNCTION, AnnotationTarget.PROPERTY, AnnotationTarget.TYPEALIAS)
 @Retention(AnnotationRetention.BINARY)
 @RequiresOptIn(message = "This API is for internal Krosstalk use.  Stability is not guaranteed and you probably shouldn't use it.",
     level = RequiresOptIn.Level.ERROR)
