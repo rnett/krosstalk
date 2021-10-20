@@ -76,8 +76,9 @@ inline fun KotlinMultiplatformExtension.allTargets(ktorRequired: Boolean = false
         ) else emptyList()
         isMingwX64 -> listOf(
             mingwX64(),
+        ) + if(!ktorRequired) listOf(
             mingwX86(),
-        )
+        ) else emptyList()
         else -> throw GradleException("Host OS is not supported in Kotlin/Native.")
     }
 
