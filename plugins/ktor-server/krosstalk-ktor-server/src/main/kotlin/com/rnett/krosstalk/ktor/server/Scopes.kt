@@ -2,10 +2,10 @@ package com.rnett.krosstalk.ktor.server
 
 import com.rnett.krosstalk.KrosstalkPluginApi
 import com.rnett.krosstalk.server.plugin.ServerScope
-import io.ktor.application.Application
-import io.ktor.application.ApplicationCall
 import io.ktor.http.Headers
-import io.ktor.routing.Route
+import io.ktor.server.application.Application
+import io.ktor.server.application.ApplicationCall
+import io.ktor.server.routing.Route
 
 
 /**

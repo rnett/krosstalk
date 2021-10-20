@@ -1,23 +1,25 @@
 package com.rnett.krosstalk.client_test
 
-import io.ktor.application.call
-import io.ktor.application.install
-import io.ktor.auth.*
-import io.ktor.features.CORS
-import io.ktor.features.ContentNegotiation
+import io.ktor.http.ContentType
+import io.ktor.shared.serialization.kotlinx.json
+import io.ktor.server.auth.*
+import io.ktor.server.application.call
+import io.ktor.server.application.install
 import io.ktor.http.HttpStatusCode
-import io.ktor.http.content.resource
-import io.ktor.http.content.static
-import io.ktor.request.receive
-import io.ktor.response.respond
-import io.ktor.routing.get
-import io.ktor.routing.post
-import io.ktor.routing.route
-import io.ktor.routing.routing
-import io.ktor.serialization.json
 import io.ktor.server.cio.CIO
 import io.ktor.server.engine.embeddedServer
-import io.ktor.util.getOrFail
+import io.ktor.server.http.content.resource
+import io.ktor.server.http.content.static
+import io.ktor.server.plugins.CORS
+import io.ktor.server.plugins.ContentNegotiation
+import io.ktor.server.request.receive
+import io.ktor.server.response.respond
+import io.ktor.server.routing.Routing.Plugin.install
+import io.ktor.server.routing.get
+import io.ktor.server.routing.post
+import io.ktor.server.routing.route
+import io.ktor.server.routing.routing
+import io.ktor.server.util.getOrFail
 import io.ktor.util.reflect.TypeInfo
 import kotlinx.serialization.KSerializer
 import kotlinx.serialization.encodeToString
@@ -36,15 +38,7 @@ fun TypeInfo.serializer(): KSerializer<Any> =
 
 fun main() {
     embeddedServer(CIO, 8081, "localhost") {
-        install(CORS) {
-            anyHost()
-        }
-
-        install(ContentNegotiation) {
-            json()
-        }
-
-        install(Authentication) {
+        authentication {
             basic {
                 validate {
                     if (users[it.name] == it.password)
@@ -53,6 +47,14 @@ fun main() {
                         null
                 }
             }
+        }
+
+        install(CORS) {
+            anyHost()
+        }
+
+        this.install(ContentNegotiation) {
+            this.json()
         }
 
         routing {

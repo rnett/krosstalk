@@ -8,9 +8,11 @@ import com.rnett.krosstalk.client.plugin.InternalKrosstalkResponse
 import com.rnett.krosstalk.toHeaders
 import io.ktor.client.HttpClient
 import io.ktor.client.HttpClientConfig
+import io.ktor.client.call.body
 import io.ktor.client.call.receive
 import io.ktor.client.request.HttpRequestBuilder
 import io.ktor.client.request.request
+import io.ktor.client.request.setBody
 import io.ktor.client.statement.HttpResponse
 import io.ktor.client.statement.readBytes
 import io.ktor.content.ByteArrayContent
@@ -88,9 +90,10 @@ public class KtorClient(
                 it.configureClient(this)
             }
         }.use { client ->
-            client.request<HttpResponse>(urlString = url){
-                if (body != null)
-                    this.body = ByteArrayContent(body, ContentType.parse(contentType))
+            client.request(url){
+                if (body != null){
+                    this.setBody(ByteArrayContent(body, ContentType.parse(contentType)))
+                }
                 this.method = HttpMethod(httpMethod.uppercase())
 
                 // base request configuration
@@ -109,7 +112,7 @@ public class KtorClient(
             }
         }
 
-        val bytes = response.receive<ByteArray>()
+        val bytes = response.body<ByteArray>()
         val charset = response.charset() ?: Charsets.UTF_8
 
         return InternalKrosstalkResponse(response.status.value, response.headers.toMap().toHeaders(), bytes) {

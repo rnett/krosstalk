@@ -37,6 +37,8 @@ kotlin {
                 implementation(libs.ktor.server.cio)
                 implementation(libs.ktor.server.serialization)
                 implementation(libs.ktor.server.auth)
+                implementation(libs.ktor.server.cors)
+                implementation(libs.ktor.server.content.negotiation)
 
                 implementation(libs.logback)
             }

@@ -9,26 +9,29 @@ import com.rnett.krosstalk.ktor.server.KtorServer.define
 import com.rnett.krosstalk.server.KrosstalkServer
 import com.rnett.krosstalk.server.plugin.*
 import com.rnett.krosstalk.toHeaders
-import io.ktor.application.Application
 import io.ktor.application.application
 import io.ktor.application.call
-import io.ktor.application.log
 import io.ktor.http.BadContentTypeFormatException
 import io.ktor.http.ContentType
 import io.ktor.http.HttpStatusCode
 import io.ktor.http.URLBuilder
-import io.ktor.request.httpMethod
-import io.ktor.request.receiveChannel
-import io.ktor.request.uri
-import io.ktor.response.respondBytes
-import io.ktor.routing.Route
-import io.ktor.routing.RouteSelector
-import io.ktor.routing.RouteSelectorEvaluation
-import io.ktor.routing.RoutingResolveContext
-import io.ktor.routing.application
 import io.ktor.routing.routing
+import io.ktor.server.application.Application
+import io.ktor.server.application.call
+import io.ktor.server.application.log
+import io.ktor.server.request.httpMethod
+import io.ktor.server.request.receiveChannel
+import io.ktor.server.request.uri
+import io.ktor.server.response.respondBytes
+import io.ktor.server.routing.Route
+import io.ktor.server.routing.RouteSelector
+import io.ktor.server.routing.RouteSelectorEvaluation
+import io.ktor.server.routing.RoutingResolveContext
+import io.ktor.server.routing.application
+import io.ktor.server.routing.routing
+import io.ktor.server.util.createFromCall
 import io.ktor.util.AttributeKey
-import io.ktor.util.createFromCall
+import io.ktor.util.error
 import io.ktor.util.toByteArray
 import io.ktor.util.toMap
 import java.util.*
@@ -136,7 +139,7 @@ public object KtorServer : ServerHandler<KtorServerScope<*>> {
                                     body,
                                     scopes.toImmutable(),
                                     {
-                                        application.log.error(
+                                        this@apply.application.log.error(
                                             "Server exception during ${method.name}, passed on to client",
                                             it
                                         )

@@ -1,25 +1,25 @@
 package com.rnett.krosstalk.ktor.server.auth
 
 import com.rnett.krosstalk.ktor.server.KtorServerScope
-import io.ktor.application.Application
-import io.ktor.application.ApplicationCall
-import io.ktor.application.install
-import io.ktor.auth.Authentication
-import io.ktor.auth.BasicAuthenticationProvider
-import io.ktor.auth.DigestAuthenticationProvider
-import io.ktor.auth.DigestCredential
-import io.ktor.auth.FormAuthenticationProvider
-import io.ktor.auth.OAuthAccessTokenResponse
-import io.ktor.auth.OAuthAuthenticationProvider
-import io.ktor.auth.Principal
-import io.ktor.auth.authenticate
-import io.ktor.auth.authentication
-import io.ktor.auth.basic
-import io.ktor.auth.digest
-import io.ktor.auth.digestAuthenticationCredentials
-import io.ktor.auth.form
-import io.ktor.auth.oauth
-import io.ktor.routing.Route
+import io.ktor.server.application.Application
+import io.ktor.server.application.ApplicationCall
+import io.ktor.server.auth.Authentication
+import io.ktor.server.auth.BasicAuthenticationProvider
+import io.ktor.server.auth.DigestAuthenticationProvider
+import io.ktor.server.auth.DigestCredential
+import io.ktor.server.auth.FormAuthenticationProvider
+import io.ktor.server.auth.OAuthAccessTokenResponse
+import io.ktor.server.auth.OAuthAuthenticationProvider
+import io.ktor.server.auth.Principal
+import io.ktor.server.auth.authenticate
+import io.ktor.server.auth.authentication
+import io.ktor.server.auth.basic
+import io.ktor.server.auth.digest
+import io.ktor.server.auth.digestAuthenticationCredentials
+import io.ktor.server.auth.form
+import io.ktor.server.auth.oauth
+import io.ktor.server.plugins.CORS.Plugin.install
+import io.ktor.server.routing.Route
 import kotlin.random.Random
 
 /**
@@ -42,7 +42,7 @@ public abstract class KtorServerAuth<T : Any>(public val authName: String? = ran
     public abstract fun Authentication.Configuration.configureAuth()
 
     override fun Application.configureApplication() {
-        install(Authentication) {
+        authentication {
             configureAuth()
         }
     }

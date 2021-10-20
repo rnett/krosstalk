@@ -2,13 +2,14 @@ package com.rnett.krosstalk.ktor.client.auth
 
 import com.rnett.krosstalk.ScopeInstance
 import com.rnett.krosstalk.ktor.client.KtorClientScope
+import io.ktor.client.HttpClient
 import io.ktor.client.HttpClientConfig
-import io.ktor.client.features.auth.Auth
-import io.ktor.client.features.auth.providers.BasicAuthCredentials
-import io.ktor.client.features.auth.providers.BearerAuthConfig
-import io.ktor.client.features.auth.providers.BearerTokens
-import io.ktor.client.features.auth.providers.basic
-import io.ktor.client.features.auth.providers.bearer
+import io.ktor.client.plugins.auth.Auth
+import io.ktor.client.plugins.auth.providers.BasicAuthCredentials
+import io.ktor.client.plugins.auth.providers.BearerAuthConfig
+import io.ktor.client.plugins.auth.providers.BearerTokens
+import io.ktor.client.plugins.auth.providers.basic
+import io.ktor.client.plugins.auth.providers.bearer
 import io.ktor.client.statement.HttpResponse
 import com.rnett.krosstalk.client.invoke as makeScope
 
@@ -59,12 +60,14 @@ public abstract class KtorClientBearerAuth<T>(public val sendWithoutRequest: Boo
     /**
      * Used as Ktor's [BearerAuthConfig.refreshTokens].  Calls [loadTokens] by default.
      */
-    public open suspend fun refreshTokens(data: T, response: HttpResponse): BearerTokens? = loadTokens(data)
+    public open suspend fun refreshTokens(data: T, response: HttpResponse, client: HttpClient, oldTokens: BearerTokens?): BearerTokens? = loadTokens(data)
 
     final override fun Auth.configureClientAuth(data: T) {
         bearer {
             this.loadTokens{ loadTokens(data) }
-            this.refreshTokens{ refreshTokens(data, it) }
+            this.refreshTokens{
+                refreshTokens(data, this.response, this.client, this.oldTokens)
+            }
             sendWithoutRequest { this@KtorClientBearerAuth.sendWithoutRequest }
             realm = this@KtorClientBearerAuth.realm
         }
@@ -93,7 +96,7 @@ public open class KtorClientBearerTokenAuth(sendWithoutRequest: Boolean = true, 
     KtorClientBearerAuth<BearerAuthTokens>(sendWithoutRequest, realm){
     final override suspend fun loadTokens(data: BearerAuthTokens): BearerTokens = data.accessTokens()
 
-    final override suspend fun refreshTokens(data: BearerAuthTokens, response: HttpResponse): BearerTokens? =
+    final override suspend fun refreshTokens(data: BearerAuthTokens, response: HttpResponse, client: HttpClient, oldTokens: BearerTokens?): BearerTokens? =
         data.refreshTokens()
 }
 
