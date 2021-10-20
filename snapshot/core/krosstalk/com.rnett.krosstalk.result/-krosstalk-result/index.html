@@ -2,7 +2,7 @@
   <head>
     <meta name="viewport" content="width=device-width, initial-scale=1" charset="UTF-8">
     <title>KrosstalkResult</title>
-</head><body><link href="../../../../../images/logo-icon.svg" rel="icon" type="image/svg"><script>var pathToRoot = "../../../";</script><script type="text/javascript" src="../../../scripts/sourceset_dependencies.js" async></script><link href="../../../styles/style.css" rel="Stylesheet"><link href="../../../styles/logo-styles.css" rel="Stylesheet"><link href="../../../styles/jetbrains-mono.css" rel="Stylesheet"><link href="../../../styles/main.css" rel="Stylesheet"><script type="text/javascript" src="../../../scripts/clipboard.js" async></script><script type="text/javascript" src="../../../scripts/navigation-loader.js" async></script><script type="text/javascript" src="../../../scripts/platform-content-handler.js" async></script><script type="text/javascript" src="../../../scripts/main.js" async></script>
+</head><body><link href="../../../images/logo-icon.svg" rel="icon" type="image/svg"><script>var pathToRoot = "../../../";</script><script type="text/javascript" src="../../../scripts/sourceset_dependencies.js" async></script><link href="../../../styles/style.css" rel="Stylesheet"><link href="../../../styles/logo-styles.css" rel="Stylesheet"><link href="../../../styles/jetbrains-mono.css" rel="Stylesheet"><link href="../../../styles/main.css" rel="Stylesheet"><script type="text/javascript" src="../../../scripts/clipboard.js" async></script><script type="text/javascript" src="../../../scripts/navigation-loader.js" async></script><script type="text/javascript" src="../../../scripts/platform-content-handler.js" async></script><script type="text/javascript" src="../../../scripts/main.js" async></script>
   
     <div id="container">
       <div id="leftColumn"><a href="../../../index.html">
@@ -22,7 +22,7 @@
             </div>
           </div>
           <div class="cover ">
-            <h1 class="cover"><span>Krosstalk</span><wbr><span>Result</span></h1>
+            <h1 class="cover"><span>Krosstalk</span><wbr><span><span>Result</span></span></h1>
             <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-depenent-content" data-active="" data-togglable=":core:krosstalk:dokkaHtmlPartial/commonMain"><div class="symbol monospace">interface <a href="index.html">KrosstalkResult</a>&lt;out <a href="index.html">T</a>&gt;<span class="top-right-position"><span class="copy-icon"></span><div class="copy-popup-wrapper popup-to-left"><span class="copy-popup-icon"></span><span>Content copied to clipboard</span></div></span></div><p class="paragraph">The result of a krosstalk call.  Can be either an exception in the server method, a Http error, or success.</p><p class="paragraph">Can be handled using a <code>when</code> block (including using <a href="-failure/index.html">Failure</a>, <a href="-success-or-server-exception/index.html">SuccessOrServerException</a>, and <a href="-success-or-http-error/index.html">SuccessOrHttpError</a>, since everything is <code>sealed</code>), or using the provided <code>recover*</code>, <code>handle*</code>, and <code>throw*</code> functions. Will confine the type to <a href="-success-or-server-exception/index.html">SuccessOrServerException</a> or <a href="-success-or-http-error/index.html">SuccessOrHttpError</a> when possible (i.e. after a <code>throws*</code> function).</p><p class="paragraph">To use as a return type of a Krosstalk method, use with <a href="../../com.rnett.krosstalk.annotations/-explicit-result/index.html">@ExplicitResult</a>.</p></div></div>
           </div>
           <div class="tabbedcontent">
@@ -32,7 +32,7 @@
               <div class="table" data-togglable="Types"><a data-name="288901834%2FClasslikes%2F-1516480294" anchor-label="Failure" id="288901834%2FClasslikes%2F-1516480294" data-filterable-set=":core:krosstalk:dokkaHtmlPartial/commonMain"></a>
                 <div class="table-row" data-filterable-current=":core:krosstalk:dokkaHtmlPartial/commonMain" data-filterable-set=":core:krosstalk:dokkaHtmlPartial/commonMain">
                   <div class="main-subrow keyValue ">
-                    <div class=""><span class="inline-flex"><a href="-failure/index.html">Failure</a><span class="anchor-wrapper"><span class="anchor-icon" pointing-to="288901834%2FClasslikes%2F-1516480294"></span>
+                    <div class=""><span class="inline-flex"><a href="-failure/index.html"><span><span>Failure</span></span></a><span class="anchor-wrapper"><span class="anchor-icon" pointing-to="288901834%2FClasslikes%2F-1516480294"></span>
                           <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
                         </span></span></div>
                     <div>
@@ -41,7 +41,7 @@
   <div>
     <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-depenent-content" data-active="" data-togglable=":core:krosstalk:dokkaHtmlPartial/commonMain"><div class="symbol monospace">interface <a href="-failure/index.html">Failure</a> : <a href="index.html">KrosstalkResult</a>&lt;<a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-nothing/index.html">Nothing</a>&gt; <span class="top-right-position"><span class="copy-icon"></span><div class="copy-popup-wrapper popup-to-left"><span class="copy-popup-icon"></span><span>Content copied to clipboard</span></div></span></div></div></div>
   </div>
-<a data-name="288901834%2FClasslikes%2F-1516480294" anchor-label="Failure" id="288901834%2FClasslikes%2F-1516480294" data-filterable-set=":core:krosstalk:dokkaHtmlPartial/commonMain"></a><div class="brief "><a data-name="288901834%2FClasslikes%2F-1516480294" anchor-label="Failure" id="288901834%2FClasslikes%2F-1516480294" data-filterable-set=":core:krosstalk:dokkaHtmlPartial/commonMain"></a>A failure case of <a href="index.html">KrosstalkResult</a></div></div>
+<div class="brief "><p class="paragraph">A failure case of <a href="index.html">KrosstalkResult</a></p></div></div>
 </div>
                     </div>
                   </div>
@@ -49,7 +49,7 @@
 <a data-name="1001414132%2FClasslikes%2F-1516480294" anchor-label="HttpError" id="1001414132%2FClasslikes%2F-1516480294" data-filterable-set=":core:krosstalk:dokkaHtmlPartial/commonMain"></a>
                 <div class="table-row" data-filterable-current=":core:krosstalk:dokkaHtmlPartial/commonMain" data-filterable-set=":core:krosstalk:dokkaHtmlPartial/commonMain">
                   <div class="main-subrow keyValue ">
-                    <div class=""><span class="inline-flex"><a href="-http-error/index.html">HttpError</a><span class="anchor-wrapper"><span class="anchor-icon" pointing-to="1001414132%2FClasslikes%2F-1516480294"></span>
+                    <div class=""><span class="inline-flex"><a href="-http-error/index.html"><span>Http</span><wbr><span><span>Error</span></span></a><span class="anchor-wrapper"><span class="anchor-icon" pointing-to="1001414132%2FClasslikes%2F-1516480294"></span>
                           <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
                         </span></span></div>
                     <div>
@@ -58,7 +58,7 @@
   <div>
     <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-depenent-content" data-active="" data-togglable=":core:krosstalk:dokkaHtmlPartial/commonMain"><div class="symbol monospace">data class <a href="-http-error/index.html">HttpError</a>(statusCode: <a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-int/index.html">Int</a>, message: <a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html">String</a>?) : <a href="-failure/index.html">KrosstalkResult.Failure</a>, <a href="-success-or-http-error/index.html">KrosstalkResult.SuccessOrHttpError</a>&lt;<a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-nothing/index.html">Nothing</a>&gt; <span class="top-right-position"><span class="copy-icon"></span><div class="copy-popup-wrapper popup-to-left"><span class="copy-popup-icon"></span><span>Content copied to clipboard</span></div></span></div></div></div>
   </div>
-<a data-name="1001414132%2FClasslikes%2F-1516480294" anchor-label="HttpError" id="1001414132%2FClasslikes%2F-1516480294" data-filterable-set=":core:krosstalk:dokkaHtmlPartial/commonMain"></a><div class="brief "><a data-name="1001414132%2FClasslikes%2F-1516480294" anchor-label="HttpError" id="1001414132%2FClasslikes%2F-1516480294" data-filterable-set=":core:krosstalk:dokkaHtmlPartial/commonMain"></a>The HTTP error <a href="index.html">KrosstalkResult</a>, containing the HTTP status code and an optional message.</div></div>
+<div class="brief "><p class="paragraph">The HTTP error <a href="index.html">KrosstalkResult</a>, containing the HTTP status code and an optional message.</p></div></div>
 </div>
                     </div>
                   </div>
@@ -66,7 +66,7 @@
 <a data-name="2057300808%2FClasslikes%2F-1516480294" anchor-label="ServerException" id="2057300808%2FClasslikes%2F-1516480294" data-filterable-set=":core:krosstalk:dokkaHtmlPartial/commonMain"></a>
                 <div class="table-row" data-filterable-current=":core:krosstalk:dokkaHtmlPartial/commonMain" data-filterable-set=":core:krosstalk:dokkaHtmlPartial/commonMain">
                   <div class="main-subrow keyValue ">
-                    <div class=""><span class="inline-flex"><a href="-server-exception/index.html">ServerException</a><span class="anchor-wrapper"><span class="anchor-icon" pointing-to="2057300808%2FClasslikes%2F-1516480294"></span>
+                    <div class=""><span class="inline-flex"><a href="-server-exception/index.html"><span>Server</span><wbr><span><span>Exception</span></span></a><span class="anchor-wrapper"><span class="anchor-icon" pointing-to="2057300808%2FClasslikes%2F-1516480294"></span>
                           <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
                         </span></span></div>
                     <div>
@@ -75,7 +75,7 @@
   <div>
     <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-depenent-content" data-active="" data-togglable=":core:krosstalk:dokkaHtmlPartial/commonMain"><div class="symbol monospace">data class <a href="-server-exception/index.html">ServerException</a> : <a href="-failure/index.html">KrosstalkResult.Failure</a>, <a href="-success-or-server-exception/index.html">KrosstalkResult.SuccessOrServerException</a>&lt;<a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-nothing/index.html">Nothing</a>&gt; <span class="top-right-position"><span class="copy-icon"></span><div class="copy-popup-wrapper popup-to-left"><span class="copy-popup-icon"></span><span>Content copied to clipboard</span></div></span></div></div></div>
   </div>
-<a data-name="2057300808%2FClasslikes%2F-1516480294" anchor-label="ServerException" id="2057300808%2FClasslikes%2F-1516480294" data-filterable-set=":core:krosstalk:dokkaHtmlPartial/commonMain"></a><div class="brief "><a data-name="2057300808%2FClasslikes%2F-1516480294" anchor-label="ServerException" id="2057300808%2FClasslikes%2F-1516480294" data-filterable-set=":core:krosstalk:dokkaHtmlPartial/commonMain"></a>The server exception <a href="index.html">KrosstalkResult</a>, containing the <a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-throwable/index.html">Throwable</a>'s data.</div></div>
+<div class="brief "><p class="paragraph">The server exception <a href="index.html">KrosstalkResult</a>, containing the <a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-throwable/index.html">Throwable</a>'s data.</p></div></div>
 </div>
                     </div>
                   </div>
@@ -83,16 +83,16 @@
 <a data-name="1814251121%2FClasslikes%2F-1516480294" anchor-label="Success" id="1814251121%2FClasslikes%2F-1516480294" data-filterable-set=":core:krosstalk:dokkaHtmlPartial/commonMain"></a>
                 <div class="table-row" data-filterable-current=":core:krosstalk:dokkaHtmlPartial/commonMain" data-filterable-set=":core:krosstalk:dokkaHtmlPartial/commonMain">
                   <div class="main-subrow keyValue ">
-                    <div class=""><span class="inline-flex"><a href="-success/index.html">Success</a><span class="anchor-wrapper"><span class="anchor-icon" pointing-to="1814251121%2FClasslikes%2F-1516480294"></span>
+                    <div class=""><span class="inline-flex"><a href="-success/index.html"><span><span>Success</span></span></a><span class="anchor-wrapper"><span class="anchor-icon" pointing-to="1814251121%2FClasslikes%2F-1516480294"></span>
                           <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
                         </span></span></div>
                     <div>
                       <div class="title"><div class="divergent-group" data-filterable-current=":core:krosstalk:dokkaHtmlPartial/commonMain" data-filterable-set=":core:krosstalk:dokkaHtmlPartial/commonMain"><div class="with-platform-tags"><span class="pull-right"></span></div>
 
   <div>
-    <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-depenent-content" data-active="" data-togglable=":core:krosstalk:dokkaHtmlPartial/commonMain"><div class="symbol monospace"><div class="block"><div class="block">@<a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin.jvm/-jvm-inline/index.html">JvmInline</a>()</div></div>value class <a href="-success/index.html">Success</a>&lt;out <a href="-success/index.html">T</a>&gt; : <a href="index.html">KrosstalkResult</a>&lt;<a href="-success/index.html">T</a>&gt; , <a href="-success-or-http-error/index.html">KrosstalkResult.SuccessOrHttpError</a>&lt;<a href="-success/index.html">T</a>&gt; , <a href="-success-or-server-exception/index.html">KrosstalkResult.SuccessOrServerException</a>&lt;<a href="-success/index.html">T</a>&gt; <span class="top-right-position"><span class="copy-icon"></span><div class="copy-popup-wrapper popup-to-left"><span class="copy-popup-icon"></span><span>Content copied to clipboard</span></div></span></div></div></div>
+    <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-depenent-content" data-active="" data-togglable=":core:krosstalk:dokkaHtmlPartial/commonMain"><div class="symbol monospace"><div class="block"><div class="block">@<a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin.jvm/-jvm-inline/index.html">JvmInline</a></div></div>value class <a href="-success/index.html">Success</a>&lt;out <a href="-success/index.html">T</a>&gt; : <a href="index.html">KrosstalkResult</a>&lt;<a href="-success/index.html">T</a>&gt; , <a href="-success-or-http-error/index.html">KrosstalkResult.SuccessOrHttpError</a>&lt;<a href="-success/index.html">T</a>&gt; , <a href="-success-or-server-exception/index.html">KrosstalkResult.SuccessOrServerException</a>&lt;<a href="-success/index.html">T</a>&gt; <span class="top-right-position"><span class="copy-icon"></span><div class="copy-popup-wrapper popup-to-left"><span class="copy-popup-icon"></span><span>Content copied to clipboard</span></div></span></div></div></div>
   </div>
-<a data-name="1814251121%2FClasslikes%2F-1516480294" anchor-label="Success" id="1814251121%2FClasslikes%2F-1516480294" data-filterable-set=":core:krosstalk:dokkaHtmlPartial/commonMain"></a><div class="brief "><a data-name="1814251121%2FClasslikes%2F-1516480294" anchor-label="Success" id="1814251121%2FClasslikes%2F-1516480294" data-filterable-set=":core:krosstalk:dokkaHtmlPartial/commonMain"></a>A successful <a href="index.html">KrosstalkResult</a>.</div></div>
+<div class="brief "><p class="paragraph">A successful <a href="index.html">KrosstalkResult</a>.</p></div></div>
 </div>
                     </div>
                   </div>
@@ -100,7 +100,7 @@
 <a data-name="-1733164812%2FClasslikes%2F-1516480294" anchor-label="SuccessOrHttpError" id="-1733164812%2FClasslikes%2F-1516480294" data-filterable-set=":core:krosstalk:dokkaHtmlPartial/commonMain"></a>
                 <div class="table-row" data-filterable-current=":core:krosstalk:dokkaHtmlPartial/commonMain" data-filterable-set=":core:krosstalk:dokkaHtmlPartial/commonMain">
                   <div class="main-subrow keyValue ">
-                    <div class=""><span class="inline-flex"><a href="-success-or-http-error/index.html">SuccessOrHttpError</a><span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-1733164812%2FClasslikes%2F-1516480294"></span>
+                    <div class=""><span class="inline-flex"><a href="-success-or-http-error/index.html"><span>Success</span><wbr><span>Or</span><wbr><span>Http</span><wbr><span><span>Error</span></span></a><span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-1733164812%2FClasslikes%2F-1516480294"></span>
                           <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
                         </span></span></div>
                     <div>
@@ -109,7 +109,7 @@
   <div>
     <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-depenent-content" data-active="" data-togglable=":core:krosstalk:dokkaHtmlPartial/commonMain"><div class="symbol monospace">interface <a href="-success-or-http-error/index.html">SuccessOrHttpError</a>&lt;out <a href="-success-or-http-error/index.html">T</a>&gt; : <a href="index.html">KrosstalkResult</a>&lt;<a href="-success-or-http-error/index.html">T</a>&gt; <span class="top-right-position"><span class="copy-icon"></span><div class="copy-popup-wrapper popup-to-left"><span class="copy-popup-icon"></span><span>Content copied to clipboard</span></div></span></div></div></div>
   </div>
-<a data-name="-1733164812%2FClasslikes%2F-1516480294" anchor-label="SuccessOrHttpError" id="-1733164812%2FClasslikes%2F-1516480294" data-filterable-set=":core:krosstalk:dokkaHtmlPartial/commonMain"></a><div class="brief "><a data-name="-1733164812%2FClasslikes%2F-1516480294" anchor-label="SuccessOrHttpError" id="-1733164812%2FClasslikes%2F-1516480294" data-filterable-set=":core:krosstalk:dokkaHtmlPartial/commonMain"></a>A <a href="index.html">KrosstalkResult</a> with no <a href="-server-exception/index.html">KrosstalkResult.ServerException</a>s</div></div>
+<div class="brief "><p class="paragraph">A <a href="index.html">KrosstalkResult</a> with no <a href="-server-exception/index.html">KrosstalkResult.ServerException</a>s</p></div></div>
 </div>
                     </div>
                   </div>
@@ -117,7 +117,7 @@
 <a data-name="-358920632%2FClasslikes%2F-1516480294" anchor-label="SuccessOrServerException" id="-358920632%2FClasslikes%2F-1516480294" data-filterable-set=":core:krosstalk:dokkaHtmlPartial/commonMain"></a>
                 <div class="table-row" data-filterable-current=":core:krosstalk:dokkaHtmlPartial/commonMain" data-filterable-set=":core:krosstalk:dokkaHtmlPartial/commonMain">
                   <div class="main-subrow keyValue ">
-                    <div class=""><span class="inline-flex"><a href="-success-or-server-exception/index.html">SuccessOrServerException</a><span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-358920632%2FClasslikes%2F-1516480294"></span>
+                    <div class=""><span class="inline-flex"><a href="-success-or-server-exception/index.html"><span>Success</span><wbr><span>Or</span><wbr><span>Server</span><wbr><span><span>Exception</span></span></a><span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-358920632%2FClasslikes%2F-1516480294"></span>
                           <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
                         </span></span></div>
                     <div>
@@ -126,7 +126,7 @@
   <div>
     <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-depenent-content" data-active="" data-togglable=":core:krosstalk:dokkaHtmlPartial/commonMain"><div class="symbol monospace">interface <a href="-success-or-server-exception/index.html">SuccessOrServerException</a>&lt;out <a href="-success-or-server-exception/index.html">T</a>&gt; : <a href="index.html">KrosstalkResult</a>&lt;<a href="-success-or-server-exception/index.html">T</a>&gt; <span class="top-right-position"><span class="copy-icon"></span><div class="copy-popup-wrapper popup-to-left"><span class="copy-popup-icon"></span><span>Content copied to clipboard</span></div></span></div></div></div>
   </div>
-<a data-name="-358920632%2FClasslikes%2F-1516480294" anchor-label="SuccessOrServerException" id="-358920632%2FClasslikes%2F-1516480294" data-filterable-set=":core:krosstalk:dokkaHtmlPartial/commonMain"></a><div class="brief "><a data-name="-358920632%2FClasslikes%2F-1516480294" anchor-label="SuccessOrServerException" id="-358920632%2FClasslikes%2F-1516480294" data-filterable-set=":core:krosstalk:dokkaHtmlPartial/commonMain"></a>A <a href="index.html">KrosstalkResult</a> with no <a href="-http-error/index.html">KrosstalkResult.HttpError</a></div></div>
+<div class="brief "><p class="paragraph">A <a href="index.html">KrosstalkResult</a> with no <a href="-http-error/index.html">KrosstalkResult.HttpError</a></p></div></div>
 </div>
                     </div>
                   </div>
@@ -174,7 +174,7 @@
               <div class="table" data-togglable="Extensions"><a data-name="1285811954%2FExtensions%2F-1516480294" anchor-label="failureOrNull" id="1285811954%2FExtensions%2F-1516480294" data-filterable-set=":core:krosstalk:dokkaHtmlPartial/commonMain"></a>
                 <div class="table-row" data-filterable-current=":core:krosstalk:dokkaHtmlPartial/commonMain" data-filterable-set=":core:krosstalk:dokkaHtmlPartial/commonMain">
                   <div class="main-subrow keyValue ">
-                    <div class=""><span class="inline-flex"><a href="../failure-or-null.html">failureOrNull</a><span class="anchor-wrapper"><span class="anchor-icon" pointing-to="1285811954%2FExtensions%2F-1516480294"></span>
+                    <div class=""><span class="inline-flex"><a href="../failure-or-null.html"><span>failure</span><wbr><span>Or</span><wbr><span><span>Null</span></span></a><span class="anchor-wrapper"><span class="anchor-icon" pointing-to="1285811954%2FExtensions%2F-1516480294"></span>
                           <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
                         </span></span></div>
                     <div>
@@ -183,7 +183,7 @@
   <div>
     <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-depenent-content" data-active="" data-togglable=":core:krosstalk:dokkaHtmlPartial/commonMain"><div class="symbol monospace">val &lt;<a href="../failure-or-null.html">T</a>&gt; <a href="index.html">KrosstalkResult</a>&lt;<a href="../failure-or-null.html">T</a>&gt;.<a href="../failure-or-null.html">failureOrNull</a>: <a href="-failure/index.html">KrosstalkResult.Failure</a>?<span class="top-right-position"><span class="copy-icon"></span><div class="copy-popup-wrapper popup-to-left"><span class="copy-popup-icon"></span><span>Content copied to clipboard</span></div></span></div></div></div>
   </div>
-<a data-name="1285811954%2FExtensions%2F-1516480294" anchor-label="failureOrNull" id="1285811954%2FExtensions%2F-1516480294" data-filterable-set=":core:krosstalk:dokkaHtmlPartial/commonMain"></a><div class="brief "><a data-name="1285811954%2FExtensions%2F-1516480294" anchor-label="failureOrNull" id="1285811954%2FExtensions%2F-1516480294" data-filterable-set=":core:krosstalk:dokkaHtmlPartial/commonMain"></a>Get the failure if there is one, else null</div></div>
+<div class="brief "><p class="paragraph">Get the failure if there is one, else null</p></div></div>
 </div>
                     </div>
                   </div>
@@ -191,22 +191,16 @@
 <a data-name="-1329962745%2FExtensions%2F-1516480294" anchor-label="fold" id="-1329962745%2FExtensions%2F-1516480294" data-filterable-set=":core:krosstalk:dokkaHtmlPartial/commonMain"></a>
                 <div class="table-row" data-filterable-current=":core:krosstalk:dokkaHtmlPartial/commonMain" data-filterable-set=":core:krosstalk:dokkaHtmlPartial/commonMain">
                   <div class="main-subrow keyValue ">
-                    <div class=""><span class="inline-flex"><a href="../fold.html">fold</a><span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-1329962745%2FExtensions%2F-1516480294"></span>
+                    <div class=""><span class="inline-flex"><a href="../fold.html"><span><span>fold</span></span></a><span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-1329962745%2FExtensions%2F-1516480294"></span>
                           <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
                         </span></span></div>
                     <div>
                       <div class="title"><div class="divergent-group" data-filterable-current=":core:krosstalk:dokkaHtmlPartial/commonMain" data-filterable-set=":core:krosstalk:dokkaHtmlPartial/commonMain"><div class="with-platform-tags"><span class="pull-right"></span></div>
 
   <div>
-    <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-depenent-content" data-active="" data-togglable=":core:krosstalk:dokkaHtmlPartial/commonMain"><div class="symbol monospace">inline fun &lt;<a href="../fold.html">T</a>, <a href="../fold.html">R</a>&gt; <a href="index.html">KrosstalkResult</a>&lt;<a href="../fold.html">T</a>&gt;.<a href="../fold.html">fold</a>(onSuccess: (<a href="-success/index.html">KrosstalkResult.Success</a>&lt;<a href="../fold.html">T</a>&gt;) -&gt; <a href="../fold.html">R</a>, onHttpError: (<a href="-http-error/index.html">KrosstalkResult.HttpError</a>) -&gt; <a href="../fold.html">R</a>, onServerException: (<a href="-server-exception/index.html">KrosstalkResult.ServerException</a>) -&gt; <a href="../fold.html">R</a>): <a href="../fold.html">R</a><span class="top-right-position"><span class="copy-icon"></span><div class="copy-popup-wrapper popup-to-left"><span class="copy-popup-icon"></span><span>Content copied to clipboard</span></div></span></div></div></div>
+    <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-depenent-content" data-active="" data-togglable=":core:krosstalk:dokkaHtmlPartial/commonMain"><div class="symbol monospace">inline fun &lt;<a href="../fold.html">T</a>, <a href="../fold.html">R</a>&gt; <a href="index.html">KrosstalkResult</a>&lt;<a href="../fold.html">T</a>&gt;.<a href="../fold.html">fold</a>(onSuccess: (<a href="-success/index.html">KrosstalkResult.Success</a>&lt;<a href="../fold.html">T</a>&gt;) -&gt; <a href="../fold.html">R</a>, onHttpError: (<a href="-http-error/index.html">KrosstalkResult.HttpError</a>) -&gt; <a href="../fold.html">R</a>, onServerException: (<a href="-server-exception/index.html">KrosstalkResult.ServerException</a>) -&gt; <a href="../fold.html">R</a>): <a href="../fold.html">R</a><span class="top-right-position"><span class="copy-icon"></span><div class="copy-popup-wrapper popup-to-left"><span class="copy-popup-icon"></span><span>Content copied to clipboard</span></div></span></div><div class="symbol monospace">inline fun &lt;<a href="../fold.html">T</a>, <a href="../fold.html">R</a>&gt; <a href="index.html">KrosstalkResult</a>&lt;<a href="../fold.html">T</a>&gt;.<a href="../fold.html">fold</a>(onSuccess: (<a href="-success/index.html">KrosstalkResult.Success</a>&lt;<a href="../fold.html">T</a>&gt;) -&gt; <a href="../fold.html">R</a>, onFailure: (<a href="-failure/index.html">KrosstalkResult.Failure</a>) -&gt; <a href="../fold.html">R</a>): <a href="../fold.html">R</a><span class="top-right-position"><span class="copy-icon"></span><div class="copy-popup-wrapper popup-to-left"><span class="copy-popup-icon"></span><span>Content copied to clipboard</span></div></span></div></div></div>
   </div>
-<a data-name="324238940%2FExtensions%2F-1516480294" anchor-label="fold" id="324238940%2FExtensions%2F-1516480294" data-filterable-set=":core:krosstalk:dokkaHtmlPartial/commonMain"></a><div class="brief "><a data-name="324238940%2FExtensions%2F-1516480294" anchor-label="fold" id="324238940%2FExtensions%2F-1516480294" data-filterable-set=":core:krosstalk:dokkaHtmlPartial/commonMain"></a>Get a value depending on the type of result.</div></div>
-<div class="divergent-group" data-filterable-current=":core:krosstalk:dokkaHtmlPartial/commonMain" data-filterable-set=":core:krosstalk:dokkaHtmlPartial/commonMain"><div class="with-platform-tags"><span class="pull-right"></span></div>
-
-  <div>
-    <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-depenent-content" data-active="" data-togglable=":core:krosstalk:dokkaHtmlPartial/commonMain"><div class="symbol monospace">inline fun &lt;<a href="../fold.html">T</a>, <a href="../fold.html">R</a>&gt; <a href="index.html">KrosstalkResult</a>&lt;<a href="../fold.html">T</a>&gt;.<a href="../fold.html">fold</a>(onSuccess: (<a href="-success/index.html">KrosstalkResult.Success</a>&lt;<a href="../fold.html">T</a>&gt;) -&gt; <a href="../fold.html">R</a>, onFailure: (<a href="-failure/index.html">KrosstalkResult.Failure</a>) -&gt; <a href="../fold.html">R</a>): <a href="../fold.html">R</a><span class="top-right-position"><span class="copy-icon"></span><div class="copy-popup-wrapper popup-to-left"><span class="copy-popup-icon"></span><span>Content copied to clipboard</span></div></span></div></div></div>
-  </div>
-<a data-name="-523514815%2FExtensions%2F-1516480294" anchor-label="fold" id="-523514815%2FExtensions%2F-1516480294" data-filterable-set=":core:krosstalk:dokkaHtmlPartial/commonMain"></a><div class="brief "><a data-name="-523514815%2FExtensions%2F-1516480294" anchor-label="fold" id="-523514815%2FExtensions%2F-1516480294" data-filterable-set=":core:krosstalk:dokkaHtmlPartial/commonMain"></a>Get a value depending on the type of result.</div></div>
+<div class="brief "><p class="paragraph">Get a value depending on the type of result.</p></div></div>
 </div>
                     </div>
                   </div>
@@ -214,7 +208,7 @@
 <a data-name="-487746163%2FExtensions%2F-1516480294" anchor-label="getOrDefault" id="-487746163%2FExtensions%2F-1516480294" data-filterable-set=":core:krosstalk:dokkaHtmlPartial/commonMain"></a>
                 <div class="table-row" data-filterable-current=":core:krosstalk:dokkaHtmlPartial/commonMain" data-filterable-set=":core:krosstalk:dokkaHtmlPartial/commonMain">
                   <div class="main-subrow keyValue ">
-                    <div class=""><span class="inline-flex"><a href="../get-or-default.html">getOrDefault</a><span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-487746163%2FExtensions%2F-1516480294"></span>
+                    <div class=""><span class="inline-flex"><a href="../get-or-default.html"><span>get</span><wbr><span>Or</span><wbr><span><span>Default</span></span></a><span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-487746163%2FExtensions%2F-1516480294"></span>
                           <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
                         </span></span></div>
                     <div>
@@ -223,13 +217,13 @@
   <div>
     <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-depenent-content" data-active="" data-togglable=":core:krosstalk:dokkaHtmlPartial/commonMain"><div class="symbol monospace">inline fun &lt;<a href="../get-or-default.html">R</a>, <a href="../get-or-default.html">T</a> : <a href="../get-or-default.html">R</a>&gt; <a href="index.html">KrosstalkResult</a>&lt;<a href="../get-or-default.html">T</a>&gt;.<a href="../get-or-default.html">getOrDefault</a>(onFailure: <a href="../get-or-default.html">R</a>): <a href="../get-or-default.html">R</a><span class="top-right-position"><span class="copy-icon"></span><div class="copy-popup-wrapper popup-to-left"><span class="copy-popup-icon"></span><span>Content copied to clipboard</span></div></span></div></div></div>
   </div>
-<a data-name="-486272278%2FExtensions%2F-1516480294" anchor-label="getOrDefault" id="-486272278%2FExtensions%2F-1516480294" data-filterable-set=":core:krosstalk:dokkaHtmlPartial/commonMain"></a><div class="brief "><a data-name="-486272278%2FExtensions%2F-1516480294" anchor-label="getOrDefault" id="-486272278%2FExtensions%2F-1516480294" data-filterable-set=":core:krosstalk:dokkaHtmlPartial/commonMain"></a>Get the value on success, or <a href="../get-or-default.html">onFailure</a> otherwise.</div></div>
+<div class="brief "><p class="paragraph">Get the value on success, or <a href="../get-or-default.html">onFailure</a> otherwise.</p></div></div>
 <div class="divergent-group" data-filterable-current=":core:krosstalk:dokkaHtmlPartial/commonMain" data-filterable-set=":core:krosstalk:dokkaHtmlPartial/commonMain"><div class="with-platform-tags"><span class="pull-right"></span></div>
 
   <div>
     <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-depenent-content" data-active="" data-togglable=":core:krosstalk:dokkaHtmlPartial/commonMain"><div class="symbol monospace">inline fun &lt;<a href="../get-or-default.html">R</a>, <a href="../get-or-default.html">T</a> : <a href="../get-or-default.html">R</a>&gt; <a href="index.html">KrosstalkResult</a>&lt;<a href="../get-or-default.html">T</a>&gt;.<a href="../get-or-default.html">getOrDefault</a>(onServerException: <a href="../get-or-default.html">R</a>, onHttpError: <a href="../get-or-default.html">R</a>): <a href="../get-or-default.html">R</a><span class="top-right-position"><span class="copy-icon"></span><div class="copy-popup-wrapper popup-to-left"><span class="copy-popup-icon"></span><span>Content copied to clipboard</span></div></span></div></div></div>
   </div>
-<a data-name="-1050508663%2FExtensions%2F-1516480294" anchor-label="getOrDefault" id="-1050508663%2FExtensions%2F-1516480294" data-filterable-set=":core:krosstalk:dokkaHtmlPartial/commonMain"></a><div class="brief "><a data-name="-1050508663%2FExtensions%2F-1516480294" anchor-label="getOrDefault" id="-1050508663%2FExtensions%2F-1516480294" data-filterable-set=":core:krosstalk:dokkaHtmlPartial/commonMain"></a>Get the value on success, <a href="../get-or-default.html">onServerException</a> on a server exception, or <a href="../get-or-default.html">onHttpError</a> on a http error.</div></div>
+<div class="brief "><p class="paragraph">Get the value on success, <a href="../get-or-default.html">onServerException</a> on a server exception, or <a href="../get-or-default.html">onHttpError</a> on a http error.</p></div></div>
 </div>
                     </div>
                   </div>
@@ -237,7 +231,7 @@
 <a data-name="-1400370983%2FExtensions%2F-1516480294" anchor-label="getOrElse" id="-1400370983%2FExtensions%2F-1516480294" data-filterable-set=":core:krosstalk:dokkaHtmlPartial/commonMain"></a>
                 <div class="table-row" data-filterable-current=":core:krosstalk:dokkaHtmlPartial/commonMain" data-filterable-set=":core:krosstalk:dokkaHtmlPartial/commonMain">
                   <div class="main-subrow keyValue ">
-                    <div class=""><span class="inline-flex"><a href="../get-or-else.html">getOrElse</a><span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-1400370983%2FExtensions%2F-1516480294"></span>
+                    <div class=""><span class="inline-flex"><a href="../get-or-else.html"><span>get</span><wbr><span>Or</span><wbr><span><span>Else</span></span></a><span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-1400370983%2FExtensions%2F-1516480294"></span>
                           <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
                         </span></span></div>
                     <div>
@@ -246,13 +240,13 @@
   <div>
     <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-depenent-content" data-active="" data-togglable=":core:krosstalk:dokkaHtmlPartial/commonMain"><div class="symbol monospace">inline fun &lt;<a href="../get-or-else.html">R</a>, <a href="../get-or-else.html">T</a> : <a href="../get-or-else.html">R</a>&gt; <a href="index.html">KrosstalkResult</a>&lt;<a href="../get-or-else.html">T</a>&gt;.<a href="../get-or-else.html">getOrElse</a>(onFailure: (<a href="-failure/index.html">KrosstalkResult.Failure</a>) -&gt; <a href="../get-or-else.html">R</a>): <a href="../get-or-else.html">R</a><span class="top-right-position"><span class="copy-icon"></span><div class="copy-popup-wrapper popup-to-left"><span class="copy-popup-icon"></span><span>Content copied to clipboard</span></div></span></div></div></div>
   </div>
-<a data-name="271758974%2FExtensions%2F-1516480294" anchor-label="getOrElse" id="271758974%2FExtensions%2F-1516480294" data-filterable-set=":core:krosstalk:dokkaHtmlPartial/commonMain"></a><div class="brief "><a data-name="271758974%2FExtensions%2F-1516480294" anchor-label="getOrElse" id="271758974%2FExtensions%2F-1516480294" data-filterable-set=":core:krosstalk:dokkaHtmlPartial/commonMain"></a>Gets the value on success, or the result of <a href="../get-or-else.html">onFailure</a> otherwise.</div></div>
+<div class="brief "><p class="paragraph">Gets the value on success, or the result of <a href="../get-or-else.html">onFailure</a> otherwise.</p></div></div>
 <div class="divergent-group" data-filterable-current=":core:krosstalk:dokkaHtmlPartial/commonMain" data-filterable-set=":core:krosstalk:dokkaHtmlPartial/commonMain"><div class="with-platform-tags"><span class="pull-right"></span></div>
 
   <div>
     <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-depenent-content" data-active="" data-togglable=":core:krosstalk:dokkaHtmlPartial/commonMain"><div class="symbol monospace">inline fun &lt;<a href="../get-or-else.html">R</a>, <a href="../get-or-else.html">T</a> : <a href="../get-or-else.html">R</a>&gt; <a href="index.html">KrosstalkResult</a>&lt;<a href="../get-or-else.html">T</a>&gt;.<a href="../get-or-else.html">getOrElse</a>(onServerException: (<a href="-server-exception/index.html">KrosstalkResult.ServerException</a>) -&gt; <a href="../get-or-else.html">R</a>, onHttpError: (<a href="-http-error/index.html">KrosstalkResult.HttpError</a>) -&gt; <a href="../get-or-else.html">R</a>): <a href="../get-or-else.html">R</a><span class="top-right-position"><span class="copy-icon"></span><div class="copy-popup-wrapper popup-to-left"><span class="copy-popup-icon"></span><span>Content copied to clipboard</span></div></span></div></div></div>
   </div>
-<a data-name="-1714868121%2FExtensions%2F-1516480294" anchor-label="getOrElse" id="-1714868121%2FExtensions%2F-1516480294" data-filterable-set=":core:krosstalk:dokkaHtmlPartial/commonMain"></a><div class="brief "><a data-name="-1714868121%2FExtensions%2F-1516480294" anchor-label="getOrElse" id="-1714868121%2FExtensions%2F-1516480294" data-filterable-set=":core:krosstalk:dokkaHtmlPartial/commonMain"></a>Get the value on success, <a href="../get-or-else.html">onServerException</a> on a server exception, or <a href="../get-or-else.html">onHttpError</a> on a http error.</div></div>
+<div class="brief "><p class="paragraph">Get the value on success, <a href="../get-or-else.html">onServerException</a> on a server exception, or <a href="../get-or-else.html">onHttpError</a> on a http error.</p></div></div>
 </div>
                     </div>
                   </div>
@@ -260,7 +254,7 @@
 <a data-name="2078677900%2FExtensions%2F-1516480294" anchor-label="handleHttpError" id="2078677900%2FExtensions%2F-1516480294" data-filterable-set=":core:krosstalk:dokkaHtmlPartial/commonMain"></a>
                 <div class="table-row" data-filterable-current=":core:krosstalk:dokkaHtmlPartial/commonMain" data-filterable-set=":core:krosstalk:dokkaHtmlPartial/commonMain">
                   <div class="main-subrow keyValue ">
-                    <div class=""><span class="inline-flex"><a href="../handle-http-error.html">handleHttpError</a><span class="anchor-wrapper"><span class="anchor-icon" pointing-to="2078677900%2FExtensions%2F-1516480294"></span>
+                    <div class=""><span class="inline-flex"><a href="../handle-http-error.html"><span>handle</span><wbr><span>Http</span><wbr><span><span>Error</span></span></a><span class="anchor-wrapper"><span class="anchor-icon" pointing-to="2078677900%2FExtensions%2F-1516480294"></span>
                           <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
                         </span></span></div>
                     <div>
@@ -269,19 +263,13 @@
   <div>
     <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-depenent-content" data-active="" data-togglable=":core:krosstalk:dokkaHtmlPartial/commonMain"><div class="symbol monospace">inline fun &lt;<a href="../handle-http-error.html">R</a>, <a href="../handle-http-error.html">T</a> : <a href="../handle-http-error.html">R</a>&gt; <a href="index.html">KrosstalkResult</a>&lt;<a href="../handle-http-error.html">T</a>&gt;.<a href="../handle-http-error.html">handleHttpError</a>(filter: (<a href="-http-error/index.html">KrosstalkResult.HttpError</a>) -&gt; <a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-boolean/index.html">Boolean</a>, onHttpError: (<a href="-http-error/index.html">KrosstalkResult.HttpError</a>) -&gt; <a href="../handle-http-error.html">R</a>): <a href="index.html">KrosstalkResult</a>&lt;<a href="../handle-http-error.html">R</a>&gt;<span class="top-right-position"><span class="copy-icon"></span><div class="copy-popup-wrapper popup-to-left"><span class="copy-popup-icon"></span><span>Content copied to clipboard</span></div></span></div></div></div>
   </div>
-<a data-name="-37762502%2FExtensions%2F-1516480294" anchor-label="handleHttpError" id="-37762502%2FExtensions%2F-1516480294" data-filterable-set=":core:krosstalk:dokkaHtmlPartial/commonMain"></a><div class="brief "><a data-name="-37762502%2FExtensions%2F-1516480294" anchor-label="handleHttpError" id="-37762502%2FExtensions%2F-1516480294" data-filterable-set=":core:krosstalk:dokkaHtmlPartial/commonMain"></a>Handle http errors matching <a href="../handle-http-error.html">filter</a>.</div></div>
+<div class="brief "><p class="paragraph">Handle http errors matching <a href="../handle-http-error.html">filter</a>.</p></div></div>
 <div class="divergent-group" data-filterable-current=":core:krosstalk:dokkaHtmlPartial/commonMain" data-filterable-set=":core:krosstalk:dokkaHtmlPartial/commonMain"><div class="with-platform-tags"><span class="pull-right"></span></div>
 
   <div>
-    <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-depenent-content" data-active="" data-togglable=":core:krosstalk:dokkaHtmlPartial/commonMain"><div class="symbol monospace">inline fun &lt;<a href="../handle-http-error.html">R</a>, <a href="../handle-http-error.html">T</a> : <a href="../handle-http-error.html">R</a>&gt; <a href="index.html">KrosstalkResult</a>&lt;<a href="../handle-http-error.html">T</a>&gt;.<a href="../handle-http-error.html">handleHttpError</a>(statusCode: <a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-int/index.html">Int</a>, onHttpError: (<a href="-http-error/index.html">KrosstalkResult.HttpError</a>) -&gt; <a href="../handle-http-error.html">R</a>): <a href="index.html">KrosstalkResult</a>&lt;<a href="../handle-http-error.html">R</a>&gt;<span class="top-right-position"><span class="copy-icon"></span><div class="copy-popup-wrapper popup-to-left"><span class="copy-popup-icon"></span><span>Content copied to clipboard</span></div></span></div></div></div>
+    <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-depenent-content" data-active="" data-togglable=":core:krosstalk:dokkaHtmlPartial/commonMain"><div class="symbol monospace">inline fun &lt;<a href="../handle-http-error.html">R</a>, <a href="../handle-http-error.html">T</a> : <a href="../handle-http-error.html">R</a>&gt; <a href="index.html">KrosstalkResult</a>&lt;<a href="../handle-http-error.html">T</a>&gt;.<a href="../handle-http-error.html">handleHttpError</a>(statusCode: <a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-int/index.html">Int</a>, onHttpError: (<a href="-http-error/index.html">KrosstalkResult.HttpError</a>) -&gt; <a href="../handle-http-error.html">R</a>): <a href="index.html">KrosstalkResult</a>&lt;<a href="../handle-http-error.html">R</a>&gt;<span class="top-right-position"><span class="copy-icon"></span><div class="copy-popup-wrapper popup-to-left"><span class="copy-popup-icon"></span><span>Content copied to clipboard</span></div></span></div><div class="symbol monospace">inline fun &lt;<a href="../handle-http-error.html">R</a>, <a href="../handle-http-error.html">T</a> : <a href="../handle-http-error.html">R</a>&gt; <a href="index.html">KrosstalkResult</a>&lt;<a href="../handle-http-error.html">T</a>&gt;.<a href="../handle-http-error.html">handleHttpError</a>(statusCode: <a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-int/index.html">Int</a>, onHttpError: <a href="../handle-http-error.html">R</a>): <a href="index.html">KrosstalkResult</a>&lt;<a href="../handle-http-error.html">R</a>&gt;<span class="top-right-position"><span class="copy-icon"></span><div class="copy-popup-wrapper popup-to-left"><span class="copy-popup-icon"></span><span>Content copied to clipboard</span></div></span></div></div></div>
   </div>
-<a data-name="-350953097%2FExtensions%2F-1516480294" anchor-label="handleHttpError" id="-350953097%2FExtensions%2F-1516480294" data-filterable-set=":core:krosstalk:dokkaHtmlPartial/commonMain"></a><div class="brief "><a data-name="-350953097%2FExtensions%2F-1516480294" anchor-label="handleHttpError" id="-350953097%2FExtensions%2F-1516480294" data-filterable-set=":core:krosstalk:dokkaHtmlPartial/commonMain"></a>Handle http errors with status codes of <a href="../handle-http-error.html">statusCode</a>.</div></div>
-<div class="divergent-group" data-filterable-current=":core:krosstalk:dokkaHtmlPartial/commonMain" data-filterable-set=":core:krosstalk:dokkaHtmlPartial/commonMain"><div class="with-platform-tags"><span class="pull-right"></span></div>
-
-  <div>
-    <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-depenent-content" data-active="" data-togglable=":core:krosstalk:dokkaHtmlPartial/commonMain"><div class="symbol monospace">inline fun &lt;<a href="../handle-http-error.html">R</a>, <a href="../handle-http-error.html">T</a> : <a href="../handle-http-error.html">R</a>&gt; <a href="index.html">KrosstalkResult</a>&lt;<a href="../handle-http-error.html">T</a>&gt;.<a href="../handle-http-error.html">handleHttpError</a>(statusCode: <a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-int/index.html">Int</a>, onHttpError: <a href="../handle-http-error.html">R</a>): <a href="index.html">KrosstalkResult</a>&lt;<a href="../handle-http-error.html">R</a>&gt;<span class="top-right-position"><span class="copy-icon"></span><div class="copy-popup-wrapper popup-to-left"><span class="copy-popup-icon"></span><span>Content copied to clipboard</span></div></span></div></div></div>
-  </div>
-<a data-name="-1044659249%2FExtensions%2F-1516480294" anchor-label="handleHttpError" id="-1044659249%2FExtensions%2F-1516480294" data-filterable-set=":core:krosstalk:dokkaHtmlPartial/commonMain"></a><div class="brief "><a data-name="-1044659249%2FExtensions%2F-1516480294" anchor-label="handleHttpError" id="-1044659249%2FExtensions%2F-1516480294" data-filterable-set=":core:krosstalk:dokkaHtmlPartial/commonMain"></a>Handle http errors with status codes of <a href="../handle-http-error.html">statusCode</a>.</div></div>
+<div class="brief "><p class="paragraph">Handle http errors with status codes of <a href="../handle-http-error.html">statusCode</a>.</p></div></div>
 </div>
                     </div>
                   </div>
@@ -289,7 +277,7 @@
 <a data-name="-404480997%2FExtensions%2F-1516480294" anchor-label="handleServerException" id="-404480997%2FExtensions%2F-1516480294" data-filterable-set=":core:krosstalk:dokkaHtmlPartial/commonMain"></a>
                 <div class="table-row" data-filterable-current=":core:krosstalk:dokkaHtmlPartial/commonMain" data-filterable-set=":core:krosstalk:dokkaHtmlPartial/commonMain">
                   <div class="main-subrow keyValue ">
-                    <div class=""><span class="inline-flex"><a href="../handle-server-exception.html">handleServerException</a><span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-404480997%2FExtensions%2F-1516480294"></span>
+                    <div class=""><span class="inline-flex"><a href="../handle-server-exception.html"><span>handle</span><wbr><span>Server</span><wbr><span><span>Exception</span></span></a><span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-404480997%2FExtensions%2F-1516480294"></span>
                           <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
                         </span></span></div>
                     <div>
@@ -298,13 +286,13 @@
   <div>
     <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-depenent-content" data-active="" data-togglable=":core:krosstalk:dokkaHtmlPartial/commonMain"><div class="symbol monospace">inline fun &lt;<a href="../handle-server-exception.html">R</a>, <a href="../handle-server-exception.html">T</a> : <a href="../handle-server-exception.html">R</a>&gt; <a href="index.html">KrosstalkResult</a>&lt;<a href="../handle-server-exception.html">T</a>&gt;.<a href="../handle-server-exception.html">handleServerException</a>(filter: (<a href="-server-exception/index.html">KrosstalkResult.ServerException</a>) -&gt; <a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-boolean/index.html">Boolean</a>, onServerException: (<a href="-server-exception/index.html">KrosstalkResult.ServerException</a>) -&gt; <a href="../handle-server-exception.html">R</a>): <a href="index.html">KrosstalkResult</a>&lt;<a href="../handle-server-exception.html">R</a>&gt;<span class="top-right-position"><span class="copy-icon"></span><div class="copy-popup-wrapper popup-to-left"><span class="copy-popup-icon"></span><span>Content copied to clipboard</span></div></span></div></div></div>
   </div>
-<a data-name="1438076350%2FExtensions%2F-1516480294" anchor-label="handleServerException" id="1438076350%2FExtensions%2F-1516480294" data-filterable-set=":core:krosstalk:dokkaHtmlPartial/commonMain"></a><div class="brief "><a data-name="1438076350%2FExtensions%2F-1516480294" anchor-label="handleServerException" id="1438076350%2FExtensions%2F-1516480294" data-filterable-set=":core:krosstalk:dokkaHtmlPartial/commonMain"></a>Handle server exceptions matching <a href="../handle-server-exception.html">filter</a>.</div></div>
+<div class="brief "><p class="paragraph">Handle server exceptions matching <a href="../handle-server-exception.html">filter</a>.</p></div></div>
 <div class="divergent-group" data-filterable-current=":core:krosstalk:dokkaHtmlPartial/commonMain" data-filterable-set=":core:krosstalk:dokkaHtmlPartial/commonMain"><div class="with-platform-tags"><span class="pull-right"></span></div>
 
   <div>
     <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-depenent-content" data-active="" data-togglable=":core:krosstalk:dokkaHtmlPartial/commonMain"><div class="symbol monospace">inline fun &lt;<a href="../handle-server-exception.html">R</a>, <a href="../handle-server-exception.html">T</a> : <a href="../handle-server-exception.html">R</a>&gt; <a href="index.html">KrosstalkResult</a>&lt;<a href="../handle-server-exception.html">T</a>&gt;.<a href="../handle-server-exception.html">handleServerException</a>(className: <a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html">String</a>, onServerException: (<a href="-server-exception/index.html">KrosstalkResult.ServerException</a>) -&gt; <a href="../handle-server-exception.html">R</a>): <a href="index.html">KrosstalkResult</a>&lt;<a href="../handle-server-exception.html">R</a>&gt;<span class="top-right-position"><span class="copy-icon"></span><div class="copy-popup-wrapper popup-to-left"><span class="copy-popup-icon"></span><span>Content copied to clipboard</span></div></span></div></div></div>
   </div>
-<a data-name="1879926029%2FExtensions%2F-1516480294" anchor-label="handleServerException" id="1879926029%2FExtensions%2F-1516480294" data-filterable-set=":core:krosstalk:dokkaHtmlPartial/commonMain"></a><div class="brief "><a data-name="1879926029%2FExtensions%2F-1516480294" anchor-label="handleServerException" id="1879926029%2FExtensions%2F-1516480294" data-filterable-set=":core:krosstalk:dokkaHtmlPartial/commonMain"></a>Handle server exceptions with a KrossalkResult.ServerException.</div></div>
+<div class="brief "><p class="paragraph">Handle server exceptions with a KrossalkResult.ServerException.className of <a href="../handle-server-exception.html">className</a>.</p></div></div>
 </div>
                     </div>
                   </div>
@@ -312,7 +300,7 @@
 <a data-name="1991640812%2FExtensions%2F-1516480294" anchor-label="handleServerExceptionAsHttpError" id="1991640812%2FExtensions%2F-1516480294" data-filterable-set=":core:krosstalk:dokkaHtmlPartial/commonMain"></a>
                 <div class="table-row" data-filterable-current=":core:krosstalk:dokkaHtmlPartial/commonMain" data-filterable-set=":core:krosstalk:dokkaHtmlPartial/commonMain">
                   <div class="main-subrow keyValue ">
-                    <div class=""><span class="inline-flex"><a href="../handle-server-exception-as-http-error.html">handleServerExceptionAsHttpError</a><span class="anchor-wrapper"><span class="anchor-icon" pointing-to="1991640812%2FExtensions%2F-1516480294"></span>
+                    <div class=""><span class="inline-flex"><a href="../handle-server-exception-as-http-error.html"><span>handle</span><wbr><span>Server</span><wbr><span>Exception</span><wbr><span>As</span><wbr><span>Http</span><wbr><span><span>Error</span></span></a><span class="anchor-wrapper"><span class="anchor-icon" pointing-to="1991640812%2FExtensions%2F-1516480294"></span>
                           <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
                         </span></span></div>
                     <div>
@@ -321,25 +309,25 @@
   <div>
     <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-depenent-content" data-active="" data-togglable=":core:krosstalk:dokkaHtmlPartial/commonMain"><div class="symbol monospace">inline fun &lt;<a href="../handle-server-exception-as-http-error.html">T</a>&gt; <a href="index.html">KrosstalkResult</a>&lt;<a href="../handle-server-exception-as-http-error.html">T</a>&gt;.<a href="../handle-server-exception-as-http-error.html">handleServerExceptionAsHttpError</a>(filter: (<a href="-server-exception/index.html">KrosstalkResult.ServerException</a>) -&gt; <a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-boolean/index.html">Boolean</a>, onServerException: (<a href="-server-exception/index.html">KrosstalkResult.ServerException</a>) -&gt; <a href="-http-error/index.html">KrosstalkResult.HttpError</a>): <a href="index.html">KrosstalkResult</a>&lt;<a href="../handle-server-exception-as-http-error.html">T</a>&gt;<span class="top-right-position"><span class="copy-icon"></span><div class="copy-popup-wrapper popup-to-left"><span class="copy-popup-icon"></span><span>Content copied to clipboard</span></div></span></div></div></div>
   </div>
-<a data-name="-1190988976%2FExtensions%2F-1516480294" anchor-label="handleServerExceptionAsHttpError" id="-1190988976%2FExtensions%2F-1516480294" data-filterable-set=":core:krosstalk:dokkaHtmlPartial/commonMain"></a><div class="brief "><a data-name="-1190988976%2FExtensions%2F-1516480294" anchor-label="handleServerExceptionAsHttpError" id="-1190988976%2FExtensions%2F-1516480294" data-filterable-set=":core:krosstalk:dokkaHtmlPartial/commonMain"></a>Handle server exceptions matching <a href="../handle-server-exception-as-http-error.html">filter</a> as http errors.</div></div>
+<div class="brief "><p class="paragraph">Handle server exceptions matching <a href="../handle-server-exception-as-http-error.html">filter</a> as http errors.</p></div></div>
 <div class="divergent-group" data-filterable-current=":core:krosstalk:dokkaHtmlPartial/commonMain" data-filterable-set=":core:krosstalk:dokkaHtmlPartial/commonMain"><div class="with-platform-tags"><span class="pull-right"></span></div>
 
   <div>
     <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-depenent-content" data-active="" data-togglable=":core:krosstalk:dokkaHtmlPartial/commonMain"><div class="symbol monospace">inline fun &lt;<a href="../handle-server-exception-as-http-error.html">T</a>&gt; <a href="index.html">KrosstalkResult</a>&lt;<a href="../handle-server-exception-as-http-error.html">T</a>&gt;.<a href="../handle-server-exception-as-http-error.html">handleServerExceptionAsHttpError</a>(className: <a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html">String</a>, onServerException: (<a href="-server-exception/index.html">KrosstalkResult.ServerException</a>) -&gt; <a href="-http-error/index.html">KrosstalkResult.HttpError</a>): <a href="index.html">KrosstalkResult</a>&lt;<a href="../handle-server-exception-as-http-error.html">T</a>&gt;<span class="top-right-position"><span class="copy-icon"></span><div class="copy-popup-wrapper popup-to-left"><span class="copy-popup-icon"></span><span>Content copied to clipboard</span></div></span></div></div></div>
   </div>
-<a data-name="-1170611615%2FExtensions%2F-1516480294" anchor-label="handleServerExceptionAsHttpError" id="-1170611615%2FExtensions%2F-1516480294" data-filterable-set=":core:krosstalk:dokkaHtmlPartial/commonMain"></a><div class="brief "><a data-name="-1170611615%2FExtensions%2F-1516480294" anchor-label="handleServerExceptionAsHttpError" id="-1170611615%2FExtensions%2F-1516480294" data-filterable-set=":core:krosstalk:dokkaHtmlPartial/commonMain"></a>Handle server exceptions with class names of <a href="../handle-server-exception-as-http-error.html">className</a> as http errors.</div></div>
+<div class="brief "><p class="paragraph">Handle server exceptions with class names of <a href="../handle-server-exception-as-http-error.html">className</a> as http errors.</p></div></div>
 <div class="divergent-group" data-filterable-current=":core:krosstalk:dokkaHtmlPartial/commonMain" data-filterable-set=":core:krosstalk:dokkaHtmlPartial/commonMain"><div class="with-platform-tags"><span class="pull-right"></span></div>
 
   <div>
     <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-depenent-content" data-active="" data-togglable=":core:krosstalk:dokkaHtmlPartial/commonMain"><div class="symbol monospace">inline fun &lt;<a href="../handle-server-exception-as-http-error.html">T</a>&gt; <a href="index.html">KrosstalkResult</a>&lt;<a href="../handle-server-exception-as-http-error.html">T</a>&gt;.<a href="../handle-server-exception-as-http-error.html">handleServerExceptionAsHttpError</a>(filter: (<a href="-server-exception/index.html">KrosstalkResult.ServerException</a>) -&gt; <a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-boolean/index.html">Boolean</a>, statusCode: <a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-int/index.html">Int</a>): <a href="index.html">KrosstalkResult</a>&lt;<a href="../handle-server-exception-as-http-error.html">T</a>&gt;<span class="top-right-position"><span class="copy-icon"></span><div class="copy-popup-wrapper popup-to-left"><span class="copy-popup-icon"></span><span>Content copied to clipboard</span></div></span></div></div></div>
   </div>
-<a data-name="1610607460%2FExtensions%2F-1516480294" anchor-label="handleServerExceptionAsHttpError" id="1610607460%2FExtensions%2F-1516480294" data-filterable-set=":core:krosstalk:dokkaHtmlPartial/commonMain"></a><div class="brief "><a data-name="1610607460%2FExtensions%2F-1516480294" anchor-label="handleServerExceptionAsHttpError" id="1610607460%2FExtensions%2F-1516480294" data-filterable-set=":core:krosstalk:dokkaHtmlPartial/commonMain"></a>Handle server exceptions matching <a href="../handle-server-exception-as-http-error.html">filter</a> as http errors with status code <a href="../handle-server-exception-as-http-error.html">statusCode</a> and a message of KrossalkResult.ServerException.</div></div>
+<div class="brief "><p class="paragraph">Handle server exceptions matching <a href="../handle-server-exception-as-http-error.html">filter</a> as http errors with status code <a href="../handle-server-exception-as-http-error.html">statusCode</a> and a message of KrossalkResult.ServerException.asString.</p></div></div>
 <div class="divergent-group" data-filterable-current=":core:krosstalk:dokkaHtmlPartial/commonMain" data-filterable-set=":core:krosstalk:dokkaHtmlPartial/commonMain"><div class="with-platform-tags"><span class="pull-right"></span></div>
 
   <div>
     <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-depenent-content" data-active="" data-togglable=":core:krosstalk:dokkaHtmlPartial/commonMain"><div class="symbol monospace">inline fun &lt;<a href="../handle-server-exception-as-http-error.html">T</a>&gt; <a href="index.html">KrosstalkResult</a>&lt;<a href="../handle-server-exception-as-http-error.html">T</a>&gt;.<a href="../handle-server-exception-as-http-error.html">handleServerExceptionAsHttpError</a>(className: <a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html">String</a>, statusCode: <a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-int/index.html">Int</a>): <a href="index.html">KrosstalkResult</a>&lt;<a href="../handle-server-exception-as-http-error.html">T</a>&gt;<span class="top-right-position"><span class="copy-icon"></span><div class="copy-popup-wrapper popup-to-left"><span class="copy-popup-icon"></span><span>Content copied to clipboard</span></div></span></div></div></div>
   </div>
-<a data-name="-1760145549%2FExtensions%2F-1516480294" anchor-label="handleServerExceptionAsHttpError" id="-1760145549%2FExtensions%2F-1516480294" data-filterable-set=":core:krosstalk:dokkaHtmlPartial/commonMain"></a><div class="brief "><a data-name="-1760145549%2FExtensions%2F-1516480294" anchor-label="handleServerExceptionAsHttpError" id="-1760145549%2FExtensions%2F-1516480294" data-filterable-set=":core:krosstalk:dokkaHtmlPartial/commonMain"></a>Handle server exceptions with class names of <a href="../handle-server-exception-as-http-error.html">className</a> as http errors with status code <a href="../handle-server-exception-as-http-error.html">statusCode</a> and a message of KrossalkResult.ServerException.</div></div>
+<div class="brief "><p class="paragraph">Handle server exceptions with class names of <a href="../handle-server-exception-as-http-error.html">className</a> as http errors with status code <a href="../handle-server-exception-as-http-error.html">statusCode</a> and a message of KrossalkResult.ServerException.asString.</p></div></div>
 </div>
                     </div>
                   </div>
@@ -347,7 +335,7 @@
 <a data-name="-1409663352%2FExtensions%2F-1516480294" anchor-label="httpErrorOrNull" id="-1409663352%2FExtensions%2F-1516480294" data-filterable-set=":core:krosstalk:dokkaHtmlPartial/commonMain"></a>
                 <div class="table-row" data-filterable-current=":core:krosstalk:dokkaHtmlPartial/commonMain" data-filterable-set=":core:krosstalk:dokkaHtmlPartial/commonMain">
                   <div class="main-subrow keyValue ">
-                    <div class=""><span class="inline-flex"><a href="../http-error-or-null.html">httpErrorOrNull</a><span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-1409663352%2FExtensions%2F-1516480294"></span>
+                    <div class=""><span class="inline-flex"><a href="../http-error-or-null.html"><span>http</span><wbr><span>Error</span><wbr><span>Or</span><wbr><span><span>Null</span></span></a><span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-1409663352%2FExtensions%2F-1516480294"></span>
                           <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
                         </span></span></div>
                     <div>
@@ -356,7 +344,7 @@
   <div>
     <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-depenent-content" data-active="" data-togglable=":core:krosstalk:dokkaHtmlPartial/commonMain"><div class="symbol monospace">val &lt;<a href="../http-error-or-null.html">T</a>&gt; <a href="index.html">KrosstalkResult</a>&lt;<a href="../http-error-or-null.html">T</a>&gt;.<a href="../http-error-or-null.html">httpErrorOrNull</a>: <a href="-http-error/index.html">KrosstalkResult.HttpError</a>?<span class="top-right-position"><span class="copy-icon"></span><div class="copy-popup-wrapper popup-to-left"><span class="copy-popup-icon"></span><span>Content copied to clipboard</span></div></span></div></div></div>
   </div>
-<a data-name="-1409663352%2FExtensions%2F-1516480294" anchor-label="httpErrorOrNull" id="-1409663352%2FExtensions%2F-1516480294" data-filterable-set=":core:krosstalk:dokkaHtmlPartial/commonMain"></a><div class="brief "><a data-name="-1409663352%2FExtensions%2F-1516480294" anchor-label="httpErrorOrNull" id="-1409663352%2FExtensions%2F-1516480294" data-filterable-set=":core:krosstalk:dokkaHtmlPartial/commonMain"></a>Get the http error if there is one, else null</div></div>
+<div class="brief "><p class="paragraph">Get the http error if there is one, else null</p></div></div>
 </div>
                     </div>
                   </div>
@@ -364,7 +352,7 @@
 <a data-name="-149251778%2FExtensions%2F-1516480294" anchor-label="isFailure" id="-149251778%2FExtensions%2F-1516480294" data-filterable-set=":core:krosstalk:dokkaHtmlPartial/commonMain"></a>
                 <div class="table-row" data-filterable-current=":core:krosstalk:dokkaHtmlPartial/commonMain" data-filterable-set=":core:krosstalk:dokkaHtmlPartial/commonMain">
                   <div class="main-subrow keyValue ">
-                    <div class=""><span class="inline-flex"><a href="../is-failure.html">isFailure</a><span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-149251778%2FExtensions%2F-1516480294"></span>
+                    <div class=""><span class="inline-flex"><a href="../is-failure.html"><span>is</span><wbr><span><span>Failure</span></span></a><span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-149251778%2FExtensions%2F-1516480294"></span>
                           <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
                         </span></span></div>
                     <div>
@@ -373,7 +361,7 @@
   <div>
     <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-depenent-content" data-active="" data-togglable=":core:krosstalk:dokkaHtmlPartial/commonMain"><div class="symbol monospace">inline fun &lt;<a href="../is-failure.html">T</a>&gt; <a href="index.html">KrosstalkResult</a>&lt;<a href="../is-failure.html">T</a>&gt;.<a href="../is-failure.html">isFailure</a>(): <a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-boolean/index.html">Boolean</a><span class="top-right-position"><span class="copy-icon"></span><div class="copy-popup-wrapper popup-to-left"><span class="copy-popup-icon"></span><span>Content copied to clipboard</span></div></span></div></div></div>
   </div>
-<a data-name="-149251778%2FExtensions%2F-1516480294" anchor-label="isFailure" id="-149251778%2FExtensions%2F-1516480294" data-filterable-set=":core:krosstalk:dokkaHtmlPartial/commonMain"></a><div class="brief "><a data-name="-149251778%2FExtensions%2F-1516480294" anchor-label="isFailure" id="-149251778%2FExtensions%2F-1516480294" data-filterable-set=":core:krosstalk:dokkaHtmlPartial/commonMain"></a>Whether the result is not a success.</div></div>
+<div class="brief "><p class="paragraph">Whether the result is not a success.</p></div></div>
 </div>
                     </div>
                   </div>
@@ -381,7 +369,7 @@
 <a data-name="591395796%2FExtensions%2F-1516480294" anchor-label="isHttpError" id="591395796%2FExtensions%2F-1516480294" data-filterable-set=":core:krosstalk:dokkaHtmlPartial/commonMain"></a>
                 <div class="table-row" data-filterable-current=":core:krosstalk:dokkaHtmlPartial/commonMain" data-filterable-set=":core:krosstalk:dokkaHtmlPartial/commonMain">
                   <div class="main-subrow keyValue ">
-                    <div class=""><span class="inline-flex"><a href="../is-http-error.html">isHttpError</a><span class="anchor-wrapper"><span class="anchor-icon" pointing-to="591395796%2FExtensions%2F-1516480294"></span>
+                    <div class=""><span class="inline-flex"><a href="../is-http-error.html"><span>is</span><wbr><span>Http</span><wbr><span><span>Error</span></span></a><span class="anchor-wrapper"><span class="anchor-icon" pointing-to="591395796%2FExtensions%2F-1516480294"></span>
                           <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
                         </span></span></div>
                     <div>
@@ -390,7 +378,7 @@
   <div>
     <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-depenent-content" data-active="" data-togglable=":core:krosstalk:dokkaHtmlPartial/commonMain"><div class="symbol monospace">inline fun &lt;<a href="../is-http-error.html">T</a>&gt; <a href="index.html">KrosstalkResult</a>&lt;<a href="../is-http-error.html">T</a>&gt;.<a href="../is-http-error.html">isHttpError</a>(): <a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-boolean/index.html">Boolean</a><span class="top-right-position"><span class="copy-icon"></span><div class="copy-popup-wrapper popup-to-left"><span class="copy-popup-icon"></span><span>Content copied to clipboard</span></div></span></div></div></div>
   </div>
-<a data-name="591395796%2FExtensions%2F-1516480294" anchor-label="isHttpError" id="591395796%2FExtensions%2F-1516480294" data-filterable-set=":core:krosstalk:dokkaHtmlPartial/commonMain"></a><div class="brief "><a data-name="591395796%2FExtensions%2F-1516480294" anchor-label="isHttpError" id="591395796%2FExtensions%2F-1516480294" data-filterable-set=":core:krosstalk:dokkaHtmlPartial/commonMain"></a>Whether the result is a http error.</div></div>
+<div class="brief "><p class="paragraph">Whether the result is a http error.</p></div></div>
 </div>
                     </div>
                   </div>
@@ -398,7 +386,7 @@
 <a data-name="-2073502208%2FExtensions%2F-1516480294" anchor-label="isServerException" id="-2073502208%2FExtensions%2F-1516480294" data-filterable-set=":core:krosstalk:dokkaHtmlPartial/commonMain"></a>
                 <div class="table-row" data-filterable-current=":core:krosstalk:dokkaHtmlPartial/commonMain" data-filterable-set=":core:krosstalk:dokkaHtmlPartial/commonMain">
                   <div class="main-subrow keyValue ">
-                    <div class=""><span class="inline-flex"><a href="../is-server-exception.html">isServerException</a><span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-2073502208%2FExtensions%2F-1516480294"></span>
+                    <div class=""><span class="inline-flex"><a href="../is-server-exception.html"><span>is</span><wbr><span>Server</span><wbr><span><span>Exception</span></span></a><span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-2073502208%2FExtensions%2F-1516480294"></span>
                           <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
                         </span></span></div>
                     <div>
@@ -407,7 +395,7 @@
   <div>
     <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-depenent-content" data-active="" data-togglable=":core:krosstalk:dokkaHtmlPartial/commonMain"><div class="symbol monospace">inline fun &lt;<a href="../is-server-exception.html">T</a>&gt; <a href="index.html">KrosstalkResult</a>&lt;<a href="../is-server-exception.html">T</a>&gt;.<a href="../is-server-exception.html">isServerException</a>(): <a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-boolean/index.html">Boolean</a><span class="top-right-position"><span class="copy-icon"></span><div class="copy-popup-wrapper popup-to-left"><span class="copy-popup-icon"></span><span>Content copied to clipboard</span></div></span></div></div></div>
   </div>
-<a data-name="-2073502208%2FExtensions%2F-1516480294" anchor-label="isServerException" id="-2073502208%2FExtensions%2F-1516480294" data-filterable-set=":core:krosstalk:dokkaHtmlPartial/commonMain"></a><div class="brief "><a data-name="-2073502208%2FExtensions%2F-1516480294" anchor-label="isServerException" id="-2073502208%2FExtensions%2F-1516480294" data-filterable-set=":core:krosstalk:dokkaHtmlPartial/commonMain"></a>Whether the result is a server exception.</div></div>
+<div class="brief "><p class="paragraph">Whether the result is a server exception.</p></div></div>
 </div>
                     </div>
                   </div>
@@ -415,7 +403,7 @@
 <a data-name="-1400154313%2FExtensions%2F-1516480294" anchor-label="isSuccess" id="-1400154313%2FExtensions%2F-1516480294" data-filterable-set=":core:krosstalk:dokkaHtmlPartial/commonMain"></a>
                 <div class="table-row" data-filterable-current=":core:krosstalk:dokkaHtmlPartial/commonMain" data-filterable-set=":core:krosstalk:dokkaHtmlPartial/commonMain">
                   <div class="main-subrow keyValue ">
-                    <div class=""><span class="inline-flex"><a href="../is-success.html">isSuccess</a><span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-1400154313%2FExtensions%2F-1516480294"></span>
+                    <div class=""><span class="inline-flex"><a href="../is-success.html"><span>is</span><wbr><span><span>Success</span></span></a><span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-1400154313%2FExtensions%2F-1516480294"></span>
                           <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
                         </span></span></div>
                     <div>
@@ -424,7 +412,7 @@
   <div>
     <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-depenent-content" data-active="" data-togglable=":core:krosstalk:dokkaHtmlPartial/commonMain"><div class="symbol monospace">inline fun &lt;<a href="../is-success.html">T</a>&gt; <a href="index.html">KrosstalkResult</a>&lt;<a href="../is-success.html">T</a>&gt;.<a href="../is-success.html">isSuccess</a>(): <a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-boolean/index.html">Boolean</a><span class="top-right-position"><span class="copy-icon"></span><div class="copy-popup-wrapper popup-to-left"><span class="copy-popup-icon"></span><span>Content copied to clipboard</span></div></span></div></div></div>
   </div>
-<a data-name="-1400154313%2FExtensions%2F-1516480294" anchor-label="isSuccess" id="-1400154313%2FExtensions%2F-1516480294" data-filterable-set=":core:krosstalk:dokkaHtmlPartial/commonMain"></a><div class="brief "><a data-name="-1400154313%2FExtensions%2F-1516480294" anchor-label="isSuccess" id="-1400154313%2FExtensions%2F-1516480294" data-filterable-set=":core:krosstalk:dokkaHtmlPartial/commonMain"></a>Whether the result is success.</div></div>
+<div class="brief "><p class="paragraph">Whether the result is success.</p></div></div>
 </div>
                     </div>
                   </div>
@@ -432,7 +420,7 @@
 <a data-name="1628354328%2FExtensions%2F-1516480294" anchor-label="map" id="1628354328%2FExtensions%2F-1516480294" data-filterable-set=":core:krosstalk:dokkaHtmlPartial/commonMain"></a>
                 <div class="table-row" data-filterable-current=":core:krosstalk:dokkaHtmlPartial/commonMain" data-filterable-set=":core:krosstalk:dokkaHtmlPartial/commonMain">
                   <div class="main-subrow keyValue ">
-                    <div class=""><span class="inline-flex"><a href="../map.html">map</a><span class="anchor-wrapper"><span class="anchor-icon" pointing-to="1628354328%2FExtensions%2F-1516480294"></span>
+                    <div class=""><span class="inline-flex"><a href="../map.html"><span><span>map</span></span></a><span class="anchor-wrapper"><span class="anchor-icon" pointing-to="1628354328%2FExtensions%2F-1516480294"></span>
                           <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
                         </span></span></div>
                     <div>
@@ -441,7 +429,7 @@
   <div>
     <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-depenent-content" data-active="" data-togglable=":core:krosstalk:dokkaHtmlPartial/commonMain"><div class="symbol monospace">inline fun &lt;<a href="../map.html">T</a>, <a href="../map.html">R</a>&gt; <a href="index.html">KrosstalkResult</a>&lt;<a href="../map.html">T</a>&gt;.<a href="../map.html">map</a>(transform: (<a href="../map.html">T</a>) -&gt; <a href="../map.html">R</a>): <a href="index.html">KrosstalkResult</a>&lt;<a href="../map.html">R</a>&gt;<span class="top-right-position"><span class="copy-icon"></span><div class="copy-popup-wrapper popup-to-left"><span class="copy-popup-icon"></span><span>Content copied to clipboard</span></div></span></div></div></div>
   </div>
-<a data-name="1628354328%2FExtensions%2F-1516480294" anchor-label="map" id="1628354328%2FExtensions%2F-1516480294" data-filterable-set=":core:krosstalk:dokkaHtmlPartial/commonMain"></a><div class="brief "><a data-name="1628354328%2FExtensions%2F-1516480294" anchor-label="map" id="1628354328%2FExtensions%2F-1516480294" data-filterable-set=":core:krosstalk:dokkaHtmlPartial/commonMain"></a>Transform the success value.</div></div>
+<div class="brief "><p class="paragraph">Transform the success value.</p></div></div>
 </div>
                     </div>
                   </div>
@@ -449,7 +437,7 @@
 <a data-name="1889508217%2FExtensions%2F-1516480294" anchor-label="recoverHttpErrors" id="1889508217%2FExtensions%2F-1516480294" data-filterable-set=":core:krosstalk:dokkaHtmlPartial/commonMain"></a>
                 <div class="table-row" data-filterable-current=":core:krosstalk:dokkaHtmlPartial/commonMain" data-filterable-set=":core:krosstalk:dokkaHtmlPartial/commonMain">
                   <div class="main-subrow keyValue ">
-                    <div class=""><span class="inline-flex"><a href="../recover-http-errors.html">recoverHttpErrors</a><span class="anchor-wrapper"><span class="anchor-icon" pointing-to="1889508217%2FExtensions%2F-1516480294"></span>
+                    <div class=""><span class="inline-flex"><a href="../recover-http-errors.html"><span>recover</span><wbr><span>Http</span><wbr><span><span>Errors</span></span></a><span class="anchor-wrapper"><span class="anchor-icon" pointing-to="1889508217%2FExtensions%2F-1516480294"></span>
                           <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
                         </span></span></div>
                     <div>
@@ -458,7 +446,7 @@
   <div>
     <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-depenent-content" data-active="" data-togglable=":core:krosstalk:dokkaHtmlPartial/commonMain"><div class="symbol monospace">inline fun &lt;<a href="../recover-http-errors.html">R</a>, <a href="../recover-http-errors.html">T</a> : <a href="../recover-http-errors.html">R</a>&gt; <a href="index.html">KrosstalkResult</a>&lt;<a href="../recover-http-errors.html">T</a>&gt;.<a href="../recover-http-errors.html">recoverHttpErrors</a>(onHttpError: (<a href="-http-error/index.html">KrosstalkResult.HttpError</a>) -&gt; <a href="../recover-http-errors.html">R</a>): <a href="-success-or-server-exception/index.html">KrosstalkResult.SuccessOrServerException</a>&lt;<a href="../recover-http-errors.html">R</a>&gt;<span class="top-right-position"><span class="copy-icon"></span><div class="copy-popup-wrapper popup-to-left"><span class="copy-popup-icon"></span><span>Content copied to clipboard</span></div></span></div></div></div>
   </div>
-<a data-name="1889508217%2FExtensions%2F-1516480294" anchor-label="recoverHttpErrors" id="1889508217%2FExtensions%2F-1516480294" data-filterable-set=":core:krosstalk:dokkaHtmlPartial/commonMain"></a><div class="brief "><a data-name="1889508217%2FExtensions%2F-1516480294" anchor-label="recoverHttpErrors" id="1889508217%2FExtensions%2F-1516480294" data-filterable-set=":core:krosstalk:dokkaHtmlPartial/commonMain"></a>Recover from all http errors.</div></div>
+<div class="brief "><p class="paragraph">Recover from all http errors.  Note that exceptions will not be caught, so KrossalkResult.HttpError.throwFailureException can be used to throw on unhandled http errors.</p></div></div>
 </div>
                     </div>
                   </div>
@@ -466,7 +454,7 @@
 <a data-name="1662987513%2FExtensions%2F-1516480294" anchor-label="recoverServerExceptions" id="1662987513%2FExtensions%2F-1516480294" data-filterable-set=":core:krosstalk:dokkaHtmlPartial/commonMain"></a>
                 <div class="table-row" data-filterable-current=":core:krosstalk:dokkaHtmlPartial/commonMain" data-filterable-set=":core:krosstalk:dokkaHtmlPartial/commonMain">
                   <div class="main-subrow keyValue ">
-                    <div class=""><span class="inline-flex"><a href="../recover-server-exceptions.html">recoverServerExceptions</a><span class="anchor-wrapper"><span class="anchor-icon" pointing-to="1662987513%2FExtensions%2F-1516480294"></span>
+                    <div class=""><span class="inline-flex"><a href="../recover-server-exceptions.html"><span>recover</span><wbr><span>Server</span><wbr><span><span>Exceptions</span></span></a><span class="anchor-wrapper"><span class="anchor-icon" pointing-to="1662987513%2FExtensions%2F-1516480294"></span>
                           <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
                         </span></span></div>
                     <div>
@@ -475,7 +463,7 @@
   <div>
     <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-depenent-content" data-active="" data-togglable=":core:krosstalk:dokkaHtmlPartial/commonMain"><div class="symbol monospace">inline fun &lt;<a href="../recover-server-exceptions.html">R</a>, <a href="../recover-server-exceptions.html">T</a> : <a href="../recover-server-exceptions.html">R</a>&gt; <a href="index.html">KrosstalkResult</a>&lt;<a href="../recover-server-exceptions.html">T</a>&gt;.<a href="../recover-server-exceptions.html">recoverServerExceptions</a>(onServerException: (<a href="-server-exception/index.html">KrosstalkResult.ServerException</a>) -&gt; <a href="../recover-server-exceptions.html">R</a>): <a href="-success-or-http-error/index.html">KrosstalkResult.SuccessOrHttpError</a>&lt;<a href="../recover-server-exceptions.html">R</a>&gt;<span class="top-right-position"><span class="copy-icon"></span><div class="copy-popup-wrapper popup-to-left"><span class="copy-popup-icon"></span><span>Content copied to clipboard</span></div></span></div></div></div>
   </div>
-<a data-name="1662987513%2FExtensions%2F-1516480294" anchor-label="recoverServerExceptions" id="1662987513%2FExtensions%2F-1516480294" data-filterable-set=":core:krosstalk:dokkaHtmlPartial/commonMain"></a><div class="brief "><a data-name="1662987513%2FExtensions%2F-1516480294" anchor-label="recoverServerExceptions" id="1662987513%2FExtensions%2F-1516480294" data-filterable-set=":core:krosstalk:dokkaHtmlPartial/commonMain"></a>Recover from all server exceptions.</div></div>
+<div class="brief "><p class="paragraph">Recover from all server exceptions.  Note that exceptions will not be caught, so KrossalkResult.ServerException.throwFailureException can be used to throw on unhandled server exceptions.</p></div></div>
 </div>
                     </div>
                   </div>
@@ -483,7 +471,7 @@
 <a data-name="1580032531%2FExtensions%2F-1516480294" anchor-label="recoverServerExceptionsToResult" id="1580032531%2FExtensions%2F-1516480294" data-filterable-set=":core:krosstalk:dokkaHtmlPartial/commonMain"></a>
                 <div class="table-row" data-filterable-current=":core:krosstalk:dokkaHtmlPartial/commonMain" data-filterable-set=":core:krosstalk:dokkaHtmlPartial/commonMain">
                   <div class="main-subrow keyValue ">
-                    <div class=""><span class="inline-flex"><a href="../recover-server-exceptions-to-result.html">recoverServerExceptionsToResult</a><span class="anchor-wrapper"><span class="anchor-icon" pointing-to="1580032531%2FExtensions%2F-1516480294"></span>
+                    <div class=""><span class="inline-flex"><a href="../recover-server-exceptions-to-result.html"><span>recover</span><wbr><span>Server</span><wbr><span>Exceptions</span><wbr><span>To</span><wbr><span><span>Result</span></span></a><span class="anchor-wrapper"><span class="anchor-icon" pointing-to="1580032531%2FExtensions%2F-1516480294"></span>
                           <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
                         </span></span></div>
                     <div>
@@ -492,7 +480,7 @@
   <div>
     <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-depenent-content" data-active="" data-togglable=":core:krosstalk:dokkaHtmlPartial/commonMain"><div class="symbol monospace">inline fun &lt;<a href="../recover-server-exceptions-to-result.html">R</a>, <a href="../recover-server-exceptions-to-result.html">T</a> : <a href="../recover-server-exceptions-to-result.html">R</a>&gt; <a href="index.html">KrosstalkResult</a>&lt;<a href="../recover-server-exceptions-to-result.html">T</a>&gt;.<a href="../recover-server-exceptions-to-result.html">recoverServerExceptionsToResult</a>(onServerException: (<a href="-server-exception/index.html">KrosstalkResult.ServerException</a>) -&gt; <a href="-success-or-http-error/index.html">KrosstalkResult.SuccessOrHttpError</a>&lt;<a href="../recover-server-exceptions-to-result.html">R</a>&gt;): <a href="-success-or-http-error/index.html">KrosstalkResult.SuccessOrHttpError</a>&lt;<a href="../recover-server-exceptions-to-result.html">R</a>&gt;<span class="top-right-position"><span class="copy-icon"></span><div class="copy-popup-wrapper popup-to-left"><span class="copy-popup-icon"></span><span>Content copied to clipboard</span></div></span></div></div></div>
   </div>
-<a data-name="1580032531%2FExtensions%2F-1516480294" anchor-label="recoverServerExceptionsToResult" id="1580032531%2FExtensions%2F-1516480294" data-filterable-set=":core:krosstalk:dokkaHtmlPartial/commonMain"></a><div class="brief "><a data-name="1580032531%2FExtensions%2F-1516480294" anchor-label="recoverServerExceptionsToResult" id="1580032531%2FExtensions%2F-1516480294" data-filterable-set=":core:krosstalk:dokkaHtmlPartial/commonMain"></a>Recover from all server exceptions, converting them to a successful value or a http error.</div></div>
+<div class="brief "><p class="paragraph">Recover from all server exceptions, converting them to a successful value or a http error.</p></div></div>
 </div>
                     </div>
                   </div>
@@ -500,7 +488,7 @@
 <a data-name="-437604300%2FExtensions%2F-1516480294" anchor-label="serverExceptionOrNull" id="-437604300%2FExtensions%2F-1516480294" data-filterable-set=":core:krosstalk:dokkaHtmlPartial/commonMain"></a>
                 <div class="table-row" data-filterable-current=":core:krosstalk:dokkaHtmlPartial/commonMain" data-filterable-set=":core:krosstalk:dokkaHtmlPartial/commonMain">
                   <div class="main-subrow keyValue ">
-                    <div class=""><span class="inline-flex"><a href="../server-exception-or-null.html">serverExceptionOrNull</a><span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-437604300%2FExtensions%2F-1516480294"></span>
+                    <div class=""><span class="inline-flex"><a href="../server-exception-or-null.html"><span>server</span><wbr><span>Exception</span><wbr><span>Or</span><wbr><span><span>Null</span></span></a><span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-437604300%2FExtensions%2F-1516480294"></span>
                           <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
                         </span></span></div>
                     <div>
@@ -509,7 +497,7 @@
   <div>
     <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-depenent-content" data-active="" data-togglable=":core:krosstalk:dokkaHtmlPartial/commonMain"><div class="symbol monospace">val &lt;<a href="../server-exception-or-null.html">T</a>&gt; <a href="index.html">KrosstalkResult</a>&lt;<a href="../server-exception-or-null.html">T</a>&gt;.<a href="../server-exception-or-null.html">serverExceptionOrNull</a>: <a href="-server-exception/index.html">KrosstalkResult.ServerException</a>?<span class="top-right-position"><span class="copy-icon"></span><div class="copy-popup-wrapper popup-to-left"><span class="copy-popup-icon"></span><span>Content copied to clipboard</span></div></span></div></div></div>
   </div>
-<a data-name="-437604300%2FExtensions%2F-1516480294" anchor-label="serverExceptionOrNull" id="-437604300%2FExtensions%2F-1516480294" data-filterable-set=":core:krosstalk:dokkaHtmlPartial/commonMain"></a><div class="brief "><a data-name="-437604300%2FExtensions%2F-1516480294" anchor-label="serverExceptionOrNull" id="-437604300%2FExtensions%2F-1516480294" data-filterable-set=":core:krosstalk:dokkaHtmlPartial/commonMain"></a>Get the server exception if there is one, else null</div></div>
+<div class="brief "><p class="paragraph">Get the server exception if there is one, else null</p></div></div>
 </div>
                     </div>
                   </div>
@@ -517,7 +505,7 @@
 <a data-name="333005333%2FExtensions%2F-1516480294" anchor-label="throwOnFailure" id="333005333%2FExtensions%2F-1516480294" data-filterable-set=":core:krosstalk:dokkaHtmlPartial/commonMain"></a>
                 <div class="table-row" data-filterable-current=":core:krosstalk:dokkaHtmlPartial/commonMain" data-filterable-set=":core:krosstalk:dokkaHtmlPartial/commonMain">
                   <div class="main-subrow keyValue ">
-                    <div class=""><span class="inline-flex"><a href="../throw-on-failure.html">throwOnFailure</a><span class="anchor-wrapper"><span class="anchor-icon" pointing-to="333005333%2FExtensions%2F-1516480294"></span>
+                    <div class=""><span class="inline-flex"><a href="../throw-on-failure.html"><span>throw</span><wbr><span>On</span><wbr><span><span>Failure</span></span></a><span class="anchor-wrapper"><span class="anchor-icon" pointing-to="333005333%2FExtensions%2F-1516480294"></span>
                           <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
                         </span></span></div>
                     <div>
@@ -526,7 +514,7 @@
   <div>
     <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-depenent-content" data-active="" data-togglable=":core:krosstalk:dokkaHtmlPartial/commonMain"><div class="symbol monospace">fun &lt;<a href="../throw-on-failure.html">T</a>&gt; <a href="index.html">KrosstalkResult</a>&lt;<a href="../throw-on-failure.html">T</a>&gt;.<a href="../throw-on-failure.html">throwOnFailure</a>(): <a href="../throw-on-failure.html">T</a><span class="top-right-position"><span class="copy-icon"></span><div class="copy-popup-wrapper popup-to-left"><span class="copy-popup-icon"></span><span>Content copied to clipboard</span></div></span></div></div></div>
   </div>
-<a data-name="333005333%2FExtensions%2F-1516480294" anchor-label="throwOnFailure" id="333005333%2FExtensions%2F-1516480294" data-filterable-set=":core:krosstalk:dokkaHtmlPartial/commonMain"></a><div class="brief "><a data-name="333005333%2FExtensions%2F-1516480294" anchor-label="throwOnFailure" id="333005333%2FExtensions%2F-1516480294" data-filterable-set=":core:krosstalk:dokkaHtmlPartial/commonMain"></a>If this is a <a href="-http-error/index.html">KrosstalkResult.HttpError</a>, throw <a href="../-krosstalk-http-error/index.html">KrosstalkHttpError</a>.</div></div>
+<div class="brief "><p class="paragraph">If this is a <a href="-http-error/index.html">KrosstalkResult.HttpError</a>, throw <a href="../-krosstalk-http-error/index.html">KrosstalkHttpError</a>.  If this is a <a href="-server-exception/index.html">KrosstalkResult.ServerException</a>, throw <a href="../-krosstalk-server-exception/index.html">KrosstalkServerException</a>.</p></div></div>
 </div>
                     </div>
                   </div>
@@ -534,7 +522,7 @@
 <a data-name="184011499%2FExtensions%2F-1516480294" anchor-label="throwOnHttpError" id="184011499%2FExtensions%2F-1516480294" data-filterable-set=":core:krosstalk:dokkaHtmlPartial/commonMain"></a>
                 <div class="table-row" data-filterable-current=":core:krosstalk:dokkaHtmlPartial/commonMain" data-filterable-set=":core:krosstalk:dokkaHtmlPartial/commonMain">
                   <div class="main-subrow keyValue ">
-                    <div class=""><span class="inline-flex"><a href="../throw-on-http-error.html">throwOnHttpError</a><span class="anchor-wrapper"><span class="anchor-icon" pointing-to="184011499%2FExtensions%2F-1516480294"></span>
+                    <div class=""><span class="inline-flex"><a href="../throw-on-http-error.html"><span>throw</span><wbr><span>On</span><wbr><span>Http</span><wbr><span><span>Error</span></span></a><span class="anchor-wrapper"><span class="anchor-icon" pointing-to="184011499%2FExtensions%2F-1516480294"></span>
                           <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
                         </span></span></div>
                     <div>
@@ -543,7 +531,7 @@
   <div>
     <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-depenent-content" data-active="" data-togglable=":core:krosstalk:dokkaHtmlPartial/commonMain"><div class="symbol monospace">fun &lt;<a href="../throw-on-http-error.html">T</a>&gt; <a href="index.html">KrosstalkResult</a>&lt;<a href="../throw-on-http-error.html">T</a>&gt;.<a href="../throw-on-http-error.html">throwOnHttpError</a>(): <a href="-success-or-server-exception/index.html">KrosstalkResult.SuccessOrServerException</a>&lt;<a href="../throw-on-http-error.html">T</a>&gt;<span class="top-right-position"><span class="copy-icon"></span><div class="copy-popup-wrapper popup-to-left"><span class="copy-popup-icon"></span><span>Content copied to clipboard</span></div></span></div></div></div>
   </div>
-<a data-name="184011499%2FExtensions%2F-1516480294" anchor-label="throwOnHttpError" id="184011499%2FExtensions%2F-1516480294" data-filterable-set=":core:krosstalk:dokkaHtmlPartial/commonMain"></a><div class="brief "><a data-name="184011499%2FExtensions%2F-1516480294" anchor-label="throwOnHttpError" id="184011499%2FExtensions%2F-1516480294" data-filterable-set=":core:krosstalk:dokkaHtmlPartial/commonMain"></a>If this is a <a href="-http-error/index.html">KrosstalkResult.HttpError</a>, throw <a href="../-krosstalk-http-error/index.html">KrosstalkHttpError</a>.</div></div>
+<div class="brief "><p class="paragraph">If this is a <a href="-http-error/index.html">KrosstalkResult.HttpError</a>, throw <a href="../-krosstalk-http-error/index.html">KrosstalkHttpError</a>.</p></div></div>
 </div>
                     </div>
                   </div>
@@ -551,7 +539,7 @@
 <a data-name="1903738839%2FExtensions%2F-1516480294" anchor-label="throwOnServerException" id="1903738839%2FExtensions%2F-1516480294" data-filterable-set=":core:krosstalk:dokkaHtmlPartial/commonMain"></a>
                 <div class="table-row" data-filterable-current=":core:krosstalk:dokkaHtmlPartial/commonMain" data-filterable-set=":core:krosstalk:dokkaHtmlPartial/commonMain">
                   <div class="main-subrow keyValue ">
-                    <div class=""><span class="inline-flex"><a href="../throw-on-server-exception.html">throwOnServerException</a><span class="anchor-wrapper"><span class="anchor-icon" pointing-to="1903738839%2FExtensions%2F-1516480294"></span>
+                    <div class=""><span class="inline-flex"><a href="../throw-on-server-exception.html"><span>throw</span><wbr><span>On</span><wbr><span>Server</span><wbr><span><span>Exception</span></span></a><span class="anchor-wrapper"><span class="anchor-icon" pointing-to="1903738839%2FExtensions%2F-1516480294"></span>
                           <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
                         </span></span></div>
                     <div>
@@ -560,7 +548,7 @@
   <div>
     <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-depenent-content" data-active="" data-togglable=":core:krosstalk:dokkaHtmlPartial/commonMain"><div class="symbol monospace">fun &lt;<a href="../throw-on-server-exception.html">T</a>&gt; <a href="index.html">KrosstalkResult</a>&lt;<a href="../throw-on-server-exception.html">T</a>&gt;.<a href="../throw-on-server-exception.html">throwOnServerException</a>(): <a href="-success-or-http-error/index.html">KrosstalkResult.SuccessOrHttpError</a>&lt;<a href="../throw-on-server-exception.html">T</a>&gt;<span class="top-right-position"><span class="copy-icon"></span><div class="copy-popup-wrapper popup-to-left"><span class="copy-popup-icon"></span><span>Content copied to clipboard</span></div></span></div></div></div>
   </div>
-<a data-name="1903738839%2FExtensions%2F-1516480294" anchor-label="throwOnServerException" id="1903738839%2FExtensions%2F-1516480294" data-filterable-set=":core:krosstalk:dokkaHtmlPartial/commonMain"></a><div class="brief "><a data-name="1903738839%2FExtensions%2F-1516480294" anchor-label="throwOnServerException" id="1903738839%2FExtensions%2F-1516480294" data-filterable-set=":core:krosstalk:dokkaHtmlPartial/commonMain"></a>If this is a <a href="-server-exception/index.html">KrosstalkResult.ServerException</a>, throw <a href="../-krosstalk-server-exception/index.html">KrosstalkServerException</a>.</div></div>
+<div class="brief "><p class="paragraph">If this is a <a href="-server-exception/index.html">KrosstalkResult.ServerException</a>, throw <a href="../-krosstalk-server-exception/index.html">KrosstalkServerException</a>.</p></div></div>
 </div>
                     </div>
                   </div>
@@ -568,7 +556,7 @@
 <a data-name="-349004952%2FExtensions%2F-1516480294" anchor-label="toResult" id="-349004952%2FExtensions%2F-1516480294" data-filterable-set=":core:krosstalk:dokkaHtmlPartial/commonMain"></a>
                 <div class="table-row" data-filterable-current=":core:krosstalk:dokkaHtmlPartial/commonMain" data-filterable-set=":core:krosstalk:dokkaHtmlPartial/commonMain">
                   <div class="main-subrow keyValue ">
-                    <div class=""><span class="inline-flex"><a href="../to-result.html">toResult</a><span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-349004952%2FExtensions%2F-1516480294"></span>
+                    <div class=""><span class="inline-flex"><a href="../to-result.html"><span>to</span><wbr><span><span>Result</span></span></a><span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-349004952%2FExtensions%2F-1516480294"></span>
                           <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
                         </span></span></div>
                     <div>
@@ -577,7 +565,7 @@
   <div>
     <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-depenent-content" data-active="" data-togglable=":core:krosstalk:dokkaHtmlPartial/commonMain"><div class="symbol monospace">inline fun &lt;<a href="../to-result.html">T</a>&gt; <a href="index.html">KrosstalkResult</a>&lt;<a href="../to-result.html">T</a>&gt;.<a href="../to-result.html">toResult</a>(): <a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-result/index.html">Result</a>&lt;<a href="../to-result.html">T</a>&gt;<span class="top-right-position"><span class="copy-icon"></span><div class="copy-popup-wrapper popup-to-left"><span class="copy-popup-icon"></span><span>Content copied to clipboard</span></div></span></div></div></div>
   </div>
-<a data-name="-349004952%2FExtensions%2F-1516480294" anchor-label="toResult" id="-349004952%2FExtensions%2F-1516480294" data-filterable-set=":core:krosstalk:dokkaHtmlPartial/commonMain"></a><div class="brief "><a data-name="-349004952%2FExtensions%2F-1516480294" anchor-label="toResult" id="-349004952%2FExtensions%2F-1516480294" data-filterable-set=":core:krosstalk:dokkaHtmlPartial/commonMain"></a>Convert to a <a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-result/index.html">Result</a>, using the <a href="../-krosstalk-http-error/index.html">KrosstalkHttpError</a> or <a href="../-krosstalk-server-exception/index.html">KrosstalkServerException</a> exceptions.</div></div>
+<div class="brief "><p class="paragraph">Convert to a <a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-result/index.html">Result</a>, using the <a href="../-krosstalk-http-error/index.html">KrosstalkHttpError</a> or <a href="../-krosstalk-server-exception/index.html">KrosstalkServerException</a> exceptions.</p></div></div>
 </div>
                     </div>
                   </div>
@@ -585,7 +573,7 @@
 <a data-name="-790788135%2FExtensions%2F-1516480294" anchor-label="valueOrNull" id="-790788135%2FExtensions%2F-1516480294" data-filterable-set=":core:krosstalk:dokkaHtmlPartial/commonMain"></a>
                 <div class="table-row" data-filterable-current=":core:krosstalk:dokkaHtmlPartial/commonMain" data-filterable-set=":core:krosstalk:dokkaHtmlPartial/commonMain">
                   <div class="main-subrow keyValue ">
-                    <div class=""><span class="inline-flex"><a href="../value-or-null.html">valueOrNull</a><span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-790788135%2FExtensions%2F-1516480294"></span>
+                    <div class=""><span class="inline-flex"><a href="../value-or-null.html"><span>value</span><wbr><span>Or</span><wbr><span><span>Null</span></span></a><span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-790788135%2FExtensions%2F-1516480294"></span>
                           <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
                         </span></span></div>
                     <div>
@@ -594,7 +582,7 @@
   <div>
     <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-depenent-content" data-active="" data-togglable=":core:krosstalk:dokkaHtmlPartial/commonMain"><div class="symbol monospace">val &lt;<a href="../value-or-null.html">T</a>&gt; <a href="index.html">KrosstalkResult</a>&lt;<a href="../value-or-null.html">T</a>&gt;.<a href="../value-or-null.html">valueOrNull</a>: <a href="../value-or-null.html">T</a>?<span class="top-right-position"><span class="copy-icon"></span><div class="copy-popup-wrapper popup-to-left"><span class="copy-popup-icon"></span><span>Content copied to clipboard</span></div></span></div></div></div>
   </div>
-<a data-name="-790788135%2FExtensions%2F-1516480294" anchor-label="valueOrNull" id="-790788135%2FExtensions%2F-1516480294" data-filterable-set=":core:krosstalk:dokkaHtmlPartial/commonMain"></a><div class="brief "><a data-name="-790788135%2FExtensions%2F-1516480294" anchor-label="valueOrNull" id="-790788135%2FExtensions%2F-1516480294" data-filterable-set=":core:krosstalk:dokkaHtmlPartial/commonMain"></a>Get the value if successful, else null</div></div>
+<div class="brief "><p class="paragraph">Get the value if successful, else null</p></div></div>
 </div>
                     </div>
                   </div>
@@ -602,7 +590,7 @@
 <a data-name="176997250%2FExtensions%2F-1516480294" anchor-label="valueOrThrow" id="176997250%2FExtensions%2F-1516480294" data-filterable-set=":core:krosstalk:dokkaHtmlPartial/commonMain"></a>
                 <div class="table-row" data-filterable-current=":core:krosstalk:dokkaHtmlPartial/commonMain" data-filterable-set=":core:krosstalk:dokkaHtmlPartial/commonMain">
                   <div class="main-subrow keyValue ">
-                    <div class=""><span class="inline-flex"><a href="../value-or-throw.html">valueOrThrow</a><span class="anchor-wrapper"><span class="anchor-icon" pointing-to="176997250%2FExtensions%2F-1516480294"></span>
+                    <div class=""><span class="inline-flex"><a href="../value-or-throw.html"><span>value</span><wbr><span>Or</span><wbr><span><span>Throw</span></span></a><span class="anchor-wrapper"><span class="anchor-icon" pointing-to="176997250%2FExtensions%2F-1516480294"></span>
                           <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
                         </span></span></div>
                     <div>
@@ -611,17 +599,17 @@
   <div>
     <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-depenent-content" data-active="" data-togglable=":core:krosstalk:dokkaHtmlPartial/commonMain"><div class="symbol monospace">val &lt;<a href="../value-or-throw.html">T</a>&gt; <a href="index.html">KrosstalkResult</a>&lt;<a href="../value-or-throw.html">T</a>&gt;.<a href="../value-or-throw.html">valueOrThrow</a>: <a href="../value-or-throw.html">T</a><span class="top-right-position"><span class="copy-icon"></span><div class="copy-popup-wrapper popup-to-left"><span class="copy-popup-icon"></span><span>Content copied to clipboard</span></div></span></div></div></div>
   </div>
-<a data-name="176997250%2FExtensions%2F-1516480294" anchor-label="valueOrThrow" id="176997250%2FExtensions%2F-1516480294" data-filterable-set=":core:krosstalk:dokkaHtmlPartial/commonMain"></a><div class="brief "><a data-name="176997250%2FExtensions%2F-1516480294" anchor-label="valueOrThrow" id="176997250%2FExtensions%2F-1516480294" data-filterable-set=":core:krosstalk:dokkaHtmlPartial/commonMain"></a>Get the value if successful, otherwise throw with <a href="../throw-on-failure.html">throwOnFailure</a></div></div>
+<div class="brief "><p class="paragraph">Get the value if successful, otherwise throw with <a href="../throw-on-failure.html">throwOnFailure</a></p></div></div>
 </div>
                     </div>
                   </div>
                 </div>
               </div>
               <h2 class="">Sources</h2>
-              <div class="table" data-togglable="Sources"><a data-name="-862771770%2FSource%2F-1516480294" anchor-label="https://github.com/rnett/krosstalk/blob/af63d2137ba23c19c55cc2f4e044eeaa96d8e706/core/krosstalk//src/commonMain/kotlin/com/rnett/krosstalk/result/Result.kt#L132" id="-862771770%2FSource%2F-1516480294" data-filterable-set=":core:krosstalk:dokkaHtmlPartial/commonMain"></a>
+              <div class="table" data-togglable="Sources"><a data-name="-862771770%2FSource%2F-1516480294" anchor-label="https://github.com/rnett/krosstalk/blob/4f1eee12d06cd2243447a30b2c894c7034b180b2/core/krosstalk//src/commonMain/kotlin/com/rnett/krosstalk/result/Result.kt#L132" id="-862771770%2FSource%2F-1516480294" data-filterable-set=":core:krosstalk:dokkaHtmlPartial/commonMain"></a>
                 <div class="table-row" data-filterable-current=":core:krosstalk:dokkaHtmlPartial/commonMain" data-filterable-set=":core:krosstalk:dokkaHtmlPartial/commonMain">
                   <div class="main-subrow keyValue ">
-                    <div class=""><span class="inline-flex"><a href="https://github.com/rnett/krosstalk/blob/af63d2137ba23c19c55cc2f4e044eeaa96d8e706/core/krosstalk//src/commonMain/kotlin/com/rnett/krosstalk/result/Result.kt#L132">common source</a><span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-862771770%2FSource%2F-1516480294"></span>
+                    <div class=""><span class="inline-flex"><a href="https://github.com/rnett/krosstalk/blob/4f1eee12d06cd2243447a30b2c894c7034b180b2/core/krosstalk//src/commonMain/kotlin/com/rnett/krosstalk/result/Result.kt#L132">common source</a><span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-862771770%2FSource%2F-1516480294"></span>
                           <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
                         </span></span></div>
                     <div></div>
