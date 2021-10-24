@@ -3,6 +3,10 @@
 ## Next
  *
 
+## 1.3.0
+* [#29](https://github.com/rnett/krosstalk/pull/29) Dependency updates.  Kotlin, Ktor, coroutines, and serialization (major version).  Also adds 
+  the new Apple silicon targets.
+
 ## 1.2.3
 * [#27](https://github.com/rnett/krosstalk/pull/27) Update Ktor to 1.6.3.  Note that [KTOR-2977](https://youtrack.jetbrains.com/issue/KTOR-2977) was not actually included in the release, even though it's in the notes.
 
