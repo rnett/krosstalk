@@ -4,7 +4,7 @@
 [![Sonatype Nexus (Snapshots)](https://img.shields.io/nexus/s/com.github.rnett.krosstalk/krosstalk?server=https%3A%2F%2Foss.sonatype.org)](https://oss.sonatype.org/content/repositories/snapshots/com/github/rnett/krosstalk/)
 [![GitHub Repo](https://img.shields.io/badge/GitHub-Krosstalk-blue?logo=github)](https://github.com/rnett/krosstalk)
 [![License](https://img.shields.io/badge/License-Apache%202.0-yellowgreen.svg)](https://opensource.org/licenses/Apache-2.0)
-[![Changelog](https://img.shields.io/badge/Changelog-CHANGELOG.md-green)](./CHANGELOG.md#changelog)
+[![Changelog](https://img.shields.io/badge/Changelog-CHANGELOG.md-green)](https://github.com/rnett/krosstalk/blob/main/CHANGELOG.md#changelog)
 
 Krosstalk allows you to easily create RPC methods using pure kotlin. Client, server, and serialization implementations
 are pluggable, and Kotlin's `expect/actual` modifiers can be used to ensure that client and server methods match.
@@ -48,7 +48,8 @@ They control how your Krosstalk methods are actually executed.
 
 #### Serialization
 
-* Kotlinx serialization (includes JSON): `com.github.rnett.krosstalk:krosstalk-kotlinx-serialization`
+* Kotlinx serialization: `com.github.rnett.krosstalk:krosstalk-kotlinx-serialization`
+    * Includes JSON dependency, works with all formats.
 
 #### Client
 
