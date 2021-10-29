@@ -12,9 +12,17 @@ jobs:
   test:
     strategy:
       matrix:
-        os: [ ubuntu-latest, macos-latest, windows-latest ]
+        os: [ ubuntu, mac, windows ]
+        include:
+          - os: ubuntu
+            runner: ubuntu-latest
+          - os: mac
+            runner: macOS-11
+          - os: windows
+            runner: windows-latest
       fail-fast: false
-    runs-on: ${{ matrix.os }}
+    runs-on: ${{ matrix.runner }}
+    name: test (${{ matrix.os }})
     steps:
       - uses: actions/checkout@v2
       - name: Set up JDK 15
@@ -103,8 +111,17 @@ jobs:
   publish:
     strategy:
       matrix:
-        os: [ ubuntu-latest, macos-latest, windows-latest ]
-    runs-on: ${{ matrix.os }}
+        os: [ ubuntu, mac, windows ]
+        include:
+          - os: ubuntu
+            runner: ubuntu-latest
+          - os: mac
+            runner: macOS-11
+          - os: windows
+            runner: windows-latest
+      fail-fast: false
+    runs-on: ${{ matrix.runner }}
+    name: publish (${{ matrix.os }})
     if: github.ref == 'refs/heads/main'
     needs: [ create_staging_repository, test ]
     steps:
