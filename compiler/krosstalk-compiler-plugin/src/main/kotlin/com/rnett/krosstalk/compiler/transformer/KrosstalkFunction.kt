@@ -53,6 +53,7 @@ import org.jetbrains.kotlin.ir.expressions.IrBody
 import org.jetbrains.kotlin.ir.expressions.IrCall
 import org.jetbrains.kotlin.ir.expressions.IrExpression
 import org.jetbrains.kotlin.ir.expressions.IrExpressionBody
+import org.jetbrains.kotlin.ir.expressions.IrReturn
 import org.jetbrains.kotlin.ir.symbols.IrValueParameterSymbol
 import org.jetbrains.kotlin.ir.symbols.IrValueSymbol
 import org.jetbrains.kotlin.ir.types.IrType
@@ -272,7 +273,10 @@ class KrosstalkFunction(val declaration: IrSimpleFunction, val methodTransformer
             }
             is IrBlockBody -> {
                 if (body.statements.size == 1) {
-                    body.statements.single().let {
+                    var statement = body.statements.single()
+                    if(statement is IrReturn)
+                        statement = (statement as IrReturn).value
+                    statement.let {
                         if (it is IrCall && it.isClientPlaceholder())
                             KrosstalkClientPlaceholder(it, context)
                         else

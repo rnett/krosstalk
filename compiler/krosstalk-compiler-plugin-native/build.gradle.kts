@@ -33,7 +33,6 @@ val shadowJar = tasks.shadowJar.apply {
         archiveClassifier.set("")
         dependencies {
             include(project(":core:krosstalk-base"))
-            //TODO use version catalog?
             include(dependency("com.github.rnett.compiler-plugin-utils:compiler-plugin-utils-native"))
         }
     }

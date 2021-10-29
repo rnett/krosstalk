@@ -6,6 +6,7 @@ import com.rnett.plugin.ir.KnowsCurrentFile
 import com.rnett.plugin.ir.addAnonymousInitializer
 import com.rnett.plugin.ir.raiseTo
 import com.rnett.plugin.ir.typeArgument
+import com.rnett.plugin.ir.typeSystem
 import com.rnett.plugin.ir.withDispatchReceiver
 import com.rnett.plugin.ir.withValueArguments
 import org.jetbrains.kotlin.backend.common.lower.DeclarationIrBuilder
@@ -60,7 +61,7 @@ class KrosstalkClass(val declaration: IrClass, private val methodTransformer: Kr
         scopes.forEach {
             if (isClient) {
                 val scopeType = declaration.defaultType.raiseTo(Krosstalk.Client.KrosstalkClient()).typeArgument(0)
-                if (!it.defaultType.isSubtypeOf(scopeType, context.irBuiltIns))
+                if (!it.defaultType.isSubtypeOf(scopeType, context.typeSystem))
                     messageCollector.reportError(
                         "All scopes in a Krosstalk Client object must extend the client's scope type ${scopeType.render()}, ${it.name} does not.",
                         it
@@ -68,7 +69,7 @@ class KrosstalkClass(val declaration: IrClass, private val methodTransformer: Kr
             }
             if (isServer) {
                 val scopeType = declaration.defaultType.raiseTo(Krosstalk.Server.KrosstalkServer()).typeArgument(0)
-                if (!it.defaultType.isSubtypeOf(scopeType, context.irBuiltIns))
+                if (!it.defaultType.isSubtypeOf(scopeType, context.typeSystem))
                     messageCollector.reportError(
                         "All scopes in a Krosstalk Server object must extend the server's scope type ${scopeType.render()}, ${it.name} does not.",
                         it
