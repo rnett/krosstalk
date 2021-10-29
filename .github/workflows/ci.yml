@@ -114,48 +114,21 @@ jobs:
         with:
           java-version: 15
 
-      - name: Cache Gradle packages
-        uses: actions/cache@v2
-        with:
-          path: |
-            ~/.gradle/caches
-            ~/.gradle/wrapper
-            ~/.gradle/nodejs
-            ~/.gradle/yarn
-          key: ${{ runner.os }}-gradle-${{ hashFiles('**/*.gradle*', 'buildSrc/**/*.kt') }}
-          restore-keys: |
-            ${{ runner.os }}-gradle-
-
       - name: Grant execute permission for gradlew
         run: |
           chmod +x gradlew
           chmod +x tests/gradlew
 
       - name: Publish
+        uses: gradle/gradle-build-action@v2
         env:
           ORG_GRADLE_PROJECT_mavenCentralUsername: rnett
           ORG_GRADLE_PROJECT_mavenCentralPassword: ${{ secrets.SONATYPE_PASSWORD }}
           ORG_GRADLE_PROJECT_signingInMemoryKey: ${{ secrets.OSSRH_GPG_SECRET_KEY }}
           ORG_GRADLE_PROJECT_sonatypeRepositoryId: ${{ needs.create_staging_repository.outputs.repository_id }}
           GRADLE_OPTS: -Xmx4096m
-        run: ./gradlew publish --no-daemon --no-parallel
-
-      - name: Stop gradle daemon
-        run: ./gradlew --stop
-
-      - name: Cleanup Gradle Cache Posix
-        if: runner.os != 'Windows'
-        run: |
-          jps
-          rm -f ~/.gradle/caches/*/*.lock
-          rm -f ~/.gradle/caches/*/gc.properties
-
-      - name: Cleanup Gradle Cache Windows
-        if: runner.os == 'Windows'
-        run: |
-          jps
-          rm -fo ~/.gradle/caches/*/*.lock
-          rm -fo ~/.gradle/caches/*/gc.properties
+        with:
+          arguments: publish
 
 
   publish-docs:
@@ -170,25 +143,10 @@ jobs:
         with:
           java-version: 15
 
-      - name: Cache Gradle packages
-        uses: actions/cache@v2
-        with:
-          path: |
-            ~/.gradle/caches
-            ~/.gradle/wrapper
-            ~/.gradle/nodejs
-            ~/.gradle/yarn
-          key: ${{ runner.os }}-gradle-${{ hashFiles('**/*.gradle*', 'buildSrc/**/*.kt') }}
-          restore-keys: |
-            ${{ runner.os }}-gradle-
-
       - name: Grant execute permission for gradlew
         run: |
           chmod +x gradlew
           chmod +x tests/gradlew
-
-      - name: Assemble
-        run: ./gradlew assemble -DRELEASE_SIGNING_ENABLED=false
 
       - name: Clone past docs for release
         if: needs.find-version.outputs.snapshot == 'false'
@@ -213,14 +171,10 @@ jobs:
         if: needs.find-version.outputs.snapshot == 'false'
         run: ls -l past-docs/old-releases/plugins
 
-      - name: Generate HTML Docs
-        run: ./gradlew dokkaHtmlMultiModule -PgitBranch=$GITHUB_SHA -PcoreVersionDir=past-docs/old-releases/core -PpluginVersionDir=past-docs/old-releases/plugins
-
-      - name: Generate publishable readme
-        run: ./gradlew generateReadme
-
-      - name: Stop gradle daemon
-        run: ./gradlew --stop
+      - name: Generate HTML Docs and README
+        uses: gradle/gradle-build-action@v2
+        with:
+          arguments: generateReadme dokkaHtmlMultiModule -PgitBranch=$GITHUB_SHA -PcoreVersionDir=past-docs/old-releases/core -PpluginVersionDir=past-docs/old-releases/plugins -DRELEASE_SIGNING_ENABLED=false
 
       - name: Publish Core docs
         uses: rnett/publish-docs@v2.6
@@ -248,23 +202,6 @@ jobs:
           version: ${{ needs.find-version.outputs.version }}
           restore: true
           message: Update README for $version
-
-      - name: Stop gradle daemon
-        run: ./gradlew --stop
-
-      - name: Cleanup Gradle Cache Posix
-        if: runner.os != 'Windows'
-        run: |
-          jps
-          rm -f ~/.gradle/caches/*/*.lock
-          rm -f ~/.gradle/caches/*/gc.properties
-
-      - name: Cleanup Gradle Cache Windows
-        if: runner.os == 'Windows'
-        run: |
-          jps
-          rm -fo ~/.gradle/caches/*/*.lock
-          rm -fo ~/.gradle/caches/*/gc.properties
 
   finalize:
     runs-on: ubuntu-latest
