@@ -13,8 +13,10 @@ jobs:
     strategy:
       matrix:
         os: [ ubuntu-latest, macOS-11, windows-latest ]
+        os-name: [ ubuntu, mac, windows ]
       fail-fast: false
     runs-on: ${{ matrix.os }}
+    name: publish-${{ matrix.os-name }}
     steps:
       - uses: actions/checkout@v2
       - name: Set up JDK 15
@@ -104,7 +106,9 @@ jobs:
     strategy:
       matrix:
         os: [ ubuntu-latest, macOS-11, windows-latest ]
+        os-name: [ ubuntu, mac, windows ]
     runs-on: ${{ matrix.os }}
+    name: publish-${{ matrix.os-name }}
     if: github.ref == 'refs/heads/main'
     needs: [ create_staging_repository, test ]
     steps:
