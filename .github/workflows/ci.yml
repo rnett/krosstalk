@@ -22,7 +22,7 @@ jobs:
             runner: windows-latest
       fail-fast: false
     runs-on: ${{ matrix.runner }}
-    name: test-${{ matrix.os }}
+    name: test (${{ matrix.os }})
     steps:
       - uses: actions/checkout@v2
       - name: Set up JDK 15
@@ -121,7 +121,7 @@ jobs:
             runner: windows-latest
       fail-fast: false
     runs-on: ${{ matrix.runner }}
-    name: publish-${{ matrix.os }}
+    name: publish (${{ matrix.os }})
     if: github.ref == 'refs/heads/main'
     needs: [ create_staging_repository, test ]
     steps:
