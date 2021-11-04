@@ -8,7 +8,6 @@ on:
     types: [ opened, reopened, synchronize, labeled, unlabeled ]
 
 jobs:
-
   test:
     strategy:
       matrix:
