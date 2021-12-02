@@ -25,14 +25,13 @@ kotlin {
                 implementation("com.github.rnett.krosstalk:krosstalk")
                 implementation("com.github.rnett.krosstalk:krosstalk-kotlinx-serialization")
                 implementation(libs.kotlinx.serialization.cbor)
-
-                implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:${libs.versions.kotlinx.coroutines.get()}-native-mt")
             }
         }
 
         val commonTest by getting {
             dependencies {
                 implementation(kotlin("test"))
+                implementation(libs.kotlinx.coroutines.test)
             }
         }
         val jvmMain by getting {
