@@ -61,6 +61,7 @@ jobs:
 
   build:
     needs: [ create_staging_repository ]
+    if: always()
     strategy:
       matrix:
         os: [ ubuntu, mac, windows ]
