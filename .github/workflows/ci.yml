@@ -96,6 +96,10 @@ jobs:
       - name: Build and Unit Test
         uses: gradle/gradle-build-action@v2
         with:
+          gradle-home-cache-includes: |
+            nodejs
+            yarn
+            ../konan
           arguments: build check
 
       - name: Run Integraiton Tests
@@ -103,6 +107,10 @@ jobs:
         env:
           ORG_GRADLE_PROJECT_signingInMemoryKey: ${{ secrets.OSSRH_GPG_SECRET_KEY }}
         with:
+          gradle-home-cache-includes: |
+            nodejs
+            yarn
+            ../konan
           build-root-directory: ./tests
           arguments: check
 
@@ -122,6 +130,10 @@ jobs:
           ORG_GRADLE_PROJECT_sonatypeRepositoryId: ${{ needs.create_staging_repository.outputs.repository_id }}
           GRADLE_OPTS: -Xmx4096m
         with:
+          gradle-home-cache-includes: |
+            nodejs
+            yarn
+            ../konan
           arguments: publish
 
 
@@ -168,6 +180,10 @@ jobs:
       - name: Generate HTML Docs and README
         uses: gradle/gradle-build-action@v2
         with:
+          gradle-home-cache-includes: |
+            nodejs
+            yarn
+            ../konan
           arguments: generateReadme dokkaHtmlMultiModule -PgitBranch=$GITHUB_SHA -PcoreVersionDir=past-docs/old-releases/core -PpluginVersionDir=past-docs/old-releases/plugins -DRELEASE_SIGNING_ENABLED=false
 
       - name: Publish Core docs
