@@ -60,6 +60,7 @@ jobs:
           description: ${{ github.repository }}/${{ github.workflow }}#${{ github.run_number }} - ${{ needs.find-version.outputs.version }}
 
   build:
+    needs: [ create_staging_repository ]
     strategy:
       matrix:
         os: [ ubuntu, mac, windows ]
