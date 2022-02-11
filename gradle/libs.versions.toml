@@ -8,7 +8,7 @@ autoservice = "1.0"
 shadow = "7.0.0"
 buildconfig = "3.0.2"
 publish = "0.18.0"
-dokka = "1.6.0"
+dokka = "1.6.10"
 execfork = "0.1.15"
 
 [libraries]
