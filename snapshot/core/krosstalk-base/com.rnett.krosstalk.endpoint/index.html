@@ -2,28 +2,32 @@
   <head>
     <meta name="viewport" content="width=device-width, initial-scale=1" charset="UTF-8">
     <title>com.rnett.krosstalk.endpoint</title>
-</head><body><link href="../../images/logo-icon.svg" rel="icon" type="image/svg"><script>var pathToRoot = "../../";</script><script type="text/javascript" src="../../scripts/sourceset_dependencies.js" async></script><link href="../../styles/style.css" rel="Stylesheet"><link href="../../styles/logo-styles.css" rel="Stylesheet"><link href="../../styles/jetbrains-mono.css" rel="Stylesheet"><link href="../../styles/main.css" rel="Stylesheet"><script type="text/javascript" src="../../scripts/clipboard.js" async></script><script type="text/javascript" src="../../scripts/navigation-loader.js" async></script><script type="text/javascript" src="../../scripts/platform-content-handler.js" async></script><script type="text/javascript" src="../../scripts/main.js" async></script>
+</head><body><link href="../../images/logo-icon.svg" rel="icon" type="image/svg"><script>var pathToRoot = "../../";</script>
+    <script type="text/javascript" src="../../scripts/sourceset_dependencies.js" async></script><link href="../../styles/style.css" rel="Stylesheet"><link href="../../styles/jetbrains-mono.css" rel="Stylesheet"><link href="../../styles/main.css" rel="Stylesheet"><link href="../../styles/prism.css" rel="Stylesheet"><link href="../../styles/logo-styles.css" rel="Stylesheet"><script type="text/javascript" src="../../scripts/clipboard.js" async></script><script type="text/javascript" src="../../scripts/navigation-loader.js" async></script><script type="text/javascript" src="../../scripts/platform-content-handler.js" async></script><script type="text/javascript" src="../../scripts/main.js" defer></script><script type="text/javascript" src="../../scripts/prism.js" async></script><script>const storage = localStorage.getItem("dokka-dark-mode")
+const savedDarkMode = storage ? JSON.parse(storage) : false
+if(savedDarkMode === true){
+    document.getElementsByTagName("html")[0].classList.add("theme-dark")
+}</script>
+
   
+    <div class="navigation-wrapper" id="navigation-wrapper">
+      <div id="leftToggler"><span class="icon-toggler"></span></div>
+      <div class="library-name"><a href="../../index.html"><span>Krosstalk</span></a></div>
+      <div>1.4.0-SNAPSHOT</div>
+      <div class="pull-right d-flex"><button id="theme-toggle-button"><span id="theme-toggle"></span></button>
+        <div id="searchBar"></div>
+      </div>
+    </div>
     <div id="container">
-      <div id="leftColumn"><a href="../../index.html">
-            <div id="logo"></div>
-          </a>
-        <div id="paneSearch"></div>
+      <div id="leftColumn">
         <div id="sideMenu"></div>
       </div>
       <div id="main">
-        <script type="text/javascript" src="../../scripts/main.js"></script><div id="leftToggler"><span class="icon-toggler"></span></div>
-
         <div class="main-content" id="content" pageids="Krosstalk Base::com.rnett.krosstalk.endpoint////PointingToDeclaration//1218379200">
-          <div class="navigation-wrapper" id="navigation-wrapper">
-            <div class="breadcrumbs"><a href="../index.html">Krosstalk Base</a>/<a href="index.html">com.rnett.krosstalk.endpoint</a></div>
-            <div class="pull-right d-flex">
-              <div id="searchBar"></div>
-            </div>
-          </div>
+          <div class="breadcrumbs"><a href="../index.html">Krosstalk Base</a>/<a href="index.html">com.rnett.krosstalk.endpoint</a></div>
           <div class="cover ">
             <h1 class="cover"><span><span>Package</span></span> <span>com.</span><wbr><span>rnett.</span><wbr><span>krosstalk.</span><wbr><span>endpoint</span></h1>
-            <div class="platform-hinted UnderCoverText" data-platform-hinted="data-platform-hinted"><div class="content sourceset-depenent-content" data-active="" data-togglable=":core:krosstalk-base:dokkaHtmlPartial/commonMain"><p class="paragraph">Contains the endpoint template and resolution classes.</p><p class="paragraph"><code>Endpoint</code> represents a template from <code>@KrosstalkEndpoint</code>, with parameters and optional segments. Client plugins do not need to work with it, it is all handled internally.</p><p class="paragraph"><code>EndpointResolveTree</code> provides a tree based URL resolver based on an endpoint, that can extract parameter values and handle optionals. This is used by <a href="-endpoint/resolve.html">Endpoint.resolve</a>, which is generally how server plugins do method resolution. See the Ktor server plugin for an example of how resolution can be handled.</p></div></div>
+            <div class="platform-hinted UnderCoverText" data-platform-hinted="data-platform-hinted"><div class="content sourceset-depenent-content" data-active="" data-togglable=":core:krosstalk-base:dokkaHtmlPartial/commonMain"><p class="paragraph">Contains the endpoint template and resolution classes.</p><p class="paragraph"><code class="lang-kotlin">Endpoint</code> represents a template from <code class="lang-kotlin">@KrosstalkEndpoint</code>, with parameters and optional segments. Client plugins do not need to work with it, it is all handled internally.</p><p class="paragraph"><code class="lang-kotlin">EndpointResolveTree</code> provides a tree based URL resolver based on an endpoint, that can extract parameter values and handle optionals. This is used by <a href="-endpoint/resolve.html">Endpoint.resolve</a>, which is generally how server plugins do method resolution. See the Ktor server plugin for an example of how resolution can be handled.</p></div></div>
           </div>
           <div class="tabbedcontent">
             <div class="tabs-section" tabs-section="tabs-section"><button class="section-tab" data-active="" data-togglable="Types">Types</button></div>
@@ -32,187 +36,165 @@
               <div class="table" data-togglable="Types"><a data-name="-723465010%2FClasslikes%2F1218379200" anchor-label="Endpoint" id="-723465010%2FClasslikes%2F1218379200" data-filterable-set=":core:krosstalk-base:dokkaHtmlPartial/commonMain"></a>
                 <div class="table-row" data-filterable-current=":core:krosstalk-base:dokkaHtmlPartial/commonMain" data-filterable-set=":core:krosstalk-base:dokkaHtmlPartial/commonMain">
                   <div class="main-subrow keyValue ">
-                    <div class=""><span class="inline-flex"><a href="-endpoint/index.html"><span><span>Endpoint</span></span></a><span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-723465010%2FClasslikes%2F1218379200"></span>
+                    <div class=""><span class="inline-flex">
+                        <div><a href="-endpoint/index.html"><span><span>Endpoint</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-723465010%2FClasslikes%2F1218379200"></span>
                           <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
                         </span></span></div>
                     <div>
-                      <div class="title"><div class="divergent-group" data-filterable-current=":core:krosstalk-base:dokkaHtmlPartial/commonMain" data-filterable-set=":core:krosstalk-base:dokkaHtmlPartial/commonMain"><div class="with-platform-tags"><span class="pull-right"></span></div>
-
-  <div>
-    <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-depenent-content" data-active="" data-togglable=":core:krosstalk-base:dokkaHtmlPartial/commonMain"><div class="symbol monospace"><div class="block"><div class="block">@<a href="../com.rnett.krosstalk/-krosstalk-plugin-api/index.html">KrosstalkPluginApi</a></div></div>data class <a href="-endpoint/index.html">Endpoint</a>(urlParts: <a href="-endpoint-region/-url-parts/index.html">EndpointRegion.UrlParts</a>, queryParameters: <a href="-endpoint-region/-query-parameters/index.html">EndpointRegion.QueryParameters</a>)<span class="top-right-position"><span class="copy-icon"></span><div class="copy-popup-wrapper popup-to-left"><span class="copy-popup-icon"></span><span>Content copied to clipboard</span></div></span></div></div></div>
-  </div>
-<div class="brief "><p class="paragraph">Class representing an endpoint template. Valid template structures:</p></div></div>
-</div>
+                      <div class="title">
+                        <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-depenent-content" data-active="" data-togglable=":core:krosstalk-base:dokkaHtmlPartial/commonMain"><div class="symbol monospace"><div class="block"><div class="block"><span class="token annotation">@</span><a href="../com.rnett.krosstalk/-krosstalk-plugin-api/index.html"><span class="token annotation">KrosstalkPluginApi</span></a></div></div><span class="token keyword">data </span><span class="token keyword">class </span><a href="-endpoint/index.html">Endpoint</a><span class="token punctuation">(</span>urlParts<span class="token operator">: </span><a href="-endpoint-region/-url-parts/index.html">EndpointRegion.UrlParts</a><span class="token punctuation">, </span>queryParameters<span class="token operator">: </span><a href="-endpoint-region/-query-parameters/index.html">EndpointRegion.QueryParameters</a><span class="token punctuation">)</span><span class="top-right-position"><span class="copy-icon"></span><div class="copy-popup-wrapper popup-to-left"><span class="copy-popup-icon"></span><span>Content copied to clipboard</span></div></span></div><div class="brief "><p class="paragraph">Class representing an endpoint template. Valid template structures:</p></div></div></div>
+                      </div>
                     </div>
                   </div>
                 </div>
 <a data-name="1981319579%2FClasslikes%2F1218379200" anchor-label="EndpointPart" id="1981319579%2FClasslikes%2F1218379200" data-filterable-set=":core:krosstalk-base:dokkaHtmlPartial/commonMain"></a>
                 <div class="table-row" data-filterable-current=":core:krosstalk-base:dokkaHtmlPartial/commonMain" data-filterable-set=":core:krosstalk-base:dokkaHtmlPartial/commonMain">
                   <div class="main-subrow keyValue ">
-                    <div class=""><span class="inline-flex"><a href="-endpoint-part/index.html"><span>Endpoint</span><wbr><span><span>Part</span></span></a><span class="anchor-wrapper"><span class="anchor-icon" pointing-to="1981319579%2FClasslikes%2F1218379200"></span>
+                    <div class=""><span class="inline-flex">
+                        <div><a href="-endpoint-part/index.html"><span>Endpoint</span><wbr><span><span>Part</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="1981319579%2FClasslikes%2F1218379200"></span>
                           <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
                         </span></span></div>
                     <div>
-                      <div class="title"><div class="divergent-group" data-filterable-current=":core:krosstalk-base:dokkaHtmlPartial/commonMain" data-filterable-set=":core:krosstalk-base:dokkaHtmlPartial/commonMain"><div class="with-platform-tags"><span class="pull-right"></span></div>
-
-  <div>
-    <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-depenent-content" data-active="" data-togglable=":core:krosstalk-base:dokkaHtmlPartial/commonMain"><div class="symbol monospace"><div class="block"><div class="block">@<a href="../com.rnett.krosstalk/-krosstalk-plugin-api/index.html">KrosstalkPluginApi</a></div></div>sealed class <a href="-endpoint-part/index.html">EndpointPart</a>&lt;in <a href="-endpoint-part/index.html">L</a> : <a href="-endpoint-region/index.html">EndpointRegion</a>&gt;<span class="top-right-position"><span class="copy-icon"></span><div class="copy-popup-wrapper popup-to-left"><span class="copy-popup-icon"></span><span>Content copied to clipboard</span></div></span></div></div></div>
-  </div>
-</div>
-</div>
+                      <div class="title">
+                        <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-depenent-content" data-active="" data-togglable=":core:krosstalk-base:dokkaHtmlPartial/commonMain"><div class="symbol monospace"><div class="block"><div class="block"><span class="token annotation">@</span><a href="../com.rnett.krosstalk/-krosstalk-plugin-api/index.html"><span class="token annotation">KrosstalkPluginApi</span></a></div></div><span class="token keyword">sealed </span><span class="token keyword">class </span><a href="-endpoint-part/index.html">EndpointPart</a><span class="token operator">&lt;</span><span class="token keyword">in </span><a href="-endpoint-part/index.html">L</a><span class="token operator"> : </span><a href="-endpoint-region/index.html">EndpointRegion</a><span class="token operator">&gt;</span><span class="top-right-position"><span class="copy-icon"></span><div class="copy-popup-wrapper popup-to-left"><span class="copy-popup-icon"></span><span>Content copied to clipboard</span></div></span></div></div></div>
+                      </div>
                     </div>
                   </div>
                 </div>
 <a data-name="1638563149%2FClasslikes%2F1218379200" anchor-label="EndpointQueryParameter" id="1638563149%2FClasslikes%2F1218379200" data-filterable-set=":core:krosstalk-base:dokkaHtmlPartial/commonMain"></a>
                 <div class="table-row" data-filterable-current=":core:krosstalk-base:dokkaHtmlPartial/commonMain" data-filterable-set=":core:krosstalk-base:dokkaHtmlPartial/commonMain">
                   <div class="main-subrow keyValue ">
-                    <div class=""><span class="inline-flex"><a href="index.html#1638563149%2FClasslikes%2F1218379200"><span>Endpoint</span><wbr><span>Query</span><wbr><span><span>Parameter</span></span></a><span class="anchor-wrapper"><span class="anchor-icon" pointing-to="1638563149%2FClasslikes%2F1218379200"></span>
+                    <div class=""><span class="inline-flex">
+                        <div><a href="index.html#1638563149%2FClasslikes%2F1218379200"><span>Endpoint</span><wbr><span>Query</span><wbr><span><span>Parameter</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="1638563149%2FClasslikes%2F1218379200"></span>
                           <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
                         </span></span></div>
                     <div>
-                      <div class="title"><div class="divergent-group" data-filterable-current=":core:krosstalk-base:dokkaHtmlPartial/commonMain" data-filterable-set=":core:krosstalk-base:dokkaHtmlPartial/commonMain"><div class="with-platform-tags"><span class="pull-right"></span></div>
-
-  <div>
-    <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-depenent-content" data-active="" data-togglable=":core:krosstalk-base:dokkaHtmlPartial/commonMain"><div class="symbol monospace"><div class="block"><div class="block">@<a href="../com.rnett.krosstalk/-krosstalk-plugin-api/index.html">KrosstalkPluginApi</a></div></div>typealias <a href="index.html#1638563149%2FClasslikes%2F1218379200">EndpointQueryParameter</a> = <a href="-endpoint-part/index.html">EndpointPart</a>&lt;<a href="-endpoint-region/-query-parameters/index.html">EndpointRegion.QueryParameters</a>&gt;<span class="top-right-position"><span class="copy-icon"></span><div class="copy-popup-wrapper popup-to-left"><span class="copy-popup-icon"></span><span>Content copied to clipboard</span></div></span></div></div></div>
-  </div>
-</div>
-</div>
+                      <div class="title">
+                        <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-depenent-content" data-active="" data-togglable=":core:krosstalk-base:dokkaHtmlPartial/commonMain"><div class="symbol monospace"><div class="block"><div class="block"><span class="token annotation">@</span><a href="../com.rnett.krosstalk/-krosstalk-plugin-api/index.html"><span class="token annotation">KrosstalkPluginApi</span></a></div></div><span class="token keyword">typealias </span><a href="index.html#1638563149%2FClasslikes%2F1218379200">EndpointQueryParameter</a><span class="token operator"> = </span><a href="-endpoint-part/index.html">EndpointPart</a><span class="token operator">&lt;</span><span class="token keyword"></span><a href="-endpoint-region/-query-parameters/index.html">EndpointRegion.QueryParameters</a><span class="token operator">&gt;</span><span class="top-right-position"><span class="copy-icon"></span><div class="copy-popup-wrapper popup-to-left"><span class="copy-popup-icon"></span><span>Content copied to clipboard</span></div></span></div></div></div>
+                      </div>
                     </div>
                   </div>
                 </div>
 <a data-name="-704942470%2FClasslikes%2F1218379200" anchor-label="EndpointRegion" id="-704942470%2FClasslikes%2F1218379200" data-filterable-set=":core:krosstalk-base:dokkaHtmlPartial/commonMain"></a>
                 <div class="table-row" data-filterable-current=":core:krosstalk-base:dokkaHtmlPartial/commonMain" data-filterable-set=":core:krosstalk-base:dokkaHtmlPartial/commonMain">
                   <div class="main-subrow keyValue ">
-                    <div class=""><span class="inline-flex"><a href="-endpoint-region/index.html"><span>Endpoint</span><wbr><span><span>Region</span></span></a><span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-704942470%2FClasslikes%2F1218379200"></span>
+                    <div class=""><span class="inline-flex">
+                        <div><a href="-endpoint-region/index.html"><span>Endpoint</span><wbr><span><span>Region</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-704942470%2FClasslikes%2F1218379200"></span>
                           <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
                         </span></span></div>
                     <div>
-                      <div class="title"><div class="divergent-group" data-filterable-current=":core:krosstalk-base:dokkaHtmlPartial/commonMain" data-filterable-set=":core:krosstalk-base:dokkaHtmlPartial/commonMain"><div class="with-platform-tags"><span class="pull-right"></span></div>
-
-  <div>
-    <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-depenent-content" data-active="" data-togglable=":core:krosstalk-base:dokkaHtmlPartial/commonMain"><div class="symbol monospace"><div class="block"><div class="block">@<a href="../com.rnett.krosstalk/-krosstalk-plugin-api/index.html">KrosstalkPluginApi</a></div></div>sealed class <a href="-endpoint-region/index.html">EndpointRegion</a><span class="top-right-position"><span class="copy-icon"></span><div class="copy-popup-wrapper popup-to-left"><span class="copy-popup-icon"></span><span>Content copied to clipboard</span></div></span></div></div></div>
-  </div>
-</div>
-</div>
+                      <div class="title">
+                        <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-depenent-content" data-active="" data-togglable=":core:krosstalk-base:dokkaHtmlPartial/commonMain"><div class="symbol monospace"><div class="block"><div class="block"><span class="token annotation">@</span><a href="../com.rnett.krosstalk/-krosstalk-plugin-api/index.html"><span class="token annotation">KrosstalkPluginApi</span></a></div></div><span class="token keyword">sealed </span><span class="token keyword">class </span><a href="-endpoint-region/index.html">EndpointRegion</a><span class="top-right-position"><span class="copy-icon"></span><div class="copy-popup-wrapper popup-to-left"><span class="copy-popup-icon"></span><span>Content copied to clipboard</span></div></span></div></div></div>
+                      </div>
                     </div>
                   </div>
                 </div>
 <a data-name="666926890%2FClasslikes%2F1218379200" anchor-label="EndpointResolveTree" id="666926890%2FClasslikes%2F1218379200" data-filterable-set=":core:krosstalk-base:dokkaHtmlPartial/commonMain"></a>
                 <div class="table-row" data-filterable-current=":core:krosstalk-base:dokkaHtmlPartial/commonMain" data-filterable-set=":core:krosstalk-base:dokkaHtmlPartial/commonMain">
                   <div class="main-subrow keyValue ">
-                    <div class=""><span class="inline-flex"><a href="-endpoint-resolve-tree/index.html"><span>Endpoint</span><wbr><span>Resolve</span><wbr><span><span>Tree</span></span></a><span class="anchor-wrapper"><span class="anchor-icon" pointing-to="666926890%2FClasslikes%2F1218379200"></span>
+                    <div class=""><span class="inline-flex">
+                        <div><a href="-endpoint-resolve-tree/index.html"><span>Endpoint</span><wbr><span>Resolve</span><wbr><span><span>Tree</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="666926890%2FClasslikes%2F1218379200"></span>
                           <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
                         </span></span></div>
                     <div>
-                      <div class="title"><div class="divergent-group" data-filterable-current=":core:krosstalk-base:dokkaHtmlPartial/commonMain" data-filterable-set=":core:krosstalk-base:dokkaHtmlPartial/commonMain"><div class="with-platform-tags"><span class="pull-right"></span></div>
-
-  <div>
-    <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-depenent-content" data-active="" data-togglable=":core:krosstalk-base:dokkaHtmlPartial/commonMain"><div class="symbol monospace"><div class="block"><div class="block">@<a href="../com.rnett.krosstalk/-krosstalk-plugin-api/index.html">KrosstalkPluginApi</a></div></div>sealed class <a href="-endpoint-resolve-tree/index.html">EndpointResolveTree</a><span class="top-right-position"><span class="copy-icon"></span><div class="copy-popup-wrapper popup-to-left"><span class="copy-popup-icon"></span><span>Content copied to clipboard</span></div></span></div></div></div>
-  </div>
-</div>
-</div>
+                      <div class="title">
+                        <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-depenent-content" data-active="" data-togglable=":core:krosstalk-base:dokkaHtmlPartial/commonMain"><div class="symbol monospace"><div class="block"><div class="block"><span class="token annotation">@</span><a href="../com.rnett.krosstalk/-krosstalk-plugin-api/index.html"><span class="token annotation">KrosstalkPluginApi</span></a></div></div><span class="token keyword">sealed </span><span class="token keyword">class </span><a href="-endpoint-resolve-tree/index.html">EndpointResolveTree</a><span class="top-right-position"><span class="copy-icon"></span><div class="copy-popup-wrapper popup-to-left"><span class="copy-popup-icon"></span><span>Content copied to clipboard</span></div></span></div></div></div>
+                      </div>
                     </div>
                   </div>
                 </div>
 <a data-name="-1000565818%2FClasslikes%2F1218379200" anchor-label="EndpointUnknownArgumentException" id="-1000565818%2FClasslikes%2F1218379200" data-filterable-set=":core:krosstalk-base:dokkaHtmlPartial/commonMain"></a>
                 <div class="table-row" data-filterable-current=":core:krosstalk-base:dokkaHtmlPartial/commonMain" data-filterable-set=":core:krosstalk-base:dokkaHtmlPartial/commonMain">
                   <div class="main-subrow keyValue ">
-                    <div class=""><span class="inline-flex"><a href="-endpoint-unknown-argument-exception/index.html"><span>Endpoint</span><wbr><span>Unknown</span><wbr><span>Argument</span><wbr><span><span>Exception</span></span></a><span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-1000565818%2FClasslikes%2F1218379200"></span>
+                    <div class=""><span class="inline-flex">
+                        <div><a href="-endpoint-unknown-argument-exception/index.html"><span>Endpoint</span><wbr><span>Unknown</span><wbr><span>Argument</span><wbr><span><span>Exception</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-1000565818%2FClasslikes%2F1218379200"></span>
                           <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
                         </span></span></div>
                     <div>
-                      <div class="title"><div class="divergent-group" data-filterable-current=":core:krosstalk-base:dokkaHtmlPartial/commonMain" data-filterable-set=":core:krosstalk-base:dokkaHtmlPartial/commonMain"><div class="with-platform-tags"><span class="pull-right"></span></div>
-
-  <div>
-    <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-depenent-content" data-active="" data-togglable=":core:krosstalk-base:dokkaHtmlPartial/commonMain"><div class="symbol monospace">class <a href="-endpoint-unknown-argument-exception/index.html">EndpointUnknownArgumentException</a>&nbsp;<span>@<a href="../com.rnett.krosstalk/-internal-krosstalk-api/index.html">InternalKrosstalkApi</a>&nbsp;</span>constructor(methodName: <a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html">String</a>, endpointTemplate: <a href="-endpoint/index.html">Endpoint</a>, missingParam: <a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html">String</a>, knownParams: <a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin.collections/-set/index.html">Set</a>&lt;<a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html">String</a>&gt;) : <a href="../com.rnett.krosstalk/-krosstalk-exception/index.html">KrosstalkException</a><span class="top-right-position"><span class="copy-icon"></span><div class="copy-popup-wrapper popup-to-left"><span class="copy-popup-icon"></span><span>Content copied to clipboard</span></div></span></div></div></div>
-  </div>
-<div class="brief "><p class="paragraph">An unknown parameter was used in an <code>@KrosstalkEndpoint</code> template.</p></div></div>
-</div>
+                      <div class="title">
+                        <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-depenent-content" data-active="" data-togglable=":core:krosstalk-base:dokkaHtmlPartial/commonMain"><div class="symbol monospace"><span class="token keyword">class </span><a href="-endpoint-unknown-argument-exception/index.html">EndpointUnknownArgumentException</a>&nbsp;<span><span class="token annotation">@</span><a href="../com.rnett.krosstalk/-internal-krosstalk-api/index.html"><span class="token annotation">InternalKrosstalkApi</span></a>&nbsp;</span><span class="token keyword">constructor</span><span class="token punctuation">(</span>methodName<span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html">String</a><span class="token punctuation">, </span>endpointTemplate<span class="token operator">: </span><a href="-endpoint/index.html">Endpoint</a><span class="token punctuation">, </span>missingParam<span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html">String</a><span class="token punctuation">, </span>knownParams<span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin.collections/-set/index.html">Set</a><span class="token operator">&lt;</span><span class="token keyword"></span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html">String</a><span class="token operator">&gt;</span><span class="token punctuation">)</span> : <a href="../com.rnett.krosstalk/-krosstalk-exception/index.html">KrosstalkException</a><span class="top-right-position"><span class="copy-icon"></span><div class="copy-popup-wrapper popup-to-left"><span class="copy-popup-icon"></span><span>Content copied to clipboard</span></div></span></div><div class="brief "><p class="paragraph">An unknown parameter was used in an <code class="lang-kotlin">@KrosstalkEndpoint</code> template.</p></div></div></div>
+                      </div>
                     </div>
                   </div>
                 </div>
 <a data-name="1128317266%2FClasslikes%2F1218379200" anchor-label="EndpointUrlPart" id="1128317266%2FClasslikes%2F1218379200" data-filterable-set=":core:krosstalk-base:dokkaHtmlPartial/commonMain"></a>
                 <div class="table-row" data-filterable-current=":core:krosstalk-base:dokkaHtmlPartial/commonMain" data-filterable-set=":core:krosstalk-base:dokkaHtmlPartial/commonMain">
                   <div class="main-subrow keyValue ">
-                    <div class=""><span class="inline-flex"><a href="index.html#1128317266%2FClasslikes%2F1218379200"><span>Endpoint</span><wbr><span>Url</span><wbr><span><span>Part</span></span></a><span class="anchor-wrapper"><span class="anchor-icon" pointing-to="1128317266%2FClasslikes%2F1218379200"></span>
+                    <div class=""><span class="inline-flex">
+                        <div><a href="index.html#1128317266%2FClasslikes%2F1218379200"><span>Endpoint</span><wbr><span>Url</span><wbr><span><span>Part</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="1128317266%2FClasslikes%2F1218379200"></span>
                           <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
                         </span></span></div>
                     <div>
-                      <div class="title"><div class="divergent-group" data-filterable-current=":core:krosstalk-base:dokkaHtmlPartial/commonMain" data-filterable-set=":core:krosstalk-base:dokkaHtmlPartial/commonMain"><div class="with-platform-tags"><span class="pull-right"></span></div>
-
-  <div>
-    <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-depenent-content" data-active="" data-togglable=":core:krosstalk-base:dokkaHtmlPartial/commonMain"><div class="symbol monospace"><div class="block"><div class="block">@<a href="../com.rnett.krosstalk/-krosstalk-plugin-api/index.html">KrosstalkPluginApi</a></div></div>typealias <a href="index.html#1128317266%2FClasslikes%2F1218379200">EndpointUrlPart</a> = <a href="-endpoint-part/index.html">EndpointPart</a>&lt;<a href="-endpoint-region/-url-parts/index.html">EndpointRegion.UrlParts</a>&gt;<span class="top-right-position"><span class="copy-icon"></span><div class="copy-popup-wrapper popup-to-left"><span class="copy-popup-icon"></span><span>Content copied to clipboard</span></div></span></div></div></div>
-  </div>
-</div>
-</div>
+                      <div class="title">
+                        <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-depenent-content" data-active="" data-togglable=":core:krosstalk-base:dokkaHtmlPartial/commonMain"><div class="symbol monospace"><div class="block"><div class="block"><span class="token annotation">@</span><a href="../com.rnett.krosstalk/-krosstalk-plugin-api/index.html"><span class="token annotation">KrosstalkPluginApi</span></a></div></div><span class="token keyword">typealias </span><a href="index.html#1128317266%2FClasslikes%2F1218379200">EndpointUrlPart</a><span class="token operator"> = </span><a href="-endpoint-part/index.html">EndpointPart</a><span class="token operator">&lt;</span><span class="token keyword"></span><a href="-endpoint-region/-url-parts/index.html">EndpointRegion.UrlParts</a><span class="token operator">&gt;</span><span class="top-right-position"><span class="copy-icon"></span><div class="copy-popup-wrapper popup-to-left"><span class="copy-popup-icon"></span><span>Content copied to clipboard</span></div></span></div></div></div>
+                      </div>
                     </div>
                   </div>
                 </div>
 <a data-name="-1491735842%2FClasslikes%2F1218379200" anchor-label="ResolveEndpoint" id="-1491735842%2FClasslikes%2F1218379200" data-filterable-set=":core:krosstalk-base:dokkaHtmlPartial/commonMain"></a>
                 <div class="table-row" data-filterable-current=":core:krosstalk-base:dokkaHtmlPartial/commonMain" data-filterable-set=":core:krosstalk-base:dokkaHtmlPartial/commonMain">
                   <div class="main-subrow keyValue ">
-                    <div class=""><span class="inline-flex"><a href="-resolve-endpoint/index.html"><span>Resolve</span><wbr><span><span>Endpoint</span></span></a><span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-1491735842%2FClasslikes%2F1218379200"></span>
+                    <div class=""><span class="inline-flex">
+                        <div><a href="-resolve-endpoint/index.html"><span>Resolve</span><wbr><span><span>Endpoint</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-1491735842%2FClasslikes%2F1218379200"></span>
                           <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
                         </span></span></div>
                     <div>
-                      <div class="title"><div class="divergent-group" data-filterable-current=":core:krosstalk-base:dokkaHtmlPartial/commonMain" data-filterable-set=":core:krosstalk-base:dokkaHtmlPartial/commonMain"><div class="with-platform-tags"><span class="pull-right"></span></div>
-
-  <div>
-    <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-depenent-content" data-active="" data-togglable=":core:krosstalk-base:dokkaHtmlPartial/commonMain"><div class="symbol monospace"><div class="block"><div class="block">@<a href="../com.rnett.krosstalk/-krosstalk-plugin-api/index.html">KrosstalkPluginApi</a></div></div>data class <a href="-resolve-endpoint/index.html">ResolveEndpoint</a>(urlParts: <a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin.collections/-list/index.html">List</a>&lt;<a href="-resolve-url-part/index.html">ResolveUrlPart</a>&gt;, queryParams: <a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin.collections/-map/index.html">Map</a>&lt;<a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html">String</a>, <a href="-resolve-query-param/index.html">ResolveQueryParam</a>&gt;)<span class="top-right-position"><span class="copy-icon"></span><div class="copy-popup-wrapper popup-to-left"><span class="copy-popup-icon"></span><span>Content copied to clipboard</span></div></span></div></div></div>
-  </div>
-</div>
-</div>
+                      <div class="title">
+                        <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-depenent-content" data-active="" data-togglable=":core:krosstalk-base:dokkaHtmlPartial/commonMain"><div class="symbol monospace"><div class="block"><div class="block"><span class="token annotation">@</span><a href="../com.rnett.krosstalk/-krosstalk-plugin-api/index.html"><span class="token annotation">KrosstalkPluginApi</span></a></div></div><span class="token keyword">data </span><span class="token keyword">class </span><a href="-resolve-endpoint/index.html">ResolveEndpoint</a><span class="token punctuation">(</span>urlParts<span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin.collections/-list/index.html">List</a><span class="token operator">&lt;</span><span class="token keyword"></span><a href="-resolve-url-part/index.html">ResolveUrlPart</a><span class="token operator">&gt;</span><span class="token punctuation">, </span>queryParams<span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin.collections/-map/index.html">Map</a><span class="token operator">&lt;</span><span class="token keyword"></span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html">String</a><span class="token punctuation">, </span><span class="token keyword"></span><a href="-resolve-query-param/index.html">ResolveQueryParam</a><span class="token operator">&gt;</span><span class="token punctuation">)</span><span class="top-right-position"><span class="copy-icon"></span><div class="copy-popup-wrapper popup-to-left"><span class="copy-popup-icon"></span><span>Content copied to clipboard</span></div></span></div></div></div>
+                      </div>
                     </div>
                   </div>
                 </div>
 <a data-name="1569533262%2FClasslikes%2F1218379200" anchor-label="ResolveQueryParam" id="1569533262%2FClasslikes%2F1218379200" data-filterable-set=":core:krosstalk-base:dokkaHtmlPartial/commonMain"></a>
                 <div class="table-row" data-filterable-current=":core:krosstalk-base:dokkaHtmlPartial/commonMain" data-filterable-set=":core:krosstalk-base:dokkaHtmlPartial/commonMain">
                   <div class="main-subrow keyValue ">
-                    <div class=""><span class="inline-flex"><a href="-resolve-query-param/index.html"><span>Resolve</span><wbr><span>Query</span><wbr><span><span>Param</span></span></a><span class="anchor-wrapper"><span class="anchor-icon" pointing-to="1569533262%2FClasslikes%2F1218379200"></span>
+                    <div class=""><span class="inline-flex">
+                        <div><a href="-resolve-query-param/index.html"><span>Resolve</span><wbr><span>Query</span><wbr><span><span>Param</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="1569533262%2FClasslikes%2F1218379200"></span>
                           <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
                         </span></span></div>
                     <div>
-                      <div class="title"><div class="divergent-group" data-filterable-current=":core:krosstalk-base:dokkaHtmlPartial/commonMain" data-filterable-set=":core:krosstalk-base:dokkaHtmlPartial/commonMain"><div class="with-platform-tags"><span class="pull-right"></span></div>
-
-  <div>
-    <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-depenent-content" data-active="" data-togglable=":core:krosstalk-base:dokkaHtmlPartial/commonMain"><div class="symbol monospace"><div class="block"><div class="block">@<a href="../com.rnett.krosstalk/-krosstalk-plugin-api/index.html">KrosstalkPluginApi</a></div></div>sealed class <a href="-resolve-query-param/index.html">ResolveQueryParam</a><span class="top-right-position"><span class="copy-icon"></span><div class="copy-popup-wrapper popup-to-left"><span class="copy-popup-icon"></span><span>Content copied to clipboard</span></div></span></div></div></div>
-  </div>
-</div>
-</div>
+                      <div class="title">
+                        <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-depenent-content" data-active="" data-togglable=":core:krosstalk-base:dokkaHtmlPartial/commonMain"><div class="symbol monospace"><div class="block"><div class="block"><span class="token annotation">@</span><a href="../com.rnett.krosstalk/-krosstalk-plugin-api/index.html"><span class="token annotation">KrosstalkPluginApi</span></a></div></div><span class="token keyword">sealed </span><span class="token keyword">class </span><a href="-resolve-query-param/index.html">ResolveQueryParam</a><span class="top-right-position"><span class="copy-icon"></span><div class="copy-popup-wrapper popup-to-left"><span class="copy-popup-icon"></span><span>Content copied to clipboard</span></div></span></div></div></div>
+                      </div>
                     </div>
                   </div>
                 </div>
 <a data-name="1770201485%2FClasslikes%2F1218379200" anchor-label="ResolveUrlPart" id="1770201485%2FClasslikes%2F1218379200" data-filterable-set=":core:krosstalk-base:dokkaHtmlPartial/commonMain"></a>
                 <div class="table-row" data-filterable-current=":core:krosstalk-base:dokkaHtmlPartial/commonMain" data-filterable-set=":core:krosstalk-base:dokkaHtmlPartial/commonMain">
                   <div class="main-subrow keyValue ">
-                    <div class=""><span class="inline-flex"><a href="-resolve-url-part/index.html"><span>Resolve</span><wbr><span>Url</span><wbr><span><span>Part</span></span></a><span class="anchor-wrapper"><span class="anchor-icon" pointing-to="1770201485%2FClasslikes%2F1218379200"></span>
+                    <div class=""><span class="inline-flex">
+                        <div><a href="-resolve-url-part/index.html"><span>Resolve</span><wbr><span>Url</span><wbr><span><span>Part</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="1770201485%2FClasslikes%2F1218379200"></span>
                           <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
                         </span></span></div>
                     <div>
-                      <div class="title"><div class="divergent-group" data-filterable-current=":core:krosstalk-base:dokkaHtmlPartial/commonMain" data-filterable-set=":core:krosstalk-base:dokkaHtmlPartial/commonMain"><div class="with-platform-tags"><span class="pull-right"></span></div>
-
-  <div>
-    <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-depenent-content" data-active="" data-togglable=":core:krosstalk-base:dokkaHtmlPartial/commonMain"><div class="symbol monospace"><div class="block"><div class="block">@<a href="../com.rnett.krosstalk/-krosstalk-plugin-api/index.html">KrosstalkPluginApi</a></div></div>sealed class <a href="-resolve-url-part/index.html">ResolveUrlPart</a><span class="top-right-position"><span class="copy-icon"></span><div class="copy-popup-wrapper popup-to-left"><span class="copy-popup-icon"></span><span>Content copied to clipboard</span></div></span></div></div></div>
-  </div>
-</div>
-</div>
+                      <div class="title">
+                        <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-depenent-content" data-active="" data-togglable=":core:krosstalk-base:dokkaHtmlPartial/commonMain"><div class="symbol monospace"><div class="block"><div class="block"><span class="token annotation">@</span><a href="../com.rnett.krosstalk/-krosstalk-plugin-api/index.html"><span class="token annotation">KrosstalkPluginApi</span></a></div></div><span class="token keyword">sealed </span><span class="token keyword">class </span><a href="-resolve-url-part/index.html">ResolveUrlPart</a><span class="top-right-position"><span class="copy-icon"></span><div class="copy-popup-wrapper popup-to-left"><span class="copy-popup-icon"></span><span>Content copied to clipboard</span></div></span></div></div></div>
+                      </div>
                     </div>
                   </div>
                 </div>
 <a data-name="459314723%2FClasslikes%2F1218379200" anchor-label="UrlRequest" id="459314723%2FClasslikes%2F1218379200" data-filterable-set=":core:krosstalk-base:dokkaHtmlPartial/commonMain"></a>
                 <div class="table-row" data-filterable-current=":core:krosstalk-base:dokkaHtmlPartial/commonMain" data-filterable-set=":core:krosstalk-base:dokkaHtmlPartial/commonMain">
                   <div class="main-subrow keyValue ">
-                    <div class=""><span class="inline-flex"><a href="-url-request/index.html"><span>Url</span><wbr><span><span>Request</span></span></a><span class="anchor-wrapper"><span class="anchor-icon" pointing-to="459314723%2FClasslikes%2F1218379200"></span>
+                    <div class=""><span class="inline-flex">
+                        <div><a href="-url-request/index.html"><span>Url</span><wbr><span><span>Request</span></span></a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="459314723%2FClasslikes%2F1218379200"></span>
                           <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
                         </span></span></div>
                     <div>
-                      <div class="title"><div class="divergent-group" data-filterable-current=":core:krosstalk-base:dokkaHtmlPartial/commonMain" data-filterable-set=":core:krosstalk-base:dokkaHtmlPartial/commonMain"><div class="with-platform-tags"><span class="pull-right"></span></div>
-
-  <div>
-    <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-depenent-content" data-active="" data-togglable=":core:krosstalk-base:dokkaHtmlPartial/commonMain"><div class="symbol monospace"><div class="block"><div class="block">@<a href="../com.rnett.krosstalk/-krosstalk-plugin-api/index.html">KrosstalkPluginApi</a></div></div>data class <a href="-url-request/index.html">UrlRequest</a>(urlParts: <a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin.collections/-list/index.html">List</a>&lt;<a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html">String</a>&gt;, queryParams: <a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin.collections/-map/index.html">Map</a>&lt;<a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html">String</a>, <a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html">String</a>&gt;)<span class="top-right-position"><span class="copy-icon"></span><div class="copy-popup-wrapper popup-to-left"><span class="copy-popup-icon"></span><span>Content copied to clipboard</span></div></span></div></div></div>
-  </div>
-</div>
-</div>
+                      <div class="title">
+                        <div class="platform-hinted " data-platform-hinted="data-platform-hinted"><div class="content sourceset-depenent-content" data-active="" data-togglable=":core:krosstalk-base:dokkaHtmlPartial/commonMain"><div class="symbol monospace"><div class="block"><div class="block"><span class="token annotation">@</span><a href="../com.rnett.krosstalk/-krosstalk-plugin-api/index.html"><span class="token annotation">KrosstalkPluginApi</span></a></div></div><span class="token keyword">data </span><span class="token keyword">class </span><a href="-url-request/index.html">UrlRequest</a><span class="token punctuation">(</span>urlParts<span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin.collections/-list/index.html">List</a><span class="token operator">&lt;</span><span class="token keyword"></span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html">String</a><span class="token operator">&gt;</span><span class="token punctuation">, </span>queryParams<span class="token operator">: </span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin.collections/-map/index.html">Map</a><span class="token operator">&lt;</span><span class="token keyword"></span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html">String</a><span class="token punctuation">, </span><span class="token keyword"></span><a href="https://kotlinlang.org/api/latest/jvm/stdlib/kotlin/-string/index.html">String</a><span class="token operator">&gt;</span><span class="token punctuation">)</span><span class="top-right-position"><span class="copy-icon"></span><div class="copy-popup-wrapper popup-to-left"><span class="copy-popup-icon"></span><span>Content copied to clipboard</span></div></span></div></div></div>
+                      </div>
                     </div>
                   </div>
                 </div>
@@ -220,7 +202,7 @@
             </div>
           </div>
         </div>
-        <div class="footer"><span class="go-to-top-icon"><a href="#content"></a></span><span>© 2021 Copyright</span><span class="pull-right"><span>Generated by </span><a href="https://github.com/Kotlin/dokka"><span>dokka</span><span class="padded-icon"></span></a></span></div>
+        <div class="footer"><span class="go-to-top-icon"><a href="#content" id="go-to-top-link"></a></span><span>© 2022 Copyright</span><span class="pull-right"><span>Generated by </span><a href="https://github.com/Kotlin/dokka"><span>dokka</span><span class="padded-icon"></span></a></span></div>
       </div>
     </div>
   
