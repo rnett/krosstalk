@@ -2,24 +2,28 @@
   <head>
     <meta name="viewport" content="width=device-width, initial-scale=1" charset="UTF-8">
     <title>All modules</title>
-<link href="images/logo-icon.svg" rel="icon" type="image/svg"><script>var pathToRoot = "";</script><script type="text/javascript" src="scripts/sourceset_dependencies.js" async="async"></script><link href="styles/style.css" rel="Stylesheet"><link href="styles/logo-styles.css" rel="Stylesheet"><link href="styles/jetbrains-mono.css" rel="Stylesheet"><link href="styles/main.css" rel="Stylesheet"><script type="text/javascript" src="scripts/clipboard.js" async="async"></script><script type="text/javascript" src="scripts/navigation-loader.js" async="async"></script><script type="text/javascript" src="scripts/platform-content-handler.js" async="async"></script><script type="text/javascript" src="scripts/main.js" async="async"></script><link href="styles/multimodule.css" rel="Stylesheet">  </head>
+<link href="images/logo-icon.svg" rel="icon" type="image/svg"><script>var pathToRoot = "";</script>    <script>const storage = localStorage.getItem("dokka-dark-mode")
+const savedDarkMode = storage ? JSON.parse(storage) : false
+if(savedDarkMode === true){
+    document.getElementsByTagName("html")[0].classList.add("theme-dark")
+}</script>
+<script type="text/javascript" src="scripts/sourceset_dependencies.js" async="async"></script><link href="styles/style.css" rel="Stylesheet"><link href="styles/jetbrains-mono.css" rel="Stylesheet"><link href="styles/main.css" rel="Stylesheet"><link href="styles/prism.css" rel="Stylesheet"><link href="styles/logo-styles.css" rel="Stylesheet"><script type="text/javascript" src="scripts/clipboard.js" async="async"></script><script type="text/javascript" src="scripts/navigation-loader.js" async="async"></script><script type="text/javascript" src="scripts/platform-content-handler.js" async="async"></script><script type="text/javascript" src="scripts/main.js" defer="defer"></script><script type="text/javascript" src="scripts/prism.js" async="async"></script>  </head>
   <body>
+    <div class="navigation-wrapper" id="navigation-wrapper">
+      <div id="leftToggler"><span class="icon-toggler"></span></div>
+      <div class="library-name"><a href="index.html">Krosstalk Plugins</a></div>
+      <div>1.4.0-SNAPSHOT</div>
+      <div class="pull-right d-flex"><button id="theme-toggle-button"><span id="theme-toggle"></span></button>
+        <div id="searchBar"></div>
+      </div>
+    </div>
     <div id="container">
-      <div id="leftColumn"><a href="index.html">
-          <div id="logo"></div>
-        </a>
-        <div id="paneSearch"></div>
+      <div id="leftColumn">
         <div id="sideMenu"></div>
       </div>
       <div id="main">
-        <div id="leftToggler"><span class="icon-toggler"></span></div>
-<script type="text/javascript" src="scripts/main.js"></script>        <div class="main-content" id="content" pageIds="Krosstalk Plugins::.ext/allModules///PointingToDeclaration//0">
-          <div class="navigation-wrapper" id="navigation-wrapper">
-            <div class="breadcrumbs"></div>
-            <div class="pull-right d-flex">
-              <div id="searchBar"></div>
-            </div>
-          </div>
+        <div class="main-content" id="content" pageIds="Krosstalk Plugins::.ext/allModules///PointingToDeclaration//0">
+          <div class="breadcrumbs"></div>
           <div class="cover ">
             <div class="cover ">
               <h1 class="">Plugins</h1>
@@ -29,32 +33,32 @@
               <h4 class=""> Serialization</h4>
               <ul>
                 <li>
-                  <p class="paragraph">Kotlinx serialization (includes JSON): <code>com.github.rnett.krosstalk:krosstalk-kotlinx-serialization</code></p>
+                  <p class="paragraph">Kotlinx serialization (includes JSON): <code class="lang-kotlin">com.github.rnett.krosstalk:krosstalk-kotlinx-serialization</code></p>
                 </li>
               </ul>
               <h4 class=""> Client</h4>
               <ul>
                 <li>
-                  <p class="paragraph">Ktor: <code>com.github.rnett.krosstalk:krosstalk-ktor-client</code></p>
+                  <p class="paragraph">Ktor: <code class="lang-kotlin">com.github.rnett.krosstalk:krosstalk-ktor-client</code></p>
                 </li>
                 <ul>
                   <li>
-                    <p class="paragraph">Auth: <code>krosstalk-ktor-client-auth</code></p>
+                    <p class="paragraph">Auth: <code class="lang-kotlin">krosstalk-ktor-client-auth</code></p>
                   </li>
                 </ul>
               </ul>
               <h4 class=""> Server</h4>
               <ul>
                 <li>
-                  <p class="paragraph">Ktor: <code>com.github.rnett.krosstalk:krosstalk-ktor-server</code></p>
+                  <p class="paragraph">Ktor: <code class="lang-kotlin">com.github.rnett.krosstalk:krosstalk-ktor-server</code></p>
                 </li>
                 <ul>
                   <li>
-                    <p class="paragraph">Auth: <code>krosstalk-ktor-server-auth</code></p>
+                    <p class="paragraph">Auth: <code class="lang-kotlin">krosstalk-ktor-server-auth</code></p>
                   </li>
                   <ul>
                     <li>
-                      <p class="paragraph">JWT: <code>krosstalk-ktor-server-auth-jwt</code></p>
+                      <p class="paragraph">JWT: <code class="lang-kotlin">krosstalk-ktor-server-auth-jwt</code></p>
                     </li>
                   </ul>
                 </ul>
@@ -64,7 +68,9 @@
             <div class="table"><a data-name="-1982929025%2FMain%2F0" anchor-label="Krosstalk Kotlinx-serialization" id="-1982929025%2FMain%2F0" data-filterable-set=""></a>
               <div class="table-row">
                 <div class="main-subrow ">
-                  <div class="w-100"><span class="inline-flex"><a href="krosstalk-kotlinx-serialization/index.html">Krosstalk Kotlinx-serialization</a><span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-1982929025%2FMain%2F0"></span>
+                  <div class="w-100"><span class="inline-flex">
+                      <div><a href="krosstalk-kotlinx-serialization/index.html">Krosstalk Kotlinx-serialization</a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="-1982929025%2FMain%2F0"></span>
                         <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
                       </span></span></div>
                   <div><span class="brief-comment">
@@ -75,18 +81,22 @@
 <a data-name="1280547802%2FMain%2F0" anchor-label="Krosstalk Ktor Client" id="1280547802%2FMain%2F0" data-filterable-set=""></a>
               <div class="table-row">
                 <div class="main-subrow ">
-                  <div class="w-100"><span class="inline-flex"><a href="ktor-client/krosstalk-ktor-client/index.html">Krosstalk Ktor Client</a><span class="anchor-wrapper"><span class="anchor-icon" pointing-to="1280547802%2FMain%2F0"></span>
+                  <div class="w-100"><span class="inline-flex">
+                      <div><a href="ktor-client/krosstalk-ktor-client/index.html">Krosstalk Ktor Client</a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="1280547802%2FMain%2F0"></span>
                         <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
                       </span></span></div>
                   <div><span class="brief-comment">
-                      <p class="paragraph">A basic multiplatform Krosstalk client plugin using <a href="https://ktor.io/">Ktor</a>.  Supports all platforms Ktor does, which is currently everything except <code>watchosX64</code>.</p>
+                      <p class="paragraph">A basic multiplatform Krosstalk client plugin using <a href="https://ktor.io/">Ktor</a>.  Supports all platforms Ktor does, which is currently everything except <code class="lang-kotlin">watchosX64</code>.</p>
                     </span></div>
                 </div>
               </div>
 <a data-name="1800627520%2FMain%2F0" anchor-label="Krosstalk Ktor Client Auth" id="1800627520%2FMain%2F0" data-filterable-set=""></a>
               <div class="table-row">
                 <div class="main-subrow ">
-                  <div class="w-100"><span class="inline-flex"><a href="ktor-client/krosstalk-ktor-client-auth/index.html">Krosstalk Ktor Client Auth</a><span class="anchor-wrapper"><span class="anchor-icon" pointing-to="1800627520%2FMain%2F0"></span>
+                  <div class="w-100"><span class="inline-flex">
+                      <div><a href="ktor-client/krosstalk-ktor-client-auth/index.html">Krosstalk Ktor Client Auth</a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="1800627520%2FMain%2F0"></span>
                         <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
                       </span></span></div>
                   <div><span class="brief-comment">
@@ -97,7 +107,9 @@
 <a data-name="4962146%2FMain%2F0" anchor-label="Krosstalk Ktor Server" id="4962146%2FMain%2F0" data-filterable-set=""></a>
               <div class="table-row">
                 <div class="main-subrow ">
-                  <div class="w-100"><span class="inline-flex"><a href="ktor-server/krosstalk-ktor-server/index.html">Krosstalk Ktor Server</a><span class="anchor-wrapper"><span class="anchor-icon" pointing-to="4962146%2FMain%2F0"></span>
+                  <div class="w-100"><span class="inline-flex">
+                      <div><a href="ktor-server/krosstalk-ktor-server/index.html">Krosstalk Ktor Server</a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="4962146%2FMain%2F0"></span>
                         <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
                       </span></span></div>
                   <div><span class="brief-comment">
@@ -108,7 +120,9 @@
 <a data-name="1833385656%2FMain%2F0" anchor-label="Krosstalk Ktor Server Auth" id="1833385656%2FMain%2F0" data-filterable-set=""></a>
               <div class="table-row">
                 <div class="main-subrow ">
-                  <div class="w-100"><span class="inline-flex"><a href="ktor-server/krosstalk-ktor-server-auth/index.html">Krosstalk Ktor Server Auth</a><span class="anchor-wrapper"><span class="anchor-icon" pointing-to="1833385656%2FMain%2F0"></span>
+                  <div class="w-100"><span class="inline-flex">
+                      <div><a href="ktor-server/krosstalk-ktor-server-auth/index.html">Krosstalk Ktor Server Auth</a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="1833385656%2FMain%2F0"></span>
                         <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
                       </span></span></div>
                   <div><span class="brief-comment">
@@ -119,7 +133,9 @@
 <a data-name="454899071%2FMain%2F0" anchor-label="Krosstalk Ktor Server JWT Auth" id="454899071%2FMain%2F0" data-filterable-set=""></a>
               <div class="table-row">
                 <div class="main-subrow ">
-                  <div class="w-100"><span class="inline-flex"><a href="ktor-server/krosstalk-ktor-server-auth-jwt/index.html">Krosstalk Ktor Server JWT Auth</a><span class="anchor-wrapper"><span class="anchor-icon" pointing-to="454899071%2FMain%2F0"></span>
+                  <div class="w-100"><span class="inline-flex">
+                      <div><a href="ktor-server/krosstalk-ktor-server-auth-jwt/index.html">Krosstalk Ktor Server JWT Auth</a></div>
+<span class="anchor-wrapper"><span class="anchor-icon" pointing-to="454899071%2FMain%2F0"></span>
                         <div class="copy-popup-wrapper "><span class="copy-popup-icon"></span><span>Link copied to clipboard</span></div>
                       </span></span></div>
                   <div><span class="brief-comment">
@@ -130,7 +146,7 @@
             </div>
           </div>
         </div>
-        <div class="footer"><span class="go-to-top-icon"><a href="#content"></a></span><span>© 2021 Copyright</span><span class="pull-right"><span>Generated by </span><a href="https://github.com/Kotlin/dokka"><span>dokka</span><span class="padded-icon"></span></a></span></div>
+        <div class="footer"><span class="go-to-top-icon"><a href="#content" id="go-to-top-link"></a></span><span>© 2022 Copyright</span><span class="pull-right"><span>Generated by </span><a href="https://github.com/Kotlin/dokka"><span>dokka</span><span class="padded-icon"></span></a></span></div>
       </div>
     </div>
   </body>
