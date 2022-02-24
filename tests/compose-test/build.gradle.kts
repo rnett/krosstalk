@@ -11,9 +11,6 @@ plugins {
 
 repositories {
     mavenCentral()
-    jcenter()
-    maven("https://dl.bintray.com/kotlin/ktor")
-    maven("https://dl.bintray.com/kotlin/kotlin-eap")
     maven("https://maven.pkg.jetbrains.space/public/p/compose/dev")
 }
 kotlin {

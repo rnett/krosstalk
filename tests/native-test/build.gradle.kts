@@ -26,13 +26,19 @@ kotlin {
                 implementation("com.github.rnett.krosstalk:krosstalk-kotlinx-serialization")
                 implementation(libs.kotlinx.serialization.cbor)
 
-                implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:${libs.versions.kotlinx.coroutines.get()}-native-mt")
+                implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core") {
+                    version {
+                        strictly("${libs.versions.kotlinx.coroutines.get()}-native-mt")
+                        because("Using native-mt as required by Ktor")
+                    }
+                }
             }
         }
 
         val commonTest by getting {
             dependencies {
                 implementation(kotlin("test"))
+                implementation(libs.kotlinx.coroutines.test)
             }
         }
         val jvmMain by getting {

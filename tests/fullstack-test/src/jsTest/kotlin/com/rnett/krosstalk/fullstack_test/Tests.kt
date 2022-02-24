@@ -13,8 +13,7 @@ import com.rnett.krosstalk.result.valueOrNull
 import io.ktor.client.utils.EmptyContent
 import io.ktor.http.HttpMethod
 import kotlinx.coroutines.DelicateCoroutinesApi
-import kotlinx.coroutines.GlobalScope
-import kotlinx.coroutines.promise
+import kotlinx.coroutines.test.runTest
 import kotlin.test.Test
 import kotlin.test.assertEquals
 import kotlin.test.assertNotEquals
@@ -26,32 +25,32 @@ import kotlin.test.fail
 class Tests {
 
     @Test
-    fun testBasic() = GlobalScope.promise {
+    fun testBasic() = runTest {
         assertEquals(listOf("t", "t"), basicTest(Data(2, "t")))
         assertEquals("/krosstalk/basicTest_7e16qc", lastUrl)
     }.asDynamic()
 
     @Test
-    fun testBasicEndpoint() = GlobalScope.promise {
+    fun testBasicEndpoint() = runTest {
         assertEquals("aaa", basicEndpointTest(3, "a"))
         assertEquals("/base/basicEndpointTest_ix3eu8/test", lastUrl)
     }
 
     @Test
-    fun testEndpointMethod() = GlobalScope.promise {
+    fun testEndpointMethod() = runTest {
         assertEquals(10, endpointMethodTest(5, 5))
         assertEquals("/krosstalk/endpointMethodTest_mg7fyz", lastUrl)
         assertEquals(HttpMethod.Put, lastHttpMethod)
     }
 
     @Test
-    fun testEndpointContentType() = GlobalScope.promise {
+    fun testEndpointContentType() = runTest {
         assertEquals(10, endpointContentTypeTest(5, 5))
         assertEquals("/krosstalk/endpointContentTypeTest_xd5frk", lastUrl)
     }
 
     @Test
-    fun testEmptyGet() = GlobalScope.promise {
+    fun testEmptyGet() = runTest {
         assertEquals("Hello World!", emptyGet())
         assertEquals("/krosstalk/emptyGet_rjifj2", lastUrl)
         assertEquals(EmptyContent, lastBody)
@@ -59,13 +58,13 @@ class Tests {
     }
 
     @Test
-    fun testParamEndpointNoMinimize() = GlobalScope.promise {
+    fun testParamEndpointNoMinimize() = runTest {
         assertEquals(4 * 2 * 3 * 5, paramEndpoint(4, 2, 3, 5))
         assertEquals("/krosstalk/paramEndpoint_nxd1nq/a/04/b/02?c=03&d=05", lastUrl)
     }
 
     @Test
-    fun testOptionalEndpointNoMinimize() = GlobalScope.promise {
+    fun testOptionalEndpointNoMinimize() = runTest {
         assertEquals(null, optionalEndpoint(2, null))
         assertEquals("/krosstalk/optionalEndpoint_h9r8ve/n/02", lastUrl)
 
@@ -74,7 +73,7 @@ class Tests {
     }
 
     @Test
-    fun testOptionalEndpointQueryParamsNoMinimize() = GlobalScope.promise {
+    fun testOptionalEndpointQueryParamsNoMinimize() = runTest {
         assertEquals(null, optionalEndpointQueryParams(2, null))
         assertEquals("/krosstalk/optionalEndpointQueryParams_krs4ra?n=02", lastUrl)
 
@@ -83,14 +82,14 @@ class Tests {
     }
 
     @Test
-    fun testParamEndpointMinimize() = GlobalScope.promise {
+    fun testParamEndpointMinimize() = runTest {
         assertEquals(4 * 2 * 3 * 5, paramEndpointGet(4, 2, 3, 5))
         assertEquals("/krosstalk/paramEndpointGet_wwiikt/a/04/b/02?c=03&d=05", lastUrl)
         assertEquals(EmptyContent, lastBody)
     }
 
     @Test
-    fun testOptionalEndpointMinimize() = GlobalScope.promise {
+    fun testOptionalEndpointMinimize() = runTest {
         assertEquals(null, optionalEndpointGet(2, null))
         assertEquals("/krosstalk/optionalEndpointGet_imq958/n/02", lastUrl)
         assertEquals(EmptyContent, lastBody)
@@ -103,7 +102,7 @@ class Tests {
     }
 
     @Test
-    fun testOptionalEndpointQueryParamsMinimize() = GlobalScope.promise {
+    fun testOptionalEndpointQueryParamsMinimize() = runTest {
         assertEquals(null, optionalEndpointQueryParamsGet(2, null))
         assertEquals("/krosstalk/optionalEndpointQueryParamsGet_34mu26?n=02", lastUrl)
         assertEquals(EmptyContent, lastBody)
@@ -114,7 +113,7 @@ class Tests {
     }
 
     @Test
-    fun testPartialMinimize() = GlobalScope.promise {
+    fun testPartialMinimize() = runTest {
         assertEquals(null, partialMinimize(2, null))
         assertEquals("/krosstalk/partialMinimize_wxy3f3?n=02", lastUrl)
         assertEquals(EmptyContent, lastBody)
@@ -125,36 +124,36 @@ class Tests {
     }
 
     @Test
-    fun testWithResult() = GlobalScope.promise {
+    fun testWithResult() = runTest {
         CommonTests.krosstalkResultMatching()
         assertEquals(500, lastStatusCode)
     }
 
     @Test
-    fun testWithResultCatching() = GlobalScope.promise {
+    fun testWithResultCatching() = runTest {
         CommonTests.krosstalkResultCatchingMatching()
         assertEquals(422, lastStatusCode)
     }
 
     @Test
-    fun testOverload() = GlobalScope.promise {
+    fun testOverload() = runTest {
         assertEquals("2", withOverload(2))
         assertEquals(2, withOverload("2"))
     }
 
     @Test
-    fun testAuth() = GlobalScope.promise {
+    fun testAuth() = runTest {
         assertEquals("username", withAuth(2, MyKrosstalk.Auth("username", "password")))
     }
 
     @Test
-    fun testOptionalAuth() = GlobalScope.promise {
+    fun testOptionalAuth() = runTest {
         assertEquals("username", withOptionalAuth(MyKrosstalk.Auth("username", "password")))
         assertEquals(null, withOptionalAuth(null))
     }
 
     @Test
-    fun testOptionalReceiver() = GlobalScope.promise {
+    fun testOptionalReceiver() = runTest {
         assertEquals("ddd", 3.withOptionalReceiver("d"))
         assertEquals("dd", null.withOptionalReceiver("d"))
         assertEquals("aaa", 3.withOptionalReceiver(null))
@@ -162,7 +161,7 @@ class Tests {
     }
 
     @Test
-    fun testOptionalWithDefault() = GlobalScope.promise {
+    fun testOptionalWithDefault() = runTest {
         assertEquals(6, withOptionalDefault(2, 3))
         assertEquals(8, withOptionalDefault())
         assertEquals(40, withOptionalDefault(10))
@@ -171,7 +170,7 @@ class Tests {
     }
 
     @Test
-    fun testServerDefault() = GlobalScope.promise {
+    fun testServerDefault() = runTest {
         assertEquals(6, withServerDefault(3, ServerDefault { 2 }))
         assertEquals("/krosstalk/withServerDefault_y1hr3w/a/03/b/02", lastUrl)
 
@@ -180,50 +179,50 @@ class Tests {
     }
 
     @Test
-    fun testObjectNoPassingReceiver() = GlobalScope.promise {
+    fun testObjectNoPassingReceiver() = runTest {
         assertEquals(10, ExpectObject.withExpectObjectParam())
     }
 
     @Test
-    fun testObjectNoPassing() = GlobalScope.promise {
+    fun testObjectNoPassing() = runTest {
         assertEquals(10, withExpectObjectValueParam(ExpectObject))
     }
 
     @Test
-    fun testObjectPassing() = GlobalScope.promise {
+    fun testObjectPassing() = runTest {
         assertEquals(3, withPassedExpectObjectValueParam(SerializableObject))
     }
 
     @Test
-    fun testUnitReturn() = GlobalScope.promise {
+    fun testUnitReturn() = runTest {
         //TODO test response is actually empty
         assertEquals(Unit, withUnitReturn("s"))
     }
 
     @Test
-    fun testObjectReturn() = GlobalScope.promise {
+    fun testObjectReturn() = runTest {
         assertEquals(ExpectObject, withObjectReturn("s"))
     }
 
     @Test
-    fun testPassedObjectReturn() = GlobalScope.promise {
+    fun testPassedObjectReturn() = runTest {
         assertEquals(SerializableObject, withPassedObjectReturn("s"))
     }
 
     @Test
-    fun testDifferentObjectPassing() = GlobalScope.promise {
+    fun testDifferentObjectPassing() = runTest {
         assertEquals(ExpectObject, withDifferentPassing(SerializableObject))
     }
 
     @Test
-    fun testWithHeaders() = GlobalScope.promise {
+    fun testWithHeaders() = runTest {
         val result = withHeadersBasic(4)
         assertEquals("4", result.value)
         assertEquals(listOf("value"), result.headers["test"])
     }
 
     @Test
-    fun testWithHeadersOutsideResult() = GlobalScope.promise {
+    fun testWithHeadersOutsideResult() = runTest {
         val result = withHeadersOutsideResult(4)
 
         assertEquals("4", result.value.valueOrNull)
@@ -234,7 +233,7 @@ class Tests {
     }
 
     @Test
-    fun testWithHeadersInsideResult() = GlobalScope.promise {
+    fun testWithHeadersInsideResult() = runTest {
         val result = withHeadersInsideResult(4)
 
         assertEquals("4", result.valueOrNull!!.value)
@@ -245,7 +244,7 @@ class Tests {
     }
 
     @Test
-    fun testWithHeadersReturnObject() = GlobalScope.promise {
+    fun testWithHeadersReturnObject() = runTest {
         val result = withHeadersReturnObject(10)
 
         assertEquals(ExpectObject, result.value)
@@ -253,36 +252,36 @@ class Tests {
     }
 
     @Test
-    fun testRequestHeaders() = GlobalScope.promise {
+    fun testRequestHeaders() = runTest {
         assertEquals(4, withRequestHeaders(2, headersOf("value" to "2")))
     }
 
     @Test
-    fun testResultObject() = GlobalScope.promise {
+    fun testResultObject() = runTest {
         assertEquals(ExpectObject, withResultObject(2).valueOrNull)
         assertNotNull(withResultObject(-2).serverExceptionOrNull)
     }
 
     @Test
-    fun testSuccessOrHttpError() = GlobalScope.promise {
+    fun testSuccessOrHttpError() = runTest {
         CommonTests.krosstalkResultSuccessOrHttpError()
         assertEquals(411, lastStatusCode)
     }
 
     @Test
-    fun testSuccessOrServerException() = GlobalScope.promise {
+    fun testSuccessOrServerException() = runTest {
         CommonTests.krosstalkResultSuccessOrServerException(false)
         assertEquals(500, lastStatusCode)
     }
 
     @Test
-    fun testHttpError() = GlobalScope.promise {
+    fun testHttpError() = runTest {
         CommonTests.KrosstalkHttpError()
         assertEquals(404, lastStatusCode)
     }
 
     @Test
-    fun testHttpErrorWithHeaders() = GlobalScope.promise {
+    fun testHttpErrorWithHeaders() = runTest {
         val result = withHttpErrorWithHeaders(2)
         assertEquals("test3", result.headers["test"]?.firstOrNull())
         assertEquals(416, result.value.httpErrorOrNull?.statusCode)
@@ -291,7 +290,7 @@ class Tests {
     }
 
     @Test
-    fun testSuccessOrServerExceptionWithHeaders() = GlobalScope.promise {
+    fun testSuccessOrServerExceptionWithHeaders() = runTest {
         val result = withSuccessOrServerExceptionWithHeaders(2)
         assertTrue(result.isSuccess())
         assertEquals("test2", result.valueOrNull?.headers?.get("test")?.firstOrNull())
@@ -304,19 +303,19 @@ class Tests {
     }
 
     @Test
-    fun testNonKrosstalkHttpError() = GlobalScope.promise {
+    fun testNonKrosstalkHttpError() = runTest {
         CommonTests.nonKrosstalkHttpError()
         assertEquals(411, lastStatusCode)
     }
 
     @Test
-    fun testNonKrosstalkServerException() = GlobalScope.promise {
+    fun testNonKrosstalkServerException() = runTest {
         CommonTests.nonKrosstalkServerException()
         assertEquals(500, lastStatusCode)
     }
 
     @Test
-    fun testNonKrosstalkUncaughtException() = GlobalScope.promise {
+    fun testNonKrosstalkUncaughtException() = runTest {
         assertEquals(4, withNonKrosstalkUncaughtException(2))
         try {
             withNonKrosstalkUncaughtException(-2)
@@ -329,7 +328,7 @@ class Tests {
     }
 
     @Test
-    fun testUncaughtExceptionOutsideKrosstalkResult() = GlobalScope.promise {
+    fun testUncaughtExceptionOutsideKrosstalkResult() = runTest {
         assertEquals(4, withUncaughtExceptionOutsideKrosstalkResult(2).valueOrNull)
         try {
             withUncaughtExceptionOutsideKrosstalkResult(-2)
@@ -342,7 +341,7 @@ class Tests {
     }
 
     @Test
-    fun testHttpErrorOutsideKrosstalkResult() = GlobalScope.promise {
+    fun testHttpErrorOutsideKrosstalkResult() = runTest {
         assertEquals(4, withHttpErrorOutsideKrosstalkResult(2).valueOrNull)
         try {
             withHttpErrorOutsideKrosstalkResult(-2)
@@ -355,36 +354,36 @@ class Tests {
     }
 
     @Test
-    fun testHeadersInCall() = GlobalScope.promise {
+    fun testHeadersInCall() = runTest {
         assertEquals("", withRequestHeadersInCall())
         assertEquals("2", lastHeaders?.get("test")?.firstOrNull())
     }
 
     @Test
-    fun testHeadersInCallAndParam() = GlobalScope.promise {
+    fun testHeadersInCallAndParam() = runTest {
         val result = withRequestHeadersInCallAndParam(headersOf("b" to "2"), "a" to "b")
         assertEquals("call", result.first)
         assertEquals("2", result.second)
     }
 
     @Test
-    fun testIgnored() = GlobalScope.promise {
+    fun testIgnored() = runTest {
         assertEquals("test", withIgnored())
         assertEquals("test", withIgnored("2"))
     }
 
     @Test
-    fun testIgnoredDependentDefault() = GlobalScope.promise {
+    fun testIgnoredDependentDefault() = runTest {
         assertEquals("testIgnore" to "testIgnore2", withIgnoredDependentDefault("test"))
     }
 
     @Test
-    fun testDependentServerDefault() = GlobalScope.promise {
+    fun testDependentServerDefault() = runTest {
         assertEquals("2", withDependentServerDefault(2))
     }
 
     @Test
-    fun testContextSerializable() = GlobalScope.promise {
+    fun testContextSerializable() = runTest {
         assertEquals(4, withContextSerializable(ContextSerializable(4)))
     }
 }

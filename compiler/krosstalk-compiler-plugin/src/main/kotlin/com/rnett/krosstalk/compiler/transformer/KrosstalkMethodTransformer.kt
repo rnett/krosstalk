@@ -4,6 +4,7 @@ import com.rnett.krosstalk.InternalKrosstalkApi
 import com.rnett.krosstalk.KrosstalkPluginApi
 import com.rnett.krosstalk.compiler.Krosstalk
 import com.rnett.plugin.ir.IrTransformer
+import com.rnett.plugin.ir.typeSystem
 import com.rnett.plugin.ir.withValueArguments
 import org.jetbrains.kotlin.backend.common.extensions.IrPluginContext
 import org.jetbrains.kotlin.cli.common.messages.MessageCollector
@@ -83,7 +84,7 @@ class KrosstalkMethodTransformer(
     override fun visitClassNew(declaration: IrClass): IrStatement {
         if (declaration.defaultType.isSubtypeOf(
                 Krosstalk.Krosstalk.resolveTypeWith(),
-                context.irBuiltIns
+                context.typeSystem
             ) && !declaration.isExpect
         ) {
             if (declaration.isObject && !declaration.isCompanion && !declaration.isAnonymousObject) {
