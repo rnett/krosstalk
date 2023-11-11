@@ -1,16 +1,14 @@
 import com.google.devtools.ksp.gradle.KspTask
 
 plugins {
-    id("kbuild.multiplatform")
+    id("kbuild.jvm")
     alias(libs.plugins.ksp)
 }
 
 dependencies {
-    commonMainImplementation(project(":core"))
-    kspCommonMainMetadata(project(":processor"))
+    implementation(project(":core"))
+    ksp(project(":processor"))
 }
-
-
 
 tasks.withType<KspTask>()
     .configureEach {

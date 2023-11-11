@@ -1,5 +1,5 @@
 plugins {
-    id("kbuild.jvm")
+    id("kbuild.jvm-library")
     alias(libs.plugins.ksp)
 }
 

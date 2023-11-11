@@ -19,7 +19,7 @@ public abstract class KrosstalkClient<T>(
             }
 
         val body = serialization.serialize(arguments)
-        val url = baseUrl.trimEnd('/') + "/testFunc"
+        val url = baseUrl.trimEnd('/') + "/$methodName"
         val result = requestMaker.makeRequest(url, body)
         return serialization.deserialize(result, types.returnType)
     }

@@ -2,6 +2,7 @@ package kbuild
 
 plugins {
     kotlin("multiplatform")
+    id("kbuild.kotlin-base")
 }
 
 val hostOs: String get() = System.getProperty("os.name")
@@ -15,8 +16,9 @@ val extension = extensions.create<MultiplatformExtension>(MultiplatformExtension
     publicationsFromMainHost.convention(setOf("jvm", "js", "kotlinMultiplatform"))
 }
 
+val libs = versionCatalogs.named("libs")
+
 kotlin {
-    jvmToolchain(21)
     jvm {
         //TODO remove once KT-36942 and KT-35003 are fixed
         attributes {
@@ -26,7 +28,7 @@ kotlin {
             kotlinOptions {
                 jvmTarget = "1.8"
                 //TODO remove once KT-36942 and KT-35003 are fixed
-                compileJavaTaskProvider?.get()?.apply {
+                compileJavaTaskProvider?.configure {
                     targetCompatibility = "1.8"
                     sourceCompatibility = "1.8"
                 }
@@ -39,7 +41,7 @@ kotlin {
         nodejs()
     }
 
-    val nativeTargets = when {
+    when {
         isMacOs -> listOf(
             macosX64(),
 
@@ -73,12 +75,25 @@ kotlin {
         else -> throw GradleException("Host OS is not supported in Kotlin/Native.")
     }
 
-    sourceSets.configureEach {
-        languageSettings.commonSettings()
+    sourceSets {
+        commonTest {
+            dependencies {
+                implementation(kotlin("test"))
+                implementation(libs.findLibrary("kotlinx.coroutines.test").orElseThrow())
+            }
+        }
+        jvmTest {
+            dependencies {
+                implementation(kotlin("test-junit5"))
+                implementation(libs.findLibrary("mockk").orElseThrow())
+            }
+        }
     }
 }
 
-
+tasks.withType<Test> {
+    useJUnitPlatform()
+}
 
 extensions.findByType<PublishingExtension>()?.let {
     extensions.configure<PublishingExtension> {

@@ -14,6 +14,10 @@ class ClientGenerator(klass: KrosstalkClass) : SubclassGenerator(klass, "Client"
         const val argValues = "argValues"
     }
 
+    private var clientExtension: FunSpec? = null
+
+    //TODO add Interface.client(...) method if it has a companion object
+
     override fun TypeSpec.Builder.start() {
         superclass(References.KrosstalkClient.parameterizedBy(klass.name))
 
@@ -26,8 +30,23 @@ class ClientGenerator(klass: KrosstalkClass) : SubclassGenerator(klass, "Client"
         addSuperclassConstructorParameter("%L", baseUrl)
         addSuperclassConstructorParameter("%L", requestMaker)
         addSuperclassConstructorParameter("%L", serialization)
+
+        if (klass.hasCompanionObject)
+            addClientExtensionMethod()
     }
 
+    private fun addClientExtensionMethod() {
+        clientExtension = FunSpec.builder("client").apply {
+            receiver(klass.name.nestedClass("Companion"))
+            returns(generatedClassName)
+
+            addParameter(baseUrl, STRING)
+            addParameter(requestMaker, References.RequestMaker)
+            addParameter(serialization, References.KrosstalkClientSerialization)
+
+            addCode("return %T(%L, %L, %L)", generatedClassName, baseUrl, requestMaker, serialization)
+        }.build()
+    }
 
     override fun acceptMethod(method: KrosstalkMethod) {
         classBuilder.addFunction(
@@ -56,5 +75,10 @@ class ClientGenerator(klass: KrosstalkClass) : SubclassGenerator(klass, "Client"
                 }.build())
             }.build()
         )
+    }
+
+    override fun addTo(file: FileSpec.Builder) {
+        super.addTo(file)
+        clientExtension?.let { file.addFunction(it) }
     }
 }

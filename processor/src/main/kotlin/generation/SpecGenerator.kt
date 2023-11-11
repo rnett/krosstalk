@@ -8,7 +8,7 @@ import com.squareup.kotlinpoet.ksp.toTypeName
 class SpecGenerator(klass: KrosstalkClass) : Generator(klass) {
     private val property =
         PropertySpec.builder(
-            SharedGenerationConstants.specPropertyName,
+            SharedGenerationConstants.fileSpecPropertyName,
             References.KrosstalkSpec.parameterizedBy(klass.name),
             KModifier.PRIVATE
         )
@@ -70,7 +70,7 @@ class SpecGenerator(klass: KrosstalkClass) : Generator(klass) {
                 this.receiver(klass.name.nestedClass("Companion"))
                 getter(
                     FunSpec.getterBuilder()
-                        .addCode("return %M", klass.specProperty)
+                        .addCode("return %L", SharedGenerationConstants.fileSpecPropertyName)
                         .build()
                 )
             }.build()

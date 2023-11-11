@@ -1,5 +1,5 @@
 plugins {
-    id("kbuild.multiplatform")
+    id("kbuild.multiplatform-library")
 }
 
 kotlin {

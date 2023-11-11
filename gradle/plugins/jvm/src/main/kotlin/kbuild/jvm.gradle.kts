@@ -2,29 +2,17 @@ package kbuild
 
 plugins {
     kotlin("jvm")
+    id("kbuild.kotlin-base")
 }
 
-kotlin {
-    jvmToolchain(21)
-    target {
-        //TODO remove once KT-36942 and KT-35003 are fixed
-        attributes {
-            attribute(TargetJvmVersion.TARGET_JVM_VERSION_ATTRIBUTE, 8)
-        }
-        compilations.configureEach {
-            kotlinOptions {
-                jvmTarget = "1.8"
-                //TODO remove once KT-36942 and KT-35003 are fixed
-                compileJavaTaskProvider?.get()?.apply {
-                    targetCompatibility = "1.8"
-                    sourceCompatibility = "1.8"
-                }
-            }
-        }
-    }
-    sourceSets.configureEach {
-        languageSettings {
-            commonSettings()
-        }
-    }
+val libs = versionCatalogs.named("libs")
+
+dependencies {
+    testImplementation(kotlin("test-junit5"))
+    testImplementation(libs.findLibrary("kotlinx.coroutines.test").orElseThrow())
+    testImplementation(libs.findLibrary("mockk").orElseThrow())
+}
+
+tasks.withType<Test> {
+    useJUnitPlatform()
 }

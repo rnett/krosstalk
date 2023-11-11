@@ -34,6 +34,10 @@ class KrosstalkSymbolProcessor(
             return
         }
 
+        if (companionObject() == null) {
+            logger.warn("@Krosstalk classes are recommended to have a companion object", this)
+        }
+
         Generation.generate(
             codeGenerator,
             toKrosstalkClass(),
@@ -47,7 +51,7 @@ class KrosstalkSymbolProcessor(
     private fun KSClassDeclaration.toKrosstalkClass(): KrosstalkClass {
         return KrosstalkClass(
             toClassName(),
-            this.declarations.any { it is KSClassDeclaration && it.isCompanionObject },
+            companionObject() != null,
             Dependencies(false, containingFile!!)
         )
     }
@@ -85,6 +89,6 @@ class KrosstalkSymbolProcessor(
             returnType!!
         )
     }
-
-
 }
+
+fun KSClassDeclaration.companionObject() = this.declarations.find { it is KSClassDeclaration && it.isCompanionObject }

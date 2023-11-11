@@ -3,12 +3,17 @@ package com.rnett.krosstalk.processor.generation
 import com.rnett.krosstalk.processor.References
 import com.squareup.kotlinpoet.*
 import com.squareup.kotlinpoet.ParameterizedTypeName.Companion.parameterizedBy
+import com.squareup.kotlinpoet.ksp.addOriginatingKSFile
 
 abstract class SubclassGenerator(klass: KrosstalkClass, partName: String) : Generator(klass) {
-    protected val classBuilder = TypeSpec.classBuilder(klass.partName(partName))
+    protected val generatedClassName = klass.partName(partName)
+    protected val classBuilder = TypeSpec.classBuilder(generatedClassName)
 
     init {
         classBuilder.apply {
+            klass.dependencies.originatingFiles.forEach {
+                addOriginatingKSFile(it)
+            }
             setupClassWrapper()
             addSpecProperty()
         }
@@ -25,12 +30,12 @@ abstract class SubclassGenerator(klass: KrosstalkClass, partName: String) : Gene
     private fun TypeSpec.Builder.addSpecProperty() {
         addProperty(
             PropertySpec.builder(
-                SharedGenerationConstants.specPropertyName,
+                klass.specProperty.simpleName,
                 References.KrosstalkSpec.parameterizedBy(klass.name)
             ).apply {
                 addModifiers(KModifier.OVERRIDE)
                 getter(FunSpec.getterBuilder().apply {
-                    addCode("return %M", klass.specProperty)
+                    addCode("return %L", SharedGenerationConstants.fileSpecPropertyName)
                 }.build())
             }.build()
         )
