@@ -27,3 +27,13 @@ include(
     "processor",
     "test"
 )
+
+include(
+    listOf(
+        "jackson",
+        "kotlinx-serialization",
+        "ktor",
+        "okhttp",
+        "wire"
+    ).map { "integrations:$it" }
+)

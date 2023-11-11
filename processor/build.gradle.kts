@@ -8,3 +8,7 @@ dependencies {
     implementation(libs.autoservice.annotations)
     ksp(libs.autoservice.ksp)
 }
+
+kotlin {
+    explicitApi = null
+}

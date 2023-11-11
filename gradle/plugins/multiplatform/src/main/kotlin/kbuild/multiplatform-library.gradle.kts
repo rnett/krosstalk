@@ -19,6 +19,7 @@ val extension = extensions.create<MultiplatformExtension>(MultiplatformExtension
 val libs = versionCatalogs.named("libs")
 
 kotlin {
+    explicitApi()
     jvm {
         //TODO remove once KT-36942 and KT-35003 are fixed
         attributes {

@@ -6,9 +6,7 @@ import com.rnett.krosstalk.metadata.Argument
 import com.rnett.krosstalk.metadata.ParameterType
 import com.rnett.krosstalk.server.KrosstalkServerSerialization
 import com.rnett.krosstalk.server.mount
-import io.mockk.coEvery
-import io.mockk.every
-import io.mockk.mockk
+import io.mockk.*
 import kotlinx.coroutines.test.runTest
 import org.junit.jupiter.api.Assertions.assertArrayEquals
 import org.junit.jupiter.api.Test
@@ -24,6 +22,7 @@ class BasicTest {
         val requestMaker = mockk<RequestMaker>()
         val serialization = mockk<KrosstalkClientSerialization>()
 
+        justRun { serialization.initializeForSpec(any()) }
         coEvery { requestMaker.makeRequest("test/add", "2+2".encodeToByteArray()) } returns "4".encodeToByteArray()
         every {
             serialization.serialize(
@@ -38,6 +37,10 @@ class BasicTest {
         val client = BasicKrosstalk.client("test", requestMaker, serialization)
 
         assertEquals("4", client.add(2, 2))
+
+        verify {
+            serialization.initializeForSpec(BasicKrosstalk.SPEC)
+        }
     }
 
     @Test
@@ -45,6 +48,7 @@ class BasicTest {
 
         val serialization = mockk<KrosstalkServerSerialization>()
 
+        justRun { serialization.initializeForSpec(any()) }
         every {
             serialization.deserialize(
                 mapOf(
@@ -70,5 +74,8 @@ class BasicTest {
 
         assertArrayEquals("4".encodeToByteArray(), invoker.invoke("2+2".encodeToByteArray()))
 
+        verify {
+            serialization.initializeForSpec(BasicKrosstalk.SPEC)
+        }
     }
 }

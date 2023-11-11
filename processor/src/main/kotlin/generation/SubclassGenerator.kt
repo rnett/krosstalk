@@ -1,8 +1,7 @@
 package com.rnett.krosstalk.processor.generation
 
-import com.rnett.krosstalk.processor.References
-import com.squareup.kotlinpoet.*
-import com.squareup.kotlinpoet.ParameterizedTypeName.Companion.parameterizedBy
+import com.squareup.kotlinpoet.FileSpec
+import com.squareup.kotlinpoet.TypeSpec
 import com.squareup.kotlinpoet.ksp.addOriginatingKSFile
 
 abstract class SubclassGenerator(klass: KrosstalkClass, partName: String) : Generator(klass) {
@@ -15,7 +14,6 @@ abstract class SubclassGenerator(klass: KrosstalkClass, partName: String) : Gene
                 addOriginatingKSFile(it)
             }
             setupClassWrapper()
-            addSpecProperty()
         }
 
     }
@@ -26,20 +24,6 @@ abstract class SubclassGenerator(klass: KrosstalkClass, partName: String) : Gene
     }
 
     protected abstract fun TypeSpec.Builder.start()
-
-    private fun TypeSpec.Builder.addSpecProperty() {
-        addProperty(
-            PropertySpec.builder(
-                klass.specProperty.simpleName,
-                References.KrosstalkSpec.parameterizedBy(klass.name)
-            ).apply {
-                addModifiers(KModifier.OVERRIDE)
-                getter(FunSpec.getterBuilder().apply {
-                    addCode("return %L", SharedGenerationConstants.fileSpecPropertyName)
-                }.build())
-            }.build()
-        )
-    }
 
     open fun TypeSpec.Builder.finish() {
 

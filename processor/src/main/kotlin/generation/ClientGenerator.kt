@@ -30,6 +30,7 @@ class ClientGenerator(klass: KrosstalkClass) : SubclassGenerator(klass, "Client"
         addSuperclassConstructorParameter("%L", baseUrl)
         addSuperclassConstructorParameter("%L", requestMaker)
         addSuperclassConstructorParameter("%L", serialization)
+        addSuperclassConstructorParameter("%L", SharedGenerationConstants.fileSpecPropertyName)
 
         if (klass.hasCompanionObject)
             addClientExtensionMethod()

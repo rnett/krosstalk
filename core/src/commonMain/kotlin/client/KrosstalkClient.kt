@@ -6,11 +6,13 @@ import com.rnett.krosstalk.metadata.KrosstalkSpec
 public abstract class KrosstalkClient<T>(
     private val baseUrl: String,
     private val requestMaker: RequestMaker,
-    private val serialization: KrosstalkClientSerialization
+    private val serialization: KrosstalkClientSerialization,
+    protected val spec: KrosstalkSpec<T>
 ) {
 
-    protected abstract val spec: KrosstalkSpec<T>
-
+    init {
+        serialization.initializeForSpec(spec)
+    }
     protected suspend fun invoke(methodName: String, argumentValues: Map<String, Any?>): Any? {
         val types = spec.methods.getValue(methodName)
         val arguments = types.parameters

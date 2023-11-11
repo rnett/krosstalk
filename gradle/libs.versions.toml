@@ -6,7 +6,7 @@ autoservice-ksp = "1.1.0"
 kotlinpoet = "1.14.2"
 kotlinx-coroutines = "1.7.3"
 mockk = "1.13.8"
-#kotlinx-serialization = "1.3.1"
+kotlinx-serialization = "1.6.0"
 #ktor = "1.6.7"
 #compiler-plugin-utils = "1.1.0"
 #autoservice = "1.0"
@@ -35,9 +35,9 @@ autoservice-ksp = { module = "dev.zacsweers.autoservice:auto-service-ksp", versi
 kotlinx-coroutines-core = { module = "org.jetbrains.kotlinx:kotlinx-coroutines-core", version.ref = "kotlinx-coroutines" }
 kotlinx-coroutines-test = { module = "org.jetbrains.kotlinx:kotlinx-coroutines-test", version.ref = "kotlinx-coroutines" }
 #
-#kotlinx-serialization-core = { module = "org.jetbrains.kotlinx:kotlinx-serialization-core", version.ref = "kotlinx-serialization" }
-#kotlinx-serialization-json = { module = "org.jetbrains.kotlinx:kotlinx-serialization-json", version.ref = "kotlinx-serialization" }
-#kotlinx-serialization-cbor = { module = "org.jetbrains.kotlinx:kotlinx-serialization-cbor", version.ref = "kotlinx-serialization" }
+kotlinx-serialization-core = { module = "org.jetbrains.kotlinx:kotlinx-serialization-core", version.ref = "kotlinx-serialization" }
+kotlinx-serialization-json = { module = "org.jetbrains.kotlinx:kotlinx-serialization-json", version.ref = "kotlinx-serialization" }
+kotlinx-serialization-cbor = { module = "org.jetbrains.kotlinx:kotlinx-serialization-cbor", version.ref = "kotlinx-serialization" }
 #
 #ktor-client-core = { module = "io.ktor:ktor-client-core", version.ref = "ktor" }
 #ktor-client-apache = { module = "io.ktor:ktor-client-apache", version.ref = "ktor" }

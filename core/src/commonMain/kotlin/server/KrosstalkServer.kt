@@ -4,11 +4,16 @@ import com.rnett.krosstalk.metadata.KrosstalkSpec
 import kotlin.contracts.InvocationKind
 import kotlin.contracts.contract
 
-public abstract class KrosstalkServer<T>(private val serialization: KrosstalkServerSerialization) {
-
-    protected abstract val spec: KrosstalkSpec<T>
+public abstract class KrosstalkServer<T>(
+    private val serialization: KrosstalkServerSerialization,
+    protected val spec: KrosstalkSpec<T>
+) {
 
     internal val theSpec get() = spec
+
+    init {
+        serialization.initializeForSpec(spec)
+    }
 
     internal suspend fun receive(methodName: String, data: ByteArray): ByteArray {
         val types = spec.methods[methodName] ?: throw KrosstalkMethodNotFoundException(

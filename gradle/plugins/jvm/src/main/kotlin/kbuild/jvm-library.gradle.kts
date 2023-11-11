@@ -5,6 +5,7 @@ plugins {
 }
 
 kotlin {
+    explicitApi()
     target {
         //TODO remove once KT-36942 and KT-35003 are fixed
         attributes {

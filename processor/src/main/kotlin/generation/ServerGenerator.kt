@@ -32,6 +32,7 @@ class ServerGenerator(klass: KrosstalkClass) : SubclassGenerator(klass, "Server"
         }.build())
 
         addSuperclassConstructorParameter("%L", serialization)
+        addSuperclassConstructorParameter("%L", SharedGenerationConstants.fileSpecPropertyName)
     }
 
     override fun acceptMethod(method: KrosstalkMethod) {
