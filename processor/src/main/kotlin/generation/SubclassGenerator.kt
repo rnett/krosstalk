@@ -30,7 +30,7 @@ abstract class SubclassGenerator(klass: KrosstalkClass, partName: String) : Gene
             ).apply {
                 addModifiers(KModifier.OVERRIDE)
                 getter(FunSpec.getterBuilder().apply {
-                    addCode("%M", klass.specProperty)
+                    addCode("return %M", klass.specProperty)
                 }.build())
             }.build()
         )

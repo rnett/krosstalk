@@ -24,5 +24,6 @@ include(
     "core",
     "client",
     "server",
-    "processor"
+    "processor",
+    "test"
 )

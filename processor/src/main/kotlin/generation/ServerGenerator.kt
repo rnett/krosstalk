@@ -25,6 +25,7 @@ class ServerGenerator(klass: KrosstalkClass) : SubclassGenerator(klass, "Server"
 
     override fun TypeSpec.Builder.start() {
         superclass(References.KrosstalkServer.parameterizedBy(klass.name))
+        addModifiers(KModifier.ABSTRACT)
 
         primaryConstructor(FunSpec.constructorBuilder().apply {
             addParameter(serialization, References.KrosstalkServerSerialization)
@@ -40,10 +41,11 @@ class ServerGenerator(klass: KrosstalkClass) : SubclassGenerator(klass, "Server"
                 addStatement("return %L(", method.name)
                 indented {
                     method.parmeters.forEach { name, type ->
-                        addStatement("%L[%S] as %T", arguments, name, type.toTypeName())
+                        addStatement("%L[%S] as %T,", arguments, name, type.toTypeName())
                     }
                 }
                 addStatement(")")
+                endControlFlow()
             }
             .build())
     }

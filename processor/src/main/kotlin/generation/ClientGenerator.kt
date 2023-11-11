@@ -42,12 +42,12 @@ class ClientGenerator(klass: KrosstalkClass) : SubclassGenerator(klass, "Client"
                     addStatement("val %L = %M(", argValues, References.mapOf).newLine()
                     indented {
                         method.parmeters.keys.forEach {
-                            addStatement("%S %M %L", it, References.to, it)
+                            addStatement("%S %M %L,", it, References.to, it)
                         }
                     }
                     addStatement(")")
                     addStatement(
-                        "return %M(%S, %L) as %T",
+                        "return %L(%S, %L) as %T",
                         References.KrosstalkClientInvoke,
                         method.name,
                         argValues,

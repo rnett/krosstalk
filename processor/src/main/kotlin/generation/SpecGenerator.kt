@@ -17,7 +17,7 @@ class SpecGenerator(klass: KrosstalkClass) : Generator(klass) {
 
     init {
         initializer.apply {
-            addStatement("%T<%T>(", References.KrosstalkSpec, klass)
+            addStatement("%T<%T>(", References.KrosstalkSpec, klass.name)
             indent()
             addStatement("%S,", klass.name.canonicalName)
             addStatement("%S,", klass.name.simpleName)
@@ -48,7 +48,7 @@ class SpecGenerator(klass: KrosstalkClass) : Generator(klass) {
                     }
                 }
                 addStatement("),")
-                addStatement("%M<%T>()", References.typeOf, method.returnType)
+                addStatement("%M<%T>()", References.typeOf, method.returnType.toTypeName())
             }
             addStatement(")")
         }
@@ -70,7 +70,7 @@ class SpecGenerator(klass: KrosstalkClass) : Generator(klass) {
                 this.receiver(klass.name.nestedClass("Companion"))
                 getter(
                     FunSpec.getterBuilder()
-                        .addCode("%M", klass.specProperty)
+                        .addCode("return %M", klass.specProperty)
                         .build()
                 )
             }.build()
