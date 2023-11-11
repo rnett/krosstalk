@@ -4,7 +4,7 @@
     <annotationProcessing>
       <profile default="true" name="Default" enabled="true" />
     </annotationProcessing>
-    <bytecodeTargetLevel target="11">
+    <bytecodeTargetLevel target="21">
       <module name="com.github.rnett.krosstalk.krosstalk-parent.compiler.krosstalk-compiler-plugin" target="15" />
       <module name="com.github.rnett.krosstalk.krosstalk-parent.compiler.krosstalk-compiler-plugin-native" target="15" />
       <module name="com.github.rnett.krosstalk.krosstalk-parent.compiler.krosstalk-compiler-plugin-native.main" target="1.8" />
@@ -58,9 +58,44 @@
       <module name="com.github.rnett.krosstalk.krosstalk-parent.plugins.ktor-server.krosstalk-ktor-server-auth.test" target="1.8" />
       <module name="com.github.rnett.krosstalk.krosstalk-parent.plugins.ktor-server.krosstalk-ktor-server.main" target="1.8" />
       <module name="com.github.rnett.krosstalk.krosstalk-parent.plugins.ktor-server.krosstalk-ktor-server.test" target="1.8" />
+      <module name="krosstalk-generator" target="17" />
+      <module name="krosstalk-generator.main" target="1.8" />
+      <module name="krosstalk-generator.test" target="1.8" />
+      <module name="krosstalk-parent.buildSrc" target="17" />
+      <module name="krosstalk-parent.buildSrc.main" target="17" />
+      <module name="krosstalk-parent.buildSrc.test" target="17" />
+      <module name="krosstalk-parent.compiler.krosstalk-compiler-plugin" target="17" />
+      <module name="krosstalk-parent.compiler.krosstalk-compiler-plugin-native" target="17" />
+      <module name="krosstalk-parent.compiler.krosstalk-compiler-plugin-native.main" target="1.8" />
+      <module name="krosstalk-parent.compiler.krosstalk-compiler-plugin-native.test" target="1.8" />
+      <module name="krosstalk-parent.compiler.krosstalk-compiler-plugin.main" target="1.8" />
+      <module name="krosstalk-parent.compiler.krosstalk-compiler-plugin.test" target="1.8" />
+      <module name="krosstalk-parent.compiler.krosstalk-gradle-plugin" target="1.8" />
+      <module name="krosstalk-parent.compiler.krosstalk-gradle-plugin.main" target="1.8" />
+      <module name="krosstalk-parent.compiler.krosstalk-gradle-plugin.test" target="1.8" />
+      <module name="krosstalk-parent.core.krosstalk" target="17" />
+      <module name="krosstalk-parent.core.krosstalk-base" target="17" />
+      <module name="krosstalk-parent.core.krosstalk-client" target="17" />
+      <module name="krosstalk-parent.core.krosstalk-server" target="17" />
+      <module name="krosstalk-parent.plugins.krosstalk-kotlinx-serialization" target="17" />
+      <module name="krosstalk-parent.plugins.ktor-client.krosstalk-ktor-client" target="17" />
+      <module name="krosstalk-parent.plugins.ktor-client.krosstalk-ktor-client-auth" target="17" />
+      <module name="krosstalk-parent.plugins.ktor-server.krosstalk-ktor-server" target="17" />
+      <module name="krosstalk-parent.plugins.ktor-server.krosstalk-ktor-server-auth" target="17" />
+      <module name="krosstalk-parent.plugins.ktor-server.krosstalk-ktor-server-auth-jwt" target="17" />
+      <module name="krosstalk-parent.plugins.ktor-server.krosstalk-ktor-server-auth-jwt.main" target="1.8" />
+      <module name="krosstalk-parent.plugins.ktor-server.krosstalk-ktor-server-auth-jwt.test" target="1.8" />
+      <module name="krosstalk-parent.plugins.ktor-server.krosstalk-ktor-server-auth.main" target="1.8" />
+      <module name="krosstalk-parent.plugins.ktor-server.krosstalk-ktor-server-auth.test" target="1.8" />
+      <module name="krosstalk-parent.plugins.ktor-server.krosstalk-ktor-server.main" target="1.8" />
+      <module name="krosstalk-parent.plugins.ktor-server.krosstalk-ktor-server.test" target="1.8" />
+      <module name="krosstalk.buildSrc" target="17" />
+      <module name="krosstalk.buildSrc.main" target="17" />
+      <module name="krosstalk.buildSrc.test" target="17" />
       <module name="My Stuff.krosstalk.buildSrc" target="15" />
       <module name="My Stuff.krosstalk.buildSrc.main" target="15" />
       <module name="My Stuff.krosstalk.buildSrc.test" target="15" />
+      <module name="tests.client-test" target="17" />
       <module name="tests.client-test.main" target="15" />
       <module name="tests.client-test.test" target="15" />
       <module name="tests.compose-test" target="15" />
@@ -72,12 +107,16 @@
       <module name="tests.compose-test.serverMain" target="1.8" />
       <module name="tests.compose-test.serverTest" target="1.8" />
       <module name="tests.compose-test.test" target="15" />
+      <module name="tests.fullstack-test" target="17" />
       <module name="tests.fullstack-test.main" target="15" />
       <module name="tests.fullstack-test.test" target="15" />
+      <module name="tests.microservices-test.ping" target="17" />
       <module name="tests.microservices-test.ping.main" target="15" />
       <module name="tests.microservices-test.ping.test" target="15" />
+      <module name="tests.microservices-test.pong" target="17" />
       <module name="tests.microservices-test.pong.main" target="15" />
       <module name="tests.microservices-test.pong.test" target="15" />
+      <module name="tests.native-test" target="17" />
       <module name="tests.native-test.main" target="15" />
       <module name="tests.native-test.test" target="15" />
     </bytecodeTargetLevel>
