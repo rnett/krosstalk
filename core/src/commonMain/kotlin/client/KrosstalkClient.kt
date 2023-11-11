@@ -1,6 +1,7 @@
 package com.rnett.krosstalk.client
 
 import com.rnett.krosstalk.metadata.KrosstalkSpec
+import com.rnett.krosstalk.serialization.KrosstalkClientSerialization
 
 public abstract class KrosstalkClient<T>(
     private val baseUrl: String,

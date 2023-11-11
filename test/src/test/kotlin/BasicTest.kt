@@ -1,8 +1,8 @@
 package com.rnett.krosstalk.test
 
-import com.rnett.krosstalk.client.KrosstalkClientSerialization
 import com.rnett.krosstalk.client.RequestMaker
-import com.rnett.krosstalk.server.KrosstalkServerSerialization
+import com.rnett.krosstalk.serialization.KrosstalkClientSerialization
+import com.rnett.krosstalk.serialization.KrosstalkServerSerialization
 import com.rnett.krosstalk.server.mount
 import io.mockk.*
 import kotlinx.coroutines.test.runTest

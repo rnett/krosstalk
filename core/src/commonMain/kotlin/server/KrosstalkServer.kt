@@ -1,6 +1,7 @@
 package com.rnett.krosstalk.server
 
 import com.rnett.krosstalk.metadata.KrosstalkSpec
+import com.rnett.krosstalk.serialization.KrosstalkServerSerialization
 import kotlin.contracts.InvocationKind
 import kotlin.contracts.contract
 
