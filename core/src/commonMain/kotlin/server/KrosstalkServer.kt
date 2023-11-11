@@ -16,13 +16,10 @@ public abstract class KrosstalkServer<T>(
     }
 
     internal suspend fun receive(methodName: String, data: ByteArray): ByteArray {
-        val types = spec.methods[methodName] ?: throw KrosstalkMethodNotFoundException(
-            spec.fullyQualifiedName,
-            methodName
-        )
-        val arguments = serialization.deserialize(types.parameters, data)
+        val method = spec.method(methodName)
+        val arguments = serialization.deserializeArguments(method, data)
         val result = invoke(methodName, arguments)
-        return serialization.serialize(result, types.returnType)
+        return serialization.serializeReturnValue(method, result)
     }
 
     protected abstract suspend fun invoke(methodName: String, arguments: Map<String, Any?>): Any?

@@ -1,6 +1,5 @@
 package com.rnett.krosstalk.client
 
-import com.rnett.krosstalk.metadata.Argument
 import com.rnett.krosstalk.metadata.KrosstalkSpec
 
 public abstract class KrosstalkClient<T>(
@@ -14,15 +13,11 @@ public abstract class KrosstalkClient<T>(
         serialization.initializeForSpec(spec)
     }
     protected suspend fun invoke(methodName: String, argumentValues: Map<String, Any?>): Any? {
-        val types = spec.methods.getValue(methodName)
-        val arguments = types.parameters
-            .mapValues {
-                Argument(it.value.type, argumentValues.getValue(it.key))
-            }
+        val method = spec.method(methodName)
 
-        val body = serialization.serialize(arguments)
+        val body = serialization.serializeArguments(method, argumentValues)
         val url = baseUrl.trimEnd('/') + "/$methodName"
         val result = requestMaker.makeRequest(url, body)
-        return serialization.deserialize(result, types.returnType)
+        return serialization.deserializeReturnValue(method, result)
     }
 }

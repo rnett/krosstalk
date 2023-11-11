@@ -1,8 +1,7 @@
 package com.rnett.krosstalk.client
 
-import com.rnett.krosstalk.metadata.Argument
 import com.rnett.krosstalk.metadata.KrosstalkSpec
-import kotlin.reflect.KType
+import com.rnett.krosstalk.metadata.ResolvedMethod
 
 public interface KrosstalkClientSerialization {
 
@@ -14,7 +13,7 @@ public interface KrosstalkClientSerialization {
 
     }
 
-    public fun serialize(arguments: Map<String, Argument>): ByteArray
-    public fun deserialize(data: ByteArray, type: KType): Any?
+    public fun serializeArguments(method: ResolvedMethod, argumentValues: Map<String, Any?>): ByteArray
+    public fun deserializeReturnValue(method: ResolvedMethod, data: ByteArray): Any?
 
 }
