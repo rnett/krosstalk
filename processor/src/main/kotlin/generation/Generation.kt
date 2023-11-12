@@ -19,7 +19,7 @@ object Generation {
         klass: KrosstalkClass,
         methods: Sequence<KrosstalkMethod>
     ) {
-        val fileSpec = FileSpec.builder(klass.name.packageName, klass.name.simpleNames.joinToString("_"))
+        val fileSpec = FileSpec.builder(klass.name.packageName, klass.name.simpleNames.joinToString("_") + "Krosstalk")
 
         val generators = generatorFactories.map { it(klass) }
 

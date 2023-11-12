@@ -6,15 +6,20 @@ import io.ktor.server.request.*
 import io.ktor.server.response.*
 import io.ktor.server.routing.*
 import io.ktor.util.*
+import io.ktor.util.pipeline.*
 
 @KtorDsl
-public fun Route.mount(server: KrosstalkServer<*>) {
+public fun Route.mount(
+    server: KrosstalkServer<*>,
+    extraHandler: PipelineContext<Unit, ApplicationCall>.() -> Unit = {}
+) {
     server.mount { subPath, invoke ->
         post(subPath) {
+            extraHandler()
             val body = call.receive<ByteArray>()
-            val result = invoke(body)
-            call.response.status(HttpStatusCode.OK)
-            call.respond(result)
+            call.respondBytes(ContentType.Application.OctetStream, HttpStatusCode.OK) {
+                invoke(body)
+            }
         }
     }
 }
