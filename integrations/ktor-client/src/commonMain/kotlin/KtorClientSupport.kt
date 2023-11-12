@@ -13,6 +13,7 @@ internal class KtorClientRequestMaker(
 ) : RequestMaker {
     override suspend fun makeRequest(url: String, body: ByteArray): ByteArray {
         return client.post(url) {
+            accept(ContentType.Application.OctetStream)
             contentType(ContentType.Application.OctetStream)
             requestModifier()
             setBody(body)

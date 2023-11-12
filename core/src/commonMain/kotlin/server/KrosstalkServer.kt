@@ -1,5 +1,6 @@
 package com.rnett.krosstalk.server
 
+import com.rnett.krosstalk.client.RequestMaker
 import com.rnett.krosstalk.metadata.KrosstalkSpec
 import com.rnett.krosstalk.serialization.KrosstalkServerSerialization
 import kotlin.contracts.InvocationKind
@@ -26,6 +27,10 @@ public abstract class KrosstalkServer<T>(
     protected abstract suspend fun invoke(methodName: String, arguments: Map<String, Any?>): Any?
 }
 
+/**
+ * Mount request handlers for a server.
+ * The handlers should generally accept the headers [RequestMaker] makes, and respond with `application/octet-stream` stream content.
+ */
 public fun KrosstalkServer<*>.mount(mounter: (subPath: String, invoke: suspend (ByteArray) -> ByteArray) -> Unit) {
     contract {
         callsInPlace(mounter, InvocationKind.AT_LEAST_ONCE)
