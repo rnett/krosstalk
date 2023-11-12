@@ -6,5 +6,7 @@ import com.rnett.krosstalk.Krosstalk
 interface BasicKrosstalk {
     suspend fun add(a: Int, b: Int): String
 
+    fun withDefault(): Int = 2
+
     companion object
 }

@@ -8,7 +8,7 @@ import kotlin.contracts.contract
 
 public abstract class KrosstalkServer<T>(
     private val serialization: KrosstalkServerSerialization,
-    protected val spec: KrosstalkSpec<T>
+    @Suppress("MemberVisibilityCanBePrivate") protected val spec: KrosstalkSpec<T>
 ) {
 
     internal val theSpec get() = spec
@@ -42,6 +42,10 @@ public fun KrosstalkServer<*>.mount(mounter: (subPath: String, invoke: suspend (
     }
 }
 
+/**
+ * Mount request handlers for a server.
+ * The handlers should generally accept the headers [RequestMaker] makes, and respond with `application/octet-stream` stream content.
+ */
 public fun <T> KrosstalkSpec<T>.mount(mounter: (subPath: String, invoke: suspend (KrosstalkServer<T>, ByteArray) -> ByteArray) -> Unit) {
     contract {
         callsInPlace(mounter, InvocationKind.AT_LEAST_ONCE)

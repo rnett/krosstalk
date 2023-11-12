@@ -61,6 +61,10 @@ class BasicTest {
             override suspend fun add(a: Int, b: Int): String {
                 return (a + b).toString()
             }
+
+            override fun skipped() {
+
+            }
         }
 
         var invoker: (suspend (ByteArray) -> ByteArray) by Delegates.notNull()

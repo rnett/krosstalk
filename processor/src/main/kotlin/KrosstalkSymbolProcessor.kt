@@ -6,7 +6,9 @@ import com.google.devtools.ksp.symbol.*
 import com.rnett.krosstalk.processor.generation.Generation
 import com.rnett.krosstalk.processor.generation.KrosstalkClass
 import com.rnett.krosstalk.processor.generation.KrosstalkMethod
+import com.squareup.kotlinpoet.ANY
 import com.squareup.kotlinpoet.ksp.toClassName
+import com.squareup.kotlinpoet.ksp.toTypeName
 
 class KrosstalkSymbolProcessor(
     val codeGenerator: CodeGenerator,
@@ -38,6 +40,12 @@ class KrosstalkSymbolProcessor(
             logger.warn("@Krosstalk classes are recommended to have a companion object", this)
         }
 
+        if (superTypes.count { it.toTypeName() != ANY } != 0)
+            logger.warn(
+                "@Krosstalk classes having supertypes is discouraged, since they must implement all methods from them",
+                this
+            )
+
         Generation.generate(
             codeGenerator,
             toKrosstalkClass(),
@@ -57,13 +65,16 @@ class KrosstalkSymbolProcessor(
     }
 
     private fun KSFunctionDeclaration.shouldGenerateFor(): Boolean {
+        if (!isAbstract)
+            return false
+
         if (typeParameters.isNotEmpty()) {
             logger.error("Krosstalk methods may not have type parameters", this)
             return false
         }
 
         if (!modifiers.contains(Modifier.SUSPEND)) {
-            logger.error("Krosstalk methods must be suspend")
+            logger.error("Krosstalk methods must be suspend", this)
             return false
         }
 
