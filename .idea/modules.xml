@@ -3,6 +3,7 @@
   <component name="ProjectModuleManager">
     <modules>
       <module fileurl="file://$PROJECT_DIR$/.idea/modules/integrations/kotlinx-serialization/krosstalk.integrations.kotlinx-serialization.jvmTest.iml" filepath="$PROJECT_DIR$/.idea/modules/integrations/kotlinx-serialization/krosstalk.integrations.kotlinx-serialization.jvmTest.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/integrations/ktor-server/krosstalk.integrations.ktor-server.commonMain.iml" filepath="$PROJECT_DIR$/.idea/modules/integrations/ktor-server/krosstalk.integrations.ktor-server.commonMain.iml" />
     </modules>
   </component>
 </project>

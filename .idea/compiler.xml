@@ -94,6 +94,8 @@
       <module name="krosstalk.buildSrc.test" target="17" />
       <module name="krosstalk.integrations.kotlinx-serialization.main" target="1.8" />
       <module name="krosstalk.integrations.kotlinx-serialization.test" target="1.8" />
+      <module name="krosstalk.integrations.ktor.main" target="1.8" />
+      <module name="krosstalk.integrations.ktor.test" target="1.8" />
       <module name="My Stuff.krosstalk.buildSrc" target="15" />
       <module name="My Stuff.krosstalk.buildSrc.main" target="15" />
       <module name="My Stuff.krosstalk.buildSrc.test" target="15" />

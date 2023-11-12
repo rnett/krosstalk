@@ -1,26 +1,21 @@
 package kbuild
 
+import org.jetbrains.kotlin.gradle.targets.jvm.KotlinJvmTarget
+
 plugins {
     kotlin("multiplatform")
     id("kbuild.kotlin-base")
 }
 
-val hostOs: String get() = System.getProperty("os.name")
-val isMingwX64 get() = hostOs.startsWith("Windows")
-val isMacOs get() = hostOs == "Mac OS X"
-
-val isMainHost get() = isMingwX64
-
 val extension = extensions.create<MultiplatformExtension>(MultiplatformExtension.NAME).apply {
-    ktorTargetsOnly.convention(false)
-    publicationsFromMainHost.convention(setOf("jvm", "js", "kotlinMultiplatform"))
+    onlyPublishFromMainHost.convention(setOf("jvm", "js", "kotlinMultiplatform"))
 }
 
 val libs = versionCatalogs.named("libs")
 
 kotlin {
     explicitApi()
-    jvm {
+    targets.withType<KotlinJvmTarget>() {
         //TODO remove once KT-36942 and KT-35003 are fixed
         attributes {
             attribute(TargetJvmVersion.TARGET_JVM_VERSION_ATTRIBUTE, 8)
@@ -37,45 +32,6 @@ kotlin {
         }
     }
 
-    js {
-        browser()
-        nodejs()
-    }
-
-    when {
-        isMacOs -> listOf(
-            macosX64(),
-
-            iosArm64(),
-            iosX64(),
-
-            tvosArm64(),
-            tvosX64(),
-
-            watchosArm32(),
-            watchosArm64(),
-            watchosX64(),
-        ) + if (!extension.ktorTargetsOnly.get()) listOf(
-            macosArm64(),
-
-            iosSimulatorArm64(),
-            tvosSimulatorArm64(),
-            watchosSimulatorArm64(),
-        ) else emptyList()
-
-        hostOs == "Linux" -> listOf(
-            linuxX64(),
-        ) + if (!extension.ktorTargetsOnly.get()) listOf(
-            linuxArm64(),
-        ) else emptyList()
-
-        isMingwX64 -> listOf(
-            mingwX64(),
-        )
-
-        else -> throw GradleException("Host OS is not supported in Kotlin/Native.")
-    }
-
     sourceSets {
         commonTest {
             dependencies {
@@ -83,10 +39,13 @@ kotlin {
                 implementation(libs.findLibrary("kotlinx.coroutines.test").orElseThrow())
             }
         }
-        jvmTest {
-            dependencies {
-                implementation(kotlin("test-junit5"))
-                implementation(libs.findLibrary("mockk").orElseThrow())
+
+        configureEach {
+            if (name == "jvmTest") {
+                dependencies {
+                    implementation(kotlin("test-junit5"))
+                    implementation(libs.findLibrary("mockk").orElseThrow())
+                }
             }
         }
     }
@@ -100,12 +59,12 @@ extensions.findByType<PublishingExtension>()?.let {
     extensions.configure<PublishingExtension> {
         publications {
             configureEach {
-                if (name in extension.publicationsFromMainHost.get()) {
+                if (name in extension.onlyPublishFromMainHost.get()) {
                     tasks.withType<AbstractPublishToMaven>()
                         .matching { it.publication == this }
                         .configureEach {
                             onlyIf {
-                                isMainHost
+                                MultiplatformExtension.isMainHost
                             }
                         }
                 }

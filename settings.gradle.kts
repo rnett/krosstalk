@@ -32,7 +32,8 @@ include(
     listOf(
         "jackson",
         "kotlinx-serialization",
-        "ktor",
+        "ktor-client",
+        "ktor-server",
         "okhttp",
         "wire"
     ).map { "integrations:$it" }

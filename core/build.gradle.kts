@@ -1,3 +1,3 @@
 plugins {
-    id("kbuild.multiplatform-library")
+    id("kbuild.multiplatform-all-library")
 }
