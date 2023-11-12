@@ -32,7 +32,7 @@ class SpecGenerator(klass: KrosstalkClass) : Generator(klass) {
 
     override fun acceptMethod(method: KrosstalkMethod) {
         initializer.apply {
-            addStatement("%S %M %T(", method.name, References.to, References.MethodType)
+            addStatement("%S %M %T(", method.name, References.to, References.MethodTypes)
             indented {
                 addStatement("%M(", References.mapOf)
                 indented {

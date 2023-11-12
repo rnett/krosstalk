@@ -5,8 +5,10 @@ import io.ktor.server.application.*
 import io.ktor.server.request.*
 import io.ktor.server.response.*
 import io.ktor.server.routing.*
+import io.ktor.util.*
 
-public fun Routing.mount(server: KrosstalkServer<*>) {
+@KtorDsl
+public fun Route.mount(server: KrosstalkServer<*>) {
     server.mount { subPath, invoke ->
         post(subPath) {
             val body = call.receive<ByteArray>()
@@ -16,3 +18,4 @@ public fun Routing.mount(server: KrosstalkServer<*>) {
         }
     }
 }
+
