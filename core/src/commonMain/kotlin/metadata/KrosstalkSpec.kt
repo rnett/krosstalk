@@ -7,7 +7,7 @@ import kotlin.reflect.KType
 public class KrosstalkSpec<T>(
     public val fullyQualifiedName: String,
     public val shortName: String,
-    methodTypes: Map<String, MethodTypes>
+    private val methodTypes: Map<String, MethodTypes>
 ) {
     public val methods: Map<String, KrosstalkMethod> = methodTypes.mapValues {
         KrosstalkMethod(this, it.key, it.value.parameters, it.value.returnType)
@@ -27,7 +27,7 @@ public class KrosstalkSpec<T>(
 
         if (fullyQualifiedName != other.fullyQualifiedName) return false
         if (shortName != other.shortName) return false
-        if (methods != other.methods) return false
+        if (methodTypes != other.methodTypes) return false
 
         return true
     }
@@ -35,8 +35,12 @@ public class KrosstalkSpec<T>(
     override fun hashCode(): Int {
         var result = fullyQualifiedName.hashCode()
         result = 31 * result + shortName.hashCode()
-        result = 31 * result + methods.hashCode()
+        result = 31 * result + methodTypes.hashCode()
         return result
+    }
+
+    override fun toString(): String {
+        return "KrosstalkSpec(fullyQualifiedName='$fullyQualifiedName', shortName='$shortName', methods=$methods)"
     }
 }
 

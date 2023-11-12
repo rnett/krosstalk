@@ -17,8 +17,9 @@ public fun Route.mount(
         post(subPath) {
             extraHandler()
             val body = call.receive<ByteArray>()
-            call.respondBytes(ContentType.Application.OctetStream, HttpStatusCode.OK) {
-                invoke(body)
+            val result = invoke(body)
+            call.respondBytes(ContentType.Application.OctetStream, HttpStatusCode.fromValue(result.status.statusCode)) {
+                result.data
             }
         }
     }

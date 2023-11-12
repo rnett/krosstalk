@@ -4,5 +4,7 @@ public interface RequestMaker {
     /**
      * Should generally send an HTTP `POST` request to [url] with [body], with `application/octet-stream` content type and accept headers.
      */
-    public suspend fun makeRequest(url: String, body: ByteArray): ByteArray
+    public suspend fun makeRequest(url: String, body: ByteArray): ResultAndStatus
 }
+
+public data class ResultAndStatus(val body: ByteArray, val status: Int)

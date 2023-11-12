@@ -1,12 +1,14 @@
 package com.rnett.krosstalk.test
 
 import com.rnett.krosstalk.client.RequestMaker
+import com.rnett.krosstalk.client.ResultAndStatus
+import com.rnett.krosstalk.error.KrosstalkResult
+import com.rnett.krosstalk.error.KrosstalkResultStatus
 import com.rnett.krosstalk.serialization.KrosstalkClientSerialization
 import com.rnett.krosstalk.serialization.KrosstalkServerSerialization
 import com.rnett.krosstalk.server.mount
 import io.mockk.*
 import kotlinx.coroutines.test.runTest
-import org.junit.jupiter.api.Assertions.assertArrayEquals
 import org.junit.jupiter.api.Test
 import kotlin.properties.Delegates
 import kotlin.test.assertEquals
@@ -21,7 +23,12 @@ class BasicTest {
         val method = BasicKrosstalk.SPEC.method("add")
 
         justRun { serialization.initializeForSpec(any()) }
-        coEvery { requestMaker.makeRequest("test/add", "2+2".encodeToByteArray()) } returns "4".encodeToByteArray()
+        coEvery {
+            requestMaker.makeRequest(
+                "test/add",
+                "2+2".encodeToByteArray()
+            )
+        } returns ResultAndStatus("4".encodeToByteArray(), 200)
         every {
             serialization.serializeArguments(
                 method,
@@ -61,20 +68,19 @@ class BasicTest {
             override suspend fun add(a: Int, b: Int): String {
                 return (a + b).toString()
             }
-
-            override fun skipped() {
-
-            }
         }
 
-        var invoker: (suspend (ByteArray) -> ByteArray) by Delegates.notNull()
+        var invoker: (suspend (ByteArray) -> KrosstalkResult) by Delegates.notNull()
 
         server.mount { subPath, invoke ->
             if (subPath == "add")
                 invoker = invoke
         }
 
-        assertArrayEquals("4".encodeToByteArray(), invoker.invoke("2+2".encodeToByteArray()))
+        assertEquals(
+            KrosstalkResult("4".encodeToByteArray(), KrosstalkResultStatus.SUCCESS),
+            invoker.invoke("2+2".encodeToByteArray())
+        )
 
         verify {
             serialization.initializeForSpec(BasicKrosstalk.SPEC)
